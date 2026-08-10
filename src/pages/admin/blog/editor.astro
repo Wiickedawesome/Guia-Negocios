@@ -94,7 +94,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Publish Date</label>
-            <input type="date" id="publish-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" value="2024-06-15" />
+            <input type="date" id="publish-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" />
           </div>
         </div>
       </div>
@@ -111,8 +111,8 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Meta Description</label>
-            <textarea id="meta-desc" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 h-24" placeholder="Brief description for search results...">Learn the essential steps to legally form your LLC in Knoxville, Tennessee...</textarea>
-            <p class="text-xs text-slate-500 mt-1 text-right">86 / 160</p>
+            <textarea id="meta-desc" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 h-24" placeholder="Brief description for search results..."></textarea>
+            <p id="meta-counter" class="text-xs text-slate-500 mt-1 text-right">0 / 160</p>
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Keywords</label>
@@ -123,7 +123,11 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Featured Image (URL)</h3>
-        <input type="text" id="featured-image" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://example.com/image.jpg" value="https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=2070&auto=format&fit=crop" />
+        <input type="text" id="featured-image" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 mb-3" placeholder="https://example.com/image.jpg" />
+        <div class="w-full aspect-video bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center relative">
+          <span class="text-slate-400 text-sm" id="featured-image-placeholder">No image selected</span>
+          <img id="featured-image-preview" src="" alt="Featured Preview" class="absolute inset-0 w-full h-full object-cover hidden" />
+        </div>
       </div>
 
       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm mt-6">
@@ -135,7 +139,13 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Author Avatar (URL)</label>
-            <input type="text" id="author-avatar" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://i.pravatar.cc/150?u=guia" />
+            <div class="flex gap-3 items-center">
+              <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 shrink-0 overflow-hidden flex items-center justify-center relative">
+                <svg id="avatar-placeholder" class="w-6 h-6 text-slate-400 absolute" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <img id="avatar-preview" src="" alt="Avatar" class="absolute inset-0 w-full h-full object-cover hidden" />
+              </div>
+              <input type="text" id="author-avatar" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://i.pravatar.cc/150?u=guia" />
+            </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Read Time (minutes)</label>
@@ -209,6 +219,14 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           document.getElementById('read-time').value = data.readTime || 5;
           document.getElementById('publish-date').value = data.publishDate || '';
           document.getElementById('status-select').value = data.status || 'Draft';
+          
+          // Trigger events to update UI
+          document.getElementById('meta-desc').dispatchEvent(new Event('input'));
+          document.getElementById('featured-image').dispatchEvent(new Event('input'));
+          document.getElementById('author-avatar').dispatchEvent(new Event('input'));
+        } else {
+          // New post defaults
+          document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
         }
       } catch (e) {
         console.error("Error loading document:", e);
@@ -378,5 +396,79 @@ Output ONLY the raw markdown text.`;
 
     document.getElementById('btn-save-draft')?.addEventListener('click', () => saveBlogPost('Draft'));
     document.getElementById('btn-publish')?.addEventListener('click', () => saveBlogPost('Published'));
+
+    // --- UX Enhancements ---
+
+    // 1. Dynamic Meta Description Counter
+    const metaDesc = document.getElementById('meta-desc');
+    const metaCounter = document.getElementById('meta-counter');
+    metaDesc?.addEventListener('input', (e) => {
+      const length = e.target.value.length;
+      metaCounter.textContent = `${length} / 160`;
+      if (length > 160) {
+        metaCounter.classList.add('text-red-500');
+        metaCounter.classList.remove('text-slate-500');
+      } else {
+        metaCounter.classList.remove('text-red-500');
+        metaCounter.classList.add('text-slate-500');
+      }
+    });
+
+    // 2. Image Previews
+    function setupImagePreview(inputId, previewId, placeholderId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      const placeholder = document.getElementById(placeholderId);
+      
+      input?.addEventListener('input', (e) => {
+        const url = e.target.value.trim();
+        if (url) {
+          preview.src = url;
+          preview.classList.remove('hidden');
+          if (placeholder) placeholder.classList.add('hidden');
+        } else {
+          preview.classList.add('hidden');
+          preview.src = '';
+          if (placeholder) placeholder.classList.remove('hidden');
+        }
+      });
+    }
+    
+    setupImagePreview('featured-image', 'featured-image-preview', 'featured-image-placeholder');
+    setupImagePreview('author-avatar', 'avatar-preview', 'avatar-placeholder');
+
+    // 3. Auto-generate Slugs
+    function generateSlug(text) {
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    }
+
+    const titleEn = document.getElementById('title-en');
+    const titleEs = document.getElementById('title-es');
+    const slugEn = document.getElementById('slug-en');
+    const slugEs = document.getElementById('slug-es');
+
+    titleEn?.addEventListener('input', (e) => {
+      if (!slugEn.value || slugEn.dataset.autoGenerated === 'true') {
+        slugEn.value = generateSlug(e.target.value);
+        slugEn.dataset.autoGenerated = 'true';
+      }
+    });
+    
+    titleEs?.addEventListener('input', (e) => {
+      if (!slugEs.value || slugEs.dataset.autoGenerated === 'true') {
+        slugEs.value = generateSlug(e.target.value);
+        slugEs.dataset.autoGenerated = 'true';
+      }
+    });
+
+    // Remove auto-generated flag if user manually edits the slug
+    slugEn?.addEventListener('input', () => slugEn.dataset.autoGenerated = 'false');
+    slugEs?.addEventListener('input', () => slugEs.dataset.autoGenerated = 'false');
+    
   </script>
 </AdminLayout>
