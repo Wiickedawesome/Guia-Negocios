@@ -25,7 +25,7 @@ const metaDesc = "Guía completa para no residentes y emprendedores hispanos: c�
 
 const keywords = ["EIN", "No Residentes", "IRS", "LLC Estados Unidos", "Empresarios Hispanos", "Cuentas Bancarias USA"];
 
-const featuredImage = "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop";
+const featuredImage = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop";
 
 const contentEs = `
 Si está planeando lanzar o formalizar un negocio en los Estados Unidos desde Latinoamérica, España, o siendo un residente hispano en EE.UU. sin Número de Seguro Social (SSN), el **EIN (Número de Identificación del Empleador)** es la pieza central que necesita para operar legalmente.
