@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "GUIA NEGOCIOS",
+    "tagline": "Consultoría de Negocios Bilingüe",
+    "description": "Consultoría de negocios bilingüe para emprendedores latinos en Knoxville, TN. Registro LLC, marca, sitios web y contabilidad — todo en español e inglés."
+  },
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "about": "Sobre Nosotros",
+    "contact": "Contacto",
+    "blog": "Blog",
+    "login": "Iniciar Sesión"
+  },
+  "home": {
+    "hero": {
+      "title": "Lanza Tu Negocio con Confianza",
+      "subtitle": "Consultoría bilingüe para emprendedores latinos en Knoxville, TN. Nuestro enfoque es trabajar codo a codo con usted para lanzar, organizar y hacer crecer su negocio.",
+      "cta": "Comienza Hoy"
+    },
+    "services": {
+      "title": "Nuestros Servicios",
+      "subtitle": "Apoyo integral para cada etapa de tu negocio"
+    }
+  },
+  "services": {
+    "title": "Paquetes de Lanzamiento y Crecimiento de Negocios Bilingües",
+    "metaDescription": "Explore nuestros paquetes de lanzamiento y crecimiento para negocios en Knoxville. Desde registros de LLC hasta sitios web, encuentre la mejor opción.",
+    "subtitle": "Apoyo práctico en español e inglés para llevar su negocio de la idea al lanzamiento y más allá.",
+    "coreHeading": "Paquetes Principales de Lanzamiento",
+    "advancedHeading": "Paquetes Avanzados de Crecimiento y Lanzamiento",
+    "alacarteHeading": "Servicios A La Carta",
+    "faqTitle": "Preguntas Frecuentes",
+    "faqContactText": "Contáctenos para más información",
+    "tier1": {
+      "name": "Servicios Iniciales",
+      "price": "Desde $350",
+      "range": "Comúnmente $350–$650",
+      "description": "Puntos de entrada enfocados para clientes que necesitan ayuda con una necesidad específica de apertura."
+    },
+    "tier2": {
+      "name": "Paquete de Fundación",
+      "price": "$850–$1,500",
+      "description": "Organiza el negocio desde la base antes de invertir fuertemente en marketing o una página web."
+    },
+    "tier3": {
+      "name": "Branding y Marketing",
+      "price": "$1,200–$2,500",
+      "description": "Crea una presencia de marca profesional y un sistema básico de marketing para atraer clientes."
+    },
+    "tier4": {
+      "name": "Página Web Profesional",
+      "price": "$1,800–$5,500+",
+      "description": "Configuración de página web profesional para explicar sus servicios, mostrar fotos y conectar con clientes."
+    },
+    "tier5": {
+      "name": "Sistemas de Operación y Crecimiento",
+      "price": "$1,500–$4,500",
+      "description": "Estructura, flujo de clientes, sistemas de facturación y mejoras de rentabilidad para negocios en marcha."
+    },
+    "tier6": {
+      "name": "Paquete Completo de Lanzamiento",
+      "price": "$4,500–$9,500+",
+      "badge": "EL MEJOR VALOR",
+      "description": "El mejor valor para clientes que quieren un lanzamiento guiado y profesional desde la idea al mercado. Combina base administrativa, marca, marketing, página web, sistemas y coaching."
+    },
+    "tier7": {
+      "name": "Apoyo Continuo con CreedaVA",
+      "price": "Desde $1,499/mes",
+      "description": "Asistencia virtual continua, apoyo administrativo, atención al cliente, CRM y coordinación de proyectos."
+    }
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "form": {
+      "name": "Su Nombre",
+      "email": "Correo Electrónico",
+      "phone": "Número de Teléfono",
+      "message": "Tu Mensaje",
+      "submit": "Enviar Mensaje"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Leer Más",
+    "share": "Compartir esta publicación"
+  },
+  "footer": {
+    "copyright": "© 2026 GUIA NEGOCIOS. Todos los derechos reservados.",
+    "serving": "Atendiendo Knoxville, TN y East Tennessee"
+  }
+}

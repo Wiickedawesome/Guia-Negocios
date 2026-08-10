@@ -1,0 +1,199 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Analytics | Admin">
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Analytics</h1>
+      <p class="text-sm text-slate-500 mt-1">Detailed traffic and engagement metrics.</p>
+    </div>
+    <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-1">
+      <button class="px-3 py-1.5 text-sm font-medium rounded-md bg-slate-100 text-slate-900">30 Days</button>
+      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900">90 Days</button>
+      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900">Year</button>
+    </div>
+  </div>
+
+  <!-- Top Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Total Visitors (Active)</div>
+      <div class="text-3xl font-bold text-slate-900" id="metric-visitors">...</div>
+    </div>
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">New Users</div>
+      <div class="text-3xl font-bold text-slate-900" id="metric-new">...</div>
+    </div>
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Bounce Rate</div>
+      <div class="text-3xl font-bold text-slate-900" id="metric-bounce">...</div>
+    </div>
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Avg Session</div>
+      <div class="text-3xl font-bold text-slate-900" id="metric-session">...</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Main Chart -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm lg:col-span-2">
+      <h3 class="text-lg font-bold text-slate-900 mb-6">Traffic Volume</h3>
+      <div class="h-64 flex items-center justify-center bg-slate-50 border border-slate-100 rounded-lg text-slate-400">
+        <div class="text-center">
+          <svg class="w-10 h-10 mx-auto mb-2 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
+          [GA4 Line Chart Component]
+        </div>
+      </div>
+    </div>
+
+    <!-- Traffic Sources -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-slate-900 mb-6">Traffic Sources</h3>
+      <div class="space-y-4">
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span class="font-medium text-slate-700 flex items-center gap-2"><svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Organic Search</span>
+            <span class="text-slate-500">45%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2">
+            <div class="bg-brand-primary h-2 rounded-full" style="width: 45%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span class="font-medium text-slate-700 flex items-center gap-2"><svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg> Direct</span>
+            <span class="text-slate-500">30%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full" style="width: 30%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span class="font-medium text-slate-700 flex items-center gap-2"><svg class="w-4 h-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg> Referral</span>
+            <span class="text-slate-500">15%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2">
+            <div class="bg-purple-500 h-2 rounded-full" style="width: 15%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-sm mb-1">
+            <span class="font-medium text-slate-700 flex items-center gap-2"><svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> Email</span>
+            <span class="text-slate-500">10%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2">
+            <div class="bg-amber-500 h-2 rounded-full" style="width: 10%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Top Pages -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-slate-200">
+        <h3 class="text-lg font-bold text-slate-900">Top Pages (30 Days)</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-3 font-medium">Page URL</th>
+              <th class="px-6 py-3 font-medium text-right">Views</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100" id="top-pages-body">
+            <tr>
+              <td colspan="2" class="px-6 py-3 text-center text-slate-500">Loading top pages...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Demographics -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <h3 class="text-lg font-bold text-slate-900 mb-6">Demographics</h3>
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <h4 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Location</h4>
+          <ul class="space-y-2 text-sm" id="demographic-locations">
+            <li class="text-slate-500">Loading locations...</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Language</h4>
+          <div class="flex flex-col items-center justify-center space-y-2 mt-4" id="demographic-languages">
+             <span class="text-slate-500 text-sm">Loading languages...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { app } from '../../lib/firebase';
+    import { getFunctions, httpsCallable } from 'firebase/functions';
+
+    async function loadAnalytics() {
+      try {
+        const functions = getFunctions(app);
+        const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
+        const result = await getAnalyticsData();
+        const data = result.data as any;
+
+        if (data.totals) {
+          document.getElementById('metric-visitors')!.innerText = data.totals.activeUsers;
+          document.getElementById('metric-new')!.innerText = data.totals.newUsers;
+          document.getElementById('metric-bounce')!.innerText = data.totals.bounceRate;
+          document.getElementById('metric-session')!.innerText = data.totals.avgSessionDuration;
+        }
+
+        if (data.topPages) {
+          const tbody = document.getElementById('top-pages-body');
+          if (tbody) {
+            tbody.innerHTML = data.topPages.map((page: any) => `
+              <tr>
+                <td class="px-6 py-3 text-slate-900">${page.path}</td>
+                <td class="px-6 py-3 text-right text-slate-600">${page.views}</td>
+              </tr>
+            `).join('');
+          }
+        }
+
+        if (data.topCities) {
+          const locList = document.getElementById('demographic-locations');
+          if (locList) {
+            locList.innerHTML = data.topCities.map((loc: any) => `
+              <li class="flex justify-between">
+                <span class="text-slate-700 truncate w-3/4" title="${loc.city}">${loc.city}</span>
+                <span class="font-medium text-slate-900">${loc.users}</span>
+              </li>
+            `).join('');
+          }
+        }
+
+        if (data.languages) {
+          const langList = document.getElementById('demographic-languages');
+          if (langList) {
+            langList.innerHTML = data.languages.map((lang: any) => `
+              <div class="w-full flex justify-between px-4 py-2 bg-slate-50 rounded-lg">
+                <span class="text-slate-700 font-medium uppercase">${lang.language}</span>
+                <span class="font-bold text-brand-primary">${lang.users} Users</span>
+              </div>
+            `).join('');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+        document.getElementById('metric-visitors')!.innerText = 'Error';
+      }
+    }
+
+    // Call after slight delay to ensure auth is ready
+    setTimeout(loadAnalytics, 1500);
+  </script>
+</AdminLayout>

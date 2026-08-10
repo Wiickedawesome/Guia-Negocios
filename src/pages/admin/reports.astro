@@ -1,0 +1,178 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Reports | Admin">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-slate-900 font-heading">Reports</h1>
+    <p class="text-sm text-slate-500 mt-1">Generate AI-powered executive SEO reports on-demand or schedule recurring generations.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- On-Demand -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900 mb-2">On-Demand Report</h3>
+        <p class="text-sm text-slate-500 mb-6">Aggregates data from SEO Audits, Backlinks, and Keywords, then uses Gemini 1.5 Pro to write an executive summary.</p>
+      </div>
+      <button id="btn-generate-report" class="w-full px-4 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors flex justify-center items-center gap-2">
+        Generate Report Now
+      </button>
+    </div>
+
+    <!-- Scheduled -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Scheduled Reports</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Frequency</label>
+          <select id="sched-freq" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white">
+            <option value="weekly">Weekly (Monday)</option>
+            <option value="biweekly">Bi-Weekly</option>
+            <option value="monthly">Monthly (1st)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Email Recipients (Simulated)</label>
+          <input id="sched-email" type="email" placeholder="admin@guianegocios.net" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white" />
+        </div>
+        <button id="btn-save-schedule" class="w-full px-4 py-2.5 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
+          Save Schedule
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report History -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+      <h3 class="text-lg font-bold text-slate-900">Report History</h3>
+      <span id="loading-indicator" class="text-xs text-brand-primary font-medium animate-pulse hidden">Loading...</span>
+    </div>
+    <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200 sticky top-0 z-10">
+          <tr>
+            <th class="px-6 py-3 font-medium">Date</th>
+            <th class="px-6 py-3 font-medium">Type</th>
+            <th class="px-6 py-3 font-medium">Status</th>
+            <th class="px-6 py-3 font-medium text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reports-table-body" class="divide-y divide-slate-100">
+          <tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">Loading reports...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- External Markdown Parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+    import { app } from '../../lib/firebase';
+    import { getFirestore, collection, onSnapshot, query, orderBy, doc, getDoc, setDoc } from 'firebase/firestore';
+    import { getFunctions, httpsCallable } from 'firebase/functions';
+
+    const db = getFirestore(app);
+    const functions = getFunctions(app);
+    let allReports: any[] = [];
+
+    // Load Schedule
+    getDoc(doc(db, 'settings', 'admin')).then(docSnap => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.reportScheduleFreq) (document.getElementById('sched-freq') as HTMLSelectElement).value = data.reportScheduleFreq;
+        if (data.reportScheduleEmail) (document.getElementById('sched-email') as HTMLInputElement).value = data.reportScheduleEmail;
+      }
+    });
+
+    // Save Schedule
+    document.getElementById('btn-save-schedule')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-save-schedule') as HTMLButtonElement;
+      btn.disabled = true;
+      btn.innerText = 'Saving...';
+      try {
+        await setDoc(doc(db, 'settings', 'admin'), {
+          reportScheduleFreq: (document.getElementById('sched-freq') as HTMLSelectElement).value,
+          reportScheduleEmail: (document.getElementById('sched-email') as HTMLInputElement).value
+        }, { merge: true });
+        showToast('Schedule saved successfully (Simulation Only)', 'success');
+      } catch (e: any) {
+        alert('Failed to save schedule: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Save Schedule';
+      }
+    });
+
+    // Listen to Reports History
+    const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
+    onSnapshot(q, (snapshot) => {
+      allReports = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const tbody = document.getElementById('reports-table-body');
+      if (!tbody) return;
+
+      if (allReports.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">No reports generated yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = allReports.map(report => {
+        const date = report.createdAt ? new Date(report.createdAt.toMillis()).toLocaleString() : 'Pending...';
+        return `
+          <tr class="hover:bg-slate-50/50">
+            <td class="px-6 py-4 text-slate-900">${date}</td>
+            <td class="px-6 py-4 text-slate-600">${report.type || 'On-Demand'}</td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">${report.status || 'Generated'}</span>
+            </td>
+            <td class="px-6 py-4 text-right space-x-3">
+              <button class="text-xs text-brand-primary font-bold hover:underline" onclick="window.viewReport('${report.id}')">View Report</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    });
+
+    // View Report Modal
+    (window as any).viewReport = (reportId: string) => {
+      const report = allReports.find(r => r.id === reportId);
+      if (!report) return;
+
+      const parsedHtml = (window as any).marked.parse(report.content || 'No content generated.');
+      
+      (window as any).showModal('Executive SEO Report', `
+        <div class="prose prose-sm max-w-none max-h-[70vh] overflow-y-auto pr-2">
+          ${parsedHtml}
+        </div>
+      `, {
+        wide: true,
+        footer: '<button id="close-rep-btn-modal" class="px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg">Close</button>'
+      });
+
+      document.getElementById('close-rep-btn-modal')?.addEventListener('click', () => {
+        (document.getElementById('admin-modal-overlay')?.querySelector('#modal-close-btn') as HTMLButtonElement)?.click();
+      });
+    };
+
+    // Generate On-Demand Report
+    document.getElementById('btn-generate-report')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-generate-report') as HTMLButtonElement;
+      btn.disabled = true;
+      btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating AI Report...`;
+      
+      try {
+        const generateFunc = httpsCallable(functions, 'generateOnDemandReport');
+        await generateFunc();
+        showToast('Report generated successfully!', 'success');
+      } catch (e: any) {
+        alert('Failed to generate report: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Generate Report Now';
+      }
+    });
+
+  </script>
+</AdminLayout>

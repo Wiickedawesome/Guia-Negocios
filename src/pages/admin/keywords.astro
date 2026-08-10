@@ -1,0 +1,551 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Keywords | Admin">
+  <div class="mb-8 flex justify-between items-end">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Keywords</h1>
+      <p class="text-sm text-slate-500 mt-1">Track your SEO ranking for target keywords.</p>
+    </div>
+    <div class="flex gap-3">
+      <button id="ai-discover-btn" class="cursor-pointer px-4 py-2 bg-gradient-to-r from-brand-primary to-blue-500 text-white text-sm font-medium rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        Discover with AI
+      </button>
+      <button id="add-keyword-btn" class="cursor-pointer px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
+        + Add Keyword
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
+      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Keyword Stats</h3>
+      <div class="grid grid-cols-4 gap-4 text-center">
+        <div>
+          <div id="stat-total" class="text-2xl font-bold text-slate-900">0</div>
+          <div class="text-xs text-slate-500 mt-1">Total</div>
+        </div>
+        <div>
+          <div id="stat-top10" class="text-2xl font-bold text-brand-primary">0</div>
+          <div class="text-xs text-slate-500 mt-1">Top 10</div>
+        </div>
+        <div>
+          <div id="stat-top20" class="text-2xl font-bold text-blue-600">0</div>
+          <div class="text-xs text-slate-500 mt-1">Top 20</div>
+        </div>
+        <div>
+          <div id="stat-top50" class="text-2xl font-bold text-slate-700">0</div>
+          <div class="text-xs text-slate-500 mt-1">Top 50</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
+      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Position Changes (30d)</h3>
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <div class="text-2xl font-bold text-emerald-600 flex items-center justify-center gap-1">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+            <span id="stat-improved">0</span>
+          </div>
+          <div class="text-xs text-slate-500 mt-1">Improved</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-red-500 flex items-center justify-center gap-1">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
+            <span id="stat-declined">0</span>
+          </div>
+          <div class="text-xs text-slate-500 mt-1">Declined</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-slate-400 flex items-center justify-center gap-1">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            <span id="stat-stable">0</span>
+          </div>
+          <div class="text-xs text-slate-500 mt-1">Stable</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keywords Table -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+      <div class="relative w-64">
+        <input id="keyword-search-input" type="text" placeholder="Search keywords..." class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary" />
+        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+      </div>
+      <button class="text-sm text-slate-600 font-medium px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 bg-white">
+        Filter ▼
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 font-medium">Keyword</th>
+            <th class="px-6 py-4 font-medium">Position</th>
+            <th class="px-6 py-4 font-medium">Volume</th>
+            <th class="px-6 py-4 font-medium">Trend</th>
+            <th class="px-6 py-4 font-medium text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="keywords-table-body" class="divide-y divide-slate-100">
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+              <svg class="animate-spin h-5 w-5 text-brand-primary mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Loading keywords...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    import { db, aiModel, app } from '../../lib/firebase';
+    import { collection, getDocs, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
+    import { getFunctions, httpsCallable } from 'firebase/functions';
+
+    // Load Keywords from Firestore
+    async function loadKeywords() {
+      const tbody = document.getElementById('keywords-table-body');
+      if (!tbody) return;
+
+      try {
+        const snapshot = await getDocs(collection(db, 'keywords'));
+        
+        if (snapshot.empty) {
+          tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No keywords tracked. Use AI to discover some!</td></tr>`;
+          return;
+        }
+
+        let html = '';
+        let total = 0, top10 = 0, top20 = 0, top50 = 0;
+        let improved = 0, declined = 0, stable = 0;
+
+        snapshot.forEach(document => {
+          const kw = document.data();
+          const id = document.id;
+          
+          // Stats computation
+          total++;
+          if (kw.position <= 10) top10++;
+          if (kw.position <= 20) top20++;
+          if (kw.position <= 50) top50++;
+
+          const trend = kw.trend || '-';
+          if (trend.includes('↑')) improved++;
+          else if (trend.includes('↓')) declined++;
+          else stable++;
+          
+          const posClass = kw.position <= 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700';
+          const trendHtml = trend.includes('↑') 
+            ? `<span class="text-emerald-600 font-medium">${trend}</span>`
+            : trend.includes('↓') ? `<span class="text-red-500 font-medium">${trend}</span>`
+            : `<span class="text-slate-400 font-medium">-</span>`;
+
+          html += `
+            <tr class="keyword-row hover:bg-slate-50/50" data-kw="${kw.keyword.toLowerCase()}">
+              <td class="px-6 py-4 font-medium text-brand-dark">
+                ${kw.keyword}
+                <span class="ml-2 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${kw.language || 'en'}</span>
+              </td>
+              <td class="px-6 py-4"><span class="px-2 py-1 ${posClass} font-bold rounded">#${kw.position}</span></td>
+              <td class="px-6 py-4 text-slate-600">${kw.volume}</td>
+              <td class="px-6 py-4">${trendHtml}</td>
+              <td class="px-6 py-4 text-right">
+                <button data-id="${id}" class="delete-kw-btn text-xs text-red-500 hover:text-red-700 font-medium">Remove</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+
+        // Update DOM stats
+        const dTotal = document.getElementById('stat-total');
+        const dTop10 = document.getElementById('stat-top10');
+        const dTop20 = document.getElementById('stat-top20');
+        const dTop50 = document.getElementById('stat-top50');
+        const dImproved = document.getElementById('stat-improved');
+        const dDeclined = document.getElementById('stat-declined');
+        const dStable = document.getElementById('stat-stable');
+
+        if (dTotal) dTotal.innerText = total.toString();
+        if (dTop10) dTop10.innerText = top10.toString();
+        if (dTop20) dTop20.innerText = top20.toString();
+        if (dTop50) dTop50.innerText = top50.toString();
+        if (dImproved) dImproved.innerText = improved.toString();
+        if (dDeclined) dDeclined.innerText = declined.toString();
+        if (dStable) dStable.innerText = stable.toString();
+
+        // Attach delete handlers
+        document.querySelectorAll('.delete-kw-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = (e.target as HTMLButtonElement).getAttribute('data-id');
+            if (id && confirm('Remove this keyword?')) {
+              await deleteDoc(doc(db, 'keywords', id));
+              loadKeywords();
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error("Error fetching keywords:", error);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading keywords.</td></tr>`;
+      }
+    }
+
+    loadKeywords();
+
+    // Live Search Filtering
+    document.getElementById('keyword-search-input')?.addEventListener('input', (e) => {
+      const term = (e.target as HTMLInputElement).value.toLowerCase();
+      document.querySelectorAll('.keyword-row').forEach(row => {
+        const kw = row.getAttribute('data-kw') || '';
+        if (kw.includes(term)) {
+          (row as HTMLElement).style.display = '';
+        } else {
+          (row as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+
+    // AI Keyword Discovery Modal
+    document.getElementById('ai-discover-btn')?.addEventListener('click', () => {
+      (window as any).showModal('Discover Keywords', `
+        <div class="space-y-4">
+          <p class="text-sm text-slate-600">Enter a topic to discover keywords via Google Trends + Gemini AI, or hit <strong>Auto Scan</strong> to pull real queries from Search Console.</p>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Topic / Service</label>
+            <input id="ai-topic-input" type="text" placeholder="e.g., Company Formation for Latinos in Tennessee" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white" />
+          </div>
+          <div id="ai-results" class="hidden mt-4">
+            <h4 class="text-sm font-bold text-slate-900 mb-2">Suggested Keywords</h4>
+            <div id="ai-suggestions-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+          </div>
+        </div>
+      `, {
+        wide: true,
+        footer: `
+          <button id="ai-cancel-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50">Cancel</button>
+          <button id="sc-scan-action-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            Auto Scan
+          </button>
+          <button id="ai-generate-action-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-lg hover:bg-opacity-90 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            Generate Keywords
+          </button>
+        `
+      });
+    });
+
+    // Manual Add Keyword Modal
+    document.getElementById('add-keyword-btn')?.addEventListener('click', () => {
+      (window as any).showModal('Add Keyword', `
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Keyword</label>
+            <input id="new-keyword" type="text" placeholder="e.g., business consulting knoxville" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Language</label>
+              <select id="new-lang" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+              <select id="new-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white">
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `, {
+        footer: `
+          <button id="manual-cancel-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50">Cancel</button>
+          <button id="manual-submit-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-lg hover:bg-opacity-90">Add Keyword</button>
+        `
+      });
+    });
+
+    // --- EVENT DELEGATION FOR ALL MODAL ACTIONS ---
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+
+      // 1. Close Modal Buttons (Cancel)
+      if (target.closest('#ai-cancel-btn') || target.closest('#manual-cancel-btn')) {
+        const overlay = document.getElementById('admin-modal-overlay');
+        const closeBtn = overlay?.querySelector('#modal-close-btn') as HTMLButtonElement;
+        if (closeBtn) closeBtn.click();
+        return;
+      }
+
+      // ── Search Console Scan Action ──
+      const scScanBtn = target.closest('#sc-scan-action-btn') as HTMLButtonElement;
+      if (scScanBtn) {
+        const phrase = (document.getElementById('ai-topic-input') as HTMLInputElement)?.value?.trim();
+
+        scScanBtn.disabled = true;
+        scScanBtn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Scanning...';
+
+        try {
+          const functions = getFunctions(app);
+          const scanApi = httpsCallable(functions, 'scanSearchConsole');
+          const response = await scanApi({ phrase: phrase || null });
+          const data = response.data as any;
+
+          if (data.keywords.length === 0) {
+            alert('No Search Console queries found. Try a different phrase or wait for more data.');
+            scScanBtn.disabled = false;
+            scScanBtn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Auto Scan';
+            return;
+          }
+
+          // Now run Gemini AI analysis on the results
+          // Fetch already-saved keywords to avoid duplicates
+          const existingSnap = await getDocs(collection(db, 'keywords'));
+          const existingKeywords = existingSnap.docs.map(d => d.data().keyword?.toLowerCase());
+
+          const aiPrompt = `
+            You are an expert SEO consultant for GUIA DE NEGOCIOS, a bilingual business consultancy in Knoxville, TN targeting Latino entrepreneurs.
+            
+            Below is REAL Google Search Console data from the last 90 days showing queries that triggered our site in search results.
+            
+            Search Console Data:
+            ${JSON.stringify(data.keywords, null, 2)}
+            
+            Keywords we are ALREADY tracking (do not suggest duplicates):
+            ${JSON.stringify(existingKeywords)}
+            
+            Analyze this data and select the top 5 most valuable keywords we should actively track. Consider:
+            - High impressions but low clicks = opportunity to improve titles/descriptions
+            - Good position (< 20) = keywords we can push to page 1
+            - Keywords related to our core services (LLC formation, business consulting, bilingual services)
+            - Both English AND Spanish keywords if present
+            
+            For each keyword, explain in one sentence WHY it's valuable.
+            
+            Format your response as a JSON array:
+            [
+              {
+                "keyword": "string",
+                "language": "en or es",
+                "volume": number (use impressions as proxy),
+                "position": number (from the data),
+                "trend": "string (your assessment: ↑ High Opportunity, → Maintain, etc.)",
+                "priority": "High or Medium or Low",
+                "reason": "string (why this keyword matters)"
+              }
+            ]
+            
+            Respond ONLY with the JSON array.
+          `;
+
+          const aiResult = await aiModel.generateContent(aiPrompt);
+          const aiText = aiResult.response.text();
+          const match = aiText.match(/\[[\s\S]*\]/);
+
+          if (match) {
+            const suggestions = JSON.parse(match[0]);
+            const aiList = document.getElementById('ai-suggestions-list');
+
+            if (aiList) {
+              aiList.innerHTML = suggestions.map((kw: any) => `
+                <div class="flex items-start justify-between gap-3 p-3 border border-slate-100 rounded-lg bg-slate-50">
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language}</span></div>
+                    <div class="text-xs text-slate-500 mt-0.5">Pos: #${kw.position} · ${kw.trend} · ${kw.priority} Priority</div>
+                    <div class="text-xs text-slate-400 mt-1 italic">${kw.reason}</div>
+                  </div>
+                  <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language, volume: kw.volume, position: Math.round(kw.position), trend: kw.trend, priority: kw.priority}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
+                </div>
+              `).join('');
+              
+              document.getElementById('ai-results')?.classList.remove('hidden');
+            }
+          }
+
+          // Change button to "Scan Again"
+          scScanBtn.disabled = false;
+          scScanBtn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> Scan Again';
+
+        } catch (error: any) {
+          console.error('SC scan failed:', error);
+          const msg = error?.message || 'Scan failed';
+          alert(`Search Console scan failed: ${msg}`);
+          scScanBtn.disabled = false;
+          scScanBtn.innerHTML = 'Run Scan';
+        }
+        return;
+      }
+
+      // ── Save from Search Console suggestion ──
+      const scSaveBtn = target.closest('[data-sc-save]') as HTMLButtonElement;
+      if (scSaveBtn) {
+        const kwData = JSON.parse(scSaveBtn.getAttribute('data-sc-save') || '{}');
+        scSaveBtn.disabled = true;
+        scSaveBtn.innerText = 'Saving...';
+        try {
+          await addDoc(collection(db, 'keywords'), {
+            ...kwData,
+            source: 'search-console',
+            createdAt: serverTimestamp()
+          });
+          scSaveBtn.innerText = 'Saved!';
+          scSaveBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
+          scSaveBtn.classList.replace('text-emerald-700', 'text-slate-400');
+          loadKeywords();
+        } catch (e) {
+          console.error('Save failed', e);
+          scSaveBtn.innerText = 'Error';
+        }
+        return;
+      }
+
+      // 2. Generate Keywords (AI)
+      const generateBtn = target.closest('#ai-generate-action-btn') as HTMLButtonElement;
+      if (generateBtn) {
+        const topic = (document.getElementById('ai-topic-input') as HTMLInputElement)?.value;
+        if (!topic) return alert('Please enter a topic.');
+
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = 'Generating...';
+
+        try {
+          const functions = getFunctions(app);
+          const discoverKeywordsApi = httpsCallable(functions, 'discoverKeywords');
+          
+          const rawDataResponse = await discoverKeywordsApi({ topic });
+          const rawTrends = (rawDataResponse.data as any).trends;
+
+          const prompt = `
+            You are an expert SEO consultant for a bilingual business consultancy targeting Latino entrepreneurs in the USA.
+            I just pulled the latest Google Autocomplete and Google Trends data for the topic: "${topic}".
+            
+            Here is the raw data from Google:
+            ${JSON.stringify(rawTrends, null, 2)}
+            
+            Based on this real data, select the best 5 keywords. Some MUST be in English, and some MUST be in Spanish (translate them appropriately based on the context).
+            Format them exactly into this JSON array schema:
+            [
+              {
+                "keyword": "string",
+                "language": "string ('en' or 'es')",
+                "volume": number,
+                "position": number,
+                "trend": "string",
+                "priority": "string"
+              }
+            ]
+            
+            Respond ONLY with the JSON array.
+          `;
+
+          const result = await aiModel.generateContent(prompt);
+          const responseText = result.response.text();
+          const match = responseText.match(/\[[\s\S]*\]/);
+          if (!match) throw new Error("Invalid response format");
+          
+          const keywords = JSON.parse(match[0]);
+          
+          const listContainer = document.getElementById('ai-suggestions-list');
+          if (listContainer) {
+            listContainer.innerHTML = keywords.map((kw: any) => `
+              <div class="flex items-center justify-between p-3 border border-slate-100 rounded bg-slate-50">
+                <div>
+                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language}</span></div>
+                  <div class="text-xs text-slate-500">Vol: ${kw.volume} | Pri: ${kw.priority}</div>
+                </div>
+                <button data-ai-save='${JSON.stringify(kw).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200">Save</button>
+              </div>
+            `).join('');
+          }
+
+          document.getElementById('ai-results')?.classList.remove('hidden');
+          generateBtn.style.display = 'none';
+
+        } catch (error) {
+          console.error("AI Generation failed:", error);
+          alert("Failed to generate keywords.");
+          generateBtn.disabled = false;
+          generateBtn.innerHTML = 'Generate Keywords';
+        }
+        return;
+      }
+
+      // 3. Save AI Keyword
+      const saveBtn = target.closest('[data-ai-save]') as HTMLButtonElement;
+      if (saveBtn) {
+        const kwData = JSON.parse(saveBtn.getAttribute('data-ai-save') || '{}');
+        saveBtn.disabled = true;
+        saveBtn.innerText = 'Saving...';
+
+        try {
+          await addDoc(collection(db, 'keywords'), {
+            ...kwData,
+            createdAt: serverTimestamp()
+          });
+
+          saveBtn.innerText = 'Saved!';
+          saveBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
+          saveBtn.classList.replace('text-emerald-700', 'text-slate-400');
+          loadKeywords();
+        } catch (e) {
+          console.error("Save failed", e);
+          saveBtn.innerText = 'Error';
+        }
+        return;
+      }
+
+      // 4. Submit Manual Keyword
+      const manualSubmitBtn = target.closest('#manual-submit-btn') as HTMLButtonElement;
+      if (manualSubmitBtn) {
+        const input = document.getElementById('new-keyword') as HTMLInputElement;
+        const langInput = document.getElementById('new-lang') as HTMLSelectElement;
+        const kw = input?.value?.trim();
+        
+        if (!kw) return alert('Please enter a keyword');
+
+        manualSubmitBtn.disabled = true;
+        manualSubmitBtn.innerText = 'Adding...';
+
+        try {
+          await addDoc(collection(db, 'keywords'), {
+            keyword: kw,
+            language: langInput.value || 'en',
+            volume: 0,
+            position: 99,
+            trend: '-',
+            priority: 'Medium',
+            createdAt: serverTimestamp()
+          });
+          
+          const overlay = document.getElementById('admin-modal-overlay');
+          const closeBtn = overlay?.querySelector('#modal-close-btn') as HTMLButtonElement;
+          if (closeBtn) closeBtn.click();
+          
+          loadKeywords();
+        } catch (e) {
+          console.error(e);
+          alert('Failed to add keyword manually.');
+          manualSubmitBtn.disabled = false;
+          manualSubmitBtn.innerText = 'Add Keyword';
+        }
+        return;
+      }
+    });
+  </script>
+</AdminLayout>

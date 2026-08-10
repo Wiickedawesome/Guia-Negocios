@@ -1,0 +1,187 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Dashboard Overview | Admin">
+  <div class="mb-8 flex justify-between items-end">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Overview</h1>
+      <p class="text-sm text-slate-500 mt-1">Welcome back, Admin. Here is what's happening with your site.</p>
+    </div>
+    <div class="flex gap-3">
+      <a href="/admin/blog" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
+        + New Post
+      </a>
+      <a href="/admin/reports" class="px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
+        Generate Report
+      </a>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <p class="text-sm font-medium text-slate-500">Total Visitors (30d)</p>
+          <h3 class="text-2xl font-bold text-slate-900 mt-1" id="dash-metric-visitors">...</h3>
+        </div>
+        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        </div>
+      </div>
+      <div class="flex items-center text-sm">
+        <span class="text-emerald-600 font-medium flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+          12%
+        </span>
+        <span class="text-slate-500 ml-2">vs last month</span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <p class="text-sm font-medium text-slate-500">Top 10 Keywords</p>
+          <h3 class="text-2xl font-bold text-slate-900 mt-1">12</h3>
+        </div>
+        <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+        </div>
+      </div>
+      <div class="flex items-center text-sm">
+        <span class="text-emerald-600 font-medium flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+          3
+        </span>
+        <span class="text-slate-500 ml-2">new this week</span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <p class="text-sm font-medium text-slate-500">SEO Score</p>
+          <h3 class="text-2xl font-bold text-slate-900 mt-1">87/100</h3>
+        </div>
+        <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+      </div>
+      <div class="flex items-center text-sm">
+        <span class="text-emerald-600 font-medium flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+          5%
+        </span>
+        <span class="text-slate-500 ml-2">improvement</span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <p class="text-sm font-medium text-slate-500">Backlinks</p>
+          <h3 class="text-2xl font-bold text-slate-900 mt-1">45</h3>
+        </div>
+        <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+        </div>
+      </div>
+      <div class="flex items-center text-sm">
+        <span class="text-emerald-600 font-medium flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+          8
+        </span>
+        <span class="text-slate-500 ml-2">new links found</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Chart placeholder -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm lg:col-span-2">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-bold text-slate-900">Traffic Overview</h3>
+        <select class="text-sm border-slate-200 rounded-md text-slate-600">
+          <option>Last 30 Days</option>
+          <option>Last 7 Days</option>
+          <option>This Year</option>
+        </select>
+      </div>
+      <div class="h-64 flex items-end gap-2 text-xs text-slate-400 relative">
+        <!-- Mock Chart -->
+        <div class="w-full flex justify-between items-end h-full pt-6 pb-2 border-b border-l border-slate-100 pl-2">
+           <div class="w-1/12 bg-blue-100 hover:bg-blue-200 rounded-t transition-colors h-[40%]"></div>
+           <div class="w-1/12 bg-blue-100 hover:bg-blue-200 rounded-t transition-colors h-[50%]"></div>
+           <div class="w-1/12 bg-blue-100 hover:bg-blue-200 rounded-t transition-colors h-[45%]"></div>
+           <div class="w-1/12 bg-blue-100 hover:bg-blue-200 rounded-t transition-colors h-[70%]"></div>
+           <div class="w-1/12 bg-blue-200 hover:bg-blue-300 rounded-t transition-colors h-[60%]"></div>
+           <div class="w-1/12 bg-brand-primary/80 hover:bg-brand-primary rounded-t transition-colors h-[85%]"></div>
+           <div class="w-1/12 bg-brand-primary hover:bg-brand-primary/90 rounded-t transition-colors h-[100%]"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="space-y-6">
+      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Top Keywords</h3>
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-700 font-medium">business knoxville</span>
+            <span class="text-sm font-bold text-emerald-600">#5 ↑</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-700 font-medium">LLC tennessee</span>
+            <span class="text-sm font-bold text-emerald-600">#12 ↑</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-slate-700 font-medium">consulting spanish</span>
+            <span class="text-sm font-bold text-red-500">#18 ↓</span>
+          </div>
+        </div>
+        <a href="/admin/keywords" class="block text-center text-sm text-brand-primary font-medium mt-4 hover:underline">View all keywords</a>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Recent AI Drafts</h3>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span class="text-sm text-slate-700 truncate flex-1">Guide to EIN Numbers</span>
+            <span class="text-xs text-slate-400">Draft</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="text-sm text-slate-700 truncate flex-1">How to Start LLC</span>
+            <span class="text-xs text-slate-400">Published</span>
+          </div>
+        </div>
+        <a href="/admin/blog" class="block text-center text-sm text-brand-primary font-medium mt-4 hover:underline">Manage Blog</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { app } from '../../lib/firebase';
+    import { getFunctions, httpsCallable } from 'firebase/functions';
+
+    async function loadDashAnalytics() {
+      try {
+        const functions = getFunctions(app);
+        const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
+        const result = await getAnalyticsData();
+        const data = result.data as any;
+
+        if (data.totals) {
+          const el = document.getElementById('dash-metric-visitors');
+          if (el) el.innerText = data.totals.activeUsers;
+        }
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      }
+    }
+
+    setTimeout(loadDashAnalytics, 1500);
+  </script>
+</AdminLayout>

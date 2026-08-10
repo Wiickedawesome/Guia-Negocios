@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Geist", "Inter", "DM Sans", sans-serif;
+  --font-body: "Inter", "DM Sans", sans-serif;
+
+  /* Brand Colors — Aligned to Logo (Shield + Leaf + Compass) */
+  --color-brand-primary: #1B4E2B;
+  /* Dark Forest Green — logo leaf */
+  --color-brand-accent: #F0C850;
+  /* Rich Gold — warm CTA pop */
+  --color-brand-dark: #1A2E35;
+  /* Dark Teal-Navy — shield blend */
+  --color-brand-gray: #1E2A2F;
+  /* Cool Charcoal — body text dark */
+  --color-brand-light: #F2F7F4;
+  /* Off-White Green Tint — bg */
+  --color-brand-check: #1B4E2B;
+  /* Dark Forest Green — checkmarks */
+}
+
+/* Global Accessibility Focus States */
+@layer base {
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-brand-primary);
+  }
+}
+
+/* Admin Dark Mode Overrides */
+html.dark .bg-white {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html.dark .bg-slate-50 {
+  background-color: #0f172a !important;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #1e293b !important;
+}
+
+html.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .border-slate-200 {
+  border-color: #334155 !important;
+}
+
+html.dark .border-slate-100 {
+  border-color: #1e293b !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark .bg-brand-dark {
+  background-color: #020617 !important;
+}
+
+html.dark .text-brand-dark {
+  color: #e2e8f0 !important;
+}
+
+html.dark .divide-slate-100> :not([hidden])~ :not([hidden]) {
+  border-color: #1e293b !important;
+}
+
+html.dark header.bg-white {
+  background-color: #1e293b !important;
+  border-bottom-color: #334155 !important;
+}

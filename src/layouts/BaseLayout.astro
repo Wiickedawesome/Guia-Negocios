@@ -1,0 +1,92 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Bilingual meta tags for hreflang
+const currentPath = Astro.url.pathname;
+const isEnglish = currentPath.startsWith('/en');
+const toggleLang = isEnglish ? 'es' : 'en';
+const alternatePath = currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
+
+// Default path if they go to the root
+const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '/en') : currentPath;
+
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/GuiaNegociosFAV.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    
+    <!-- SEO & i18n -->
+    <link rel="alternate" hreflang="en" href={`https://guianegocios.net${isEnglish ? currentPath : alternatePath}`} />
+    <link rel="alternate" hreflang="es" href={`https://guianegocios.net${!isEnglish ? currentPath : alternatePath}`} />
+    <link rel="alternate" hreflang="x-default" href={`https://guianegocios.net${defaultPath}`} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://guianegocios.net${currentPath}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://guianegocios.net/images/illustration1.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={`https://guianegocios.net${currentPath}`} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="https://guianegocios.net/images/illustration1.png" />
+
+    <!-- LocalBusiness Schema -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "GUIA NEGOCIOS",
+      "image": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
+      "url": "https://guianegocios.net",
+      "telephone": "865-202-7112",
+      "email": "info@guianegocios.net",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Knoxville",
+        "addressRegion": "TN",
+        "addressCountry": "US"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "17:00"
+      },
+      "description": description,
+      "priceRange": "$$"
+    })} />
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-body antialiased flex flex-col min-h-screen">
+    <slot name="header" />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <slot name="footer" />
+  </body>
+</html>

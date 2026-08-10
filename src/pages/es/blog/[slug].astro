@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { getBlogPosts, getBlogPost, markdownToHtml, formatDate, processHtmlForBlog } from '../../../utils/blog';
+
+export async function getStaticPaths() {
+  const posts = await getBlogPosts('es');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = (await getBlogPost(slug, 'es'))!;
+const allPosts = await getBlogPosts('es');
+const relatedPosts = allPosts
+  .filter(p => p.slug !== post.slug && p.tags.some(t => post.tags.includes(t)))
+  .slice(0, 3);
+// If not enough related by tag, fill with recent
+if (relatedPosts.length < 3) {
+  const fill = allPosts.filter(p => p.slug !== post.slug && !relatedPosts.find(rp => rp.slug === p.slug));
+  relatedPosts.push(...fill.slice(0, 3 - relatedPosts.length));
+}
+
+const t = useTranslations('es');
+const rawHtml = markdownToHtml(post.content);
+const { html: contentHtml, toc } = processHtmlForBlog(rawHtml);
+const altUrl = `/en/blog/${post.altSlug}`;
+---
+
+<BaseLayout title={`${post.title} | Blog | ${t('site.title')}`} description={post.excerpt}>
+  <Header slot="header" />
+  
+  <article class="bg-slate-50">
+    <!-- Hero Image Section -->
+    <div class="relative w-full h-[400px] md:h-[500px]">
+      <img src={post.featuredImage} alt={post.title} class="absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
+      
+      <div class="absolute inset-0 flex items-center justify-center pt-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+            {post.tags.map((tag) => (
+              <span class="text-xs bg-brand-primary text-white px-3 py-1 rounded-full font-bold tracking-wide uppercase">
+                {tag}
+              </span>
+            ))}
+          </div>
+          <h1 class="text-3xl md:text-5xl lg:text-6xl font-heading text-white mb-6 leading-tight drop-shadow-md">
+            {post.title}
+          </h1>
+          <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-200">
+            <div class="flex items-center gap-3">
+              <img src={post.authorAvatar} alt={post.author} class="w-10 h-10 rounded-full border-2 border-white/20 object-cover" />
+              <span class="font-medium text-white">{post.author}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <time datetime={post.date}>{formatDate(post.date, 'es')}</time>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-1 bg-white/20 rounded-md text-white font-medium backdrop-blur-sm border border-white/10">
+                {post.readTime} MIN LECTURA
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="flex flex-col lg:flex-row gap-8 xl:gap-12 relative">
+        
+        <!-- Left Sidebar: TOC -->
+        <aside class="hidden lg:block lg:w-[200px] xl:w-[240px] shrink-0">
+          <div class="sticky top-28 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">Tabla de Contenidos</h3>
+            <ul class="space-y-3">
+              {toc.length > 0 ? toc.map((item) => (
+                <li>
+                  <a href={`#${item.id}`} class={`block text-sm text-slate-600 hover:text-brand-primary transition-colors ${item.level === 3 ? 'ml-4' : ''}`}>
+                    {item.text}
+                  </a>
+                </li>
+              )) : (
+                <li class="text-sm text-slate-500 italic">No hay encabezados</li>
+              )}
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Center: Article Body -->
+        <main class="w-full lg:flex-1 min-w-0">
+          <div class="bg-white p-6 md:p-10 lg:p-12 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
+              <div class="blog-content" set:html={contentHtml} />
+            </div>
+
+            <!-- Footer: Share & Language Toggle -->
+            <footer class="mt-12 pt-8 border-t border-slate-200">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <a href={altUrl} class="inline-flex items-center gap-2 text-brand-primary font-medium hover:bg-brand-light px-4 py-2 rounded-lg transition-colors border border-brand-primary/20">
+                  🇺🇸 Read in English
+                </a>
+                <a href="/es/blog" class="text-slate-500 hover:text-brand-dark font-medium transition-colors">
+                  ← Volver al Blog
+                </a>
+              </div>
+            </footer>
+          </div>
+        </main>
+      </div>
+
+      <!-- Related Articles (Bottom) -->
+      <div class="mt-20 pt-12 border-t border-slate-200">
+        <h3 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Artículos Relacionados</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {relatedPosts.map(rp => (
+            <a href={`/es/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div class="overflow-hidden h-40 relative">
+                <img src={rp.featuredImage} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              </div>
+              <div class="p-5">
+                <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>
+                <p class="text-sm text-slate-500 flex items-center gap-2">
+                  <time>{formatDate(rp.date, 'es')}</time>
+                  <span>•</span>
+                  <span>{rp.readTime} min</span>
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <Footer slot="footer" />
+</BaseLayout>

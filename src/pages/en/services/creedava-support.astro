@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { getLangFromUrl } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<BaseLayout title="CreedaVA Ongoing Support Guide | GUIA NEGOCIOS" description="A deep guide on how CreedaVA (creedava.com) provides dedicated bilingual virtual assistants to handle customer service, inbox triage, CRM, and admin tasks after launching.">
+  <Header slot="header" />
+  
+  <!-- Service Package Hero Header -->
+  <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <a href={`/${lang}/services`} class="text-brand-primary hover:underline">← Back to All Services</a>
+      </div>
+      <div class="inline-flex items-center gap-2 bg-brand-primary/20 border border-brand-primary/40 text-brand-primary text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+        Official Partnership Tier 07
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-tight text-white">
+        Ongoing Support with CreedaVA
+      </h1>
+      <p class="text-xl text-slate-300 leading-relaxed font-sans">
+        Delegate daily customer support, email management, CRM updates, and administrative logistics to dedicated, professionally bilingual Virtual Assistants through our official partner <strong class="text-white">CreedaVA</strong>.
+      </p>
+      
+      <div class="pt-6 flex flex-wrap items-center gap-6 text-sm text-slate-300 border-t border-slate-800/80">
+        <div>
+          <span class="text-xs uppercase tracking-wider text-slate-400 block">Monthly Retainers</span>
+          <span class="text-2xl font-extrabold text-brand-accent">From $1,499 / mo</span>
+        </div>
+        <div class="border-l border-slate-800 pl-6">
+          <span class="text-xs uppercase tracking-wider text-slate-400 block">Official Portal</span>
+          <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="text-base font-bold text-white hover:underline">creedava.com ↗</a>
+        </div>
+        <div class="ml-auto">
+          <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="inline-block bg-brand-primary text-white font-extrabold py-3.5 px-8 rounded-full hover:bg-brand-primary/90 transition-colors shadow-md text-base">
+            Visit CreedaVA.com
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Article Content Body -->
+  <article class="py-16 bg-white text-slate-800 leading-relaxed font-sans">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <!-- Key Takeaways Callout Box -->
+      <div class="bg-emerald-50 border-l-4 border-[#005148] rounded-r-2xl p-6 lg:p-8 space-y-4">
+        <h3 class="text-lg font-heading font-bold text-[#005148] uppercase tracking-wider">
+          The Delegation Advantage for Business Owners
+        </h3>
+        <p class="text-slate-700 text-sm sm:text-base leading-relaxed">
+          As a business owner, your highest-value hours should be spent serving clients, closing major quotes, and leading team growth—not replying to routine emails, answering phone inquiries, or chasing unpaid invoices. Through our official partnership with <strong>CreedaVA</strong>, you gain a dedicated, professionally bilingual (English & Spanish) Virtual Assistant who manages your daily operational tasks with enterprise reliability.
+        </p>
+      </div>
+
+      <!-- Section 1: The Transition from Launch to Operations -->
+      <section class="space-y-4 pt-4 border-t border-slate-100">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#005148] block">Part 01</span>
+        <h2 class="text-3xl font-heading font-bold text-brand-dark">
+          1. The Seamless Hand-Off: From Launch to Daily Operations
+        </h2>
+        <p class="text-slate-700 text-base leading-relaxed">
+          When you launch your business through GUIA NEGOCIOS, your operating systems, customer intake forms, and invoice templates are already set up and documented. CreedaVA steps into these pre-configured systems on day one, meaning zero lost time or training friction.
+        </p>
+      </section>
+
+      <!-- Section 2: What CreedaVA VAs Handle Daily -->
+      <section class="space-y-4 pt-4 border-t border-slate-100">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#005148] block">Part 02</span>
+        <h2 class="text-3xl font-heading font-bold text-brand-dark">
+          2. Daily Responsibilities Handled by Your Dedicated VA
+        </h2>
+        <p class="text-slate-700 text-base leading-relaxed">
+          CreedaVA VAs act as an extension of your business. Here is a look at the daily administrative tasks delegated to your Virtual Assistant:
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-2">
+            <h4 class="font-bold text-brand-dark text-lg">Inbox & Customer Phone Triage</h4>
+            <p class="text-sm text-slate-600">Screening business phone calls, managing customer emails, replying to WhatsApp Business messages, and qualifying new lead inquiries in English and Spanish.</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-2">
+            <h4 class="font-bold text-brand-dark text-lg">Calendar & Dispatch Coordination</h4>
+            <p class="text-sm text-slate-600">Booking customer consultations, scheduling service visits, managing technician calendars, and sending automated appointment confirmation texts.</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-2">
+            <h4 class="font-bold text-brand-dark text-lg">CRM & Customer Data Management</h4>
+            <p class="text-sm text-slate-600">Entering new contacts, updating customer job history, tracking quote statuses, and ensuring accurate client records in your CRM software.</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-2">
+            <h4 class="font-bold text-brand-dark text-lg">Invoicing & Payment Follow-Ups</h4>
+            <p class="text-sm text-slate-600">Sending digital invoices immediately after job completion, processing card payments, and sending courteous follow-ups for overdue accounts.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Why Bilingual Support Matters -->
+      <section class="space-y-4 pt-4 border-t border-slate-100">
+        <span class="text-xs font-bold uppercase tracking-widest text-[#005148] block">Part 03</span>
+        <h2 class="text-3xl font-heading font-bold text-brand-dark">
+          3. The Power of Professionally Bilingual VAs (English & Spanish)
+        </h2>
+        <p class="text-slate-700 text-base leading-relaxed">
+          Serving East Tennessee’s growing market requires flawless communication across English-speaking commercial clients and Spanish-speaking homeowners, suppliers, or crew members. CreedaVA Virtual Assistants are fluent in both languages, ensuring professional customer representation across all channels.
+        </p>
+      </section>
+
+      <!-- Section 4: Direct Link & Partnership Card -->
+      <section class="space-y-4 pt-4 border-t border-slate-100">
+        <div class="bg-[#005148] text-white rounded-3xl p-8 lg:p-10 space-y-6 shadow-xl">
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <span class="bg-emerald-400 text-[#005148] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Official Partner Website</span>
+            <span class="text-xs text-emerald-200">creedava.com</span>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-heading font-bold">
+            Explore All CreedaVA Virtual Assistant Retainers
+          </h3>
+          <p class="text-emerald-100 text-sm leading-relaxed max-w-2xl">
+            Monthly retainers start at $1,499/month depending on dedicated hours, SLA response times, and specialized task requirements. Visit the official CreedaVA website for detailed service packages, client testimonials, and direct onboarding.
+          </p>
+          <div>
+            <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-emerald-400 text-[#005148] font-extrabold py-3.5 px-8 rounded-full hover:bg-emerald-300 transition-colors text-base shadow-md">
+              Visit CreedaVA.com
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Author Bio Box -->
+      <div class="bg-brand-dark text-white rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
+        <div class="w-20 h-20 rounded-full bg-emerald-500 text-white text-2xl font-extrabold flex items-center justify-center flex-shrink-0">
+          CVA
+        </div>
+        <div class="space-y-3 text-center md:text-left">
+          <h4 class="text-2xl font-heading font-bold">Ready to Match with Your Dedicated Virtual Assistant?</h4>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Contact GUIA NEGOCIOS or CreedaVA directly to discuss your administrative workload and find the perfect bilingual Virtual Assistant for your business.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-4 justify-center md:justify-start">
+            <a href={`/${lang}/contact`} class="inline-block bg-brand-primary text-white font-bold py-3.5 px-8 rounded-full hover:bg-opacity-90 transition-colors shadow-md text-base">
+              Book Consultation
+            </a>
+            <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="inline-block border border-white text-white font-bold py-3.5 px-8 rounded-full hover:bg-white/10 transition-colors text-base">
+              CreedaVA.com
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </article>
+
+  <Footer slot="footer" />
+</BaseLayout>

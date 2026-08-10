@@ -1,0 +1,116 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const currentPath = Astro.url.pathname;
+const isEnglish = currentPath.startsWith('/en');
+const toggleLang = isEnglish ? 'es' : 'en';
+const togglePath = currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
+
+const isActive = (path: string) => {
+  if (path === `/${lang}` || path === `/${lang}/`) {
+    return currentPath === `/${lang}` || currentPath === `/${lang}/`;
+  }
+  return currentPath.startsWith(path);
+};
+
+const navClass = (path: string) => {
+  return isActive(path)
+    ? "bg-slate-100 text-brand-dark font-semibold px-4 py-2 rounded-full text-sm transition-all"
+    : "text-slate-600 hover:bg-slate-50 hover:text-brand-dark px-4 py-2 rounded-full text-sm font-medium transition-all";
+};
+
+const mobileNavClass = (path: string) => {
+  return isActive(path)
+    ? "block px-4 py-3 rounded-2xl text-base font-semibold text-brand-dark bg-slate-100 transition-colors"
+    : "block px-4 py-3 rounded-2xl text-base font-medium text-slate-600 hover:text-brand-dark hover:bg-slate-50 transition-colors";
+};
+---
+
+<header class="bg-white/80 backdrop-blur-md border-b border-slate-200/50 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <!-- Logo -->
+      <div class="flex-shrink-0 flex items-center">
+        <a href={`/${lang}`} class="flex items-center">
+          <img src="/images/GuiaNegociosLOGO.webp" alt="Guia Negocios" class="h-16 w-auto" width="200" height="64" decoding="async" fetchpriority="high" />
+        </a>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex space-x-8">
+        <a href={`/${lang}`} class={navClass(`/${lang}`)}>{t('nav.home')}</a>
+        <a href={`/${lang}/services`} class={navClass(`/${lang}/services`)}>{t('nav.services')}</a>
+        <a href={`/${lang}/about`} class={navClass(`/${lang}/about`)}>{t('nav.about')}</a>
+        <a href={`/${lang}/contact`} class={navClass(`/${lang}/contact`)}>{t('nav.contact')}</a>
+        <a href={`/${lang}/blog`} class={navClass(`/${lang}/blog`)}>{t('nav.blog')}</a>
+      </nav>
+
+      <!-- Actions & Language -->
+      <div class="hidden md:flex items-center space-x-4">
+        <a href="tel:8652027112" class="inline-flex items-center justify-center border border-brand-primary text-brand-primary font-bold px-4 py-2 rounded-full hover:bg-brand-primary hover:text-white transition-colors text-sm">
+          (865) 202-7112
+        </a>
+        <a href={togglePath} aria-label={isEnglish ? 'Switch to Spanish' : 'Switch to English'} class="text-slate-500 hover:text-slate-900 font-medium px-2 py-1 border border-slate-300 rounded transition-colors text-sm">
+          {isEnglish ? 'ES' : 'EN'}
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="flex items-center md:hidden space-x-2">
+        <a href={togglePath} aria-label={isEnglish ? 'Switch to Spanish' : 'Switch to English'} class="text-slate-500 hover:text-slate-900 font-medium px-2 py-1 border border-slate-300 rounded transition-colors text-sm">
+          {isEnglish ? 'ES' : 'EN'}
+        </a>
+        <button type="button" id="mobile-menu-btn" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none transition-colors" aria-controls="mobile-menu" aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <!-- Hamburger icon -->
+          <svg id="menu-icon-open" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <!-- Close icon -->
+          <svg id="menu-icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Panel -->
+  <div id="mobile-menu" class="hidden md:hidden absolute w-full left-0 top-full shadow-lg border-t border-slate-200 bg-white z-40">
+    <div class="px-4 py-4 space-y-1">
+      <a href={`/${lang}`} class={mobileNavClass(`/${lang}`)}>{t('nav.home')}</a>
+      <a href={`/${lang}/services`} class={mobileNavClass(`/${lang}/services`)}>{t('nav.services')}</a>
+      <a href={`/${lang}/about`} class={mobileNavClass(`/${lang}/about`)}>{t('nav.about')}</a>
+      <a href={`/${lang}/contact`} class={mobileNavClass(`/${lang}/contact`)}>{t('nav.contact')}</a>
+      <a href={`/${lang}/blog`} class={mobileNavClass(`/${lang}/blog`)}>{t('nav.blog')}</a>
+      <div class="pt-4 pb-2 border-t border-slate-100 mt-2">
+        <a href="tel:8652027112" class="block w-full text-center bg-brand-primary text-white font-bold px-4 py-3 rounded-xl hover:bg-opacity-90 transition-colors text-base">
+          (865) 202-7112
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('menu-icon-open');
+  const iconClose = document.getElementById('menu-icon-close');
+
+  if (btn && menu && iconOpen && iconClose) {
+    btn.addEventListener('click', () => {
+      const isOpen = !menu.classList.contains('hidden');
+      menu.classList.toggle('hidden');
+      iconOpen.classList.toggle('hidden');
+      iconOpen.classList.toggle('block');
+      iconClose.classList.toggle('hidden');
+      iconClose.classList.toggle('block');
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  }
+</script>
+

@@ -1,0 +1,382 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Blog Editor | Admin">
+  <div class="mb-8 flex justify-between items-center">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/admin/blog" class="text-sm text-slate-500 hover:text-brand-primary flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Back to Blog
+        </a>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Edit Post</h1>
+    </div>
+    <div class="flex gap-3">
+      <button class="px-4 py-2 border border-slate-200 text-slate-600 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors" onclick="showToast('Opening preview in new tab...', 'info')">
+        Preview
+      </button>
+      <button id="btn-save-draft" class="px-4 py-2 border border-slate-200 text-slate-600 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+        Save Draft
+      </button>
+      <button id="btn-publish" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
+        Publish
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <!-- Tabs -->
+        <div class="border-b border-slate-200 mb-6">
+          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <button id="tab-es" class="border-brand-primary text-brand-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              Español (Primary)
+            </button>
+            <button id="tab-en" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              English
+            </button>
+          </nav>
+        </div>
+
+        <!-- Spanish Editor -->
+        <div id="editor-es-container" class="block">
+          <input type="text" id="title-es" placeholder="Título de la publicación (Español)" class="w-full text-2xl font-bold text-slate-900 placeholder-slate-300 border-none focus:outline-none focus:ring-0 mb-4 p-0 bg-transparent" />
+          <textarea id="md-es" class="w-full h-[600px] p-6 text-slate-700 bg-white border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:border-brand-primary resize-y shadow-inner" placeholder="Escribe tu contenido en Markdown aquí..."></textarea>
+        </div>
+
+        <!-- English Editor -->
+        <div id="editor-en-container" class="hidden">
+          <input type="text" id="title-en" placeholder="Post Title (English)" class="w-full text-2xl font-bold text-slate-900 placeholder-slate-300 border-none focus:outline-none focus:ring-0 mb-4 p-0 bg-transparent" />
+          <textarea id="md-en" class="w-full h-[600px] p-6 text-slate-700 bg-white border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:border-brand-primary resize-y shadow-inner" placeholder="Write your Markdown content here..."></textarea>
+        </div>
+      </div>
+      
+      <!-- Smart Chat Blog Agent -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl flex flex-col shadow-sm mt-2">
+        <div class="p-4 border-b border-slate-200 flex items-center gap-2 bg-white rounded-t-xl">
+           <span class="bg-brand-primary/10 text-brand-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border border-brand-primary/20">Gemini</span>
+           <h3 class="font-bold text-slate-800 text-sm">Blog Copilot</h3>
+        </div>
+        <div class="p-4 flex flex-col gap-4 max-h-64 overflow-y-auto" id="copilot-chat">
+           <div class="flex items-start gap-3">
+             <div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0 border border-brand-primary/20">
+               <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+             </div>
+             <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-sm text-slate-700">
+               Hello! I can help you draft sections, translate text, or optimize your SEO. What should we write today?
+             </div>
+           </div>
+        </div>
+        <div class="p-3 border-t border-slate-200 bg-white rounded-b-xl relative">
+          <input type="text" id="copilot-input" placeholder="e.g., Write a concluding paragraph about LLC tax benefits..." class="w-full pl-3 pr-12 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-slate-50" />
+          <button id="copilot-send" class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-brand-primary text-white rounded-md hover:bg-opacity-90 shadow-sm">
+             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Settings -->
+    <div class="space-y-6">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Publish Settings</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+            <select id="status-select" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50">
+              <option>Draft</option>
+              <option selected>Published</option>
+              <option>Archived</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Publish Date</label>
+            <input type="date" id="publish-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" value="2024-06-15" />
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">SEO & Meta</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Slug (English)</label>
+            <input type="text" id="slug-en" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 mb-3" placeholder="e.g. how-to-start-llc" />
+            
+            <label class="block text-sm font-medium text-slate-700 mb-1">Slug (Español)</label>
+            <input type="text" id="slug-es" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="e.g. como-iniciar-llc" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Meta Description</label>
+            <textarea id="meta-desc" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 h-24" placeholder="Brief description for search results...">Learn the essential steps to legally form your LLC in Knoxville, Tennessee...</textarea>
+            <p class="text-xs text-slate-500 mt-1 text-right">86 / 160</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Keywords</label>
+            <input type="text" id="keywords" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="e.g. LLC, Tennessee, business" value="LLC, Knoxville, Tennessee, business formation" />
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Featured Image (URL)</h3>
+        <input type="text" id="featured-image" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://example.com/image.jpg" value="https://images.unsplash.com/photo-1664575602276-acd073f104c1?q=80&w=2070&auto=format&fit=crop" />
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm mt-6">
+        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Post Meta</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Author Name</label>
+            <input type="text" id="author" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" value="Guia Negocios Team" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Author Avatar (URL)</label>
+            <input type="text" id="author-avatar" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://i.pravatar.cc/150?u=guia" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Read Time (minutes)</label>
+            <input type="number" id="read-time" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" value="5" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js" is:inline></script>
+
+  <style is:inline>
+    .editor-toolbar { border-color: #e2e8f0; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; background-color: #f8fafc; }
+    .CodeMirror { border-color: #e2e8f0; border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem; font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', monospace; font-size: 0.875rem; }
+    .editor-toolbar button.active, .editor-toolbar button:hover { background: #e2e8f0; }
+  </style>
+
+  <script>
+    import { aiModel, db } from '../../../lib/firebase';
+    import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+
+    let easyMdeEs, easyMdeEn;
+
+    // Initialize EasyMDE after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+      easyMdeEs = new EasyMDE({ 
+        element: document.getElementById('md-es'),
+        spellChecker: false,
+        placeholder: "Escribe tu contenido en Markdown aquí...",
+        status: false
+      });
+      easyMdeEn = new EasyMDE({ 
+        element: document.getElementById('md-en'),
+        spellChecker: false,
+        placeholder: "Write your Markdown content here...",
+        status: false
+      });
+      
+      // Load post if ID exists
+      loadPost();
+    });
+
+    // Parse URL ID
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+
+    // Load Existing Post
+    async function loadPost() {
+      if (!postId) return;
+      try {
+        const docRef = doc(db, 'blogs', postId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          
+          document.getElementById('title-es').value = data.titleEs || '';
+          document.getElementById('title-en').value = data.titleEn || '';
+          
+          if (easyMdeEs) easyMdeEs.value(data.contentEs || '');
+          if (easyMdeEn) easyMdeEn.value(data.contentEn || '');
+          
+          document.getElementById('slug-es').value = data.slugEs || '';
+          document.getElementById('slug-en').value = data.slugEn || '';
+          document.getElementById('meta-desc').value = data.metaDesc || '';
+          document.getElementById('keywords').value = (data.keywords || []).join(', ');
+          document.getElementById('featured-image').value = data.featuredImage || '';
+          document.getElementById('author').value = data.author || '';
+          document.getElementById('author-avatar').value = data.authorAvatar || '';
+          document.getElementById('read-time').value = data.readTime || 5;
+          document.getElementById('publish-date').value = data.publishDate || '';
+          document.getElementById('status-select').value = data.status || 'Draft';
+        }
+      } catch (e) {
+        console.error("Error loading document:", e);
+        showToast('Error loading blog post', 'error');
+      }
+    }
+
+    // Tab switching logic
+    const tabEs = document.getElementById('tab-es');
+    const tabEn = document.getElementById('tab-en');
+    const containerEs = document.getElementById('editor-es-container');
+    const containerEn = document.getElementById('editor-en-container');
+
+    function switchTab(lang) {
+      if (lang === 'es') {
+        tabEs.className = 'border-brand-primary text-brand-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
+        tabEn.className = 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
+        containerEs.classList.remove('hidden');
+        containerEs.classList.add('block');
+        containerEn.classList.add('hidden');
+        containerEn.classList.remove('block');
+      } else {
+        tabEn.className = 'border-brand-primary text-brand-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
+        tabEs.className = 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
+        containerEn.classList.remove('hidden');
+        containerEn.classList.add('block');
+        containerEs.classList.add('hidden');
+        containerEs.classList.remove('block');
+      }
+    }
+
+    tabEs?.addEventListener('click', () => switchTab('es'));
+    tabEn?.addEventListener('click', () => switchTab('en'));
+
+    // Copilot Smart Agent Logic
+    const copilotInput = document.getElementById('copilot-input');
+    const copilotSend = document.getElementById('copilot-send');
+    const copilotChat = document.getElementById('copilot-chat');
+
+    function appendMessage(text, isUser = false) {
+      const div = document.createElement('div');
+      div.className = isUser ? 'flex items-start gap-3 flex-row-reverse' : 'flex items-start gap-3';
+      
+      const avatar = isUser 
+        ? `<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>`
+        : `<div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0 border border-brand-primary/20"><svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>`;
+      
+      const bubbleClasses = isUser
+        ? 'bg-brand-primary text-white p-3 rounded-2xl rounded-tr-none shadow-sm text-sm'
+        : 'bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-sm text-slate-700';
+        
+      div.innerHTML = `
+        ${avatar}
+        <div class="${bubbleClasses}">${text}</div>
+      `;
+      copilotChat.appendChild(div);
+      copilotChat.scrollTop = copilotChat.scrollHeight;
+    }
+
+    copilotSend?.addEventListener('click', async () => {
+      const text = copilotInput.value.trim();
+      if (!text) return;
+      
+      copilotInput.value = '';
+      appendMessage(text, true);
+      
+      simulateAction('Gemini is writing...', 'Content inserted into editor', 2000);
+      
+      try {
+        const isEnglish = document.getElementById('editor-en-container').classList.contains('block');
+        const langStr = isEnglish ? 'English' : 'Spanish';
+        
+        const prompt = `You are an expert SEO blog writer writing in ${langStr}. Write a comprehensive, long-form blog post section in Markdown format based on this request: "${text}". 
+Include proper headings (##), lists, and embed relevant high-quality Unsplash image placeholders using markdown syntax: \`![alt text](https://images.unsplash.com/photo-...)\`.
+Output ONLY the raw markdown text.`;
+
+        const result = await aiModel.generateContent(prompt);
+        const contentToInsert = await result.response.text();
+        
+        appendMessage('I have generated the markdown content (with images!) and injected it directly into the editor.', false);
+        
+        // Inject into the active EasyMDE editor
+        const activeEditor = isEnglish ? easyMdeEn : easyMdeEs;
+        if (activeEditor) {
+          const cm = activeEditor.codemirror;
+          const cursor = cm.getCursor();
+          
+          // Add spacing if not at start of line
+          const prefix = cursor.ch > 0 ? '\\n\\n' : '';
+          cm.replaceSelection(prefix + contentToInsert + '\\n\\n');
+          activeEditor.codemirror.focus();
+        }
+      } catch (error) {
+        console.error('AI Generation Error:', error);
+        appendMessage('Sorry, there was an error communicating with the AI service. Please check your Firebase configuration.', false);
+      }
+    });
+    
+    copilotInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') copilotSend.click();
+    });
+
+    // Firestore Saving Logic
+    async function saveBlogPost(status) {
+      const titleEs = document.getElementById('title-es').value;
+      const titleEn = document.getElementById('title-en').value;
+      const publishDate = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
+      const slugEn = document.getElementById('slug-en').value;
+      const slugEs = document.getElementById('slug-es').value;
+      const metaDesc = document.getElementById('meta-desc').value;
+      const keywords = document.getElementById('keywords').value;
+      const featuredImage = document.getElementById('featured-image').value;
+      const author = document.getElementById('author').value;
+      const authorAvatar = document.getElementById('author-avatar').value;
+      const readTime = parseInt(document.getElementById('read-time').value, 10) || 5;
+      
+      const contentEs = easyMdeEs ? easyMdeEs.value() : '';
+      const contentEn = easyMdeEn ? easyMdeEn.value() : '';
+
+      if (!titleEn && !titleEs) {
+        showToast('Please provide a title', 'warning');
+        return;
+      }
+
+      simulateAction('Saving blog post...', 'Post saved securely to Firestore', 1500);
+
+      const data = {
+        titleEn,
+        titleEs,
+        contentEn,
+        contentEs,
+        slugEn,
+        slugEs,
+        status: document.getElementById('status-select').value, // Use dropdown status or override
+        publishDate,
+        metaDesc,
+        featuredImage,
+        author,
+        authorAvatar,
+        readTime,
+        keywords: keywords.split(',').map(k => k.trim()).filter(k => k),
+      };
+      
+      if (status) data.status = status;
+
+      try {
+        if (postId) {
+          // Update existing
+          await updateDoc(doc(db, 'blogs', postId), data);
+        } else {
+          // Create new
+          data.createdAt = new Date().toISOString();
+          data.views = 0;
+          await addDoc(collection(db, 'blogs'), data);
+        }
+
+        showToast(status === 'Published' || data.status === 'Published' ? 'Post published successfully!' : 'Draft saved!', 'success');
+        
+        setTimeout(() => {
+          window.location.href = '/admin/blog';
+        }, 1500);
+      } catch (error) {
+        console.error('Error saving blog: ', error);
+        showToast('Error saving to database.', 'error');
+      }
+    }
+
+    document.getElementById('btn-save-draft')?.addEventListener('click', () => saveBlogPost('Draft'));
+    document.getElementById('btn-publish')?.addEventListener('click', () => saveBlogPost('Published'));
+  </script>
+</AdminLayout>

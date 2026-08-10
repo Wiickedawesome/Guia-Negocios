@@ -1,0 +1,507 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Page Builder | Admin">
+  <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <a href="/admin/landing-pages" class="text-sm text-slate-500 hover:text-brand-primary flex items-center gap-1 transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Back to Landing Pages
+        </a>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Visual Page Builder</h1>
+      <p class="text-sm text-slate-500 mt-1">Editing: Starter Service (/lp/inicial)</p>
+    </div>
+    <div class="flex gap-2">
+      <div class="flex bg-slate-100 rounded-lg p-1 mr-4">
+        <button class="p-1.5 bg-white text-brand-primary shadow rounded" title="Desktop View">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        </button>
+        <button class="p-1.5 text-slate-400 hover:text-slate-700 rounded transition-colors" title="Mobile View" onclick="showToast('Mobile view preview', 'info')">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+        </button>
+      </div>
+      <button id="btn-save-draft" class="px-4 py-2 text-sm border border-slate-200 rounded-lg text-slate-600 bg-white hover:bg-slate-50 font-medium transition-colors">Save Draft</button>
+      <button id="btn-publish" class="px-4 py-2 text-sm bg-brand-primary text-white rounded-lg hover:bg-opacity-90 font-medium shadow-sm transition-colors">Publish</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <!-- Left Sidebar: Components -->
+    <div class="xl:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm p-5 h-[calc(100vh-14rem)] overflow-y-auto">
+      <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center justify-between">
+        Components
+        <span class="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full">Click to add</span>
+      </h3>
+      
+      <div class="space-y-3">
+        <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-lg hover:border-brand-primary hover:shadow-md transition-all group flex items-center gap-3" data-type="hero">
+          <div class="p-2 bg-blue-50 text-blue-600 rounded group-hover:bg-brand-primary group-hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm text-slate-800">Hero Section</div>
+            <div class="text-xs text-slate-500">Main header & call to action</div>
+          </div>
+        </button>
+
+        <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-lg hover:border-emerald-500 hover:shadow-md transition-all group flex items-center gap-3" data-type="features">
+          <div class="p-2 bg-emerald-50 text-emerald-600 rounded group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm text-slate-800">Features Grid</div>
+            <div class="text-xs text-slate-500">2-column icon highlights</div>
+          </div>
+        </button>
+
+        <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-lg hover:border-purple-500 hover:shadow-md transition-all group flex items-center gap-3" data-type="cta">
+          <div class="p-2 bg-purple-50 text-purple-600 rounded group-hover:bg-purple-500 group-hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm text-slate-800">Call To Action</div>
+            <div class="text-xs text-slate-500">Dark block to drive conversions</div>
+          </div>
+        </button>
+
+        <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-lg hover:border-amber-500 hover:shadow-md transition-all group flex items-center gap-3" data-type="testimonials">
+          <div class="p-2 bg-amber-50 text-amber-600 rounded group-hover:bg-amber-500 group-hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm text-slate-800">Testimonials</div>
+            <div class="text-xs text-slate-500">Customer reviews slider</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- AI Builder Assistant -->
+      <div class="mt-8 border-t border-slate-100 pt-5">
+        <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+          <svg class="w-5 h-5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          AI Assistant
+          <span class="bg-brand-primary/10 text-brand-primary text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Gemini</span>
+        </h3>
+        <p class="text-xs text-slate-500 mb-3">Describe what you want to build or change, and AI will design it for you.</p>
+        <div class="relative">
+          <textarea id="ai-builder-prompt" rows="3" class="w-full text-sm p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white resize-none" placeholder="e.g., Add a pricing section for 3 tiers..."></textarea>
+          <button id="ai-builder-submit" class="absolute bottom-2 right-2 p-1.5 bg-brand-primary text-white rounded-lg hover:bg-opacity-90 transition-colors shadow-sm">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Canvas -->
+    <div class="xl:col-span-6 bg-slate-100 rounded-xl border border-slate-200 shadow-inner h-[calc(100vh-14rem)] overflow-y-auto relative" id="canvas-container">
+      <div id="canvas" class="min-h-full p-4 flex flex-col gap-4">
+        
+        <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 pointer-events-none">
+          <div class="w-24 h-24 mb-4 rounded-full bg-white shadow-sm flex items-center justify-center">
+            <svg class="w-12 h-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+          </div>
+          <p class="font-medium text-slate-500">Your page is empty</p>
+          <p class="text-sm">Click components on the left to start building.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Settings -->
+    <div class="xl:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm p-5 h-[calc(100vh-14rem)] overflow-y-auto">
+      
+      <!-- Page Settings -->
+      <div id="page-settings" class="block animate-fade-in">
+        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Page Settings
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Page Title</label>
+            <input type="text" id="lp-title" value="Starter Business Setup | Guia de Negocios" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">URL Slug</label>
+            <input type="text" id="lp-slug" value="starter" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">SEO Description</label>
+            <textarea id="lp-meta-desc" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm h-24 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all">Get your business off the ground with our comprehensive starter package designed for new entrepreneurs.</textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Target Language</label>
+            <select id="lp-lang" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary">
+              <option value="es">Español (Primary)</option>
+              <option value="en">English</option>
+            </select>
+            <p class="text-xs text-slate-500 mt-1">Changes the default locale for this landing page.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Block Settings -->
+      <div id="block-settings" class="hidden animate-fade-in">
+        <div class="flex items-center justify-between border-b border-slate-100 mb-4 pb-3">
+          <h3 class="font-bold text-brand-primary flex items-center gap-2" id="block-settings-title">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+            Block Settings
+          </h3>
+          <button class="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded transition-colors font-medium" id="back-to-page-settings">Done</button>
+        </div>
+        
+        <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-6">
+          <p class="text-xs text-blue-700 flex items-start gap-2">
+            <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span><strong>Tip:</strong> Click any text directly on the canvas to edit it instantly.</span>
+          </p>
+        </div>
+
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Background Color</label>
+            <div class="flex gap-2">
+               <div class="w-8 h-8 rounded-full bg-white border-2 border-brand-primary cursor-pointer shadow-sm relative after:content-[''] after:absolute after:inset-1 after:rounded-full after:bg-white ring-2 ring-brand-primary/20"></div>
+               <div class="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 cursor-pointer hover:scale-110 transition-transform"></div>
+               <div class="w-8 h-8 rounded-full bg-brand-dark border border-slate-200 cursor-pointer hover:scale-110 transition-transform"></div>
+            </div>
+          </div>
+          <div>
+             <label class="block text-sm font-medium text-slate-700 mb-2 flex justify-between">
+               Vertical Padding <span class="text-xs text-slate-400 font-normal">Medium</span>
+             </label>
+             <input type="range" class="w-full accent-brand-primary" min="1" max="3" value="2">
+          </div>
+          <hr class="border-slate-100">
+          <button class="w-full py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 text-sm font-medium transition-colors flex justify-center items-center gap-2" id="delete-active-block-btn">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            Remove Block
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    
+    /* Contenteditable placeholder and focus styles */
+    [contenteditable="true"]:focus {
+      outline: 2px dashed rgba(36, 5, 242, 0.4);
+      outline-offset: 4px;
+      border-radius: 4px;
+      background-color: rgba(255,255,255,0.5);
+    }
+    [contenteditable="true"]:hover:not(:focus) {
+      outline: 1px dashed rgba(148, 163, 184, 0.5);
+      outline-offset: 4px;
+    }
+  </style>
+
+  <script>
+    import { aiModel } from '../../../lib/firebase';
+    import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore';
+
+    const db = getFirestore();
+
+    const addButtons = document.querySelectorAll('.add-block-btn');
+    const canvas = document.getElementById('canvas');
+    const emptyState = document.getElementById('empty-state');
+    const pageSettings = document.getElementById('page-settings');
+    const blockSettings = document.getElementById('block-settings');
+    const blockSettingsTitle = document.getElementById('block-settings-title');
+    const backToPageBtn = document.getElementById('back-to-page-settings');
+    const deleteBtn = document.getElementById('delete-active-block-btn');
+
+    let activeBlock = null;
+
+    const blockTemplates = {
+      hero: `
+        <div class="bg-white rounded-xl border-2 border-transparent hover:border-brand-primary/50 cursor-pointer p-12 text-center shadow-sm relative group builder-block transition-all animate-fade-in">
+          <div class="max-w-2xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6" contenteditable="true">Grow Your Business Fast</h2>
+            <p class="text-lg text-slate-500 mb-8" contenteditable="true">The all-in-one solution for launching your LLC and getting clients.</p>
+            <button class="px-8 py-3 bg-brand-primary text-white font-medium rounded-lg shadow hover:bg-opacity-90">Get Started Now</button>
+          </div>
+        </div>
+      `,
+      features: `
+        <div class="bg-white rounded-xl border-2 border-transparent hover:border-brand-primary/50 cursor-pointer p-10 shadow-sm relative group builder-block transition-all animate-fade-in">
+          <h3 class="text-2xl font-bold text-center mb-10" contenteditable="true">Why Choose Us?</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 mb-2 text-lg" contenteditable="true">Fast Setup</h4>
+                <p class="text-slate-500" contenteditable="true">We file all the paperwork in 24 hours so you can start operating immediately.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 mb-2 text-lg" contenteditable="true">Expert Protection</h4>
+                <p class="text-slate-500" contenteditable="true">Our team ensures you are compliant and protected from personal liability.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      cta: `
+        <div class="bg-brand-dark rounded-xl border-2 border-transparent hover:border-brand-primary/50 cursor-pointer p-12 text-center shadow-lg relative group builder-block transition-all text-white animate-fade-in bg-gradient-to-br from-brand-dark to-slate-900">
+          <div class="max-w-2xl mx-auto">
+            <h3 class="text-3xl font-bold mb-4" contenteditable="true">Ready to take the leap?</h3>
+            <p class="text-slate-300 mb-8 text-lg" contenteditable="true">Join thousands of successful entrepreneurs who started their journey with Guia de Negocios today.</p>
+            <button class="px-8 py-3 bg-white text-brand-dark font-bold rounded-lg hover:bg-slate-100 transition-colors shadow">Create Your Account</button>
+          </div>
+        </div>
+      `,
+      testimonials: `
+        <div class="bg-slate-50 rounded-xl border-2 border-transparent hover:border-brand-primary/50 cursor-pointer p-10 shadow-sm relative group builder-block transition-all animate-fade-in">
+          <h3 class="text-2xl font-bold text-center mb-8" contenteditable="true">What our clients say</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="flex text-amber-400 mb-4">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              </div>
+              <p class="text-slate-600 mb-4 italic" contenteditable="true">"Guia de Negocios made setting up my LLC incredibly simple. I didn't have to worry about a thing!"</p>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+                <div>
+                  <p class="font-bold text-sm text-slate-900" contenteditable="true">Maria Rodriguez</p>
+                  <p class="text-xs text-slate-500" contenteditable="true">Owner, Bakery LLC</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <div class="flex text-amber-400 mb-4">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              </div>
+              <p class="text-slate-600 mb-4 italic" contenteditable="true">"Highly recommend their team. Very responsive and expert advice."</p>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-slate-200 rounded-full"></div>
+                <div>
+                  <p class="font-bold text-sm text-slate-900" contenteditable="true">Carlos V.</p>
+                  <p class="text-xs text-slate-500" contenteditable="true">Freelance Developer</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    };
+
+    function showPageSettings() {
+      activeBlock = null;
+      document.querySelectorAll('.builder-block').forEach(b => {
+         b.classList.remove('border-brand-primary', 'ring-4', 'ring-brand-primary/20', 'z-10');
+         b.classList.add('border-transparent');
+      });
+      blockSettings.classList.add('hidden');
+      pageSettings.classList.remove('hidden');
+    }
+
+    addButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        if (blockTemplates[type]) {
+          if (emptyState) emptyState.style.display = 'none';
+          
+          // Create wrapper
+          const div = document.createElement('div');
+          div.innerHTML = blockTemplates[type];
+          const block = div.firstElementChild;
+          
+          // Select logic
+          block.addEventListener('click', (e) => {
+            // Deselect others
+            document.querySelectorAll('.builder-block').forEach(b => {
+               b.classList.remove('border-brand-primary', 'ring-4', 'ring-brand-primary/20', 'z-10');
+               b.classList.add('border-transparent');
+            });
+            
+            // Select this
+            block.classList.remove('border-transparent');
+            block.classList.add('border-brand-primary', 'ring-4', 'ring-brand-primary/20', 'z-10');
+            activeBlock = block;
+            
+            // Show settings
+            pageSettings.classList.add('hidden');
+            blockSettings.classList.remove('hidden');
+            
+            const titles = {
+              'hero': 'Hero Section Settings',
+              'features': 'Features Settings',
+              'cta': 'Call to Action Settings',
+              'testimonials': 'Testimonials Settings'
+            };
+            blockSettingsTitle.innerHTML = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg> ${titles[type]}`;
+          });
+
+          // Insert block
+          canvas.appendChild(block);
+          
+          // Auto select newly created block
+          block.click();
+          
+          // Scroll to bottom
+          setTimeout(() => {
+            document.getElementById('canvas-container').scrollTop = canvas.scrollHeight;
+          }, 50);
+          
+          showToast(type.charAt(0).toUpperCase() + type.slice(1) + ' block added!', 'success');
+        }
+      });
+    });
+
+    backToPageBtn.addEventListener('click', showPageSettings);
+
+    deleteBtn.addEventListener('click', () => {
+      if (activeBlock) {
+        activeBlock.classList.add('opacity-0', 'scale-95'); // animate out
+        setTimeout(() => {
+          activeBlock.remove();
+          if (canvas.querySelectorAll('.builder-block').length === 0) {
+            emptyState.style.display = 'flex';
+          }
+          showPageSettings();
+        }, 200);
+      }
+    });
+
+    // AI Assistant Integration
+    document.getElementById('ai-builder-submit')?.addEventListener('click', async function() {
+      const promptInput = document.getElementById('ai-builder-prompt').value.trim();
+      if (!promptInput) {
+        showToast('Please type a request for the AI', 'warning');
+        return;
+      }
+      
+      document.getElementById('ai-builder-prompt').value = '';
+      simulateAction('Gemini is designing...', 'AI generated a new custom block based on your request!', 4000);
+      
+      try {
+        emptyState.style.display = 'none';
+        
+        const prompt = `You are an expert Tailwind CSS web designer. The user wants to add a new section to their landing page. 
+Request: "${promptInput}". 
+Generate the raw HTML code for this section using Tailwind CSS classes. 
+Make it look modern, professional, and responsive. Use nice padding (e.g. p-12) and rounded corners.
+Do not include \`\`\`html or any markdown blocks. Output ONLY the raw HTML string. 
+Use generic text/images if needed, and add contenteditable="true" to headings and paragraphs.`;
+        
+        const result = await aiModel.generateContent(prompt);
+        let htmlContent = await result.response.text();
+        htmlContent = htmlContent.replace(/```html\\n?/gi, '').replace(/```\\n?/g, '');
+        
+        const newBlock = document.createElement('div');
+        newBlock.className = 'builder-block relative group border-2 border-transparent hover:border-brand-primary rounded-xl cursor-pointer transition-all mb-4';
+
+
+        newBlock.innerHTML = `
+          ${htmlContent}
+          <div class="absolute -top-3 -right-3 hidden group-hover:flex bg-white shadow-lg border border-slate-200 rounded-lg p-1 z-10">
+            <button class="p-1.5 text-slate-400 hover:text-red-500 rounded" title="Delete block" onclick="this.closest('.builder-block').remove(); if(document.querySelectorAll('.builder-block').length===0) document.getElementById('empty-state').style.display='flex'; event.stopPropagation();">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </button>
+          </div>
+        `;
+
+        newBlock.addEventListener('click', (e) => {
+          if(e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+          document.querySelectorAll('.builder-block').forEach(b => b.classList.remove('ring-4', 'ring-brand-primary/30'));
+          newBlock.classList.add('ring-4', 'ring-brand-primary/30');
+          activeBlock = newBlock;
+          showBlockSettings();
+        });
+
+        canvas.appendChild(newBlock);
+        newBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (error) {
+        console.error('AI Design Error:', error);
+        showToast('Error communicating with the AI service.', 'error');
+      }
+    });
+
+    // Save Landing Page to Firestore
+    async function saveLandingPage(status) {
+      const title = document.getElementById('lp-title').value;
+      const slug = document.getElementById('lp-slug').value;
+      const metaDesc = document.getElementById('lp-meta-desc').value;
+      const lang = document.getElementById('lp-lang').value;
+
+      if (!title || !slug) {
+        showToast('Title and Slug are required', 'warning');
+        return;
+      }
+
+      simulateAction('Saving landing page...', 'Saved securely to Firestore', 1500);
+
+      // Clone canvas to strip builder classes and contenteditable attributes
+      const clone = canvas.cloneNode(true);
+      const empty = clone.querySelector('#empty-state');
+      if (empty) empty.remove();
+      
+      clone.querySelectorAll('.builder-block').forEach(b => {
+        b.classList.remove('border-brand-primary', 'ring-4', 'ring-brand-primary/20', 'border-2', 'border-transparent', 'hover:border-brand-primary/50', 'hover:border-brand-primary', 'cursor-pointer', 'z-10', 'animate-fade-in');
+        const deleteBtn = b.querySelector('.absolute.-top-3.-right-3');
+        if (deleteBtn) deleteBtn.remove();
+      });
+      
+      clone.querySelectorAll('[contenteditable="true"]').forEach(el => {
+        el.removeAttribute('contenteditable');
+      });
+
+      const content = clone.innerHTML.trim();
+
+      try {
+        // Use setDoc with a fixed ID pattern based on lang + slug to allow updating existing pages
+        const docId = `${lang}_${slug}`;
+        await setDoc(doc(db, 'landingPages', docId), {
+          title,
+          slug,
+          metaDesc,
+          lang,
+          content,
+          status,
+          updatedAt: new Date().toISOString(),
+          views: 0,
+          conversions: 0
+        });
+
+        showToast(status === 'Active' ? 'Page published successfully!' : 'Draft saved!', 'success');
+        
+        setTimeout(() => {
+          window.location.href = '/admin/landing-pages';
+        }, 1500);
+      } catch (error) {
+        console.error('Error saving landing page: ', error);
+        showToast('Error saving to database.', 'error');
+      }
+    }
+
+    document.getElementById('btn-save-draft')?.addEventListener('click', () => saveLandingPage('Draft'));
+    document.getElementById('btn-publish')?.addEventListener('click', () => saveLandingPage('Active'));
+  </script>
+</AdminLayout>

@@ -1,0 +1,209 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Blog Manager | Admin">
+  <div class="mb-8 flex justify-between items-end">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Blog Manager</h1>
+      <p class="text-sm text-slate-500 mt-1">Create, manage, and optimize blog posts.</p>
+    </div>
+    <a href="/admin/blog/editor" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
+      + New Post
+    </a>
+  </div>
+
+  <!-- AI Draft Generator -->
+  <div class="bg-gradient-to-r from-brand-dark to-slate-800 rounded-xl p-6 shadow-sm text-white mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <svg class="w-6 h-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      <h3 class="text-lg font-bold">AI Blog Draft Generator</h3>
+      <span class="px-2 py-0.5 bg-brand-primary/20 text-brand-primary text-xs font-bold rounded-full border border-brand-primary/30">Gemini</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Topic</label>
+        <input id="ai-topic" type="text" placeholder="e.g., Tax tips for small business" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Target Keywords</label>
+        <input type="text" placeholder="e.g., tax, small business, knoxville" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Language</label>
+        <select class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:border-brand-primary">
+          <option value="en" class="text-slate-900">EN - English</option>
+          <option value="es" class="text-slate-900">ES - Spanish</option>
+        </select>
+      </div>
+    </div>
+    <button id="ai-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      Generate Draft with Gemini
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-6 overflow-hidden">
+    <div class="flex items-center gap-1 p-2 border-b border-slate-200 bg-slate-50 overflow-x-auto">
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md bg-brand-primary text-white">All</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Draft</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Published</button>
+      <div class="w-px h-6 bg-slate-200 mx-1"></div>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet"><path fill="#BD3D44" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"></path><path fill="#FFF" d="M0 12h36v4H0zm0 8h36v4H0z"></path><path fill="#192F5D" d="M0 5a4 4 0 0 1 4-4h14v18H0V5z"></path><path fill="#FFF" d="M3 6l1-1l1 1v2L4 7l-1 1V6zm4 0l1-1l1 1v2L8 7l-1 1V6zm4 0l1-1l1 1v2l-1-1l-1 1V6zm4 0l1-1l1 1v2l-1-1l-1 1V6zm-10 4l1-1l1 1v2L4 11l-1 1v-2zm4 0l1-1l1 1v2L8 11l-1 1v-2zm4 0l1-1l1 1v2l-1-1l-1 1v-2zm4 0l1-1l1 1v2l-1-1l-1 1v-2zm-10 4l1-1l1 1v2L4 15l-1 1v-2zm4 0l1-1l1 1v2L8 15l-1 1v-2zm4 0l1-1l1 1v2l-1-1l-1 1v-2zm4 0l1-1l1 1v2l-1-1l-1 1v-2z"></path></svg>
+        EN
+      </button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid meet"><path fill="#C60A1D" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"></path><path fill="#FFC400" d="M0 12h36v12H0z"></path></svg>
+        ES
+      </button>
+    </div>
+
+    <!-- Posts Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-3 font-medium">Title</th>
+            <th class="px-6 py-3 font-medium">Status</th>
+            <th class="px-6 py-3 font-medium">Lang</th>
+            <th class="px-6 py-3 font-medium">Views</th>
+            <th class="px-6 py-3 font-medium">Date</th>
+            <th class="px-6 py-3 font-medium text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="blog-table-body" class="divide-y divide-slate-100">
+          <tr>
+            <td colspan="6" class="px-6 py-8 text-center text-slate-500">
+              <svg class="animate-spin h-5 w-5 text-brand-primary mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Loading blogs...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    import { collection, getDocs } from 'firebase/firestore';
+    import { db } from '../../lib/firebase';
+    
+    // Filter tabs
+    document.querySelectorAll('.flex.items-center.gap-1 button').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.flex.items-center.gap-1 button').forEach(t => {
+          t.classList.remove('bg-brand-primary', 'text-white');
+          t.classList.add('text-slate-600');
+        });
+        tab.classList.add('bg-brand-primary', 'text-white');
+        tab.classList.remove('text-slate-600');
+        
+        const filter = tab.textContent?.trim();
+        document.querySelectorAll('tbody tr').forEach(row => {
+          const status = row.querySelector('.rounded-full')?.textContent?.trim();
+          const lang = row.querySelectorAll('td')[2]?.textContent?.trim();
+          
+          if (filter === 'All') { row.style.display = ''; return; }
+          if (filter === 'Draft') { row.style.display = status === 'Draft' ? '' : 'none'; return; }
+          if (filter === 'Published') { row.style.display = status === 'Published' ? '' : 'none'; return; }
+          if (filter === '🇺🇸 EN' || filter === 'EN') { row.style.display = lang === 'EN' ? '' : 'none'; return; }
+          if (filter === '🇪🇸 ES' || filter === 'ES') { row.style.display = lang === 'ES' ? '' : 'none'; return; }
+        });
+      });
+    });
+
+    // Publish buttons
+    document.querySelectorAll('.publish-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const title = btn.closest('tr')?.querySelector('td')?.textContent?.trim();
+        showConfirm('Publish Post', `Are you sure you want to publish "${title}"?`).then(ok => {
+          if (ok) simulateAction('Publishing...', `"${title}" is now live!`, 1500);
+        });
+      });
+    });
+
+    // AI Draft Generator
+    document.getElementById('ai-generate-btn')?.addEventListener('click', function() {
+      const topic = document.getElementById('ai-topic')?.value;
+      if (topic) {
+        simulateAction(`Gemini is drafting "${topic}"...`, 'Draft generated! Review it in the Blog Manager.', 4000);
+      } else {
+        showToast('Please enter a topic first', 'warning');
+      }
+    });
+
+    // Load Blogs from Firestore
+    async function loadBlogs() {
+      const tbody = document.getElementById('blog-table-body');
+      if (!tbody) return;
+
+      try {
+        const snapshot = await getDocs(collection(db, 'blogs'));
+        
+        if (snapshot.empty) {
+          tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500">No blog posts found. Create your first one!</td></tr>`;
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const blog = doc.data();
+          const id = doc.id;
+          
+          const hasEn = !!blog.titleEn;
+          const hasEs = !!blog.titleEs;
+          const title = blog.titleEn || blog.titleEs;
+          const lang = hasEn && hasEs ? 'EN/ES' : (hasEn ? 'EN' : 'ES');
+          
+          const statusClass = blog.status === 'Published' 
+            ? 'bg-emerald-100 text-emerald-700' 
+            : 'bg-amber-100 text-amber-700';
+
+          const actions = blog.status === 'Published' 
+            ? `<a href="/${hasEn ? 'en' : 'es'}/blog/${hasEn ? blog.slugEn : blog.slugEs}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>`
+            : `<button class="publish-btn text-xs text-emerald-600 hover:text-emerald-700 font-medium">Publish</button>`;
+
+          html += `
+            <tr class="hover:bg-slate-50/50">
+              <td class="px-6 py-4 font-medium text-brand-dark">${title}</td>
+              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${blog.status}</span></td>
+              <td class="px-6 py-4 text-slate-600">${lang}</td>
+              <td class="px-6 py-4 text-slate-600">${blog.views || 0}</td>
+              <td class="px-6 py-4 text-slate-500">${blog.publishDate || 'N/A'}</td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <a href="/admin/blog/editor?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
+                  ${actions}
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+        
+        // Re-attach publish listeners
+        document.querySelectorAll('.publish-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const title = btn.closest('tr')?.querySelector('td')?.textContent?.trim();
+            showConfirm('Publish Post', `Are you sure you want to publish "${title}"?`).then(ok => {
+              if (ok) simulateAction('Publishing...', `"${title}" is now live!`, 1500);
+            });
+          });
+        });
+
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Error loading blog posts. Check console.</td></tr>`;
+      }
+    }
+
+    loadBlogs();
+  </script>
+</AdminLayout>

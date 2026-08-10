@@ -1,0 +1,234 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Settings | Admin">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-slate-900 font-heading">Settings</h1>
+    <p class="text-sm text-slate-500 mt-1">Manage your profile, API keys, and dashboard preferences.</p>
+  </div>
+
+  <div class="space-y-6 max-w-3xl">
+    <!-- Profile -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Profile</h3>
+      <div class="space-y-4">
+        <div class="flex items-center gap-4 mb-2">
+          <div id="settings-avatar" class="w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center text-2xl font-bold text-brand-primary uppercase">
+            A
+          </div>
+          <button id="btn-upload-photo" class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50">Upload Photo</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Name</label>
+            <input id="prof-name" type="text" placeholder="Loading..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white disabled:bg-slate-50" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <input id="prof-email" type="email" disabled placeholder="Loading..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 cursor-not-allowed" />
+          </div>
+        </div>
+        <button id="btn-save-profile" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
+          Save Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- API Keys -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">API Keys</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Gemini API Key</label>
+          <div class="flex gap-2">
+            <input id="api-gemini" type="password" placeholder="Enter key..." class="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
+            <button id="btn-show-key" class="px-3 py-2 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex-shrink-0">Show</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">GA4 Measurement ID</label>
+          <input id="api-ga4" type="text" placeholder="G-XXXXXXXXXX" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Search Console Property URL</label>
+          <input id="api-gsc" type="url" placeholder="https://guianegocios.net" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
+        </div>
+        <button id="btn-save-apikeys" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
+          Save API Keys
+        </button>
+      </div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-slate-900 mb-4">Preferences</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Dashboard Language</label>
+          <select id="pref-lang" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <div>
+            <p class="text-sm font-medium text-slate-700">Email Notifications</p>
+            <p class="text-xs text-slate-500">Receive weekly SEO reports via email</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="pref-notif" type="checkbox" class="sr-only peer" />
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+          </label>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <div>
+            <p class="text-sm font-medium text-slate-700">Dark Mode</p>
+            <p class="text-xs text-slate-500">Use dark theme for the admin dashboard</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="toggle-dark-mode" type="checkbox" class="sr-only peer" />
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+          </label>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <div>
+            <p class="text-sm font-medium text-slate-700">AI Auto-Suggestions</p>
+            <p class="text-xs text-slate-500">Let Gemini proactively suggest content improvements</p>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="pref-ai" type="checkbox" class="sr-only peer" />
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="bg-white rounded-xl border border-red-200 p-6 shadow-sm">
+      <h3 class="text-lg font-bold text-red-600 mb-2">Danger Zone</h3>
+      <p class="text-sm text-slate-500 mb-4">Irreversible actions. Proceed with caution.</p>
+      <div class="flex gap-3">
+        <button id="btn-reset-data" class="px-4 py-2 bg-white border border-red-200 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors">
+          Reset All Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { app } from '../../lib/firebase';
+    import { getAuth, updateProfile } from 'firebase/auth';
+    import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Initial Load
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // Load Profile
+        (document.getElementById('prof-name') as HTMLInputElement).value = user.displayName || 'Admin';
+        (document.getElementById('prof-email') as HTMLInputElement).value = user.email || '';
+        document.getElementById('settings-avatar')!.innerText = (user.displayName || user.email || 'A')[0].toUpperCase();
+
+        // Load Settings
+        const settingsDoc = await getDoc(doc(db, 'settings', 'admin'));
+        if (settingsDoc.exists()) {
+          const data = settingsDoc.data();
+          (document.getElementById('api-gemini') as HTMLInputElement).value = data.geminiKey || '';
+          (document.getElementById('api-ga4') as HTMLInputElement).value = data.ga4Id || '';
+          (document.getElementById('api-gsc') as HTMLInputElement).value = data.gscUrl || '';
+          (document.getElementById('pref-lang') as HTMLSelectElement).value = data.language || 'en';
+          (document.getElementById('pref-notif') as HTMLInputElement).checked = !!data.emailNotifications;
+          (document.getElementById('pref-ai') as HTMLInputElement).checked = !!data.aiSuggestions;
+        }
+      }
+    });
+
+    // Save Profile
+    document.getElementById('btn-save-profile')?.addEventListener('click', async () => {
+      const btn = document.getElementById('btn-save-profile') as HTMLButtonElement;
+      const name = (document.getElementById('prof-name') as HTMLInputElement).value;
+      
+      btn.disabled = true;
+      btn.innerText = 'Saving...';
+      try {
+        if (auth.currentUser) {
+          await updateProfile(auth.currentUser, { displayName: name });
+          document.getElementById('settings-avatar')!.innerText = name[0].toUpperCase();
+          showToast('Profile updated successfully!', 'success');
+        }
+      } catch (e: any) {
+        alert('Failed to update profile: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Save Profile';
+      }
+    });
+
+    // Save API Keys & Preferences
+    const saveSettings = async (btnId: string, originalText: string) => {
+      const btn = document.getElementById(btnId) as HTMLButtonElement;
+      btn.disabled = true;
+      btn.innerText = 'Saving...';
+      try {
+        await setDoc(doc(db, 'settings', 'admin'), {
+          geminiKey: (document.getElementById('api-gemini') as HTMLInputElement).value,
+          ga4Id: (document.getElementById('api-ga4') as HTMLInputElement).value,
+          gscUrl: (document.getElementById('api-gsc') as HTMLInputElement).value,
+          language: (document.getElementById('pref-lang') as HTMLSelectElement).value,
+          emailNotifications: (document.getElementById('pref-notif') as HTMLInputElement).checked,
+          aiSuggestions: (document.getElementById('pref-ai') as HTMLInputElement).checked,
+        }, { merge: true });
+        showToast('Settings saved successfully!', 'success');
+      } catch (e: any) {
+        alert('Failed to save settings: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    };
+
+    document.getElementById('btn-save-apikeys')?.addEventListener('click', () => saveSettings('btn-save-apikeys', 'Save API Keys'));
+    document.getElementById('pref-lang')?.addEventListener('change', () => saveSettings('btn-save-apikeys', 'Save API Keys'));
+    document.getElementById('pref-notif')?.addEventListener('change', () => saveSettings('btn-save-apikeys', 'Save API Keys'));
+    document.getElementById('pref-ai')?.addEventListener('change', () => saveSettings('btn-save-apikeys', 'Save API Keys'));
+    
+    // Danger Zone
+    document.getElementById('btn-reset-data')?.addEventListener('click', () => {
+      showConfirm('Reset All Data', 'This will permanently delete all SEO metrics, keyword tracking data, and report history. This cannot be undone.').then(ok => {
+        if (ok) showToast('Data reset cancelled — this is a demo environment.', 'warning');
+      });
+    });
+
+    // Show/hide API key
+    document.getElementById('btn-show-key')?.addEventListener('click', function() {
+      const input = document.getElementById('api-gemini') as HTMLInputElement;
+      if (input?.type === 'password') {
+        input.type = 'text';
+        this.textContent = 'Hide';
+      } else if (input) {
+        input.type = 'password';
+        this.textContent = 'Show';
+      }
+    });
+    
+    // Dark mode logic
+    const darkModeToggle = document.getElementById('toggle-dark-mode') as HTMLInputElement;
+    if (darkModeToggle) {
+      darkModeToggle.checked = document.documentElement.classList.contains('dark');
+      darkModeToggle.addEventListener('change', (e: any) => {
+        if (e.target.checked) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('adminDarkMode', 'true');
+          showToast('Dark mode enabled', 'success');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('adminDarkMode', 'false');
+          showToast('Dark mode disabled', 'info');
+        }
+      });
+    }
+  </script>
+</AdminLayout>

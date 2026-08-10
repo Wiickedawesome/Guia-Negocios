@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout title="Contacto | GUIA NEGOCIOS — Knoxville TN" description="Get in touch with GUIA NEGOCIOS for bilingual business consulting, LLC setup, web design, and operational guidance in Knoxville, TN.">
+  <Header slot="header" />
+  
+  <!-- SECTION 1: Hero Banner with Illustration on Left + Form Card on Right -->
+  <section class="py-16 lg:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        
+        <!-- Left Column: Title, Intro & Graphic Illustration -->
+        <div class="lg:col-span-6 space-y-8">
+          <div class="space-y-4">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide">Póngase en Contacto</span>
+            <h1 class="text-4xl sm:text-5xl font-heading text-brand-dark font-semibold leading-tight">
+              Construyamos y Escalemos Su Negocio Juntos
+            </h1>
+            <p class="text-slate-600 text-lg leading-relaxed">
+              ¿Tiene preguntas sobre cómo lanzar su LLC en Tennessee, construir un sitio web, configurar la contabilidad o programar una consulta en Knoxville? Estamos aquí para guiarle en cada paso del camino.
+            </p>
+          </div>
+
+          <!-- Featured Vector Illustration -->
+          <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md">
+            <img 
+              src="/images/ContactHero.webp" 
+              alt="GUIA NEGOCIOS Business Advisory Support" 
+              class="w-full h-[280px] sm:h-[340px] object-cover"
+              width="1920"
+              height="720"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </div>
+        </div>
+
+        <!-- Right Column: Floating Form Card -->
+        <div class="lg:col-span-6">
+          <div class="bg-white border border-slate-200 rounded-3xl p-8 lg:p-10 shadow-xl space-y-6">
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-heading text-brand-dark font-semibold mb-2">Envíenos un Mensaje</h2>
+              <p class="text-slate-600 text-sm">Complete el formulario a continuación y un consultor responderá dentro de 1 día hábil.</p>
+            </div>
+
+            <form id="contact-form" class="space-y-5">
+              <div>
+                <label for="name" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Nombre *</label>
+                <input 
+                  type="text" 
+                  id="name" 
+                  name="name" 
+                  required 
+                  placeholder="Ingrese su nombre completo" 
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                />
+              </div>
+
+              <div>
+                <label for="email" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Correo Electrónico *</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  required 
+                  placeholder="Ingrese su dirección de correo electrónico" 
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                />
+              </div>
+
+              <div>
+                <label for="phone" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Teléfono / WhatsApp</label>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  name="phone" 
+                  placeholder="(865) 000-0000" 
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                />
+              </div>
+
+              <div>
+                <label for="subject" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Servicio Requerido</label>
+                <select 
+                  id="subject" 
+                  name="subject" 
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm"
+                >
+                  <option value="general">Consulta Comercial General</option>
+                  <option value="tier1-4">Servicios Básicos de Lanzamiento (Niveles 1–4)</option>
+                  <option value="tier5">Operaciones y Crecimiento (Nivel 5)</option>
+                  <option value="tier6">Paquete Completo de Lanzamiento (Nivel 6)</option>
+                  <option value="notary">Notario Público / Soporte de Traducción</option>
+                  <option value="custom">Solicitar Servicio Personalizado No Listado</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="message" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Mensaje *</label>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  rows="4" 
+                  required 
+                  placeholder="Cuéntenos sobre su concepto de negocio o preguntas..." 
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                ></textarea>
+              </div>
+
+              <div>
+                <button 
+                  type="submit" 
+                  class="w-full bg-brand-dark hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-full transition-colors text-base shadow-lg"
+                >
+                  Enviar Mensaje
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: 3 Direct Contact Cards Below Hero -->
+  <section class="py-16 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Card 1: Phone -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.47-5.187-3.833-6.657-6.657l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-heading font-semibold text-brand-dark mb-2">Soporte Telefónico</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-4">Llámenos directamente durante el horario de atención para obtener orientación inmediata.</p>
+            <a href="tel:8652027112" class="text-lg font-bold text-brand-primary hover:underline block">
+              (865) 202-7112
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: WhatsApp -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641l-.433 1.685a.75.75 0 00.916.916l1.685-.433c.601-.154 1.194.154 1.641.586A8.966 8.966 0 0012 20.25z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-heading font-semibold text-brand-dark mb-2">Chat de WhatsApp</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-4">Envíenos un mensaje para obtener respuestas rápidas y bilingües en inglés y español.</p>
+            <a href="https://wa.me/message/K7ATGJJHJLHXL1" target="_blank" rel="noopener noreferrer" class="text-lg font-bold text-brand-primary hover:underline block">
+              Chatear en WhatsApp ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3: Email -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-heading font-semibold text-brand-dark mb-2">Asesoramiento por Correo</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-4">Envíenos propuestas de negocios, preguntas o solicitudes de documentos.</p>
+            <a href="mailto:info@guianegocios.net" class="text-lg font-bold text-brand-primary hover:underline block">
+              info@guianegocios.net
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Legal Disclaimer Banner -->
+  <section class="py-12 bg-slate-100 border-t border-slate-200 text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-xs text-slate-500 italic leading-relaxed">
+        "GUIA NEGOCIOS proporciona educación comercial general y apoyo de consultoría. No somos abogados, contadores ni asesores financieros con licencia. Para obtener asesoramiento legal, fiscal o financiero, consulte a un profesional con licencia."
+      </p>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  import { httpsCallable } from 'firebase/functions';
+  import { functions } from '../../lib/firebase';
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+  if (form && submitBtn) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Basic validation and state change
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = 'Enviando...';
+      submitBtn.disabled = true;
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const submitContactForm = httpsCallable(functions, 'submitContactForm');
+        const result = await submitContactForm(data);
+        
+        alert('¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.');
+        form.reset();
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert('Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo o use WhatsApp.');
+      } finally {
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  }
+</script>

@@ -1,0 +1,92 @@
+{
+  "site": {
+    "title": "GUIA NEGOCIOS",
+    "tagline": "Bilingual Small Business Consulting",
+    "description": "Bilingual business consulting for Latino entrepreneurs in Knoxville, TN. LLC setup, branding, websites, and bookkeeping — all in English and Spanish."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact",
+    "blog": "Blog",
+    "login": "Login"
+  },
+  "home": {
+    "hero": {
+      "title": "Launch Your Business with Confidence",
+      "subtitle": "Bilingual consulting for Latino entrepreneurs in Knoxville, TN. Our approach is to work side-by-side with you to launch, organize, and grow your business.",
+      "cta": "Get Started Today"
+    },
+    "services": {
+      "title": "Our Services",
+      "subtitle": "Comprehensive support for every stage of your business"
+    }
+  },
+  "services": {
+    "title": "Bilingual Business Launch & Growth Packages",
+    "metaDescription": "Explore our bilingual business launch and growth packages in Knoxville. From LLC setup to professional websites, find the right tier for your needs.",
+    "subtitle": "Practical support in English and Spanish to take your business from idea to launch and beyond.",
+    "coreHeading": "Core Launch Packages",
+    "advancedHeading": "Advanced Growth & Launch Bundles",
+    "alacarteHeading": "À La Carte Services",
+    "faqTitle": "Frequently Asked Questions",
+    "faqContactText": "Contact us for more info",
+    "tier1": {
+      "name": "Starter Services",
+      "price": "Starting at $350",
+      "range": "Commonly $350–$650",
+      "description": "Focused entry points for clients who need help with one clear business setup need."
+    },
+    "tier2": {
+      "name": "Foundation Package",
+      "price": "$850–$1,500",
+      "description": "Organizes the business from the ground up before investing heavily in marketing or a website."
+    },
+    "tier3": {
+      "name": "Brand & Marketing Setup",
+      "price": "$1,200–$2,500",
+      "description": "Creates a professional brand presence and basic marketing system to get found and trusted."
+    },
+    "tier4": {
+      "name": "Website Setup",
+      "price": "$1,800–$5,500+",
+      "description": "Professional website setup to explain your services, show photos, and convert leads."
+    },
+    "tier5": {
+      "name": "Operations & Growth Systems",
+      "price": "$1,500–$4,500",
+      "description": "Structure, client flow, invoicing systems, and profitability improvements for running businesses."
+    },
+    "tier6": {
+      "name": "Complete Business Launch Bundle",
+      "price": "$4,500–$9,500+",
+      "badge": "BEST VALUE",
+      "description": "The best value for clients who want a guided, professional launch from idea to market. Combines foundation setup, branding, marketing, website, operations, and launch coaching."
+    },
+    "tier7": {
+      "name": "CreedaVA Ongoing Support",
+      "price": "From $1,499/mo",
+      "description": "Ongoing virtual assistance, administrative support, customer communication, CRM, and project coordination."
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "form": {
+      "name": "Your Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "message": "Your Message",
+      "submit": "Send Message"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Read More",
+    "share": "Share this post"
+  },
+  "footer": {
+    "copyright": "© 2026 GUIA NEGOCIOS. All rights reserved.",
+    "serving": "Serving Knoxville, TN and East Tennessee"
+  }
+}
