@@ -24,6 +24,7 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+extensions/*.env
 *serviceAccount*.json
 *-prod-*.json
 guianegocios-*.json
