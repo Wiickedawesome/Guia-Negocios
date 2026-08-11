@@ -5,11 +5,17 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  ogImage?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogImage } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+// OG image: use page-specific if provided, otherwise default branded share image
+const resolvedOgImage = ogImage
+  ? (ogImage.startsWith('http') ? ogImage : `https://guianegocios.net${ogImage}`)
+  : 'https://guianegocios.net/images/og-default.png';
 
 // Bilingual meta tags for hreflang
 const currentPath = Astro.url.pathname;
@@ -39,17 +45,20 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GUIA NEGOCIOS" />
     <meta property="og:url" content={`https://guianegocios.net${currentPath}`} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="https://guianegocios.net/images/illustration1.png" />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={`https://guianegocios.net${currentPath}`} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content="https://guianegocios.net/images/illustration1.png" />
+    <meta property="twitter:image" content={resolvedOgImage} />
 
     <!-- LocalBusiness Schema -->
     <script type="application/ld+json" set:html={JSON.stringify({
