@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "guianegocios-prod"
+  },
+  "targets": {},
+  "etags": {
+    "guianegocios-prod": {
+      "extensionInstances": {
+        "firestore-send-email": "dff84e7e9d4643a59e7e7069a9192fb374c404e554650cd42aac51b5511ce749"
+      }
+    }
   }
 }
