@@ -21,6 +21,13 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "cleanUrls": true
+    "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "/es/",
+        "type": 301
+      }
+    ]
   }
 }
