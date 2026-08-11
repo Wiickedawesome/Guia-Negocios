@@ -6,9 +6,10 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  altPath?: string;
 }
 
-const { title, description, ogImage } = Astro.props;
+const { title, description, ogImage, altPath } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -21,7 +22,8 @@ const resolvedOgImage = ogImage
 const currentPath = Astro.url.pathname;
 const isEnglish = currentPath.startsWith('/en');
 const toggleLang = isEnglish ? 'es' : 'en';
-const alternatePath = currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
+// Use explicit altPath for pages with translated slugs (e.g. blog posts)
+const alternatePath = altPath || currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
 
 // Default path if they go to the root
 const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '/en') : currentPath;

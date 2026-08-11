@@ -1,13 +1,20 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+interface Props {
+  altPath?: string;
+}
+
+const { altPath } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const currentPath = Astro.url.pathname;
 const isEnglish = currentPath.startsWith('/en');
 const toggleLang = isEnglish ? 'es' : 'en';
-const togglePath = currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
+// Use explicit altPath for pages with translated slugs (e.g. blog posts), 
+// otherwise fall back to simple lang prefix swap
+const togglePath = altPath || currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
 
 const isActive = (path: string) => {
   if (path === `/${lang}` || path === `/${lang}/`) {

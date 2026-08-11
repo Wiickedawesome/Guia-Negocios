@@ -30,8 +30,8 @@ const { html: contentHtml, toc } = processHtmlForBlog(rawHtml);
 const altUrl = `/es/blog/${post.altSlug}`;
 ---
 
-<BaseLayout title={`${post.title} | Blog | ${t('site.title')}`} description={post.excerpt}>
-  <Header slot="header" />
+<BaseLayout title={`${post.title} | Blog | ${t('site.title')}`} description={post.excerpt} altPath={altUrl}>
+  <Header slot="header" altPath={altUrl} />
   
   <article class="bg-slate-50">
     <!-- Hero Image Section -->
