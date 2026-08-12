@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import AnimatedLogoHero from '../../components/AnimatedLogoHero.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -35,12 +36,8 @@ const t = useTranslations(lang);
         </div>
         <!-- Hero Image/Illustration -->
         <div class="relative flex justify-center lg:justify-end">
-          <div class="absolute -inset-4 bg-gradient-to-r from-brand-primary/30 to-brand-accent/30 rounded-[2.5rem] blur-3xl opacity-50"></div>
-          <div class="w-full max-w-lg aspect-[4/5] rounded-3xl shadow-2xl border border-slate-700/50 relative z-10 flex flex-col items-center justify-center bg-brand-dark/50 backdrop-blur-md">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-brand-primary mb-4 opacity-80">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="text-3xl sm:text-4xl font-heading font-bold text-white tracking-widest uppercase">Coming Soon</span>
+          <div class="w-full max-w-lg aspect-[4/5] relative z-10 flex flex-col items-center justify-center bg-transparent overflow-hidden">
+            <AnimatedLogoHero lang="en" />
           </div>
         </div>
       </div>
