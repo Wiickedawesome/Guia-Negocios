@@ -30,7 +30,7 @@ const navItems = [
       document.documentElement.classList.remove('dark');
     }
   </script>
-  <div class="flex h-screen bg-slate-50 overflow-hidden font-sans">
+  <div id="admin-app-root" class="flex h-screen bg-slate-50 overflow-hidden font-sans opacity-0 transition-opacity duration-300">
     
     <!-- Mobile Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" aria-hidden="true"></div>
@@ -158,6 +158,10 @@ const navItems = [
         // If no user is logged in, redirect to the login page immediately
         window.location.href = '/admin/login';
       } else {
+        // Show the admin UI now that user is verified
+        const appRoot = document.getElementById('admin-app-root');
+        if (appRoot) appRoot.classList.remove('opacity-0');
+        
         // Update Sidebar UI with User Info
         const emailDisplay = document.getElementById('user-email-display');
         const nameDisplay = document.getElementById('user-display-name');
