@@ -5,8 +5,6 @@ import { HttpsError } from "firebase-functions/v2/https";
 // @ts-ignore
 import fetch from "node-fetch";
 
-// @ts-ignore
-const { getVertexAI, getGenerativeModel } = require("firebase-admin/vertexai");
 
 export const scheduledDataJournalism = onSchedule({
   schedule: "every 1st day of month 05:00",
@@ -42,9 +40,16 @@ export const scheduledDataJournalism = onSchedule({
       updateFrequency: ds.update_frequency
     }));
 
-    // 2. Draft the Data Report using Gemini
-    const vertexAI = getVertexAI(getApp());
-    const model = getGenerativeModel(vertexAI, { 
+    const settingsDoc = await db.collection('settings').doc('admin').get();
+    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
+    if (!geminiKey) {
+      console.error('Gemini API key is not configured in settings.');
+      return;
+    }
+
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-pro",
       generationConfig: { responseMimeType: "application/json" }
     });

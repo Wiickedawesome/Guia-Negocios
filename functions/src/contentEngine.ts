@@ -3,8 +3,6 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getApp } from "firebase-admin/app";
 import * as path from "path";
 
-// @ts-ignore
-const { getVertexAI, getGenerativeModel } = require("firebase-admin/vertexai");
 
 const keyFilename = path.join(__dirname, "../serviceAccount.json");
 
@@ -69,9 +67,16 @@ export const scheduledContentEngine = onSchedule({
       return;
     }
 
-    // 3. Draft the Article using Gemini
-    const vertexAI = getVertexAI(getApp());
-    const model = getGenerativeModel(vertexAI, { 
+    const settingsDoc = await db.collection('settings').doc('admin').get();
+    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
+    if (!geminiKey) {
+      console.error('Gemini API key is not configured in settings.');
+      return;
+    }
+
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-pro",
       generationConfig: { responseMimeType: "application/json" }
     });
