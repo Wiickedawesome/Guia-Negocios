@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Exclude internal admin dashboard from crawling
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /en/lp/empty
+Disallow: /es/lp/empty
+
+# Sitemaps
+Sitemap: https://guianegocios.net/sitemap-index.xml
+Sitemap: https://guianegocios.net/sitemap-0.xml
