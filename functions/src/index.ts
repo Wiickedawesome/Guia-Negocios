@@ -524,12 +524,14 @@ async function internalSiteWideAudit() {
         'https://guianegocios.net/en/blog/importance-of-ein-number/',
         'https://guianegocios.net/es/about/',
         'https://guianegocios.net/es/contact/',
+        'https://guianegocios.net/es/faq/',
         'https://guianegocios.net/en/about/',
-        'https://guianegocios.net/en/contact/'
+        'https://guianegocios.net/en/contact/',
+        'https://guianegocios.net/en/faq/'
       ];
     }
 
-    urls = urls.slice(0, 20);
+    urls = urls.slice(0, 25);
 
     // 2. Crawl and analyze each URL
     const pageReports: any[] = [];
