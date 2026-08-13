@@ -559,6 +559,10 @@ async function internalSiteWideAudit() {
         });
         missingAltCount += imgsWithoutAlt;
 
+        const canonical = $('link[rel="canonical"]').attr('href');
+        const hreflangCount = $('link[rel="alternate"][hreflang]').length;
+        const schemaCount = $('script[type="application/ld+json"]').length;
+
         const issues = [];
         if (!title) issues.push(`Missing Title`);
         else if (title.length < 10 || title.length > 70) issues.push(`Title length (${title.length}) is sub-optimal`);
@@ -571,8 +575,10 @@ async function internalSiteWideAudit() {
         if (h1Count === 0) issues.push(`Missing H1 tag`);
         if (imgsWithoutAlt > 0) issues.push(`${imgsWithoutAlt} images missing alt text`);
         if (wordCount < 200) issues.push(`Thin content (${wordCount} words)`);
+        if (!canonical) issues.push(`Missing canonical link tag`);
+        if (hreflangCount === 0) issues.push(`Missing alternate hreflang tags`);
 
-        pageReports.push({ url, title, issues });
+        pageReports.push({ url, title, canonical, hreflangCount, schemaCount, issues });
         issues.forEach(i => allIssues.push(`[${url}] ${i}`));
 
       } catch (e) {
@@ -581,27 +587,33 @@ async function internalSiteWideAudit() {
     }
 
     // 3. Compute Deterministic Score & Action Items
-    let calculatedScore = 92;
+    let calculatedScore = 98;
     if (missingMetaCount > 0) calculatedScore -= Math.min(10, missingMetaCount * 2);
     if (missingAltCount > 0) calculatedScore -= Math.min(8, missingAltCount * 2);
-    if (allIssues.length > 5) calculatedScore -= 5;
-    calculatedScore = Math.max(65, Math.min(98, calculatedScore));
+    if (allIssues.length > 0) calculatedScore -= Math.min(15, allIssues.length * 3);
+    calculatedScore = Math.max(70, Math.min(100, calculatedScore));
 
-    const actionableItems = [
+    const actionableItems = allIssues.length > 0 ? [
       {
         priority: "High",
-        task: "Verify canonical hreflang links across all bilingual pages",
-        impact: "Prevents search engines from seeing Spanish and English pages as duplicate content."
-      },
+        task: "Resolve detected crawler issues",
+        impact: allIssues[0] || "Improve on-page technical optimization."
+      }
+    ] : [
       {
-        priority: "Medium",
-        task: "Add local schema markup (LocalBusiness + FAQ) to service pages",
-        impact: "Increases rich snippets eligibility on Google Search for Knoxville business queries."
+        priority: "Low",
+        task: "Publish weekly bilingual blog content targeting Knoxville business search terms",
+        impact: "Drives organic top-of-funnel search traffic from local entrepreneurs looking for business setup and operations guidance."
       },
       {
         priority: "Low",
-        task: "Ensure all newly uploaded blog graphics contain descriptive alt attributes",
-        impact: "Improves image SEO and accessibility compliance."
+        task: "Build local directory citations on Knoxville Chamber and East Tennessee business registries",
+        impact: "Strengthens off-page local authority and Google Maps ranking signals."
+      },
+      {
+        priority: "Low",
+        task: "Monitor Google Search Console indexing and performance for new bilingual URL routes",
+        impact: "Ensures Google indexes both English and Spanish alternate URLs seamlessly."
       }
     ];
 
