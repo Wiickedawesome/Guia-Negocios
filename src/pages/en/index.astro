@@ -4,6 +4,8 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import AnimatedLogoHero from '../../components/AnimatedLogoHero.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { Image } from 'astro:assets';
+import favImage from '../../assets/images/GuiaNegociosFAV.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -398,7 +400,7 @@ const t = useTranslations(lang);
         </div>
       </div>
       <div class="w-full lg:w-auto flex-shrink-0 flex justify-center">
-        <img src="/GuiaNegociosFAV.webp" alt="Guia Negocios bilingual business consulting" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" width="384" height="384" loading="lazy" decoding="async" />
+        <Image src={favImage} alt="Guia Negocios bilingual business consulting" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" loading="lazy" decoding="async" />
       </div>
     </div>
   </section>

@@ -4,6 +4,8 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import AnimatedLogoHero from '../../components/AnimatedLogoHero.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { Image } from 'astro:assets';
+import favImage from '../../assets/images/GuiaNegociosFAV.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -247,7 +249,7 @@ const t = useTranslations(lang);
             <div>
               <h3 class="text-2xl font-heading font-semibold text-brand-dark mb-2">Planificación</h3>
               <p class="text-slate-500 text-sm leading-relaxed">
-                We outline your business structure, marketing approach, bookkeeping setup, and growth strategy step-by-step.
+                Definimos su estructura empresarial, enfoque de marketing, configuración contable y estrategia de crecimiento paso a paso.
               </p>
             </div>
           </div>
@@ -258,9 +260,9 @@ const t = useTranslations(lang);
               03
             </div>
             <div>
-              <h3 class="text-2xl font-heading font-semibold text-brand-dark mb-2">Setup</h3>
+              <h3 class="text-2xl font-heading font-semibold text-brand-dark mb-2">Configuración</h3>
               <p class="text-slate-500 text-sm leading-relaxed">
-                We help you with LLC/EIN registration, branding, and getting your operations up and running.
+                Le ayudamos con el registro de su LLC/EIN, desarrollo de marca y la puesta en marcha de sus operaciones.
               </p>
             </div>
           </div>
@@ -273,7 +275,7 @@ const t = useTranslations(lang);
             <div>
               <h3 class="text-2xl font-heading font-semibold text-brand-dark mb-2">Crecimiento</h3>
               <p class="text-slate-500 text-sm leading-relaxed">
-                We support your marketing, online presence, and ongoing operations so your business thrives.
+                Apoyamos su marketing, presencia en línea y operaciones continuas para que su negocio prospere.
               </p>
             </div>
           </div>
@@ -398,7 +400,7 @@ const t = useTranslations(lang);
         </div>
       </div>
       <div class="w-full lg:w-auto flex-shrink-0 flex justify-center">
-        <img src="/GuiaNegociosFAV.webp" alt="Guia Negocios bilingual business consulting" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" width="384" height="384" loading="lazy" decoding="async" />
+        <Image src={favImage} alt="Guia Negocios bilingual business consulting" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" loading="lazy" decoding="async" />
       </div>
     </div>
   </section>

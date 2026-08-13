@@ -31,7 +31,7 @@ const text = labels[lang] || labels.es;
         <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
       </svg>
     </div>
-    <h3 class="mt-6 text-xl sm:text-2xl font-heading font-bold uppercase text-[#F0C850] tracking-widest text-center pl-[0.1em]">{text.direction}</h3>
+    <h3 class="mt-6 text-xl sm:text-2xl font-heading font-bold uppercase text-[#F0C850] text-center text-compass">{text.direction}</h3>
   </div>
 
   <!-- Phase 2: Growth (Lush Vibrant Leaf) -->
@@ -42,7 +42,7 @@ const text = labels[lang] || labels.es;
         <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
       </svg>
     </div>
-    <h3 class="mt-6 text-xl sm:text-2xl font-heading font-bold uppercase text-[#F0C850] tracking-widest text-center pl-[0.1em]">{text.growth}</h3>
+    <h3 class="mt-6 text-xl sm:text-2xl font-heading font-bold uppercase text-[#F0C850] text-center text-plant">{text.growth}</h3>
   </div>
 
   <!-- Phase 3: Trust (Shield) -->
@@ -53,7 +53,7 @@ const text = labels[lang] || labels.es;
         <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-7.3 7.3a1.99 1.99 0 0 1-2.83 0l-1.41-1.41a2 2 0 0 1 0-2.82l7.3-7.3a3 3 0 0 1 4.24 0l1.41 1.41"/>
       </svg>
     </div>
-    <h3 class="mt-6 text-xl sm:text-2xl font-heading font-bold uppercase text-[#F0C850] tracking-widest text-center pl-[0.1em]">{text.trust}</h3>
+    <h3 class="mt-6 text-xl sm:text-2xl font-heading font-bold uppercase text-[#F0C850] text-center text-handshake">{text.trust}</h3>
   </div>
 
   <!-- Phase 4: Final Logo Reveal -->
@@ -141,5 +141,26 @@ const text = labels[lang] || labels.es;
   @keyframes float-inner {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
+  }
+
+  .text-compass { animation: text-compass 14s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+  @keyframes text-compass {
+    0%, 2% { opacity: 0; clip-path: inset(-20% 100% -20% -20%); transform: translateX(-5px); letter-spacing: 0.15em; }
+    12%, 20% { opacity: 1; clip-path: inset(-20% -20% -20% -20%); transform: translateX(0); letter-spacing: 0.2em; }
+    24%, 100% { opacity: 0; clip-path: inset(-20% -20% -20% -20%); transform: translateX(0); letter-spacing: 0.2em; }
+  }
+
+  .text-plant { animation: text-plant 14s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+  @keyframes text-plant {
+    0%, 22% { opacity: 0; clip-path: inset(-20% 100% -20% -20%); transform: translateX(-5px); letter-spacing: 0.15em; }
+    32%, 45% { opacity: 1; clip-path: inset(-20% -20% -20% -20%); transform: translateX(0); letter-spacing: 0.2em; }
+    49%, 100% { opacity: 0; clip-path: inset(-20% -20% -20% -20%); transform: translateX(0); letter-spacing: 0.2em; }
+  }
+
+  .text-handshake { animation: text-handshake 14s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+  @keyframes text-handshake {
+    0%, 47% { opacity: 0; clip-path: inset(-20% 100% -20% -20%); transform: translateX(-5px); letter-spacing: 0.15em; }
+    57%, 70% { opacity: 1; clip-path: inset(-20% -20% -20% -20%); transform: translateX(0); letter-spacing: 0.2em; }
+    74%, 100% { opacity: 0; clip-path: inset(-20% -20% -20% -20%); transform: translateX(0); letter-spacing: 0.2em; }
   }
 </style>

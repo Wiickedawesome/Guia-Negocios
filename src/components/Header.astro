@@ -1,5 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { Image } from 'astro:assets';
+import logoImage from '../assets/images/GuiaNegociosLOGO.webp';
 
 interface Props {
   altPath?: string;
@@ -42,7 +44,7 @@ const mobileNavClass = (path: string) => {
       <!-- Logo -->
       <div class="flex-shrink-0 flex items-center">
         <a href={`/${lang}`} class="flex items-center">
-          <img src="/images/GuiaNegociosLOGO.webp" alt="Guia Negocios" class="h-16 w-auto" width="200" height="64" decoding="async" fetchpriority="high" />
+          <Image src={logoImage} alt="Guia Negocios" class="h-16 w-auto" loading="eager" fetchpriority="high" />
         </a>
       </div>
 

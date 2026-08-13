@@ -4,6 +4,9 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import FaqAccordion from '../../components/FaqAccordion.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { Image } from 'astro:assets';
+import launchHeroImg from '../../assets/images/LaunchHERO-Resized.webp';
+import favImg from '../../assets/images/GuiaNegociosFAV.png';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -291,7 +294,7 @@ const faqItems = [
       <div class="bg-white border border-slate-200 rounded-3xl p-8 lg:p-12 shadow-lg mb-12 hover:shadow-xl transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           <div class="lg:col-span-6 overflow-hidden rounded-2xl bg-slate-100 border border-slate-200 relative lg:h-full min-h-[400px]">
-            <img src="/images/LaunchHERO-Resized.webp" alt="Complete Business Launch Bundle" class="w-full h-full object-cover lg:absolute lg:inset-0" width="1200" height="800" loading="lazy" decoding="async" />
+            <Image src={launchHeroImg} alt="Complete Business Launch Bundle" class="w-full h-full object-cover lg:absolute lg:inset-0" loading="lazy" decoding="async" />
           </div>
           <div class="lg:col-span-6 space-y-6 self-center py-6">
             <div class="inline-flex items-center gap-2 bg-brand-accent/30 text-brand-dark px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider">
@@ -408,7 +411,7 @@ const faqItems = [
 
   <!-- SECTION 3: À La Carte Services (Onyx Panel Layout) -->
   <section class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8">
       
       <!-- Top Header Row -->
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -428,8 +431,8 @@ const faqItems = [
         </div>
       </div>
 
-      <!-- 3 Large Feature Panels -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- 4 Large Feature Panels (4-Column Grid on Desktop) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         
         <!-- Panel 1: Setup & Document Templates -->
         <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-8">
@@ -614,6 +617,67 @@ const faqItems = [
           </div>
         </div>
 
+        <!-- Panel 4: Consulting & Advisory -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-8">
+          <div class="space-y-6">
+            <h3 class="text-lg font-heading text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-100 pb-4">
+              Consulting & Advisory
+            </h3>
+
+            <!-- Item 1 -->
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center text-brand-dark shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-brand-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-lg font-heading text-brand-dark font-semibold">General Business Consulting</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">
+                  1-on-1 strategic sessions to solve specific operational bottlenecks and guide your next steps.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="flex items-start gap-4 pt-4 border-t border-slate-100">
+              <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center text-brand-dark shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-brand-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-lg font-heading text-brand-dark font-semibold">Financial Setup Guidance</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">
+                  Guidance on tracking expenses, opening business bank accounts, and basic bookkeeping setup.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="flex items-start gap-4 pt-4 border-t border-slate-100">
+              <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center text-brand-dark shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-brand-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.25-2.142V8.25" /></svg>
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-lg font-heading text-brand-dark font-semibold">Permit Lookup & Running</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">
+                  Assistance with researching, applying for, and securing necessary construction, zoning, or business permits.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="flex items-start gap-4 pt-4 border-t border-slate-100">
+              <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center text-brand-dark shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-brand-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" /></svg>
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-lg font-heading text-brand-dark font-semibold">Contractor Admin Support</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">
+                  Back-office support for contractors including professional estimates, invoicing, and contract drafting.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- Request a Custom Service Banner -->
@@ -671,7 +735,7 @@ const faqItems = [
         </div>
       </div>
       <div class="w-full lg:w-auto flex-shrink-0 flex justify-center">
-        <img src="/GuiaNegociosFAV.png" alt="Call to Action" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" />
+        <Image src={favImg} alt="Call to Action" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" loading="lazy" />
       </div>
     </div>
   </section>

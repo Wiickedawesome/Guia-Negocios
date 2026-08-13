@@ -40,17 +40,17 @@
     },
     "tier2": {
       "name": "Foundation Package",
-      "price": "$850–$1,500",
+      "price": "$850+",
       "description": "Organizes the business from the ground up before investing heavily in marketing or a website."
     },
     "tier3": {
       "name": "Brand & Marketing Setup",
-      "price": "$1,200–$2,500",
+      "price": "$1,200+",
       "description": "Creates a professional brand presence and basic marketing system to get found and trusted."
     },
     "tier4": {
       "name": "Website Setup",
-      "price": "$1,800–$5,500+",
+      "price": "$1,800+",
       "description": "Professional website setup to explain your services, show photos, and convert leads."
     },
     "tier5": {
