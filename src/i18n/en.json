@@ -54,15 +54,15 @@
       "description": "Professional website setup to explain your services, show photos, and convert leads."
     },
     "tier5": {
-      "name": "Operations & Growth Systems",
-      "price": "$1,500–$4,500",
-      "description": "Structure, client flow, invoicing systems, and profitability improvements for running businesses."
-    },
-    "tier6": {
       "name": "Complete Business Launch Bundle",
       "price": "$4,500–$9,500+",
       "badge": "BEST VALUE",
       "description": "The best value for clients who want a guided, professional launch from idea to market. Combines foundation setup, branding, marketing, website, operations, and launch coaching."
+    },
+    "tier6": {
+      "name": "Operations & Growth Systems",
+      "price": "$1,500–$4,500",
+      "description": "Structure, client flow, invoicing systems, and profitability improvements for running businesses."
     },
     "tier7": {
       "name": "CreedaVA Ongoing Support",

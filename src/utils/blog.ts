@@ -23,7 +23,7 @@ import { db } from '../lib/firebase';
 
 const POST_OVERRIDES: Record<string, Partial<BlogPost>> = {
   'importancia-de-numero-ein': {
-    title: "Guía de EIN para No Residentes y Emprendedores Hispanos: Cómo Obtenerlo Sin SSN",
+    title: "Guía de EIN: Cómo Obtener un EIN Sin SSN",
     excerpt: "Guía completa para no residentes y emprendedores hispanos: cómo tramitar el número EIN ante el IRS sin Seguro Social (SSN), abrir cuentas bancarias en EE.UU. y evitar multas.",
     featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
     tags: ["EIN", "No Residentes", "IRS", "LLC EE.UU.", "Empresarios Hispanos"],
@@ -112,7 +112,7 @@ En **GUIA NEGOCIOS**, somos especialistas en ayudar a emprendedores hispanos —
 `
   },
   'importance-of-ein-number': {
-    title: "EIN Guide for Non-US Residents & Hispanic Entrepreneurs: How to Get One Without an SSN",
+    title: "EIN Guide: How to Get an EIN Without an SSN",
     excerpt: "Complete guide for non-residents and Hispanic entrepreneurs: how to file for an IRS EIN without a Social Security Number (SSN), open U.S. business bank accounts, and prevent penalties.",
     featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
     tags: ["EIN", "Non-Residents", "IRS", "U.S. LLC", "Hispanic Business"],

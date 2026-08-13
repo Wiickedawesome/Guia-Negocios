@@ -24,7 +24,7 @@
     }
   },
   "services": {
-    "title": "Paquetes de Lanzamiento y Crecimiento de Negocios Bilingües",
+    "title": "Paquetes de Negocios Bilingües",
     "metaDescription": "Explore nuestros paquetes de lanzamiento y crecimiento para negocios en Knoxville. Desde registros de LLC hasta sitios web, encuentre la mejor opción.",
     "subtitle": "Apoyo práctico en español e inglés para llevar su negocio de la idea al lanzamiento y más allá.",
     "coreHeading": "Paquetes Principales de Lanzamiento",
@@ -54,15 +54,15 @@
       "description": "Configuración de página web profesional para explicar sus servicios, mostrar fotos y conectar con clientes."
     },
     "tier5": {
-      "name": "Sistemas de Operación y Crecimiento",
-      "price": "$1,500–$4,500",
-      "description": "Estructura, flujo de clientes, sistemas de facturación y mejoras de rentabilidad para negocios en marcha."
-    },
-    "tier6": {
       "name": "Paquete Completo de Lanzamiento",
       "price": "$4,500–$9,500+",
       "badge": "EL MEJOR VALOR",
       "description": "El mejor valor para clientes que quieren un lanzamiento guiado y profesional desde la idea al mercado. Combina base administrativa, marca, marketing, página web, sistemas y coaching."
+    },
+    "tier6": {
+      "name": "Sistemas de Operación y Crecimiento",
+      "price": "$1,500–$4,500",
+      "description": "Estructura, flujo de clientes, sistemas de facturación y mejoras de rentabilidad para negocios en marcha."
     },
     "tier7": {
       "name": "Apoyo Continuo con CreedaVA",
