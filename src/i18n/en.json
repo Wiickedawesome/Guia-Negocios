@@ -10,6 +10,7 @@
     "about": "About",
     "contact": "Contact",
     "blog": "Blog",
+    "faq": "FAQ",
     "login": "Login"
   },
   "home": {
@@ -32,6 +33,7 @@
     "alacarteHeading": "À La Carte Services",
     "faqTitle": "Frequently Asked Questions",
     "faqContactText": "Contact us for more info",
+    "faqViewAll": "View all questions & answers",
     "tier1": {
       "name": "Starter Services",
       "price": "Starting at $350",

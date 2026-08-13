@@ -1,0 +1,311 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Footer from '../../components/Footer.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const faqCategories = [
+  {
+    id: "formation",
+    name: "Business Formation & LLC",
+    icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`,
+    items: [
+      {
+        question: "What is included in LLC and EIN setup assistance?",
+        answer: "We guide you step-by-step through Tennessee name availability research, Secretary of State LLC registration filings, IRS Employer Identification Number (EIN) application support, custom Operating Agreement drafting, and complete commercial bank account checklist preparation."
+      },
+      {
+        question: "How long does the business registration process take in Tennessee?",
+        answer: "Tennessee state LLC approvals typically take 2 to 5 business days online. EIN issuance for domestic founders is usually instant upon filing, while non-resident founders filing via IRS Form SS-4 generally take 1 to 4 weeks depending on IRS processing times."
+      },
+      {
+        question: "Can I start a US business in Tennessee without a Social Security Number (SSN)?",
+        answer: "Yes. Foreign nationals and non-residents can form an LLC in Tennessee and obtain an Employer Identification Number (EIN) from the IRS using an ITIN or a valid passport through Form SS-4."
+      },
+      {
+        question: "Do I need an Operating Agreement for a single-member LLC?",
+        answer: "While Tennessee state law does not legally mandate filing an operating agreement with the state, banks, credit card processors, and courts require it to open business accounts, establish separation of personal liability, and execute contracts."
+      },
+      {
+        question: "What local business licenses are required in Knoxville and Knox County?",
+        answer: "Depending on your industry and gross receipts, businesses in Knoxville require a standard or minimal activity Knox County business tax license, City of Knoxville business tax registration, and potentially specialized contractor or health permits. We assist in identifying all mandatory filings."
+      }
+    ]
+  },
+  {
+    id: "branding-web",
+    name: "Branding & Web Design",
+    icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`,
+    items: [
+      {
+        question: "What is included in your Brand & Marketing Setup?",
+        answer: "Our branding tier includes vector logo direction, curated brand color palette and typography rules, complete Google Business Profile optimization, social media setup (Facebook & Instagram), WhatsApp Business setup with automated quick replies, and reusable Canva graphic templates."
+      },
+      {
+        question: "How long does it take to build a custom website?",
+        answer: "A standard 4 to 6 page business launch website usually takes 2 to 3 weeks from receipt of your content and initial consultation to final launch, including domain connection, contact forms, and mobile optimization."
+      },
+      {
+        question: "Will my website be mobile-friendly and optimized for Google (SEO)?",
+        answer: "Yes. Every website we build is 100% responsive for smartphones and tablets, loads in milliseconds, includes descriptive meta tags, clean heading structures, and is submitted directly to Google Search Console and Google Maps."
+      },
+      {
+        question: "Can I update the content on my website after launch?",
+        answer: "Yes. We can implement intuitive content editing capabilities or you can utilize our ongoing maintenance and à la carte support for updates, photo uploads, and new service announcements."
+      }
+    ]
+  },
+  {
+    id: "operations",
+    name: "Operations & Support",
+    icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`,
+    items: [
+      {
+        question: "What are Operations & Growth Systems?",
+        answer: "Operations & Growth systems organize how your business runs daily: customer intake pipelines, appointment scheduling, quote & invoice generators, receipt tracking, margin optimization, and bilingual communication workflows."
+      },
+      {
+        question: "How does the CreedaVA virtual assistant partnership work?",
+        answer: "Through our official partnership with CreedaVA, you get dedicated, professionally vetted bilingual Virtual Assistants who manage daily inbox communications, client scheduling, CRM updates, and customer service in English and Spanish."
+      },
+      {
+        question: "Do you offer translation and bilingual notary services in Knoxville?",
+        answer: "Yes. We offer fast document translation for business agreements, letters, and client contracts, along with mobile and in-office bilingual Notary Public services throughout Knoxville and Knox County."
+      }
+    ]
+  },
+  {
+    id: "process",
+    name: "Packages & Getting Started",
+    icon: `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
+    items: [
+      {
+        question: "Can I start with one service and upgrade to a larger bundle later?",
+        answer: "Yes! Many clients start with our Starter Services (LLC & EIN registration) and upgrade to our Brand Setup or Complete Launch Bundle as their business grows. We credit prior standalone services toward your comprehensive bundle."
+      },
+      {
+        question: "Do you offer complete bilingual support in English and Spanish?",
+        answer: "Yes. Everything we do—from initial strategy consultations and document drafts to phone support and marketing kits—is delivered fluently in both English and Spanish."
+      },
+      {
+        question: "How do I get started with GUIA NEGOCIOS?",
+        answer: "Getting started is simple. Contact us through our online booking form, call us at (865) 202-7112, or send an email to info@guianegocios.net to schedule your discovery consultation."
+      }
+    ]
+  }
+];
+
+// Flatten for JSON-LD Schema
+const allFaqItems = faqCategories.flatMap(c => c.items);
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": allFaqItems.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }))
+};
+---
+
+<BaseLayout 
+  title="Frequently Asked Questions | GUIA NEGOCIOS" 
+  description="Find answers to common questions about LLC registration, EIN filings, web design, branding, and bilingual business consulting in Knoxville, TN."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <!-- HERO SECTION -->
+  <section class="py-20 lg:py-28 bg-brand-dark text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-brand-dark via-slate-900 to-brand-dark opacity-95"></div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
+      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-accent/20 border border-brand-accent/30 text-brand-accent text-xs font-bold uppercase tracking-wider">
+        Help Center & Answers
+      </span>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-heading font-bold text-white tracking-tight leading-tight">
+        Frequently Asked Questions
+      </h1>
+      <p class="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+        Everything you need to know about registering your business, building your brand, launching your website, and scaling operations in East Tennessee.
+      </p>
+
+      <!-- Instant Search Box -->
+      <div class="max-w-xl mx-auto pt-4">
+        <div class="relative">
+          <input 
+            type="text" 
+            id="faq-search" 
+            placeholder="Search questions (e.g., LLC, EIN, website, taxes, pricing)..."
+            class="w-full px-5 py-4 pl-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-accent focus:bg-white/15 transition-all text-base shadow-lg"
+          />
+          <svg class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ CATEGORIES SECTION -->
+  <section class="py-16 lg:py-24 bg-slate-50 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      
+      <!-- Category Filter Pills -->
+      <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3" id="category-filters">
+        <button class="filter-btn active px-4 py-2 rounded-full text-sm font-semibold transition-all bg-brand-dark text-white shadow-sm" data-category="all">
+          All Questions ({allFaqItems.length})
+        </button>
+        {faqCategories.map(cat => (
+          <button class="filter-btn px-4 py-2 rounded-full text-sm font-semibold transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 shadow-sm" data-category={cat.id}>
+            {cat.name}
+          </button>
+        ))}
+      </div>
+
+      <!-- FAQ Groups -->
+      <div class="space-y-12" id="faq-container">
+        {faqCategories.map(cat => (
+          <div class="faq-category-group space-y-6" data-category-id={cat.id}>
+            <div class="flex items-center gap-3 border-b border-slate-200 pb-3">
+              <div class="p-2 rounded-xl bg-brand-primary/10 text-brand-primary">
+                <Fragment set:html={cat.icon} />
+              </div>
+              <h2 class="text-2xl font-heading font-bold text-brand-dark">
+                {cat.name}
+              </h2>
+            </div>
+
+            <div class="space-y-4">
+              {cat.items.map((item, idx) => (
+                <details class="faq-item group bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow transition-all duration-200" open={cat.id === "formation" && idx === 0}>
+                  <summary class="flex items-center justify-between cursor-pointer list-none select-none gap-4">
+                    <h3 class="text-lg font-heading font-semibold text-brand-dark group-open:text-brand-primary transition-colors leading-snug">
+                      {item.question}
+                    </h3>
+                    <span class="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex-shrink-0 flex items-center justify-center text-slate-600 group-open:rotate-45 group-open:bg-brand-primary group-open:text-white transition-all text-xl font-light">
+                      +
+                    </span>
+                  </summary>
+                  <div class="pt-4 text-slate-600 text-base leading-relaxed border-t border-slate-100 mt-4">
+                    <p>{item.answer}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- No Results Found State -->
+      <div id="no-results" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
+          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+        <h3 class="text-xl font-heading font-bold text-brand-dark mb-2">No matching questions found</h3>
+        <p class="text-slate-600 text-sm max-w-md mx-auto mb-6">
+          Have a specific question not covered here? Feel free to reach out to our bilingual advisory team.
+        </p>
+        <a href={`/${lang}/contact`} class="inline-flex items-center justify-center bg-brand-primary text-white font-semibold py-3 px-6 rounded-full hover:bg-brand-primary/90 transition-all text-sm shadow-sm">
+          Ask a Question
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STILL HAVE QUESTIONS CTA -->
+  <section class="py-20 bg-white border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+      <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider">
+        Personalized Guidance
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-heading font-bold text-brand-dark leading-tight">
+        Still Have Questions About Your Business?
+      </h2>
+      <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+        Every entrepreneurial journey is unique. Schedule a one-on-one consultation with our bilingual advisors to discuss your exact project goals.
+      </p>
+      <div class="pt-4 flex flex-wrap justify-center gap-4">
+        <a href={`/${lang}/contact`} class="inline-flex items-center justify-center bg-brand-dark text-white font-bold py-4 px-8 rounded-full hover:bg-slate-800 transition-colors text-base shadow-md">
+          Book Consultation
+        </a>
+        <a href={`/${lang}/services`} class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-brand-dark font-semibold py-4 px-8 rounded-full transition-colors text-base">
+          Explore Packages
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  // Interactive Search and Filtering
+  const searchInput = document.getElementById('faq-search') as HTMLInputElement;
+  const categoryButtons = document.querySelectorAll('.filter-btn');
+  const categoryGroups = document.querySelectorAll('.faq-category-group');
+  const faqItems = document.querySelectorAll('.faq-item');
+  const noResults = document.getElementById('no-results');
+
+  let activeCategory = 'all';
+
+  function filterFaqs() {
+    const query = (searchInput?.value || '').toLowerCase().trim();
+    let visibleCount = 0;
+
+    categoryGroups.forEach(group => {
+      const groupId = group.getAttribute('data-category-id');
+      const matchesCategory = activeCategory === 'all' || activeCategory === groupId;
+
+      let groupHasVisibleItems = false;
+      const groupItems = group.querySelectorAll('.faq-item');
+
+      groupItems.forEach(item => {
+        const text = item.textContent?.toLowerCase() || '';
+        const matchesSearch = text.includes(query);
+
+        if (matchesCategory && matchesSearch) {
+          (item as HTMLElement).style.display = '';
+          groupHasVisibleItems = true;
+          visibleCount++;
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+
+      if (groupHasVisibleItems) {
+        (group as HTMLElement).style.display = '';
+      } else {
+        (group as HTMLElement).style.display = 'none';
+      }
+    });
+
+    if (noResults) {
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    }
+  }
+
+  searchInput?.addEventListener('input', filterFaqs);
+
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryButtons.forEach(b => {
+        b.classList.remove('active', 'bg-brand-dark', 'text-white');
+        b.classList.add('bg-white', 'text-slate-700');
+      });
+      btn.classList.add('active', 'bg-brand-dark', 'text-white');
+      btn.classList.remove('bg-white', 'text-slate-700');
+
+      activeCategory = btn.getAttribute('data-category') || 'all';
+      filterFaqs();
+    });
+  });
+</script>

@@ -10,6 +10,7 @@
     "about": "Sobre Nosotros",
     "contact": "Contacto",
     "blog": "Blog",
+    "faq": "Preguntas Frecuentes",
     "login": "Iniciar Sesión"
   },
   "home": {
@@ -32,6 +33,7 @@
     "alacarteHeading": "Servicios A La Carta",
     "faqTitle": "Preguntas Frecuentes",
     "faqContactText": "Contáctenos para más información",
+    "faqViewAll": "Ver todas las preguntas y respuestas",
     "tier1": {
       "name": "Servicios Iniciales",
       "price": "Desde $350",
