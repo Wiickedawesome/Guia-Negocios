@@ -23,9 +23,9 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 
 const PROPERTY_ID = '401979686';
 
-export const getAnalyticsData = functions.https.onCall(async (data, context) => {
+export const getAnalyticsData = onCall(async (request) => {
   // 1. Verify user is authenticated
-  if (!context.auth) {
+  if (!request.auth) {
     throw new functions.https.HttpsError(
       'unauthenticated',
       'User must be logged in to access analytics.'
@@ -320,11 +320,13 @@ export const runSeoAudit = onCall(async (request) => {
     // We send a truncated version of the body text to avoid huge payloads
     const truncatedText = bodyText.substring(0, 10000); 
 
-    // Initialize Vertex AI explicitly inside the function
-    // @ts-ignore
-    const { getVertexAI, getGenerativeModel } = await import('firebase-admin/vertexai');
-    const vertexAI = getVertexAI(getApp());
-    const model = getGenerativeModel(vertexAI, { 
+    const settingsDoc = await getFirestore().collection('settings').doc('admin').get();
+    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
+    if (!geminiKey) throw new HttpsError('failed-precondition', 'Gemini API key is not configured.');
+
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ 
       model: 'gemini-1.5-flash',
       generationConfig: { responseMimeType: 'application/json' }
     });
@@ -546,11 +548,14 @@ async function internalSiteWideAudit() {
     }
 
     // 3. Aggregate data and send to Gemini
-    // @ts-ignore
-    const { getVertexAI, getGenerativeModel } = await import('firebase-admin/vertexai');
-    const vertexAI = getVertexAI(getApp());
-    const model = getGenerativeModel(vertexAI, { 
-      model: 'gemini-1.5-pro', // Using pro for better reasoning on aggregate data
+    const settingsDoc = await getFirestore().collection('settings').doc('admin').get();
+    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
+    if (!geminiKey) throw new HttpsError('failed-precondition', 'Gemini API key is not configured.');
+
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(geminiKey);
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-1.5-pro',
       generationConfig: { responseMimeType: 'application/json' }
     });
 
@@ -577,6 +582,13 @@ async function internalSiteWideAudit() {
             "task": "string (e.g., 'Add meta descriptions to 5 blog posts')",
             "impact": "string (Why this matters)"
           }
+        ],
+        "suggestedFixes": [
+          {
+            "url": "string (The URL of the page with the issue)",
+            "type": "string (e.g., 'meta_description', 'title', 'h1')",
+            "newValue": "string (The AI-generated optimal value to fix the issue)"
+          }
         ]
       }
     `;
@@ -601,6 +613,22 @@ async function internalSiteWideAudit() {
     };
 
     const docRef = await getFirestore().collection('seoAudits').add(auditDoc);
+
+    // Save Auto-Remediation fixes to Firestore
+    if (aiReport.suggestedFixes && aiReport.suggestedFixes.length > 0) {
+      const batch = getFirestore().batch();
+      for (const fix of aiReport.suggestedFixes) {
+        const fixRef = getFirestore().collection('seoFixes').doc();
+        batch.set(fixRef, {
+          ...fix,
+          status: 'Pending',
+          auditId: docRef.id,
+          createdAt: FieldValue.serverTimestamp()
+        });
+      }
+      await batch.commit();
+      console.log(`Saved ${aiReport.suggestedFixes.length} auto-remediation fixes to Firestore.`);
+    }
 
     return { id: docRef.id, ...auditDoc, scannedAt: new Date().toISOString() };
 
@@ -934,3 +962,6 @@ export const submitContactForm = onCall(async (request) => {
 
 export * from './contentEngine';
 export * from './dataJournalism';
+export * from './aeoInjector';
+export * from './internalLinking';
+export * from './linkOutreach';

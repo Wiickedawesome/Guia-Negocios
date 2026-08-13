@@ -80,6 +80,27 @@ export const scheduledContentEngine = onSchedule({
       model: "gemini-1.5-pro",
       generationConfig: { responseMimeType: "application/json" }
     });
+    
+    // --- Phase 3: Programmatic Internal Linking ---
+    // Generate an embedding for the target keyword to find related posts
+    const embedModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    const embedResult = await embedModel.embedContent(targetKeyword);
+    const queryVector = embedResult.embedding.values;
+
+    let relatedLinksText = "";
+    try {
+      const nearestSnap = await db.collection("blogs").findNearest("embedding", FieldValue.vector(queryVector), { limit: 3, distanceMeasure: "COSINE" }).get();
+      const relatedLinks = nearestSnap.docs.map(doc => {
+        const data = doc.data();
+        const langCode = data.language || "es";
+        return `- [${data.title}](/${langCode}/blog/${data.slug})`;
+      });
+      if (relatedLinks.length > 0) {
+        relatedLinksText = `\\n\\nInternal Linking Requirements:\\nPlease organically inject markdown hyperlinks to the following related articles within the body of your text (do not just list them at the end, weave them into relevant paragraphs):\\n${relatedLinks.join("\\n")}`;
+      }
+    } catch (e) {
+      console.error("Vector search failed (perhaps index is missing), skipping internal links.", e);
+    }
 
     const prompt = `
       You are an expert bilingual SEO content writer for GUIA DE NEGOCIOS, a business consultancy in Knoxville, TN helping Latino entrepreneurs.
@@ -91,7 +112,7 @@ export const scheduledContentEngine = onSchedule({
       1. Language: Write the article in Spanish (as it's the primary language for our Latino audience), but ensure it's easily translatable.
       2. Format: Return a complete Markdown article. Include an H1 title, H2 sections, bullet points, and an FAQ section at the end.
       3. Content: Must be over 1000 words if possible. Extremely practical advice for US-based businesses.
-      4. Image Search Term: Provide a 1-2 word English search term that perfectly represents this article (e.g., "office", "taxes", "construction") so we can fetch a free Unsplash image.
+      4. Image Search Term: Provide a 1-2 word English search term that perfectly represents this article (e.g., "office", "taxes", "construction") so we can fetch a free Unsplash image.${relatedLinksText}
       
       Format your response EXACTLY as this JSON object:
       {

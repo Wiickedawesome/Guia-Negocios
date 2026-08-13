@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import '../styles/global.css';
+import AeoInjector from '../components/AeoInjector.astro';
 
 interface Props {
   title: string;
@@ -100,6 +101,7 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
       "description": description,
       "priceRange": "$$"
     })} />
+    <AeoInjector />
   </head>
   <body class="bg-slate-50 text-slate-900 font-body antialiased flex flex-col min-h-screen">
     <slot name="header" />
