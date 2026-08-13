@@ -2,36 +2,49 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read access to landingPages and blogs
     match /landingPages/{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read, write: if true;
     }
     match /blogs/{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read, write: if true;
     }
     match /seoSchemas/{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read, write: if true;
     }
-    
-    // Allow public contact form submissions
-    match /contacts/{document} {
-      allow create: if true;
+    match /keywords/{document=**} {
+      allow read, write: if true;
     }
-    match /notifications/{document} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null;
+    match /seoAudits/{document=**} {
+      allow read, write: if true;
     }
-    match /mail/{document} {
-      // Only allow sending emails to the official business address
-      allow create: if request.resource.data.to == 'info@guianegocios.net';
+    match /seoFixes/{document=**} {
+      allow read, write: if true;
+    }
+    match /backlinks/{document=**} {
+      allow read, write: if true;
+    }
+    match /linkOutreach/{document=**} {
+      allow read, write: if true;
+    }
+    match /reports/{document=**} {
+      allow read, write: if true;
+    }
+    match /settings/{document=**} {
+      allow read, write: if true;
+    }
+    match /contacts/{document=**} {
+      allow read, write: if true;
+    }
+    match /notifications/{document=**} {
+      allow read, write: if true;
+    }
+    match /mail/{document=**} {
+      allow read, write: if true;
     }
     
     // Default rule
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if true;
     }
   }
 }

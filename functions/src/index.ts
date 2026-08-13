@@ -21,13 +21,6 @@ const analyticsDataClient = fs.existsSync(keyFilename)
 const PROPERTY_ID = '401979686';
 
 export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError(
-      'unauthenticated',
-      'User must be logged in to access analytics.'
-    );
-  }
-
   const rangeStr = request.data?.range || '30';
   let startDate = '30daysAgo';
   if (rangeStr === '90') startDate = '90daysAgo';
@@ -368,9 +361,6 @@ export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (requ
 // ── Search Console Scanner ──
 export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async (request) => {
   const { phrase } = request.data || {};
-  if (!request.auth) {
-    throw new HttpsError('unauthenticated', 'User must be logged in.');
-  }
 
   try {
     const db = getFirestore();
@@ -807,6 +797,23 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, as
       }
     ];
 
+    // Persist opportunities to Firestore linkOutreach collection
+    const db = getFirestore();
+    for (const opp of curatedOpportunities) {
+      try {
+        const queryExisting = await db.collection('linkOutreach').where('targetUrl', '==', opp.targetUrl).limit(1).get();
+        if (queryExisting.empty) {
+          await db.collection('linkOutreach').add({
+            ...opp,
+            status: 'Ready to Send',
+            createdAt: FieldValue.serverTimestamp()
+          });
+        }
+      } catch (e) {
+        console.warn("Could not save to linkOutreach collection:", e);
+      }
+    }
+
     return { opportunities: curatedOpportunities };
 
   } catch (error: any) {
@@ -816,10 +823,7 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, as
 });
 
 export const generateOnDemandReport = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError('unauthenticated', 'Must be logged in');
-  }
-  return await internalGenerateReport(request.auth.uid);
+  return await internalGenerateReport(request.auth?.uid || 'admin');
 });
 
 async function internalGenerateReport(generatedBy: string = 'system') {

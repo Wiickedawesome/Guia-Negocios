@@ -55,10 +55,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       </button>
     </div>
 
+    <!-- AI Outreach Opportunities & Drafted Emails Section -->
+    <div id="outreach-container" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <svg class="w-5 h-5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            Outreach Opportunities & Drafted Emails
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">High-authority local organizations and pre-written pitch emails ready to send.</p>
+        </div>
+        <span id="opps-count-badge" class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">5 Targets Found</span>
+      </div>
+      <div id="outreach-list" class="p-6 space-y-4">
+        <!-- Rendered via JS -->
+        <div class="text-center py-6 text-slate-400 text-sm">Click "Find Opportunities" above to generate local targets and drafts.</div>
+      </div>
+    </div>
+
     <!-- Backlinks Table -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-        <h3 class="text-lg font-bold text-slate-900">Tracked Backlinks</h3>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Tracked Backlinks</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Active backlinks and directory listings monitored for health and nofollow status.</p>
+        </div>
         <span id="loading-indicator" class="text-xs text-brand-primary font-medium animate-pulse hidden">Loading...</span>
       </div>
       <div class="overflow-x-auto max-h-96 overflow-y-auto">
@@ -199,6 +220,140 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       });
     });
 
+    // --- Load Outreach Opportunities from Firestore ---
+    const outreachQuery = query(collection(db, 'linkOutreach'), orderBy('createdAt', 'desc'));
+    onSnapshot(outreachQuery, (snap) => {
+      const container = document.getElementById('outreach-list');
+      const badge = document.getElementById('opps-count-badge');
+      if (!container) return;
+
+      if (snap.empty) {
+        // Auto-seed initial opportunities if collection is empty
+        triggerFindOpportunities(false);
+        return;
+      }
+
+      if (badge) badge.innerText = `${snap.size} Targets Found`;
+
+      const cardsHtml = snap.docs.map(d => {
+        const opp = d.data();
+        const docId = d.id;
+        const emailEscaped = (opp.emailDraft || '').replace(/"/g, '&quot;');
+
+        return `
+          <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl hover:border-brand-primary/40 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-slate-900 text-base">${opp.targetName}</h4>
+                  <span class="px-2 py-0.5 bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase rounded">DA ~${opp.daEstimate || 45}</span>
+                </div>
+                <a href="${opp.targetUrl}" target="_blank" class="text-xs text-brand-primary hover:underline flex items-center gap-1 mt-0.5">
+                  ${opp.targetUrl}
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-md">${opp.strategy}</span>
+                <button data-track-opp='${JSON.stringify({url: opp.targetUrl, pageTitle: opp.targetName}).replace(/'/g, "&apos;")}' class="cursor-pointer px-3 py-1 text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold rounded-lg transition-colors flex items-center gap-1">
+                  + Track Link
+                </button>
+              </div>
+            </div>
+
+            <!-- Email Draft Box -->
+            <div class="relative bg-white rounded-lg border border-slate-200 p-4 font-mono text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">
+              <button data-copy-email="${encodeURIComponent(opp.emailDraft || '')}" class="cursor-pointer absolute top-3 right-3 px-2.5 py-1 bg-slate-100 hover:bg-brand-primary hover:text-white text-slate-600 text-[11px] font-sans font-medium rounded transition-colors flex items-center gap-1 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                Copy Draft
+              </button>
+              ${opp.emailDraft || ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = cardsHtml;
+    }, (error) => {
+      console.warn("Outreach listener warning:", error);
+    });
+
+    // Copy email handler
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+      const copyBtn = target.closest('[data-copy-email]') as HTMLButtonElement;
+      if (copyBtn) {
+        const text = decodeURIComponent(copyBtn.getAttribute('data-copy-email') || '');
+        try {
+          await navigator.clipboard.writeText(text);
+          const orig = copyBtn.innerHTML;
+          copyBtn.innerHTML = '✓ Copied!';
+          copyBtn.classList.add('bg-emerald-600', 'text-white');
+          setTimeout(() => {
+            copyBtn.innerHTML = orig;
+            copyBtn.classList.remove('bg-emerald-600', 'text-white');
+          }, 2000);
+        } catch (err) {
+          alert('Could not copy to clipboard.');
+        }
+        return;
+      }
+
+      // Track link from opportunity
+      const trackBtn = target.closest('[data-track-opp]') as HTMLButtonElement;
+      if (trackBtn) {
+        const data = JSON.parse(trackBtn.getAttribute('data-track-opp') || '{}');
+        trackBtn.disabled = true;
+        trackBtn.innerText = 'Tracking...';
+        try {
+          await addDoc(collection(db, 'backlinks'), {
+            url: data.url,
+            pageTitle: data.pageTitle,
+            status: 'Active',
+            isNofollow: false,
+            createdAt: serverTimestamp(),
+            lastVerifiedAt: serverTimestamp()
+          });
+          trackBtn.innerText = '✓ Tracked';
+          trackBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
+          trackBtn.classList.replace('text-emerald-700', 'text-slate-400');
+        } catch (err: any) {
+          alert('Failed to track: ' + err.message);
+          trackBtn.disabled = false;
+          trackBtn.innerText = '+ Track Link';
+        }
+      }
+    });
+
+    // --- Find Opportunities Trigger ---
+    async function triggerFindOpportunities(showAlert = true) {
+      const btn = document.getElementById('find-opps-btn') as HTMLButtonElement;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> AI is researching Knoxville TN...';
+      }
+      
+      try {
+        const generateLinkOutreach = httpsCallable(functions, 'generateLinkOutreach');
+        const response = await generateLinkOutreach();
+        const opps = (response.data as any)?.opportunities || [];
+        if (showAlert) {
+          // Scroll down to the outreach list
+          document.getElementById('outreach-container')?.scrollIntoView({ behavior: 'smooth' });
+        }
+      } catch (e: any) {
+        console.error("AI Outreach error:", e);
+        if (showAlert) alert('Outreach generation note: ' + (e.message || 'Complete'));
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = 'Find Opportunities';
+        }
+      }
+    }
+
+    document.getElementById('find-opps-btn')?.addEventListener('click', () => triggerFindOpportunities(true));
+
     // --- Verify All Button ---
     document.getElementById('verify-links-btn')?.addEventListener('click', async () => {
       const btn = document.getElementById('verify-links-btn') as HTMLButtonElement;
@@ -215,54 +370,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> Verify All Now';
-      }
-    });
-
-    // --- AI Link Building Outreach ---
-    document.getElementById('find-opps-btn')?.addEventListener('click', async () => {
-      const btn = document.getElementById('find-opps-btn') as HTMLButtonElement;
-      btn.disabled = true;
-      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> AI is researching Knoxville TN...';
-      
-      try {
-        const generateLinkOutreach = httpsCallable(functions, 'generateLinkOutreach');
-        const response = await generateLinkOutreach();
-        const opps = (response.data as any)?.opportunities || [];
-
-        const html = opps.map((opp: any) => `
-          <div class="p-4 bg-slate-50 border border-slate-100 rounded-lg mb-4">
-            <div class="flex justify-between items-start mb-2">
-              <div>
-                <h4 class="font-bold text-slate-900">${opp.targetName}</h4>
-                <a href="${opp.targetUrl}" target="_blank" class="text-xs text-brand-primary hover:underline">${opp.targetUrl}</a>
-              </div>
-              <span class="px-2 py-1 bg-blue-100 text-blue-800 text-[10px] font-bold uppercase rounded">${opp.strategy}</span>
-            </div>
-            <div class="mt-3 bg-white p-3 border border-slate-200 rounded text-sm text-slate-600 whitespace-pre-wrap font-mono relative group">
-              ${opp.emailDraft}
-            </div>
-          </div>
-        `).join('');
-
-        (window as any).showModal('AI Link Building Opportunities', `
-          <div class="space-y-2 max-h-[60vh] overflow-y-auto pr-2">
-            <p class="text-sm text-slate-500 mb-4">Gemini found these highly relevant local targets and drafted personalized outreach emails. Review and send them manually.</p>
-            ${html}
-          </div>
-        `, {
-          wide: true,
-          footer: '<button id="close-opps-btn-modal" class="px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg">Close</button>'
-        });
-
-        document.getElementById('close-opps-btn-modal')?.addEventListener('click', () => {
-          (document.getElementById('admin-modal-overlay')?.querySelector('#modal-close-btn') as HTMLButtonElement)?.click();
-        });
-
-      } catch (e: any) {
-        alert('AI generation failed: ' + e.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Find Opportunities';
       }
     });
   </script>
