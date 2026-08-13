@@ -206,9 +206,10 @@ At **GUIA NEGOCIOS**, we specialize in assisting Hispanic entrepreneurs — both
  * Get all blog posts for a given language, sorted by date (newest first).
  */
 export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
-  const postsQuery = query(collection(db, 'blogs'), where('status', '==', 'Published'));
-  const snapshot = await getDocs(postsQuery);
-  const posts: BlogPost[] = [];
+  try {
+    const postsQuery = query(collection(db, 'blogs'), where('status', '==', 'Published'));
+    const snapshot = await getDocs(postsQuery);
+    const posts: BlogPost[] = [];
   
   snapshot.forEach(doc => {
     const data = doc.data();
@@ -239,6 +240,10 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
   
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return posts;
+  } catch (error) {
+    console.error("FATAL ERROR in getBlogPosts:", error);
+    throw error;
+  }
 }
 
 /**

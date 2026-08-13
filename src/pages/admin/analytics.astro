@@ -9,9 +9,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <p class="text-sm text-slate-500 mt-1">Detailed traffic and engagement metrics.</p>
     </div>
     <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-1">
-      <button class="px-3 py-1.5 text-sm font-medium rounded-md bg-slate-100 text-slate-900">30 Days</button>
-      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900">90 Days</button>
-      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900">Year</button>
+      <button id="btn-range-30" class="date-range-btn px-3 py-1.5 text-sm font-medium rounded-md bg-slate-100 text-slate-900" data-range="30">30 Days</button>
+      <button id="btn-range-90" class="date-range-btn px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900" data-range="90">90 Days</button>
+      <button id="btn-range-365" class="date-range-btn px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900" data-range="365">Year</button>
     </div>
   </div>
 
@@ -106,11 +106,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     import { app } from '../../lib/firebase';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
-    async function loadAnalytics() {
+    async function loadAnalytics(range: string = '30') {
       try {
+        // Set UI to loading state
+        document.getElementById('metric-visitors')!.innerHTML = '<span class="animate-pulse text-slate-300">...</span>';
+        document.getElementById('metric-new')!.innerHTML = '<span class="animate-pulse text-slate-300">...</span>';
+        document.getElementById('metric-bounce')!.innerHTML = '<span class="animate-pulse text-slate-300">...</span>';
+        document.getElementById('metric-session')!.innerHTML = '<span class="animate-pulse text-slate-300">...</span>';
+        
         const functions = getFunctions(app);
         const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
-        const result = await getAnalyticsData();
+        const result = await getAnalyticsData({ range });
         const data = result.data as any;
 
         if (data.totals) {
@@ -209,7 +215,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       }
     }
 
+    // Event Listeners for Date Range Buttons
+    const buttons = document.querySelectorAll('.date-range-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.target as HTMLButtonElement;
+        const range = target.getAttribute('data-range') || '30';
+        
+        // Update active styling
+        buttons.forEach(b => {
+          b.classList.remove('bg-slate-100', 'text-slate-900');
+          b.classList.add('text-slate-600', 'hover:text-slate-900');
+        });
+        target.classList.remove('text-slate-600', 'hover:text-slate-900');
+        target.classList.add('bg-slate-100', 'text-slate-900');
+
+        // Fetch new data
+        loadAnalytics(range);
+      });
+    });
+
     // Call after slight delay to ensure auth is ready
-    setTimeout(loadAnalytics, 1500);
+    setTimeout(() => loadAnalytics('30'), 1500);
   </script>
 </AdminLayout>

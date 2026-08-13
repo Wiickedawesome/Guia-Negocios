@@ -30,13 +30,19 @@ export const getAnalyticsData = onCall(async (request) => {
     );
   }
 
+  // Support dynamic ranges (30, 90, 365)
+  const rangeStr = request.data?.range || '30';
+  let startDate = '30daysAgo';
+  if (rangeStr === '90') startDate = '90daysAgo';
+  else if (rangeStr === '365') startDate = '365daysAgo';
+
   try {
-    // 2. Fetch basic metrics (Last 30 Days)
+    // 2. Fetch basic metrics
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [
         {
-          startDate: '30daysAgo',
+          startDate: startDate,
           endDate: 'today',
         },
       ],
@@ -55,7 +61,7 @@ export const getAnalyticsData = onCall(async (request) => {
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [
         {
-          startDate: '30daysAgo',
+          startDate: startDate,
           endDate: 'today',
         },
       ],
@@ -84,7 +90,7 @@ export const getAnalyticsData = onCall(async (request) => {
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [
         {
-          startDate: '30daysAgo',
+          startDate: startDate,
           endDate: 'today',
         },
       ],
@@ -113,7 +119,7 @@ export const getAnalyticsData = onCall(async (request) => {
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [
         {
-          startDate: '30daysAgo',
+          startDate: startDate,
           endDate: 'today',
         },
       ],
@@ -136,12 +142,12 @@ export const getAnalyticsData = onCall(async (request) => {
       language: row.dimensionValues?.[0]?.value || 'Unknown',
       users: row.metricValues?.[0]?.value || '0'
     }));
-    // 6. Fetch Time Series (Active Users over last 30 days)
+    // 6. Fetch Time Series (Active Users)
     const [timeSeriesResponse] = await analyticsDataClient.runReport({
       property: `properties/${PROPERTY_ID}`,
       dateRanges: [
         {
-          startDate: '30daysAgo',
+          startDate: startDate,
           endDate: 'today',
         },
       ],
@@ -167,7 +173,7 @@ export const getAnalyticsData = onCall(async (request) => {
     // 7. Fetch Traffic Sources
     const [trafficSourcesResponse] = await analyticsDataClient.runReport({
       property: `properties/${PROPERTY_ID}`,
-      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+      dateRanges: [{ startDate: startDate, endDate: 'today' }],
       dimensions: [{ name: 'sessionDefaultChannelGroup' }],
       metrics: [{ name: 'activeUsers' }],
       orderBys: [{ desc: true, metric: { metricName: 'activeUsers' } }]
