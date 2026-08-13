@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "firebase-admin": "^14.2.0",
-    "gray-matter": "^4.0.3"
+    "gray-matter": "^4.0.3",
+    "puppeteer": "^25.7.0"
   }
 }

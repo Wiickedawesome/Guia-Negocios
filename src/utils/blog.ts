@@ -25,7 +25,7 @@ const POST_OVERRIDES: Record<string, Partial<BlogPost>> = {
   'importancia-de-numero-ein': {
     title: "Guía de EIN para No Residentes y Emprendedores Hispanos: Cómo Obtenerlo Sin SSN",
     excerpt: "Guía completa para no residentes y emprendedores hispanos: cómo tramitar el número EIN ante el IRS sin Seguro Social (SSN), abrir cuentas bancarias en EE.UU. y evitar multas.",
-    featuredImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
     tags: ["EIN", "No Residentes", "IRS", "LLC EE.UU.", "Empresarios Hispanos"],
     readTime: 7,
     content: `
@@ -114,7 +114,7 @@ En **GUIA NEGOCIOS**, somos especialistas en ayudar a emprendedores hispanos —
   'importance-of-ein-number': {
     title: "EIN Guide for Non-US Residents & Hispanic Entrepreneurs: How to Get One Without an SSN",
     excerpt: "Complete guide for non-residents and Hispanic entrepreneurs: how to file for an IRS EIN without a Social Security Number (SSN), open U.S. business bank accounts, and prevent penalties.",
-    featuredImage: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
     tags: ["EIN", "Non-Residents", "IRS", "U.S. LLC", "Hispanic Business"],
     readTime: 7,
     content: `
@@ -224,7 +224,7 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
         altSlug: lang === 'en' ? data.slugEs : data.slugEn,
         tags: data.keywords || [],
         content: lang === 'en' ? data.contentEn : data.contentEs,
-        featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop',
+        featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
         authorAvatar: data.authorAvatar || '/images/team-avatar.webp',
         readTime: data.readTime || 5,
       };

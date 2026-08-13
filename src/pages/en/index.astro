@@ -11,7 +11,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title={t('site.title')} description={t('site.description')}>
+<BaseLayout title={t('site.title')} description={t('site.description')} ogImage="/images/og/og-home.png">
   <Header slot="header" />
   
   <!-- Onyx-Style Hero Section -->
