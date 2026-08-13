@@ -32,9 +32,9 @@ export const db = getFirestore(app);
 // Initialize Firebase AI Logic (Gemini Developer API)
 export const ai = getAI(app, { backend: new GoogleAIBackend() });
 
-// Export the default generative model (gemini-2.5-flash)
+// Export the default generative model (gemini-2.0-flash)
 export const aiModel = getGenerativeModel(ai, { 
-  model: 'gemini-2.5-flash',
+  model: 'gemini-2.0-flash',
   generationConfig: {
     temperature: 0.7,
   }

@@ -20,7 +20,7 @@ const analyticsDataClient = fs.existsSync(keyFilename)
 
 const PROPERTY_ID = '401979686';
 
-export const getAnalyticsData = onCall(async (request) => {
+export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async (request) => {
   if (!request.auth) {
     throw new HttpsError(
       'unauthenticated',
@@ -177,7 +177,7 @@ export const getAnalyticsData = onCall(async (request) => {
 /**
  * discoverKeywords fetches real autocomplete suggestions and trends.
  */
-export const discoverKeywords = onCall(async (request) => {
+export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async (request) => {
   try {
     const { topic, lang = 'en' } = request.data || {};
     if (!topic) throw new HttpsError('invalid-argument', 'Missing topic');
@@ -238,7 +238,7 @@ export const discoverKeywords = onCall(async (request) => {
 });
 
 // Advanced Single-Page SEO Audit Function
-export const runSeoAudit = onCall(async (request) => {
+export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (request) => {
   const { targetUrl } = request.data || {};
   
   if (!targetUrl) {
@@ -366,7 +366,7 @@ export const runSeoAudit = onCall(async (request) => {
 });
 
 // ── Search Console Scanner ──
-export const scanSearchConsole = onCall(async (request) => {
+export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async (request) => {
   const { phrase } = request.data || {};
   if (!request.auth) {
     throw new HttpsError('unauthenticated', 'User must be logged in.');
@@ -491,7 +491,7 @@ export const scanSearchConsole = onCall(async (request) => {
 });
 
 // ── Autonomous Site-Wide SEO Audit ──
-export const runSiteWideAudit = onCall({ timeoutSeconds: 540, memory: '1GiB' }, async (request) => {
+export const runSiteWideAudit = onCall({ cors: true, invoker: 'public', timeoutSeconds: 540, memory: '1GiB' }, async (request) => {
   return await internalSiteWideAudit();
 });
 
@@ -685,7 +685,7 @@ export const scheduledSeoAudit = onSchedule({
 });
 
 // ── Backlink Verifier ──
-export const verifyBacklinks = onCall(async (request) => {
+export const verifyBacklinks = onCall({ cors: true, invoker: 'public' }, async (request) => {
   return await internalVerifyBacklinks();
 });
 
@@ -767,7 +767,7 @@ export const scheduledVerifyBacklinks = onSchedule("every 48 hours", async (even
 });
 
 // ── AI Link Building Outreach ──
-export const generateLinkOutreach = onCall(async (request) => {
+export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, async (request) => {
   try {
     const curatedOpportunities = [
       {
@@ -815,7 +815,7 @@ export const generateLinkOutreach = onCall(async (request) => {
   }
 });
 
-export const generateOnDemandReport = onCall({ timeoutSeconds: 120 }, async (request) => {
+export const generateOnDemandReport = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
   if (!request.auth) {
     throw new HttpsError('unauthenticated', 'Must be logged in');
   }
@@ -868,7 +868,7 @@ async function internalGenerateReport(generatedBy: string = 'system') {
 }
 
 // ── Contact Form Handler ──
-export const submitContactForm = onCall(async (request) => {
+export const submitContactForm = onCall({ cors: true, invoker: 'public' }, async (request) => {
   try {
     const { name, email, phone, subject, message } = request.data || {};
 
