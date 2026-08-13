@@ -225,7 +225,7 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
         tags: data.keywords || [],
         content: lang === 'en' ? data.contentEn : data.contentEs,
         featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop',
-        authorAvatar: data.authorAvatar || 'https://i.pravatar.cc/150?u=guia',
+        authorAvatar: data.authorAvatar || '/images/team-avatar.webp',
         readTime: data.readTime || 5,
       };
 
