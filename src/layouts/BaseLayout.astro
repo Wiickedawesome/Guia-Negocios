@@ -40,6 +40,14 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E8GG9X33H"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4E8GG9X33H');
+    </script>
     <!-- SEO & i18n -->
     <link rel="alternate" hreflang="en" href={`https://guianegocios.net${isEnglish ? currentPath : alternatePath}`} />
     <link rel="alternate" hreflang="es" href={`https://guianegocios.net${!isEnglish ? currentPath : alternatePath}`} />
