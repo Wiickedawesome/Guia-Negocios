@@ -233,6 +233,16 @@ const t = useTranslations(lang);
           createdAt: serverTimestamp()
         });
 
+        // Add real notification for admin dashboard
+        await addDoc(collection(db, 'notifications'), {
+          title: 'New Contact Inquiry',
+          message: `${name} (${email}) — ${subject || 'General Inquiry'}`,
+          type: 'contact',
+          read: false,
+          link: '/admin/dashboard',
+          createdAt: serverTimestamp()
+        });
+
         // Write to mail collection to trigger email extension
         await addDoc(collection(db, 'mail'), {
           to: 'info@guianegocios.net',

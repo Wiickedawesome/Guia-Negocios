@@ -188,19 +188,226 @@ const navItems = [
 
     // Notification bell
     document.getElementById('notif-btn')?.addEventListener('click', () => {
-      const notifications = [
-        { text: 'SEO audit completed — score: 87%', time: '2 hours ago' },
-        { text: 'New backlink from centrohispano.org', time: '1 day ago' },
-        { text: 'Blog post "LLC Guide" hit 500 views', time: '3 days ago' },
-      ];
-      const list = notifications.map(n => `
-        <div class="py-3 border-b border-slate-100 last:border-0">
-          <p class="text-sm text-slate-700">${n.text}</p>
-          <p class="text-xs text-slate-400 mt-1">${n.time}</p>
-        </div>
-      `).join('');
-      
-      showModal('Notifications', `<div class="divide-y divide-slate-100">${list}</div><button onclick="document.getElementById('notif-dot')?.classList.add('hidden'); this.closest('#admin-modal-overlay').querySelector('#modal-close-btn').click(); showToast('Notifications cleared', 'info');" class="mt-4 w-full text-center text-sm text-brand-primary font-medium hover:underline">Mark all as read</button>`);
+      // @ts-ignore
+      if (typeof window.openAdminNotificationsModal === 'function') {
+        // @ts-ignore
+        window.openAdminNotificationsModal();
+      }
     });
+  </script>
+  <script>
+    import { db } from '../lib/firebase';
+    import { collection, query, orderBy, limit, onSnapshot, doc, updateDoc, writeBatch, getDocs } from 'firebase/firestore';
+
+    let currentNotifications: Array<{
+      id: string;
+      title: string;
+      message: string;
+      type: string;
+      read: boolean;
+      createdAt: any;
+      link?: string;
+    }> = [];
+
+    function formatTimeAgo(timestamp: any): string {
+      if (!timestamp) return 'Recently';
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      if (isNaN(date.getTime())) return 'Recently';
+      
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function getTypeIcon(type: string): string {
+      switch (type) {
+        case 'contact':
+          return `<div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          </div>`;
+        case 'seo':
+          return `<div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>`;
+        case 'blog':
+          return `<div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+          </div>`;
+        default:
+          return `<div class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+          </div>`;
+      }
+    }
+
+    function initNotificationsListener() {
+      try {
+        const notifQuery = query(
+          collection(db, 'notifications'),
+          orderBy('createdAt', 'desc'),
+          limit(20)
+        );
+
+        onSnapshot(notifQuery, (snapshot) => {
+          currentNotifications = snapshot.docs.map((docSnap) => ({
+            id: docSnap.id,
+            ...(docSnap.data() as any),
+          }));
+
+          const unreadCount = currentNotifications.filter((n) => !n.read).length;
+          const notifDot = document.getElementById('notif-dot');
+          if (notifDot) {
+            if (unreadCount > 0) {
+              notifDot.classList.remove('hidden');
+            } else {
+              notifDot.classList.add('hidden');
+            }
+          }
+        }, async (error) => {
+          console.warn('Notifications snapshot fallback, checking contacts directly:', error);
+          // Fallback: check recent contacts if notifications collection requires indexing
+          try {
+            const contactsQuery = query(collection(db, 'contacts'), orderBy('createdAt', 'desc'), limit(5));
+            const contactsSnap = await getDocs(contactsQuery);
+            currentNotifications = contactsSnap.docs.map(d => {
+              const c = d.data();
+              return {
+                id: d.id,
+                title: 'Contact Inquiry',
+                message: `${c.name || 'Visitor'} requested ${c.subject || 'consultation'}.`,
+                type: 'contact',
+                read: false,
+                createdAt: c.createdAt,
+                link: '/admin/dashboard'
+              };
+            });
+            const notifDot = document.getElementById('notif-dot');
+            if (notifDot) {
+              if (currentNotifications.length > 0) notifDot.classList.remove('hidden');
+              else notifDot.classList.add('hidden');
+            }
+          } catch (e) {
+            console.error('Error fetching fallback notifications:', e);
+          }
+        });
+      } catch (err) {
+        console.error('Failed to init notifications listener:', err);
+      }
+    }
+
+    // Attach to window so header button can open it
+    // @ts-ignore
+    window.openAdminNotificationsModal = function () {
+      if (!currentNotifications || currentNotifications.length === 0) {
+        // @ts-ignore
+        window.showModal(
+          'Notifications',
+          `<div class="py-10 text-center">
+            <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </div>
+            <h4 class="font-bold text-slate-800 text-sm">All Caught Up!</h4>
+            <p class="text-xs text-slate-400 mt-1">There are no notifications at this time.</p>
+          </div>`
+        );
+        return;
+      }
+
+      const unreadCount = currentNotifications.filter((n) => !n.read).length;
+
+      const itemsHtml = currentNotifications
+        .map((n) => {
+          const icon = getTypeIcon(n.type);
+          const timeAgo = formatTimeAgo(n.createdAt);
+          const isUnread = !n.read;
+          const bgClass = isUnread ? 'bg-blue-50/50' : 'hover:bg-slate-50';
+          const unreadDot = isUnread
+            ? '<span class="w-2 h-2 rounded-full bg-brand-primary flex-shrink-0"></span>'
+            : '';
+
+          return `
+          <div class="p-3.5 rounded-xl flex items-start gap-3 transition-colors ${bgClass} ${n.link ? 'cursor-pointer' : ''}" data-notif-id="${n.id}" data-notif-link="${n.link || ''}">
+            ${icon}
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <p class="text-sm font-semibold text-slate-900 truncate">${n.title}</p>
+                <span class="text-xs text-slate-400 whitespace-nowrap">${timeAgo}</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">${n.message}</p>
+            </div>
+            ${unreadDot}
+          </div>
+        `;
+        })
+        .join('');
+
+      const footerHtml = `
+        <div class="flex items-center justify-between w-full">
+          <span class="text-xs text-slate-500">${unreadCount > 0 ? `${unreadCount} unread` : 'All read'}</span>
+          ${
+            unreadCount > 0
+              ? '<button id="btn-mark-all-read" class="text-xs font-semibold text-brand-primary hover:underline cursor-pointer">Mark all as read</button>'
+              : ''
+          }
+        </div>
+      `;
+
+      // @ts-ignore
+      const modal = window.showModal(
+        'Notifications',
+        `<div class="space-y-2 max-h-[380px] overflow-y-auto pr-1">${itemsHtml}</div>`,
+        { footer: footerHtml }
+      );
+
+      // Handle click on notification items
+      modal.overlay.querySelectorAll('[data-notif-id]').forEach((el: any) => {
+        el.addEventListener('click', async () => {
+          const id = el.dataset.notifId;
+          const link = el.dataset.notifLink;
+          try {
+            if (id) {
+              await updateDoc(doc(db, 'notifications', id), { read: true });
+            }
+          } catch (e) {
+            console.error('Error marking read:', e);
+          }
+          if (link) {
+            modal.close();
+            window.location.href = link;
+          }
+        });
+      });
+
+      // Handle "Mark all as read"
+      modal.overlay.querySelector('#btn-mark-all-read')?.addEventListener('click', async () => {
+        try {
+          const batch = writeBatch(db);
+          currentNotifications.filter((n) => !n.read).forEach((n) => {
+            batch.update(doc(db, 'notifications', n.id), { read: true });
+          });
+          await batch.commit();
+          // @ts-ignore
+          window.showToast('All notifications marked as read', 'success');
+          modal.close();
+        } catch (e) {
+          console.error('Error marking all as read:', e);
+          modal.close();
+        }
+      });
+    };
+
+    // Initialize listener when authenticated
+    initNotificationsListener();
   </script>
 </BaseLayout>

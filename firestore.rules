@@ -20,6 +20,10 @@ service cloud.firestore {
     match /contacts/{document} {
       allow create: if true;
     }
+    match /notifications/{document} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
     match /mail/{document} {
       // Only allow sending emails to the official business address
       allow create: if request.resource.data.to == 'info@guianegocios.net';

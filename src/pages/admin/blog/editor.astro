@@ -167,7 +167,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
   <script>
     import { aiModel, db } from '../../../lib/firebase';
-    import { collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+    import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
     let easyMdeEs, easyMdeEn;
 
@@ -381,6 +381,21 @@ Output ONLY the raw markdown text.`;
           data.createdAt = new Date().toISOString();
           data.views = 0;
           await addDoc(collection(db, 'blogs'), data);
+        }
+
+        if (status === 'Published' || data.status === 'Published') {
+          try {
+            await addDoc(collection(db, 'notifications'), {
+              title: 'Blog Post Published',
+              message: `"${titleEs || titleEn || 'New Post'}" is now live on the site.`,
+              type: 'blog',
+              read: false,
+              link: '/admin/blog',
+              createdAt: serverTimestamp()
+            });
+          } catch (ne) {
+            console.warn('Failed to add blog notification:', ne);
+          }
         }
 
         showToast(status === 'Published' || data.status === 'Published' ? 'Post published successfully!' : 'Draft saved!', 'success');

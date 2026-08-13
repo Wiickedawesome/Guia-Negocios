@@ -85,7 +85,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { app } from '../../lib/firebase';
     import { getFunctions, httpsCallable } from 'firebase/functions';
-    import { getFirestore, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+    import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 
     const db = getFirestore(app);
 
@@ -191,6 +191,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         data.scannedAt = { toDate: () => new Date(data.scannedAt) };
         renderAuditData(data);
         
+        // Add real notification for the admin panel
+        try {
+          await addDoc(collection(db, 'notifications'), {
+            title: 'SEO Audit Completed',
+            message: `Site-wide scan finished with a health score of ${data.globalScore || 0}% across ${data.pagesScanned || 0} pages.`,
+            type: 'seo',
+            read: false,
+            link: '/admin/seo-audit',
+            createdAt: serverTimestamp()
+          });
+        } catch (ne) {
+          console.warn('Failed to write audit notification:', ne);
+        }
+
         loading?.classList.add('hidden');
         results?.classList.remove('hidden');
 
