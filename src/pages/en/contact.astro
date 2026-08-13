@@ -31,10 +31,12 @@ const t = useTranslations(lang);
           </div>
 
           <!-- Featured Vector Illustration -->
-          <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md">
+          <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
             <Image 
               src={contactHeroImg} 
               alt="GUIA NEGOCIOS Business Advisory Support" 
+              widths={[400, 800, 1200]}
+              sizes="(max-width: 1024px) 100vw, 600px"
               class="w-full h-[280px] sm:h-[340px] object-cover"
               loading="eager"
               fetchpriority="high"

@@ -31,8 +31,8 @@ const t = useTranslations(lang);
           </p>
         </div>
         <div class="lg:col-span-5 flex justify-center lg:justify-end">
-          <div class="w-full max-w-[460px] overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
-            <Image src={portraitImg} alt="GUIA NEGOCIOS" class="w-full h-[320px] sm:h-[340px] lg:h-[350px] object-cover object-center scale-110 transition-transform duration-300" loading="eager" fetchpriority="high" />
+          <div class="w-full max-w-[460px] overflow-hidden rounded-3xl border border-slate-200 shadow-lg bg-slate-200">
+            <Image src={portraitImg} alt="GUIA NEGOCIOS" widths={[400, 800, 1200]} sizes="(max-width: 1024px) 100vw, 500px" class="w-full h-[320px] sm:h-[340px] lg:h-[350px] object-cover object-center scale-110 transition-transform duration-300" loading="eager" fetchpriority="high" />
           </div>
         </div>
       </div>
@@ -64,8 +64,8 @@ const t = useTranslations(lang);
         </div>
       </div>
 
-      <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md">
-        <Image src={knoxvilleImg} alt="GUIA NEGOCIOS Team at Work" class="w-full h-[320px] object-cover" loading="lazy" decoding="async" />
+      <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
+        <Image src={knoxvilleImg} alt="GUIA NEGOCIOS Team at Work" widths={[400, 800, 1200]} sizes="100vw" class="w-full h-[320px] object-cover" loading="lazy" decoding="async" />
       </div>
     </div>
   </section>
@@ -85,15 +85,15 @@ const t = useTranslations(lang);
             Latino entrepreneurs carry the skill, work ethic, and ambition to build thriving enterprises. We break down language barriers and bureaucratic confusion so you can launch with absolute clarity and pride.
           </p>
         </div>
-        <div class="lg:col-span-5 overflow-hidden rounded-3xl border border-slate-200 shadow-md">
-          <Image src={presentingImg} alt="Our Mission" class="w-full h-[280px] object-cover" loading="lazy" decoding="async" />
+        <div class="lg:col-span-5 overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
+          <Image src={presentingImg} alt="Our Mission" widths={[400, 800]} sizes="(max-width: 1024px) 100vw, 500px" class="w-full h-[280px] object-cover" loading="lazy" decoding="async" />
         </div>
       </div>
 
       <!-- Block 2: Our Vision -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-5 order-2 lg:order-1 overflow-hidden rounded-3xl border border-slate-200 shadow-md">
-          <Image src={communityImg} alt="Our Vision" class="w-full h-[280px] object-cover" loading="lazy" decoding="async" />
+        <div class="lg:col-span-5 order-2 lg:order-1 overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
+          <Image src={communityImg} alt="Our Vision" widths={[400, 800]} sizes="(max-width: 1024px) 100vw, 500px" class="w-full h-[280px] object-cover" loading="lazy" decoding="async" />
         </div>
         <div class="lg:col-span-7 order-1 lg:order-2 space-y-4">
           <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide">Our Vision</span>
