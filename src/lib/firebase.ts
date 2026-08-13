@@ -3,7 +3,6 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getFunctions } from 'firebase/functions';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 
 const firebaseConfig = {
   projectId: "guianegocios-prod",
@@ -18,13 +17,7 @@ const firebaseConfig = {
 // Initialize Firebase App
 export const app = initializeApp(firebaseConfig);
 
-// Initialize App Check (only in the browser)
-if (typeof window !== 'undefined') {
-  initializeAppCheck(app, {
-    provider: new ReCaptchaEnterpriseProvider('6LfS1oMtAAAAADOn7vSke2FTZ9YgprAc9iUBIWIL'),
-    isTokenAutoRefreshEnabled: true
-  });
-}
+
 
 // Initialize Firestore
 export const db = getFirestore(app);

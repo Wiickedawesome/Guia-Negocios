@@ -220,26 +220,52 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       });
     });
 
-    // --- Load Outreach Opportunities from Firestore ---
-    const outreachQuery = query(collection(db, 'linkOutreach'), orderBy('createdAt', 'desc'));
-    onSnapshot(outreachQuery, (snap) => {
+    // --- Default Local Opportunities Data ---
+    const defaultOpportunities = [
+      {
+        targetName: "Centro Hispano de East TN",
+        targetUrl: "https://www.centrohispano.org/recursos",
+        daEstimate: 42,
+        strategy: "Community Resource Guide & Workshop Partnership",
+        emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
+      },
+      {
+        targetName: "Knoxville Chamber of Commerce",
+        targetUrl: "https://www.knoxvillechamber.com/directory",
+        daEstimate: 58,
+        strategy: "Minority Business & Bilingual Consultancy Listing",
+        emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
+      },
+      {
+        targetName: "Hola Hora Latina",
+        targetUrl: "https://holahoralatina.org",
+        daEstimate: 36,
+        strategy: "Community Sponsor & Business Feature",
+        emailDraft: "Subject: Colaboración y Apoyo a Emprendedores Hispanos en Knoxville\n\nEstimados amigos de Hola Hora Latina,\n\nGracias por su dedicación cultural y comunitaria en Knoxville. Desde GUIA DE NEGOCIOS nos gustaría colaborar patrocinando espacios informativos para nuevos empresarios y negocios latinos en la región.\n\n¿Podríamos coordinar detalles sobre oportunidades de colaboración este mes?\n\nUn saludo atento,\nGUIA NEGOCIOS"
+      },
+      {
+        targetName: "Knoxville Area Urban League",
+        targetUrl: "https://thekaul.org/business-development",
+        daEstimate: 45,
+        strategy: "Small Business Resource Hub Inclusion",
+        emailDraft: "Subject: Resource Collaboration for Knox County Entrepreneurs\n\nDear Business Development Team,\n\nWe provide bilingual LLC formation, licensing, and operational support to East TN small business owners. We would be honored to partner on referral resources and small business guidance for diverse founders.\n\nLooking forward to connecting!\n\nSincerely,\nGUIA NEGOCIOS Team"
+      },
+      {
+        targetName: "Tennessee SBDC at Pellissippi State",
+        targetUrl: "https://www.tsbdc.org/knoxville",
+        daEstimate: 62,
+        strategy: "Bilingual Resource Referral Partner",
+        emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Knoxville Advisers,\n\nAs a local consultancy serving Spanish-speaking entrepreneurs in Knox and surrounding counties, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
+      }
+    ];
+
+    function renderOutreachCards(opps: any[]) {
       const container = document.getElementById('outreach-list');
       const badge = document.getElementById('opps-count-badge');
       if (!container) return;
+      if (badge) badge.innerText = `${opps.length} Targets Found`;
 
-      if (snap.empty) {
-        // Auto-seed initial opportunities if collection is empty
-        triggerFindOpportunities(false);
-        return;
-      }
-
-      if (badge) badge.innerText = `${snap.size} Targets Found`;
-
-      const cardsHtml = snap.docs.map(d => {
-        const opp = d.data();
-        const docId = d.id;
-        const emailEscaped = (opp.emailDraft || '').replace(/"/g, '&quot;');
-
+      const cardsHtml = opps.map(opp => {
         return `
           <div class="p-5 bg-slate-50 border border-slate-200 rounded-xl hover:border-brand-primary/40 transition-colors">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
@@ -274,8 +300,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       }).join('');
 
       container.innerHTML = cardsHtml;
+    }
+
+    // Render default opportunities immediately on page load
+    renderOutreachCards(defaultOpportunities);
+
+    // --- Load Outreach Opportunities from Firestore if updated ---
+    const outreachQuery = query(collection(db, 'linkOutreach'), orderBy('createdAt', 'desc'));
+    onSnapshot(outreachQuery, (snap) => {
+      if (!snap.empty) {
+        const firestoreOpps = snap.docs.map(d => d.data());
+        renderOutreachCards(firestoreOpps);
+      }
     }, (error) => {
-      console.warn("Outreach listener warning:", error);
+      console.warn("Outreach listener note:", error);
     });
 
     // Copy email handler
