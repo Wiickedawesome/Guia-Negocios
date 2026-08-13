@@ -25,13 +25,29 @@ export const db = getFirestore(app);
 // Initialize Firebase AI Logic (Gemini Developer API)
 export const ai = getAI(app, { backend: new GoogleAIBackend() });
 
-// Export the default generative model (gemini-2.0-flash)
-export const aiModel = getGenerativeModel(ai, { 
-  model: 'gemini-2.0-flash',
-  generationConfig: {
-    temperature: 0.7,
+// Export Gemini Flash 3 model with fallback capability
+const modelCandidates = ['gemini-3.0-flash', 'gemini-3-flash', 'gemini-2.5-flash'];
+
+export const aiModel = {
+  async generateContent(prompt: any) {
+    let lastError: any = null;
+    for (const modelName of modelCandidates) {
+      try {
+        const model = getGenerativeModel(ai, { 
+          model: modelName,
+          generationConfig: {
+            temperature: 0.7,
+          }
+        });
+        return await model.generateContent(prompt);
+      } catch (err: any) {
+        console.warn(`Model ${modelName} attempt note:`, err?.message || err);
+        lastError = err;
+      }
+    }
+    throw lastError;
   }
-});
+};
 
 // Initialize Authentication
 export const auth = getAuth(app);
