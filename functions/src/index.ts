@@ -164,6 +164,20 @@ export const getAnalyticsData = onCall(async (request) => {
       users: row.metricValues?.[0]?.value || '0'
     }));
 
+    // 7. Fetch Traffic Sources
+    const [trafficSourcesResponse] = await analyticsDataClient.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+      dimensions: [{ name: 'sessionDefaultChannelGroup' }],
+      metrics: [{ name: 'activeUsers' }],
+      orderBys: [{ desc: true, metric: { metricName: 'activeUsers' } }]
+    });
+
+    const trafficSources = (trafficSourcesResponse.rows || []).map(row => ({
+      channel: row.dimensionValues?.[0]?.value || 'Unknown',
+      users: parseInt(row.metricValues?.[0]?.value || '0', 10)
+    }));
+
     return {
       totals: {
         activeUsers: metrics[0]?.value || '0',
@@ -174,7 +188,8 @@ export const getAnalyticsData = onCall(async (request) => {
       topPages,
       topCities,
       languages,
-      timeSeries
+      timeSeries,
+      trafficSources
     };
 
   } catch (error) {

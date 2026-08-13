@@ -52,7 +52,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <div class="flex items-center text-sm">
         <span class="text-emerald-600 font-medium flex items-center">
           <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-          3
+          <span id="dash-metric-keywords-new">...</span>
         </span>
         <span class="text-slate-500 ml-2">new this week</span>
       </div>
@@ -155,7 +155,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { app } from '../../lib/firebase';
     import { getFunctions, httpsCallable } from 'firebase/functions';
-    import { getFirestore, collection, getDocs, query, orderBy, limit, getCountFromServer } from 'firebase/firestore';
+    import { getFirestore, collection, getDocs, query, orderBy, limit, getCountFromServer, where } from 'firebase/firestore';
 
     async function loadDashAnalytics() {
       try {
@@ -227,6 +227,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const kwEl = document.getElementById('dash-metric-keywords');
         if (kwEl) kwEl.innerText = keywordsSnap.data().count.toString();
         
+        // 1b. New Keywords (last 7 days)
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        const newKwQuery = query(collection(db, 'keywords'), where('createdAt', '>=', oneWeekAgo));
+        const newKwSnap = await getCountFromServer(newKwQuery);
+        const newKwEl = document.getElementById('dash-metric-keywords-new');
+        if (newKwEl) newKwEl.innerText = newKwSnap.data().count.toString();
+        
         // 2. SEO Score (latest audit)
         const seoQuery = query(collection(db, 'seoAudits'), orderBy('timestamp', 'desc'), limit(1));
         const seoSnap = await getDocs(seoQuery);
@@ -245,21 +253,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (blEl) blEl.innerText = backlinksSnap.data().count.toString();
 
         // 4. Recent AI Drafts
-        const blogsQuery = query(collection(db, 'blogs'), orderBy('createdAt', 'desc'), limit(5));
+        const blogsQuery = query(collection(db, 'blogs'), orderBy('createdAt', 'desc'), limit(15));
         const blogsSnap = await getDocs(blogsQuery);
         const draftsContainer = document.getElementById('dash-recent-drafts');
         if (draftsContainer) {
-          if (blogsSnap.empty) {
+          const validDrafts = blogsSnap.docs.filter(doc => doc.data().title && doc.data().title.trim() !== '').slice(0, 5);
+          if (validDrafts.length === 0) {
             draftsContainer.innerHTML = '<p class="text-sm text-slate-500 italic">No recent drafts.</p>';
           } else {
-            draftsContainer.innerHTML = blogsSnap.docs.map(doc => {
+            draftsContainer.innerHTML = validDrafts.map(doc => {
               const data = doc.data();
               const isPublished = data.status === 'published';
               const dotColor = isPublished ? 'bg-emerald-500' : 'bg-amber-400';
               return `
                 <div class="flex items-center gap-3">
                   <span class="w-2 h-2 rounded-full ${dotColor}"></span>
-                  <span class="text-sm text-slate-700 truncate flex-1">${data.title || 'Untitled Post'}</span>
+                  <span class="text-sm text-slate-700 truncate flex-1">${data.title}</span>
                   <span class="text-xs text-slate-400">${isPublished ? 'Published' : 'Draft'}</span>
                 </div>
               `;
