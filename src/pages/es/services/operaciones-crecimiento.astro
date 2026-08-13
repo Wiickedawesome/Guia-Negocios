@@ -7,8 +7,40 @@ import { getLangFromUrl } from '../../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 ---
 
-<BaseLayout title="Guía de Sistemas de Operación y Crecimiento | GUIA NEGOCIOS" description="Una guía detallada sobre cómo GUIA NEGOCIOS interviene en negocios activos, identifica cuellos de botella administrativos, optimiza márgenes de ganancia y construye sistemas escalables.">
+<BaseLayout title="Guía de Sistemas de Operación y Crecimiento | GUIA NEGOCIOS" description="Una guía detallada sobre cómo GUIA NEGOCIOS interviene en negocios activos, identifica cuellos de botella administrativos, optimiza márgenes de ganancia y construye sistemas escalables." altPath="/en/services/operations-growth">
   <Header slot="header" />
+  
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Consultoría de Sistemas de Operación y Crecimiento",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "GUIA NEGOCIOS",
+      "url": "https://guianegocios.net",
+      "telephone": "+1-865-202-7112",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Knoxville",
+        "addressRegion": "TN",
+        "addressCountry": "US"
+      }
+    },
+    "serviceType": "Optimización Operativa y Financiera para Pequeñas Empresas",
+    "areaServed": "Knoxville, Condado de Knox, Este de Tennessee",
+    "description": "Auditoría operativa práctica, automatización de flujos de trabajo, reportes financieros y diseño de sistemas empresariales escalables.",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": "2500",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": "2500",
+        "maxPrice": "6500",
+        "priceCurrency": "USD"
+      }
+    }
+  })} />
   
   <!-- Service Package Hero Header -->
   <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">

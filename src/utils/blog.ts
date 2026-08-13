@@ -392,8 +392,13 @@ export function markdownToHtml(md: string): string {
  * Process inline markdown: bold, italic, code, links.
  */
 function inlineMarkdown(text: string): string {
-  // Images
-  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-xl shadow-sm my-6 w-full" />');
+  // Images with guaranteed descriptive alt attribute and responsive lazy loading
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, altText, url) => {
+    const cleanAlt = (altText && altText.trim()) 
+      ? altText.trim().replace(/"/g, '&quot;')
+      : 'GUIA NEGOCIOS - Hispanic Business Consulting and LLC Setup Graphic';
+    return `<img src="${url}" alt="${cleanAlt}" loading="lazy" decoding="async" class="rounded-xl shadow-sm my-6 w-full object-cover max-h-[500px]" />`;
+  });
 
   // Code (backticks)
   text = text.replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-brand-primary px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');

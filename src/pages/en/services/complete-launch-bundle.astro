@@ -7,8 +7,40 @@ import { getLangFromUrl } from '../../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 ---
 
-<BaseLayout title="Complete Business Launch Bundle Guide | GUIA NEGOCIOS" description="The ultimate step-by-step guide to launching a business in Tennessee: consultation, legal setup, branding, website, bookkeeping, and operational hand-off.">
+<BaseLayout title="Complete Business Launch Bundle Guide | GUIA NEGOCIOS" description="The ultimate step-by-step guide to launching a business in Tennessee: consultation, legal setup, branding, website, bookkeeping, and operational hand-off." altPath="/es/services/paquete-lanzamiento-completo">
   <Header slot="header" />
+  
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Complete Business Launch Bundle",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "GUIA NEGOCIOS",
+      "url": "https://guianegocios.net",
+      "telephone": "+1-865-202-7112",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Knoxville",
+        "addressRegion": "TN",
+        "addressCountry": "US"
+      }
+    },
+    "serviceType": "Turnkey Business Formation & Launch Consulting",
+    "areaServed": "Knoxville, Knox County, East Tennessee",
+    "description": "All-inclusive guided implementation package combining Tennessee LLC formation, state licensing, branding, custom website, bookkeeping, and operational setup.",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": "4500",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": "4500",
+        "maxPrice": "9500",
+        "priceCurrency": "USD"
+      }
+    }
+  })} />
   
   <!-- Service Package Hero Header -->
   <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">

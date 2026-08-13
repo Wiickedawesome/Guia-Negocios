@@ -300,7 +300,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         const langStr = isEnglish ? 'English' : 'Spanish';
         
         const prompt = `You are an expert SEO blog writer writing in ${langStr}. Write a comprehensive, long-form blog post section in Markdown format based on this request: "${text}". 
-Include proper headings (##), lists, and embed relevant high-quality Unsplash image placeholders using markdown syntax: \`![alt text](https://images.unsplash.com/photo-...)\`.
+Include proper headings (##), lists, and embed relevant high-quality Unsplash images with descriptive, SEO-optimized alt text using markdown syntax: \`![Detailed description of the image and topic](https://images.unsplash.com/photo-...)\`.
 Output ONLY the raw markdown text.`;
 
         const result = await aiModel.generateContent(prompt);

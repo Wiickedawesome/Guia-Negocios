@@ -54,7 +54,8 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
       gtag('js', new Date());
       gtag('config', 'G-4E8GG9X33H');
     </script>
-    <!-- SEO & i18n -->
+    <!-- Canonical & SEO i18n -->
+    <link rel="canonical" href={`https://guianegocios.net${currentPath.endsWith('/') || currentPath === '' ? currentPath : currentPath + '/'}`} />
     <link rel="alternate" hreflang="en" href={`https://guianegocios.net${isEnglish ? currentPath : alternatePath}`} />
     <link rel="alternate" hreflang="es" href={`https://guianegocios.net${!isEnglish ? currentPath : alternatePath}`} />
     <link rel="alternate" hreflang="x-default" href={`https://guianegocios.net${defaultPath}`} />
@@ -76,21 +77,48 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={resolvedOgImage} />
 
-    <!-- LocalBusiness Schema -->
+    <!-- LocalBusiness & Organization Schema -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
+      "@id": "https://guianegocios.net/#business",
       "name": "GUIA NEGOCIOS",
+      "legalName": "Guia de Negocios LLC",
       "image": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
+      "logo": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
       "url": "https://guianegocios.net",
-      "telephone": "865-202-7112",
+      "telephone": "+1-865-202-7112",
       "email": "info@guianegocios.net",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Knoxville",
         "addressRegion": "TN",
+        "postalCode": "37902",
         "addressCountry": "US"
       },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 35.9606,
+        "longitude": -83.9207
+      },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Knoxville"
+        },
+        {
+          "@type": "AdministrativeArea",
+          "name": "Knox County"
+        },
+        {
+          "@type": "AdministrativeArea",
+          "name": "East Tennessee"
+        },
+        {
+          "@type": "State",
+          "name": "Tennessee"
+        }
+      ],
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": [
@@ -104,7 +132,49 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
         "closes": "17:00"
       },
       "description": description,
-      "priceRange": "$$"
+      "priceRange": "$$",
+      "sameAs": [
+        "https://www.facebook.com/guianegociosknoxville",
+        "https://www.instagram.com/guianegocios"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Bilingual Business Launch & Consulting Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Tennessee LLC Registration & Business Licensing",
+              "description": "Comprehensive LLC formation, state filing, EIN setup, and local operating permits."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Bilingual Bookkeeping & Accounting Setup",
+              "description": "Small business bookkeeping, chart of accounts, and financial systems in English & Spanish."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Complete Business Launch Bundle",
+              "description": "Turnkey business setup from legal formation to custom website, branding, and operations."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "CreedaVA Bilingual Virtual Assistant & Operations",
+              "description": "Dedicated Spanish/English bilingual operational support, admin management, and customer onboarding."
+            }
+          }
+        ]
+      }
     })} />
     <AeoInjector />
   </head>

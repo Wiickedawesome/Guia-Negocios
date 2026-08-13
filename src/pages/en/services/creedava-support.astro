@@ -7,8 +7,40 @@ import { getLangFromUrl } from '../../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 ---
 
-<BaseLayout title="CreedaVA Ongoing Support Guide | GUIA NEGOCIOS" description="A deep guide on how CreedaVA (creedava.com) provides dedicated bilingual virtual assistants to handle customer service, inbox triage, CRM, and admin tasks after launching.">
+<BaseLayout title="CreedaVA Ongoing Support Guide | GUIA NEGOCIOS" description="A deep guide on how CreedaVA provides dedicated bilingual virtual assistants to handle customer service, inbox triage, CRM, and admin tasks after launching." altPath="/es/services/apoyo-creedava">
   <Header slot="header" />
+  
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "CreedaVA Ongoing Bilingual Virtual Assistant Support",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "GUIA NEGOCIOS",
+      "url": "https://guianegocios.net",
+      "telephone": "+1-865-202-7112",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Knoxville",
+        "addressRegion": "TN",
+        "addressCountry": "US"
+      }
+    },
+    "serviceType": "Bilingual Operational & Admin Virtual Assistant",
+    "areaServed": "Knoxville, Knox County, East Tennessee",
+    "description": "Dedicated bilingual virtual assistant services for customer service, inbox triage, invoicing, and CRM management.",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD",
+      "price": "600",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": "600",
+        "maxPrice": "2400",
+        "priceCurrency": "USD"
+      }
+    }
+  })} />
   
   <!-- Service Package Hero Header -->
   <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">
