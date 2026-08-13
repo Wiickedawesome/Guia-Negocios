@@ -7,8 +7,6 @@ import { getApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import * as path from 'path';
 // @ts-ignore
-import fetch from 'node-fetch';
-// @ts-ignore
 import * as googleTrends from 'google-trends-api';
 import * as cheerio from 'cheerio';
 
@@ -138,6 +136,33 @@ export const getAnalyticsData = onCall(async (request) => {
       language: row.dimensionValues?.[0]?.value || 'Unknown',
       users: row.metricValues?.[0]?.value || '0'
     }));
+    // 6. Fetch Time Series (Active Users over last 30 days)
+    const [timeSeriesResponse] = await analyticsDataClient.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      dateRanges: [
+        {
+          startDate: '30daysAgo',
+          endDate: 'today',
+        },
+      ],
+      dimensions: [
+        { name: 'date' }
+      ],
+      metrics: [
+        { name: 'activeUsers' }
+      ],
+      orderBys: [
+        {
+          asc: true,
+          dimension: { dimensionName: 'date' }
+        }
+      ]
+    });
+
+    const timeSeries = (timeSeriesResponse.rows || []).map(row => ({
+      date: row.dimensionValues?.[0]?.value || '',
+      users: row.metricValues?.[0]?.value || '0'
+    }));
 
     return {
       totals: {
@@ -148,7 +173,8 @@ export const getAnalyticsData = onCall(async (request) => {
       },
       topPages,
       topCities,
-      languages
+      languages,
+      timeSeries
     };
 
   } catch (error) {
