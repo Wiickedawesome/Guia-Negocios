@@ -4,7 +4,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import fetch from "node-fetch";
 
 export const scheduledLinkOutreach = onSchedule({
-  schedule: "every 15th day of month 06:00",
+  schedule: "0 6 15 * *", // 15th of every month at 6:00 AM
   timeoutSeconds: 540,
   memory: "1GiB"
 }, async (event) => {

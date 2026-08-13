@@ -12,7 +12,7 @@ export default defineConfig({
 
   integrations: [react()],
   redirects: {
-    '/admin': '/admin/dashboard',
+    '/admin': '/admin/login',
   },
   i18n: {
     defaultLocale: 'es',

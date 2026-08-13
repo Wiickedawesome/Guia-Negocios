@@ -7,7 +7,7 @@ import fetch from "node-fetch";
 
 
 export const scheduledDataJournalism = onSchedule({
-  schedule: "every 1st day of month 05:00",
+  schedule: "0 9 1 * *", // 1st of every month at 9:00 AM
   timeoutSeconds: 540,
   memory: "1GiB"
 }, async (event) => {

@@ -3,7 +3,7 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { HttpsError } from "firebase-functions/v2/https";
 
 export const scheduledAeoInjector = onSchedule({
-  schedule: "every 1st day of month 03:00",
+  schedule: "0 3 1 * *",
   timeoutSeconds: 300,
   memory: "1GiB"
 }, async (event) => {
