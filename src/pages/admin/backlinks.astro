@@ -2,11 +2,11 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
 
-<AdminLayout title="Backlinks | Admin">
-  <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+<AdminLayout title="Tracked Backlinks | Admin">
+  <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900 font-heading">Backlink CRM</h1>
-      <p class="text-sm text-slate-500 mt-1">Track external links and verify their health autonomously.</p>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Tracked Backlinks</h1>
+      <p class="text-sm text-slate-500 mt-1">Autonomous monitoring for active backlinks, dofollow status, and link health.</p>
     </div>
     <div class="flex items-center gap-3 w-full md:w-auto">
       <button id="verify-links-btn" class="cursor-pointer px-4 py-2 bg-white text-slate-700 border border-slate-200 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2 whitespace-nowrap">
@@ -18,6 +18,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         Add Backlink
       </button>
     </div>
+  </div>
+
+  <!-- Sub-Navigation Tabs between the 2 pages -->
+  <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3">
+    <a href="/admin/backlinks" class="px-4 py-2 text-sm font-bold bg-brand-primary text-white rounded-lg shadow-sm flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+      Tracked Backlinks
+      <span id="tab-tracked-badge" class="px-1.5 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">0</span>
+    </a>
+    <a href="/admin/backlinks/outreach" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      AI Outreach & Pitch Drafts
+      <span class="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">5</span>
+    </a>
   </div>
 
   <!-- Metric Cards -->
@@ -40,82 +54,30 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
-  <!-- Navigation / View Toggle Button Menu -->
-  <div class="flex items-center justify-between flex-wrap gap-4 mb-6 bg-slate-100/90 p-1.5 rounded-xl border border-slate-200">
-    <div class="flex items-center gap-1.5 w-full sm:w-auto">
-      <button id="tab-split" class="view-tab-btn cursor-pointer px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 bg-brand-primary text-white shadow-sm">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" /></svg>
-        Side-by-Side View
-      </button>
-      <button id="tab-outreach" class="view-tab-btn cursor-pointer px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-        Outreach & Pitch Drafts
-        <span id="tab-opps-badge" class="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary text-[10px] font-bold rounded-full">5</span>
-      </button>
-      <button id="tab-tracked" class="view-tab-btn cursor-pointer px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-        Tracked Backlinks
-        <span id="tab-tracked-badge" class="px-1.5 py-0.5 bg-slate-200 text-slate-700 text-[10px] font-bold rounded-full">0</span>
-      </button>
+  <!-- Full-Width Tracked Backlinks Table -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900">Active Monitored Backlinks</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Automated crawling verifies anchor text, indexability, and HTTP response codes.</p>
+      </div>
+      <span id="loading-indicator" class="text-xs text-brand-primary font-medium animate-pulse hidden">Verifying...</span>
     </div>
-
-    <div class="flex items-center gap-2">
-      <button id="find-opps-btn" class="cursor-pointer px-3.5 py-2 bg-white border border-slate-200 text-brand-primary hover:bg-blue-50 text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
-        Find New Opportunities
-      </button>
-    </div>
-  </div>
-
-  <!-- Main CRM Display Container: Side-by-Side Grid by default -->
-  <div id="crm-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 items-start">
-    
-    <!-- LEFT PANEL: Outreach Opportunities & Drafted Emails -->
-    <div id="outreach-panel" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-      <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-        <div>
-          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-            <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-            Outreach Opportunities & Drafted Emails
-          </h3>
-          <p class="text-xs text-slate-500 mt-0.5">High-authority local targets and pre-written pitch emails ready to send.</p>
-        </div>
-        <span id="opps-count-badge" class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">5 Targets</span>
-      </div>
-      <div id="outreach-list" class="p-5 space-y-4 max-h-[750px] overflow-y-auto">
-        <!-- Rendered via JS -->
-      </div>
-    </div>
-
-    <!-- RIGHT PANEL: Tracked Backlinks Table -->
-    <div id="tracked-panel" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-      <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-        <div>
-          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-            <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-            Tracked Backlinks
-          </h3>
-          <p class="text-xs text-slate-500 mt-0.5">Monitored links for live status, anchors, and dofollow health.</p>
-        </div>
-        <span id="loading-indicator" class="text-xs text-brand-primary font-medium animate-pulse hidden">Checking...</span>
-      </div>
-      <div class="overflow-x-auto max-h-[750px] overflow-y-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 text-slate-500 border-b border-slate-200 sticky top-0 z-10">
-            <tr>
-              <th class="px-4 py-3 font-medium text-xs">Source URL</th>
-              <th class="px-4 py-3 font-medium text-xs">Status</th>
-              <th class="px-4 py-3 font-medium text-xs">Type</th>
-              <th class="px-4 py-3 font-medium text-xs">Verified</th>
-              <th class="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody id="backlinks-table-body" class="divide-y divide-slate-100">
-            <!-- Rendered via JS -->
-            <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Loading backlinks...</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-3 font-medium">Source URL</th>
+            <th class="px-6 py-3 font-medium">Status</th>
+            <th class="px-6 py-3 font-medium">Type</th>
+            <th class="px-6 py-3 font-medium">Last Verified</th>
+            <th class="px-6 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="backlinks-table-body" class="divide-y divide-slate-100">
+          <tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Loading backlinks...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -126,191 +88,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     const db = getFirestore(app);
     const functions = getFunctions(app);
-
-    // --- Tab Switching Logic (Side-by-Side vs Solo Panels) ---
-    const tabSplit = document.getElementById('tab-split');
-    const tabOutreach = document.getElementById('tab-outreach');
-    const tabTracked = document.getElementById('tab-tracked');
-    const crmGrid = document.getElementById('crm-grid');
-    const outreachPanel = document.getElementById('outreach-panel');
-    const trackedPanel = document.getElementById('tracked-panel');
-
-    function setActiveTab(activeBtn: HTMLElement, mode: 'split' | 'outreach' | 'tracked') {
-      [tabSplit, tabOutreach, tabTracked].forEach(btn => {
-        if (btn) {
-          btn.classList.remove('bg-brand-primary', 'text-white', 'shadow-sm', 'font-bold');
-          btn.classList.add('text-slate-600', 'font-semibold');
-        }
-      });
-      activeBtn.classList.remove('text-slate-600', 'font-semibold');
-      activeBtn.classList.add('bg-brand-primary', 'text-white', 'shadow-sm', 'font-bold');
-
-      if (mode === 'split') {
-        crmGrid?.classList.remove('grid-cols-1');
-        crmGrid?.classList.add('lg:grid-cols-2');
-        outreachPanel?.classList.remove('hidden');
-        trackedPanel?.classList.remove('hidden');
-      } else if (mode === 'outreach') {
-        crmGrid?.classList.remove('lg:grid-cols-2');
-        crmGrid?.classList.add('grid-cols-1');
-        outreachPanel?.classList.remove('hidden');
-        trackedPanel?.classList.add('hidden');
-      } else if (mode === 'tracked') {
-        crmGrid?.classList.remove('lg:grid-cols-2');
-        crmGrid?.classList.add('grid-cols-1');
-        outreachPanel?.classList.add('hidden');
-        trackedPanel?.classList.remove('hidden');
-      }
-    }
-
-    tabSplit?.addEventListener('click', () => setActiveTab(tabSplit, 'split'));
-    tabOutreach?.addEventListener('click', () => setActiveTab(tabOutreach, 'outreach'));
-    tabTracked?.addEventListener('click', () => setActiveTab(tabTracked, 'tracked'));
-
-    // --- Default Local Opportunities Data ---
-    const defaultOpportunities = [
-      {
-        targetName: "Centro Hispano de East TN",
-        targetUrl: "https://www.centrohispano.org/recursos",
-        daEstimate: 42,
-        strategy: "Community Resource Guide & Workshop Partnership",
-        emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
-      },
-      {
-        targetName: "Knoxville Chamber of Commerce",
-        targetUrl: "https://www.knoxvillechamber.com/directory",
-        daEstimate: 58,
-        strategy: "Minority Business & Bilingual Consultancy Listing",
-        emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
-      },
-      {
-        targetName: "Hola Hora Latina",
-        targetUrl: "https://holahoralatina.org",
-        daEstimate: 36,
-        strategy: "Community Sponsor & Business Feature",
-        emailDraft: "Subject: Colaboración y Apoyo a Emprendedores Hispanos en Knoxville\n\nEstimados amigos de Hola Hora Latina,\n\nGracias por su dedicación cultural y comunitaria en Knoxville. Desde GUIA DE NEGOCIOS nos gustaría colaborar patrocinando espacios informativos para nuevos empresarios y negocios latinos en la región.\n\n¿Podríamos coordinar detalles sobre oportunidades de colaboración este mes?\n\nUn saludo atento,\nGUIA NEGOCIOS"
-      },
-      {
-        targetName: "Knoxville Area Urban League",
-        targetUrl: "https://thekaul.org/business-development",
-        daEstimate: 45,
-        strategy: "Small Business Resource Hub Inclusion",
-        emailDraft: "Subject: Resource Collaboration for Knox County Entrepreneurs\n\nDear Business Development Team,\n\nWe provide bilingual LLC formation, licensing, and operational support to East TN small business owners. We would be honored to partner on referral resources and small business guidance for diverse founders.\n\nLooking forward to connecting!\n\nSincerely,\nGUIA NEGOCIOS Team"
-      },
-      {
-        targetName: "Tennessee SBDC at Pellissippi State",
-        targetUrl: "https://www.tsbdc.org/knoxville",
-        daEstimate: 62,
-        strategy: "Bilingual Resource Referral Partner",
-        emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Knoxville Advisers,\n\nAs a local consultancy serving Spanish-speaking entrepreneurs in Knox and surrounding counties, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
-      }
-    ];
-
-    function renderOutreachCards(opps: any[]) {
-      const container = document.getElementById('outreach-list');
-      const badge = document.getElementById('opps-count-badge');
-      const tabBadge = document.getElementById('tab-opps-badge');
-      if (!container) return;
-      if (badge) badge.innerText = `${opps.length} Targets`;
-      if (tabBadge) tabBadge.innerText = opps.length.toString();
-
-      const cardsHtml = opps.map(opp => {
-        return `
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-brand-primary/40 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="font-bold text-slate-900 text-sm">${opp.targetName}</h4>
-                  <span class="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase rounded">DA ~${opp.daEstimate || 45}</span>
-                </div>
-                <a href="${opp.targetUrl}" target="_blank" class="text-xs text-brand-primary hover:underline flex items-center gap-1 mt-0.5 break-all">
-                  ${opp.targetUrl}
-                  <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                </a>
-              </div>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-semibold rounded">${opp.strategy}</span>
-                <button data-track-opp='${JSON.stringify({url: opp.targetUrl, pageTitle: opp.targetName}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2.5 py-1 text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold rounded-lg transition-colors flex items-center gap-1">
-                  + Track
-                </button>
-              </div>
-            </div>
-
-            <!-- Email Draft Box -->
-            <div class="relative bg-white rounded-lg border border-slate-200 p-3 font-mono text-xs text-slate-700 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
-              <button data-copy-email="${encodeURIComponent(opp.emailDraft || '')}" class="cursor-pointer absolute top-2 right-2 px-2 py-0.5 bg-slate-100 hover:bg-brand-primary hover:text-white text-slate-600 text-[10px] font-sans font-medium rounded transition-colors flex items-center gap-1 shadow-sm">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                Copy
-              </button>
-              ${opp.emailDraft || ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      container.innerHTML = cardsHtml;
-    }
-
-    // Render default opportunities immediately on page load
-    renderOutreachCards(defaultOpportunities);
-
-    // --- Load Outreach Opportunities from Firestore if updated ---
-    const outreachQuery = query(collection(db, 'linkOutreach'), orderBy('createdAt', 'desc'));
-    onSnapshot(outreachQuery, (snap) => {
-      if (!snap.empty) {
-        const firestoreOpps = snap.docs.map(d => d.data());
-        renderOutreachCards(firestoreOpps);
-      }
-    }, (error) => {
-      console.warn("Outreach listener note:", error);
-    });
-
-    // Copy email handler
-    document.body.addEventListener('click', async (e) => {
-      const target = e.target as HTMLElement;
-      const copyBtn = target.closest('[data-copy-email]') as HTMLButtonElement;
-      if (copyBtn) {
-        const text = decodeURIComponent(copyBtn.getAttribute('data-copy-email') || '');
-        try {
-          await navigator.clipboard.writeText(text);
-          const orig = copyBtn.innerHTML;
-          copyBtn.innerHTML = '✓ Copied!';
-          copyBtn.classList.add('bg-emerald-600', 'text-white');
-          setTimeout(() => {
-            copyBtn.innerHTML = orig;
-            copyBtn.classList.remove('bg-emerald-600', 'text-white');
-          }, 2000);
-        } catch (err) {
-          alert('Could not copy to clipboard.');
-        }
-        return;
-      }
-
-      // Track link from opportunity
-      const trackBtn = target.closest('[data-track-opp]') as HTMLButtonElement;
-      if (trackBtn) {
-        const data = JSON.parse(trackBtn.getAttribute('data-track-opp') || '{}');
-        trackBtn.disabled = true;
-        trackBtn.innerText = 'Tracking...';
-        try {
-          await addDoc(collection(db, 'backlinks'), {
-            url: data.url,
-            pageTitle: data.pageTitle,
-            status: 'Active',
-            isNofollow: false,
-            createdAt: serverTimestamp(),
-            lastVerifiedAt: serverTimestamp()
-          });
-          trackBtn.innerText = '✓ Tracked';
-          trackBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
-          trackBtn.classList.replace('text-emerald-700', 'text-slate-400');
-        } catch (err: any) {
-          alert('Failed to track: ' + err.message);
-          trackBtn.disabled = false;
-          trackBtn.innerText = '+ Track';
-        }
-      }
-    });
 
     // --- Load Data: Tracked Backlinks ---
     const q = query(collection(db, 'backlinks'), orderBy('createdAt', 'desc'));
@@ -331,15 +108,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         return `
           <tr class="hover:bg-slate-50 group">
-            <td class="px-4 py-3">
-              <div class="font-medium text-brand-dark max-w-[170px] truncate" title="${data.url}">${data.url.replace('https://', '').replace('http://', '').replace('www.', '')}</div>
-              <div class="text-xs text-slate-400 truncate max-w-[170px]" title="${data.pageTitle || ''}">${data.pageTitle || 'Unknown Title'}</div>
+            <td class="px-6 py-4">
+              <a href="${data.url}" target="_blank" class="font-semibold text-brand-primary hover:underline block max-w-md truncate" title="${data.url}">${data.url}</a>
+              <div class="text-xs text-slate-400 truncate max-w-md mt-0.5" title="${data.pageTitle || ''}">${data.pageTitle || 'Target Listing'}</div>
             </td>
-            <td class="px-4 py-3"><span class="px-2 py-0.5 ${statusColor} text-xs font-bold rounded-full">${data.status || 'Pending'}</span></td>
-            <td class="px-4 py-3"><span class="px-2 py-0.5 ${typeColor} text-[10px] font-bold rounded">${typeText}</span></td>
-            <td class="px-4 py-3 text-slate-500 text-xs">${dateStr}</td>
-            <td class="px-4 py-3 text-right">
-              <button data-delete-id="${d.id}" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusColor} text-xs font-bold rounded-full">${data.status || 'Pending'}</span></td>
+            <td class="px-6 py-4"><span class="px-2.5 py-1 ${typeColor} text-xs font-bold rounded">${typeText}</span></td>
+            <td class="px-6 py-4 text-slate-500 text-xs">${dateStr}</td>
+            <td class="px-6 py-4 text-right">
+              <button data-delete-id="${d.id}" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-1">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
               </button>
             </td>
@@ -349,7 +126,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       const tbody = document.getElementById('backlinks-table-body');
       if (tbody) {
-        if (rows.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No backlinks tracked yet. Add one to start tracking.</td></tr>';
+        if (rows.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">No backlinks tracked yet. Click "Add Backlink" to start tracking.</td></tr>';
         else tbody.innerHTML = rows.join('');
       }
 
@@ -358,8 +135,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       document.getElementById('stat-lost')!.innerText = lost.toString();
       document.getElementById('stat-nofollow')!.innerText = nofollow.toString();
       
-      const tabTrackedBadge = document.getElementById('tab-tracked-badge');
-      if (tabTrackedBadge) tabTrackedBadge.innerText = total.toString();
+      const tabBadge = document.getElementById('tab-tracked-badge');
+      if (tabBadge) tabBadge.innerText = total.toString();
     });
 
     // --- Delete Backlink ---
@@ -424,34 +201,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         }
       });
     });
-
-    // --- Find Opportunities Trigger ---
-    async function triggerFindOpportunities(showAlert = true) {
-      const btn = document.getElementById('find-opps-btn') as HTMLButtonElement;
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Researching...';
-      }
-      
-      try {
-        const generateLinkOutreach = httpsCallable(functions, 'generateLinkOutreach');
-        const response = await generateLinkOutreach();
-        const opps = (response.data as any)?.opportunities || [];
-        if (showAlert) {
-          alert('AI outreach opportunities updated successfully!');
-        }
-      } catch (e: any) {
-        console.error("AI Outreach error:", e);
-        if (showAlert) alert('Outreach generation notice: ' + (e.message || 'Complete'));
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '<svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg> Find New Opportunities';
-        }
-      }
-    }
-
-    document.getElementById('find-opps-btn')?.addEventListener('click', () => triggerFindOpportunities(true));
 
     // --- Verify All Button ---
     document.getElementById('verify-links-btn')?.addEventListener('click', async () => {

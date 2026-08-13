@@ -1,0 +1,222 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="AI Link Outreach | Admin">
+  <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">AI Link Building Outreach</h1>
+      <p class="text-sm text-slate-500 mt-1">High-authority local organizations, partnership opportunities, and ready-to-send pitch drafts.</p>
+    </div>
+    <div class="flex items-center gap-3 w-full md:w-auto">
+      <button id="find-opps-btn" class="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-600 to-brand-primary text-white text-sm font-bold rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
+        Find New Opportunities
+      </button>
+    </div>
+  </div>
+
+  <!-- Sub-Navigation Tabs between the 2 pages -->
+  <div class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3">
+    <a href="/admin/backlinks" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+      Tracked Backlinks
+    </a>
+    <a href="/admin/backlinks/outreach" class="px-4 py-2 text-sm font-bold bg-brand-primary text-white rounded-lg shadow-sm flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      AI Outreach & Pitch Drafts
+      <span id="tab-opps-badge" class="px-1.5 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">5</span>
+    </a>
+  </div>
+
+  <!-- Full-Width AI Outreach Cards Container -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <svg class="w-5 h-5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          Knoxville Local Outreach Targets & Email Drafts
+        </h3>
+        <p class="text-xs text-slate-500 mt-0.5">Personalized bilingual pitch emails generated with Gemini for Knoxville chambers, hubs, and Hispanic associations.</p>
+      </div>
+      <span id="opps-count-badge" class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">5 Targets</span>
+    </div>
+    <div id="outreach-list" class="p-6 space-y-6">
+      <!-- Rendered via JS -->
+    </div>
+  </div>
+
+  <script>
+    import { app } from '../../../lib/firebase';
+    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, orderBy, query } from 'firebase/firestore';
+    import { getFunctions, httpsCallable } from 'firebase/functions';
+
+    const db = getFirestore(app);
+    const functions = getFunctions(app);
+
+    // --- Default Local Opportunities Data ---
+    const defaultOpportunities = [
+      {
+        targetName: "Centro Hispano de East TN",
+        targetUrl: "https://www.centrohispano.org/recursos",
+        daEstimate: 42,
+        strategy: "Community Resource Guide & Workshop Partnership",
+        emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
+      },
+      {
+        targetName: "Knoxville Chamber of Commerce",
+        targetUrl: "https://www.knoxvillechamber.com/directory",
+        daEstimate: 58,
+        strategy: "Minority Business & Bilingual Consultancy Listing",
+        emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
+      },
+      {
+        targetName: "Hola Hora Latina",
+        targetUrl: "https://holahoralatina.org",
+        daEstimate: 36,
+        strategy: "Community Sponsor & Business Feature",
+        emailDraft: "Subject: Colaboración y Apoyo a Emprendedores Hispanos en Knoxville\n\nEstimados amigos de Hola Hora Latina,\n\nGracias por su dedicación cultural y comunitaria en Knoxville. Desde GUIA DE NEGOCIOS nos gustaría colaborar patrocinando espacios informativos para nuevos empresarios y negocios latinos en la región.\n\n¿Podríamos coordinar detalles sobre oportunidades de colaboración este mes?\n\nUn saludo atento,\nGUIA NEGOCIOS"
+      },
+      {
+        targetName: "Knoxville Area Urban League",
+        targetUrl: "https://thekaul.org/business-development",
+        daEstimate: 45,
+        strategy: "Small Business Resource Hub Inclusion",
+        emailDraft: "Subject: Resource Collaboration for Knox County Entrepreneurs\n\nDear Business Development Team,\n\nWe provide bilingual LLC formation, licensing, and operational support to East TN small business owners. We would be honored to partner on referral resources and small business guidance for diverse founders.\n\nLooking forward to connecting!\n\nSincerely,\nGUIA NEGOCIOS Team"
+      },
+      {
+        targetName: "Tennessee SBDC at Pellissippi State",
+        targetUrl: "https://www.tsbdc.org/knoxville",
+        daEstimate: 62,
+        strategy: "Bilingual Resource Referral Partner",
+        emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Knoxville Advisers,\n\nAs a local consultancy serving Spanish-speaking entrepreneurs in Knox and surrounding counties, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
+      }
+    ];
+
+    function renderOutreachCards(opps: any[]) {
+      const container = document.getElementById('outreach-list');
+      const badge = document.getElementById('opps-count-badge');
+      const tabBadge = document.getElementById('tab-opps-badge');
+      if (!container) return;
+      if (badge) badge.innerText = `${opps.length} Targets`;
+      if (tabBadge) tabBadge.innerText = opps.length.toString();
+
+      const cardsHtml = opps.map(opp => {
+        return `
+          <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl hover:border-brand-primary/40 transition-colors shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-slate-900 text-lg">${opp.targetName}</h4>
+                  <span class="px-2 py-0.5 bg-brand-primary/10 text-brand-primary text-xs font-bold uppercase rounded">DA ~${opp.daEstimate || 45}</span>
+                </div>
+                <a href="${opp.targetUrl}" target="_blank" class="text-sm text-brand-primary hover:underline flex items-center gap-1 mt-1 font-medium">
+                  ${opp.targetUrl}
+                  <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-md">${opp.strategy}</span>
+                <button data-track-opp='${JSON.stringify({url: opp.targetUrl, pageTitle: opp.targetName}).replace(/'/g, "&apos;")}' class="cursor-pointer px-3.5 py-1.5 text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold rounded-lg transition-colors flex items-center gap-1">
+                  + Add to Tracked Backlinks
+                </button>
+              </div>
+            </div>
+
+            <!-- Email Draft Box -->
+            <div class="relative bg-white rounded-lg border border-slate-200 p-4 font-mono text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">
+              <button data-copy-email="${encodeURIComponent(opp.emailDraft || '')}" class="cursor-pointer absolute top-3 right-3 px-3 py-1.5 bg-slate-100 hover:bg-brand-primary hover:text-white text-slate-700 text-xs font-sans font-medium rounded transition-colors flex items-center gap-1.5 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                Copy Email Draft
+              </button>
+              ${opp.emailDraft || ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = cardsHtml;
+    }
+
+    // Render default opportunities immediately on page load
+    renderOutreachCards(defaultOpportunities);
+
+    // --- Load Outreach Opportunities from Firestore if updated ---
+    const outreachQuery = query(collection(db, 'linkOutreach'), orderBy('createdAt', 'desc'));
+    onSnapshot(outreachQuery, (snap) => {
+      if (!snap.empty) {
+        const firestoreOpps = snap.docs.map(d => d.data());
+        renderOutreachCards(firestoreOpps);
+      }
+    }, (error) => {
+      console.warn("Outreach listener note:", error);
+    });
+
+    // Copy email handler
+    document.body.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+      const copyBtn = target.closest('[data-copy-email]') as HTMLButtonElement;
+      if (copyBtn) {
+        const text = decodeURIComponent(copyBtn.getAttribute('data-copy-email') || '');
+        try {
+          await navigator.clipboard.writeText(text);
+          const orig = copyBtn.innerHTML;
+          copyBtn.innerHTML = '✓ Copied to Clipboard!';
+          copyBtn.classList.add('bg-emerald-600', 'text-white');
+          setTimeout(() => {
+            copyBtn.innerHTML = orig;
+            copyBtn.classList.remove('bg-emerald-600', 'text-white');
+          }, 2000);
+        } catch (err) {
+          alert('Could not copy to clipboard.');
+        }
+        return;
+      }
+
+      // Track link from opportunity
+      const trackBtn = target.closest('[data-track-opp]') as HTMLButtonElement;
+      if (trackBtn) {
+        const data = JSON.parse(trackBtn.getAttribute('data-track-opp') || '{}');
+        trackBtn.disabled = true;
+        trackBtn.innerText = 'Tracking...';
+        try {
+          await addDoc(collection(db, 'backlinks'), {
+            url: data.url,
+            pageTitle: data.pageTitle,
+            status: 'Active',
+            isNofollow: false,
+            createdAt: serverTimestamp(),
+            lastVerifiedAt: serverTimestamp()
+          });
+          trackBtn.innerText = '✓ Added to CRM';
+          trackBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
+          trackBtn.classList.replace('text-emerald-700', 'text-slate-400');
+        } catch (err: any) {
+          alert('Failed to track: ' + err.message);
+          trackBtn.disabled = false;
+          trackBtn.innerText = '+ Add to Tracked Backlinks';
+        }
+      }
+    });
+
+    // --- Find Opportunities Trigger ---
+    document.getElementById('find-opps-btn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('find-opps-btn') as HTMLButtonElement;
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> AI Researching Knoxville TN...';
+      
+      try {
+        const generateLinkOutreach = httpsCallable(functions, 'generateLinkOutreach');
+        const response = await generateLinkOutreach();
+        const opps = (response.data as any)?.opportunities || [];
+        alert('AI research complete! Discovered targets updated.');
+      } catch (e: any) {
+        console.error("AI Outreach error:", e);
+        alert('AI Outreach notice: ' + (e.message || 'Complete'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg> Find New Opportunities';
+      }
+    });
+  </script>
+</AdminLayout>
