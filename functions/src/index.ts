@@ -389,9 +389,17 @@ export const runSeoAudit = onCall(async (request) => {
 //   1. Auto-scan: fetches top queries by clicks/impressions (no phrase needed)
 //   2. Phrase filter: filters queries containing a user-provided phrase
 export const scanSearchConsole = onCall(async (request) => {
-  const { phrase, siteUrl = 'sc-domain:guianegocios.net' } = request.data;
+  const { phrase } = request.data;
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'User must be logged in.');
+  }
 
   try {
+    const db = getFirestore();
+    const settingsDoc = await db.collection('settings').doc('admin').get();
+    const gscUrl = settingsDoc.exists ? settingsDoc.data()?.gscUrl : '';
+    const siteUrl = gscUrl || 'sc-domain:guianegocios.net';
+
     const { google } = await import('googleapis');
 
     // Authenticate with the service account

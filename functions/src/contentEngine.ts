@@ -14,6 +14,18 @@ export const scheduledContentEngine = onSchedule({
   console.log("Starting Autonomous Content Engine...");
   try {
     const db = getFirestore();
+    
+    // Fetch GSC Property URL from admin settings
+    let gscUrl = 'sc-domain:guianegocios.net';
+    try {
+      const settingsDoc = await db.collection('settings').doc('admin').get();
+      if (settingsDoc.exists && settingsDoc.data()?.gscUrl) {
+        gscUrl = settingsDoc.data()?.gscUrl;
+      }
+    } catch (e) {
+      console.warn("Could not fetch gscUrl from settings, defaulting to sc-domain:guianegocios.net");
+    }
+
     const { google } = await import("googleapis");
     const authClient = new google.auth.GoogleAuth({
       keyFile: keyFilename,
@@ -34,7 +46,7 @@ export const scheduledContentEngine = onSchedule({
     };
     
     const response = await searchconsole.searchanalytics.query({
-      siteUrl: "sc-domain:guianegocios.net",
+      siteUrl: gscUrl,
       requestBody,
     } as any);
 
