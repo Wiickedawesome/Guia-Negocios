@@ -16,6 +16,15 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
     
+    // Allow public contact form submissions
+    match /contacts/{document} {
+      allow create: if true;
+    }
+    match /mail/{document} {
+      // Only allow sending emails to the official business address
+      allow create: if request.resource.data.to == 'info@guianegocios.net';
+    }
+    
     // Default rule
     match /{document=**} {
       allow read, write: if request.auth != null;
