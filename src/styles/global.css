@@ -1,8 +1,5 @@
 @import "tailwindcss";
-@source "../**/*.astro";
-@source "../**/*.tsx";
-@source "../**/*.jsx";
-
+@source "src";
 @theme {
   --font-heading: "Geist", "Inter", "DM Sans", sans-serif;
   --font-body: "Inter", "DM Sans", sans-serif;
