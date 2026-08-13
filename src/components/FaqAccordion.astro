@@ -25,20 +25,10 @@ const { title, contactText, contactUrl, viewMoreText, viewMoreUrl, items } = Ast
         <h2 class="text-3xl sm:text-4xl md:text-5xl font-heading text-brand-dark leading-tight">
           {title}
         </h2>
-        <div class="space-y-3 pt-2">
-          {viewMoreUrl && viewMoreText && (
-            <div>
-              <a href={viewMoreUrl} class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 hover:bg-brand-primary hover:text-white text-brand-dark font-semibold text-sm transition-all shadow-sm">
-                <span>{viewMoreText}</span>
-                <span>→</span>
-              </a>
-            </div>
-          )}
-          <div>
-            <a href={contactUrl} class="inline-flex items-center text-brand-primary font-medium hover:underline text-base gap-2">
-              {contactText} <span>→</span>
-            </a>
-          </div>
+        <div>
+          <a href={contactUrl} class="inline-flex items-center text-brand-primary font-medium hover:underline text-lg gap-2">
+            {contactText} <span>→</span>
+          </a>
         </div>
       </div>
 
@@ -64,6 +54,14 @@ const { title, contactText, contactUrl, viewMoreText, viewMoreUrl, items } = Ast
             </div>
           </details>
         ))}
+
+        {viewMoreUrl && viewMoreText && (
+          <div class="pt-4">
+            <a href={viewMoreUrl} class="inline-flex items-center text-brand-primary font-medium hover:underline text-lg gap-2">
+              {viewMoreText} <span>→</span>
+            </a>
+          </div>
+        )}
       </div>
     </div>
   </div>
