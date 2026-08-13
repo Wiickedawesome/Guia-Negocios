@@ -75,7 +75,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   </div>
 
   <script>
-    import { getFirestore, collection, getDocs } from 'firebase/firestore';
+    import { collection, getDocs, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+    import { db, aiModel } from '../../lib/firebase';
 
     // Load Landing Pages from Firestore
     async function loadLandingPages() {
@@ -83,7 +84,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       if (!tbody) return;
 
       try {
-        const db = getFirestore();
         const snapshot = await getDocs(collection(db, 'landingPages'));
         
         if (snapshot.empty) {
@@ -92,9 +92,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         }
 
         let html = '';
-        snapshot.forEach(doc => {
-          const lp = doc.data();
-          const id = doc.id;
+        snapshot.forEach(docSnap => {
+          const lp = docSnap.data();
+          const id = docSnap.id;
           
           const statusClass = lp.status === 'Active' 
             ? 'bg-emerald-100 text-emerald-700' 
@@ -106,8 +106,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           html += `
             <tr class="hover:bg-slate-50/50">
-              <td class="px-6 py-4 font-medium text-brand-dark">${lp.title} <span class="ml-2 text-xs text-slate-400 font-normal uppercase">${lp.lang}</span></td>
-              <td class="px-6 py-4 text-slate-500">/${lp.lang}/lp/${lp.slug}</td>
+              <td class="px-6 py-4 font-medium text-brand-dark">${lp.title || 'Untitled Page'} <span class="ml-2 text-xs text-slate-400 font-normal uppercase">${lp.lang || 'es'}</span></td>
+              <td class="px-6 py-4 text-slate-500">/${lp.lang || 'es'}/lp/${lp.slug || 'page'}</td>
               <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${lp.status || 'Draft'}</span></td>
               <td class="px-6 py-4 text-right text-slate-600">${views}</td>
               <td class="px-6 py-4 text-right text-slate-600">${conversions}</td>
@@ -115,7 +115,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-2">
                   <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
-                  <a href="/${lp.lang}/lp/${lp.slug}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
+                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
                 </div>
               </td>
             </tr>
@@ -133,15 +133,76 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     loadLandingPages();
 
     // AI Landing Page Generator
-    document.getElementById('ai-lp-generate-btn')?.addEventListener('click', function() {
-      const topic = document.getElementById('ai-lp-topic')?.value;
-      if (topic) {
-        simulateAction(`Gemini is designing "${topic}"...`, 'Landing Page generated! Opening Builder...', 3000);
+    document.getElementById('ai-lp-generate-btn')?.addEventListener('click', async function() {
+      const topicInput = document.getElementById('ai-lp-topic') as HTMLInputElement;
+      const topic = topicInput?.value?.trim();
+      if (!topic) {
+        // @ts-ignore
+        window.showToast('Please enter a Service / Offer first', 'warning');
+        return;
+      }
+
+      const btn = document.getElementById('ai-lp-generate-btn') as HTMLButtonElement;
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is designing landing page...';
+
+      try {
+        const prompt = `
+          You are an expert web designer for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
+          Create a landing page for the following service/offer: "${topic}".
+          
+          Generate a high-converting, modern landing page with 4 distinct sections:
+          1. Hero Section (headline, subtitle, action button)
+          2. Features / Value Proposition (2-4 key benefits with icons)
+          3. Call To Action (bold banner with action button)
+          4. Testimonial / Social proof
+          
+          Use Tailwind CSS classes. Add contenteditable="true" to all editable headings and paragraphs.
+          
+          Format your output strictly as a JSON object:
+          {
+            "title": "string (Compelling page title)",
+            "slug": "string (url-friendly-slug-in-spanish-or-english)",
+            "metaDesc": "string (150-160 character description)",
+            "lang": "es",
+            "html": "string (Raw HTML string containing all sections wrapped in container divs with Tailwind styling)"
+          }
+        `;
+
+        const result = await aiModel.generateContent(prompt);
+        const text = result.response.text();
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("Could not parse AI response JSON");
+
+        const data = JSON.parse(jsonMatch[0]);
+        const slug = (data.slug || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')).replace(/^-|-$/g, '');
+        const docId = `${data.lang || 'es'}_${slug}`;
+
+        await setDoc(doc(db, 'landingPages', docId), {
+          title: data.title || topic,
+          slug: slug,
+          metaDesc: data.metaDesc || '',
+          lang: data.lang || 'es',
+          content: data.html || '',
+          status: 'Draft',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          views: 0,
+          conversions: 0
+        });
+
+        // @ts-ignore
+        window.showToast('Landing Page generated and saved to Firestore!', 'success');
+
         setTimeout(() => {
-          window.location.href = '/admin/landing-pages/builder';
-        }, 3000);
-      } else {
-        showToast('Please enter a Service / Offer first', 'warning');
+          window.location.href = `/admin/landing-pages/builder?id=${docId}`;
+        }, 1200);
+
+      } catch (err: any) {
+        console.error("AI Landing Page Generation Error:", err);
+        alert('Failed to generate landing page: ' + (err.message || 'Unknown error'));
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Generate Landing Page Structure';
       }
     });
   </script>

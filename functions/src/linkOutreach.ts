@@ -1,7 +1,5 @@
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-// @ts-ignore
-import fetch from "node-fetch";
 
 export const scheduledLinkOutreach = onSchedule({
   schedule: "0 6 15 * *", // 15th of every month at 6:00 AM

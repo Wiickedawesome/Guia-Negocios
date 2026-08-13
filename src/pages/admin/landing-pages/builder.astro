@@ -209,13 +209,11 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
   </style>
 
   <script>
-    import { aiModel } from '../../../lib/firebase';
-    import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore';
-
-    const db = getFirestore();
+    import { db, aiModel } from '../../../lib/firebase';
+    import { doc, getDoc, setDoc } from 'firebase/firestore';
 
     const addButtons = document.querySelectorAll('.add-block-btn');
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('canvas') as HTMLElement;
     const emptyState = document.getElementById('empty-state');
     const pageSettings = document.getElementById('page-settings');
     const blockSettings = document.getElementById('block-settings');
@@ -223,7 +221,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     const backToPageBtn = document.getElementById('back-to-page-settings');
     const deleteBtn = document.getElementById('delete-active-block-btn');
 
-    let activeBlock = null;
+    let activeBlock: HTMLElement | null = null;
 
     const blockTemplates = {
       hero: `
@@ -490,15 +488,42 @@ Use generic text/images if needed, and add contenteditable="true" to headings an
           conversions: 0
         });
 
+        // @ts-ignore
         showToast(status === 'Active' ? 'Page published successfully!' : 'Draft saved!', 'success');
         
         setTimeout(() => {
           window.location.href = '/admin/landing-pages';
-        }, 1500);
+        }, 1200);
       } catch (error) {
         console.error('Error saving landing page: ', error);
+        // @ts-ignore
         showToast('Error saving to database.', 'error');
       }
+    }
+
+    // Load existing page if editing
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('id');
+    if (editId) {
+      getDoc(doc(db, 'landingPages', editId)).then(snap => {
+        if (snap.exists()) {
+          const data = snap.data();
+          const titleInput = document.getElementById('lp-title') as HTMLInputElement;
+          const slugInput = document.getElementById('lp-slug') as HTMLInputElement;
+          const descInput = document.getElementById('lp-meta-desc') as HTMLTextAreaElement;
+          const langSelect = document.getElementById('lp-lang') as HTMLSelectElement;
+
+          if (titleInput) titleInput.value = data.title || '';
+          if (slugInput) slugInput.value = data.slug || '';
+          if (descInput) descInput.value = data.metaDesc || '';
+          if (langSelect) langSelect.value = data.lang || 'es';
+
+          if (data.content && data.content.trim()) {
+            if (emptyState) emptyState.style.display = 'none';
+            canvas.innerHTML = data.content;
+          }
+        }
+      }).catch(e => console.warn("Failed to load page for edit:", e));
     }
 
     document.getElementById('btn-save-draft')?.addEventListener('click', () => saveLandingPage('Draft'));

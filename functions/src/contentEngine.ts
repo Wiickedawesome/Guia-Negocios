@@ -2,6 +2,7 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { getApp } from "firebase-admin/app";
 import * as path from "path";
+import * as fs from "fs";
 
 
 const keyFilename = path.join(__dirname, "../serviceAccount.json");
@@ -28,7 +29,7 @@ export const scheduledContentEngine = onSchedule({
 
     const { google } = await import("googleapis");
     const authClient = new google.auth.GoogleAuth({
-      keyFile: keyFilename,
+      ...(fs.existsSync(keyFilename) ? { keyFile: keyFilename } : {}),
       scopes: ["https://www.googleapis.com/auth/webmasters.readonly"],
     });
     const searchconsole = google.searchconsole({ version: "v1", auth: authClient });
