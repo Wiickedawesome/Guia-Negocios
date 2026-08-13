@@ -2,7 +2,7 @@
   "site": {
     "title": "GUIA NEGOCIOS",
     "tagline": "Bilingual Small Business Consulting",
-    "description": "Bilingual business consulting for Latino entrepreneurs in Knoxville, TN. LLC setup, branding, websites, and bookkeeping — all in English and Spanish."
+    "description": "Bilingual business consulting for entrepreneurs and small businesses in Knoxville, TN. LLC setup, branding, websites, and bookkeeping — all in English and Spanish."
   },
   "nav": {
     "home": "Home",
@@ -15,7 +15,7 @@
   "home": {
     "hero": {
       "title": "Launch Your Business with Confidence",
-      "subtitle": "Bilingual consulting for Latino entrepreneurs in Knoxville, TN. Our approach is to work side-by-side with you to launch, organize, and grow your business.",
+      "subtitle": "Bilingual business consulting for entrepreneurs and small business owners in Knoxville, TN. Our approach is to work side-by-side with you to launch, organize, and grow your business.",
       "cta": "Get Started Today"
     },
     "services": {

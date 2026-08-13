@@ -2,7 +2,7 @@
   "site": {
     "title": "GUIA NEGOCIOS",
     "tagline": "Consultoría de Negocios Bilingüe",
-    "description": "Consultoría de negocios bilingüe para emprendedores latinos en Knoxville, TN. Registro LLC, marca, sitios web y contabilidad — todo en español e inglés."
+    "description": "Consultoría de negocios bilingüe para emprendedores y pequeñas empresas en Knoxville, TN. Registro LLC, marca, sitios web y contabilidad — todo en español e inglés."
   },
   "nav": {
     "home": "Inicio",
@@ -15,7 +15,7 @@
   "home": {
     "hero": {
       "title": "Lanza Tu Negocio con Confianza",
-      "subtitle": "Consultoría bilingüe para emprendedores latinos en Knoxville, TN. Nuestro enfoque es trabajar codo a codo con usted para lanzar, organizar y hacer crecer su negocio.",
+      "subtitle": "Consultoría de negocios bilingüe para emprendedores y dueños de empresas en Knoxville, TN. Nuestro enfoque es trabajar codo a codo con usted para lanzar, organizar y hacer crecer su negocio.",
       "cta": "Comienza Hoy"
     },
     "services": {
