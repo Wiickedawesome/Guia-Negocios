@@ -321,7 +321,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             const existingKeywords = existingSnap.docs.map(d => d.data().keyword?.toLowerCase());
 
             const aiPrompt = `
-              You are an expert SEO consultant for GUIA DE NEGOCIOS, a bilingual business consultancy in Knoxville, TN targeting Latino entrepreneurs.
+              You are an expert SEO consultant for GUIA DE NEGOCIOS, a premier bilingual business consultancy in Knoxville, TN assisting entrepreneurs and small business owners with LLC formation, web design, and operational growth.
               
               Below is REAL Google Search Console data from the last 90 days showing queries that triggered our site in search results.
               
@@ -436,7 +436,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const rawTrends = (rawDataResponse.data as any).trends;
 
           const prompt = `
-            You are an expert SEO consultant for a bilingual business consultancy targeting Latino entrepreneurs in the USA.
+            You are an expert SEO consultant for a bilingual business consultancy assisting entrepreneurs and small businesses in the USA (Knoxville, TN and beyond).
             I just pulled the latest Google Autocomplete and Google Trends data for the topic: "${topic}".
             
             Here is the raw data from Google:
