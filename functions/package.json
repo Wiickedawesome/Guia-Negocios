@@ -26,5 +26,10 @@
     "@types/cheerio": "^0.22.35",
     "typescript": "^7.0.2"
   },
+  "overrides": {
+    "uuid": "^11.1.1",
+    "undici": "^7.28.1",
+    "brace-expansion": "^2.1.4"
+  },
   "private": true
 }

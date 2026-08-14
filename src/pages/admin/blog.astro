@@ -104,14 +104,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         
         const filter = tab.textContent?.trim();
         document.querySelectorAll('tbody tr').forEach(row => {
-          const status = row.querySelector('.rounded-full')?.textContent?.trim();
-          const lang = row.querySelectorAll('td')[2]?.textContent?.trim();
+          const rowEl = row as HTMLElement;
+          const status = rowEl.querySelector('.rounded-full')?.textContent?.trim();
+          const lang = rowEl.querySelectorAll('td')[2]?.textContent?.trim();
           
-          if (filter === 'All') { row.style.display = ''; return; }
-          if (filter === 'Draft') { row.style.display = status === 'Draft' ? '' : 'none'; return; }
-          if (filter === 'Published') { row.style.display = status === 'Published' ? '' : 'none'; return; }
-          if (filter === '🇺🇸 EN' || filter === 'EN') { row.style.display = lang === 'EN' || lang === 'EN/ES' ? '' : 'none'; return; }
-          if (filter === '🇪🇸 ES' || filter === 'ES') { row.style.display = lang === 'ES' || lang === 'EN/ES' ? '' : 'none'; return; }
+          if (filter === 'All') { rowEl.style.display = ''; return; }
+          if (filter === 'Draft') { rowEl.style.display = status === 'Draft' ? '' : 'none'; return; }
+          if (filter === 'Published') { rowEl.style.display = status === 'Published' ? '' : 'none'; return; }
+          if (filter === '🇺🇸 EN' || filter === 'EN') { rowEl.style.display = lang === 'EN' || lang === 'EN/ES' ? '' : 'none'; return; }
+          if (filter === '🇪🇸 ES' || filter === 'ES') { rowEl.style.display = lang === 'ES' || lang === 'EN/ES' ? '' : 'none'; return; }
         });
       });
     });
