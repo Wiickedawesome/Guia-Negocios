@@ -79,104 +79,202 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={resolvedOgImage} />
 
-    <!-- LocalBusiness & Organization Schema -->
+    <!-- Schema.org Graph: WebSite, Organization/LocalBusiness, SiteNavigationElement, and Breadcrumbs -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "@id": "https://guianegocios.net/#business",
-      "name": "GUIA NEGOCIOS",
-      "legalName": "Guia de Negocios LLC",
-      "image": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
-      "logo": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
-      "url": "https://guianegocios.net",
-      "telephone": "+1-865-202-7112",
-      "email": "info@guianegocios.net",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Knoxville",
-        "addressRegion": "TN",
-        "postalCode": "37902",
-        "addressCountry": "US"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 35.9606,
-        "longitude": -83.9207
-      },
-      "areaServed": [
+      "@graph": [
         {
-          "@type": "City",
-          "name": "Knoxville"
-        },
-        {
-          "@type": "AdministrativeArea",
-          "name": "Knox County"
-        },
-        {
-          "@type": "AdministrativeArea",
-          "name": "East Tennessee"
-        },
-        {
-          "@type": "State",
-          "name": "Tennessee"
-        }
-      ],
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday"
-        ],
-        "opens": "09:00",
-        "closes": "17:00"
-      },
-      "description": description,
-      "priceRange": "$$",
-      "sameAs": [
-        "https://www.facebook.com/guianegociosknoxville",
-        "https://www.instagram.com/guianegocios"
-      ],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Bilingual Business Launch & Consulting Services",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Tennessee LLC Registration & Business Licensing",
-              "description": "Comprehensive LLC formation, state filing, EIN setup, and local operating permits."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Bilingual Bookkeeping & Accounting Setup",
-              "description": "Small business bookkeeping, chart of accounts, and financial systems in English & Spanish."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Complete Business Launch Bundle",
-              "description": "Turnkey business setup from legal formation to custom website, branding, and operations."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "CreedaVA Bilingual Virtual Assistant & Operations",
-              "description": "Dedicated Spanish/English bilingual operational support, admin management, and customer onboarding."
-            }
+          "@type": "WebSite",
+          "@id": "https://guianegocios.net/#website",
+          "url": "https://guianegocios.net",
+          "name": "GUIA NEGOCIOS",
+          "alternateName": ["Guia Negocios Knoxville", "Guia de Negocios LLC", "Guia Negocios"],
+          "inLanguage": ["es", "en"],
+          "publisher": {
+            "@id": "https://guianegocios.net/#business"
           }
-        ]
-      }
+        },
+        {
+          "@type": ["LocalBusiness", "ProfessionalService", "ConsultingService"],
+          "@id": "https://guianegocios.net/#business",
+          "name": "GUIA NEGOCIOS",
+          "legalName": "Guia de Negocios LLC",
+          "alternateName": ["Guia Negocios Knoxville", "Guia de Negocios"],
+          "slogan": isEnglish ? "Bilingual Business Consulting in Knoxville, TN" : "Consultoría de Negocios Bilingüe en Knoxville, TN",
+          "image": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
+          "logo": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
+          "url": "https://guianegocios.net",
+          "telephone": "+1-865-202-7112",
+          "email": "info@guianegocios.net",
+          "priceRange": "$$",
+          "currenciesAccepted": "USD",
+          "paymentAccepted": "Cash, Credit Card, Debit Card, Check, Bank Transfer",
+          "knowsAbout": [
+            "Tennessee LLC Registration",
+            "EIN Setup & Business Licensing",
+            "Bilingual Bookkeeping & Accounting Systems",
+            "Small Business Consulting",
+            "Professional Website Design",
+            "Brand Identity & Marketing",
+            "Virtual Assistant & Operations Support"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Knoxville",
+            "addressRegion": "TN",
+            "postalCode": "37902",
+            "addressCountry": "US"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 35.9606,
+            "longitude": -83.9207
+          },
+          "areaServed": [
+            {
+              "@type": "City",
+              "name": "Knoxville"
+            },
+            {
+              "@type": "AdministrativeArea",
+              "name": "Knox County"
+            },
+            {
+              "@type": "AdministrativeArea",
+              "name": "East Tennessee"
+            },
+            {
+              "@type": "State",
+              "name": "Tennessee"
+            }
+          ],
+          "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday"
+            ],
+            "opens": "09:00",
+            "closes": "17:00"
+          },
+          "description": description,
+          "sameAs": [
+            "https://www.facebook.com/guianegociosknoxville",
+            "https://www.instagram.com/guianegocios",
+            "https://www.yelp.com/biz/guia-negocios-knoxville"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Bilingual Business Launch & Consulting Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Tennessee LLC Registration & Business Licensing",
+                  "description": "Comprehensive LLC formation, state filing, EIN setup, and local operating permits."
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Bilingual Bookkeeping & Accounting Setup",
+                  "description": "Small business bookkeeping, chart of accounts, and financial systems in English & Spanish."
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "Complete Business Launch Bundle",
+                  "description": "Turnkey business setup from legal formation to custom website, branding, and operations."
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": "CreedaVA Bilingual Virtual Assistant & Operations",
+                  "description": "Dedicated Spanish/English bilingual operational support, admin management, and customer onboarding."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://guianegocios.net/#site-navigation",
+          "name": isEnglish ? "Main Navigation" : "Navegación Principal",
+          "itemListElement": [
+            {
+              "@type": "SiteNavigationElement",
+              "position": 1,
+              "name": isEnglish ? "Services & Business Packages" : "Servicios y Paquetes de Negocios",
+              "description": isEnglish ? "LLC formation, business licensing, web design, and bilingual virtual assistant services in Knoxville." : "Registro de LLC, licencias comerciales, diseño web y asistentes virtuales bilingües en Knoxville.",
+              "url": `https://guianegocios.net/${lang}/services`
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 2,
+              "name": isEnglish ? "About Us" : "Sobre Nosotros",
+              "description": isEnglish ? "Learn about GUIA NEGOCIOS' mission, story, and business consulting process in East Tennessee." : "Conozca la misión, historia y metodología de consultoría empresarial de GUIA NEGOCIOS en el Este de Tennessee.",
+              "url": `https://guianegocios.net/${lang}/about`
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 3,
+              "name": isEnglish ? "Contact & Consultation" : "Contacto y Asesoría",
+              "description": isEnglish ? "Schedule a consultation or contact our bilingual team in Knoxville, TN." : "Programe una consulta o comuníquese con nuestro equipo bilingüe en Knoxville, TN.",
+              "url": `https://guianegocios.net/${lang}/contact`
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 4,
+              "name": isEnglish ? "Frequently Asked Questions (FAQ)" : "Preguntas Frecuentes (FAQ)",
+              "description": isEnglish ? "Common questions about LLC registration, EIN, bookkeeping, and starting a business in Tennessee." : "Preguntas frecuentes sobre apertura de LLC, trámites de EIN, contabilidad y licencias en Tennessee.",
+              "url": `https://guianegocios.net/${lang}/faq`
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 5,
+              "name": isEnglish ? "Blog & Resources" : "Blog y Recursos para Emprendedores",
+              "description": isEnglish ? "Practical guides, small business tips, and legal insights for East Tennessee business owners." : "Guías prácticas, consejos para pequeños negocios y normativas comerciales en el Este de Tennessee.",
+              "url": `https://guianegocios.net/${lang}/blog`
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 6,
+              "name": isEnglish ? "Complete Business Launch Bundle" : "Paquete Completo de Lanzamiento",
+              "description": isEnglish ? "Turnkey end-to-end business setup from LLC formation to website, branding, and operations." : "Configuración integral de negocio desde LLC hasta sitio web, marca y sistemas operativos.",
+              "url": isEnglish ? "https://guianegocios.net/en/services/complete-launch-bundle" : "https://guianegocios.net/es/services/paquete-lanzamiento-completo"
+            }
+          ]
+        },
+        ...(currentPath !== `/${lang}` && currentPath !== `/${lang}/` && currentPath !== '/' && currentPath !== '' ? [
+          {
+            "@type": "BreadcrumbList",
+            "@id": `https://guianegocios.net${currentPath}#breadcrumb`,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": isEnglish ? "Home" : "Inicio",
+                "item": `https://guianegocios.net/${lang}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": title.split('|')[0].trim(),
+                "item": `https://guianegocios.net${currentPath}`
+              }
+            ]
+          }
+        ] : [])
+      ]
     })} />
     <AeoInjector />
   </head>

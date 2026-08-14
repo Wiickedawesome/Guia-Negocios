@@ -33,6 +33,33 @@ const altUrl = `/es/blog/${post.altSlug}`;
 <BaseLayout title={`${post.title} | Blog | ${t('site.title')}`} description={post.excerpt} altPath={altUrl} ogImage={post.featuredImage}>
   <Header slot="header" altPath={altUrl} />
   
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": post.featuredImage.startsWith('http') ? post.featuredImage : `https://guianegocios.net${post.featuredImage}`,
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "inLanguage": "en",
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "GUIA NEGOCIOS",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://guianegocios.net/images/GuiaNegociosLOGO.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://guianegocios.net/en/blog/${post.slug}`
+    }
+  })} />
+
   <article class="bg-slate-50">
     <!-- Hero Image Section -->
     <div class="relative w-full h-[400px] md:h-[500px]">
