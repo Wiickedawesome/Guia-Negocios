@@ -23,43 +23,20 @@ async function run() {
   const publicDir = path.join(root, 'public');
   const assetsDir = path.join(root, 'src/assets/images');
 
-  // 1. Write SVG favicons
+  // 1. Write SVG favicon
   fs.writeFileSync(path.join(publicDir, 'favicon.svg'), goldSvg);
-  fs.writeFileSync(path.join(publicDir, 'FAV1.svg'), goldSvg);
-  fs.writeFileSync(path.join(assetsDir, 'FAV.svg'), goldSvg);
-  console.log('Wrote gold SVGs');
+  console.log('Wrote gold SVG favicon');
 
-  // 2. Render sharp PNG & WebP variants with transparent padding
+  // 2. Render sharp PNG variants for browser favicon & apple-touch-icon
   const svgBuffer = Buffer.from(goldSvg);
 
-  // 512x512 PNG
-  await sharp(svgBuffer)
-    .resize(512, 512)
-    .png()
-    .toFile(path.join(publicDir, 'GuiaNegociosFAV.png'));
-  
+  // 512x512 PNG favicon
   await sharp(svgBuffer)
     .resize(512, 512)
     .png()
     .toFile(path.join(publicDir, 'favicon.png'));
 
-  await sharp(svgBuffer)
-    .resize(512, 512)
-    .png()
-    .toFile(path.join(assetsDir, 'GuiaNegociosFAV.png'));
-
-  // WebP 512x512
-  await sharp(svgBuffer)
-    .resize(512, 512)
-    .webp({ quality: 95 })
-    .toFile(path.join(publicDir, 'GuiaNegociosFAV.webp'));
-
-  await sharp(svgBuffer)
-    .resize(512, 512)
-    .webp({ quality: 95 })
-    .toFile(path.join(assetsDir, 'GuiaNegociosFAV.webp'));
-
-  // Apple touch icon (180x180 with subtle dark background rounded or transparent)
+  // Apple touch icon (180x180)
   await sharp(svgBuffer)
     .resize(180, 180)
     .png()
