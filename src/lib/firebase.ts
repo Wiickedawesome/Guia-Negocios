@@ -115,8 +115,15 @@ async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'ge
   return text;
 }
 
-// Active, modern Gemini models to try in order of priority (Gemini 1.5 was retired Sept 2025)
-const modelCandidates = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro', 'gemini-2.0-flash-lite'];
+// Active, modern Gemini 3.x models (Gemini 3.7 Flash, 3.6 Flash, 3.5 Flash-Lite, 3-flash, 3.1-pro)
+const modelCandidates = [
+  'gemini-3.7-flash',
+  'gemini-3.6-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3-flash',
+  'gemini-3.1-pro',
+  'gemini-2.5-flash'
+];
 
 /**
  * Universal AI Model wrapper that provides:

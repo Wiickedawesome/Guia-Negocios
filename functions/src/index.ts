@@ -965,7 +965,15 @@ export const generateAiContent = onCall({ cors: true, invoker: 'public', timeout
   const { GoogleGenerativeAI } = await import('@google/generative-ai');
   const genAI = new GoogleGenerativeAI(apiKey);
 
-  const modelNames = [requestedModel, 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro', 'gemini-2.0-flash-lite'].filter(Boolean);
+  const modelNames = [
+    requestedModel,
+    'gemini-3.7-flash',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash-lite',
+    'gemini-3-flash',
+    'gemini-3.1-pro',
+    'gemini-2.5-flash'
+  ].filter(Boolean);
   let lastErr: any = null;
 
   for (const mName of modelNames) {
