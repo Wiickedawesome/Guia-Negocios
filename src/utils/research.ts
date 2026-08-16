@@ -1,6 +1,9 @@
 /**
- * Authoritative Research & Citation Knowledge Base for GUIA DE NEGOCIOS
- * Contains verified government, legal, academic, and internal sources.
+ * Comprehensive Research & Authoritative Citation Knowledge Base for GUIA DE NEGOCIOS
+ * 
+ * OPEN RESEARCH POLICY:
+ * The AI is authorized and encouraged to cite ANY verified, authoritative source across the open web
+ * (Federal, State, County/Municipal, Academic, Industry Boards, and Guia Negocios internal service pages).
  */
 
 export interface CitationSource {
@@ -8,7 +11,7 @@ export interface CitationSource {
   titleEn: string;
   url: string;
   organization: string;
-  category: 'irs' | 'tn_state' | 'sba' | 'academic' | 'internal' | 'banking';
+  category: 'irs' | 'tn_state' | 'local_knox' | 'sba' | 'academic' | 'industry' | 'internal' | 'banking';
   descriptionEs: string;
   descriptionEn: string;
   keywords: string[];
@@ -18,7 +21,7 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
   // 1. IRS / Federal Taxes
   {
     titleEs: 'Solicitud de Número de Identificación del Empleador (EIN) ante el IRS',
-    titleEn: 'IRS Employer Identification Number (EIN) Application',
+    titleEn: 'IRS Employer Identification Number (EIN) Application Portal',
     url: 'https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online',
     organization: 'Internal Revenue Service (IRS)',
     category: 'irs',
@@ -35,6 +38,16 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     descriptionEs: 'Regulaciones federales sobre impuestos para LLC, Corporaciones S y C, y Unipersonales.',
     descriptionEn: 'Federal tax guidelines for LLCs, S-Corps, C-Corps, and Sole Proprietorships.',
     keywords: ['llc', 'corporacion', 'corporation', 's-corp', 'c-corp', 'sole proprietorship', 'impuestos']
+  },
+  {
+    titleEs: 'Guía Tributaria para Pequeños Negocios (Publicación 334 del IRS)',
+    titleEn: 'IRS Publication 334: Tax Guide for Small Business',
+    url: 'https://www.irs.gov/publications/p334',
+    organization: 'Internal Revenue Service (IRS)',
+    category: 'irs',
+    descriptionEs: 'Normas sobre gastos deducibles, contabilidad y obligaciones fiscales para propietarios.',
+    descriptionEn: 'Official tax rules on write-offs, business deductions, and accounting requirements.',
+    keywords: ['deducciones', 'deductions', 'write offs', 'contabilidad', 'gastos', 'publicacion 334']
   },
 
   // 2. Tennessee Secretary of State & State Regulations
@@ -54,12 +67,54 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     url: 'https://www.tn.gov/revenue/taxes/business-tax.html',
     organization: 'Tennessee Department of Revenue (TN DoR)',
     category: 'tn_state',
-    descriptionEs: 'Registro obligatorio de Business Tax, Sales Tax y Franchise & Excise Tax en el estado de Tennessee.',
+    descriptionEs: 'Registro obligatorio de Business Tax, Sales Tax y Franchise & Excise Tax en Tennessee.',
     descriptionEn: 'Mandatory state business tax, sales tax, and franchise/excise tax registration portal.',
     keywords: ['licencia', 'business tax', 'sales tax', 'franchise', 'excise', 'departamento de ingresos', 'permisos']
   },
+  {
+    titleEs: 'Junta de Licencias para Contratistas de Tennessee (TDCI)',
+    titleEn: 'Tennessee Board for Licensing Contractors (TDCI)',
+    url: 'https://www.tn.gov/commerce/regboards/contractors.html',
+    organization: 'Tennessee Department of Commerce & Insurance',
+    category: 'tn_state',
+    descriptionEs: 'Requisitos oficiales para licencias de construcción, remodelación, plomería y electricidad en TN.',
+    descriptionEn: 'Official contractor, commercial builder, and trade licensing requirements in Tennessee.',
+    keywords: ['contractor', 'contratista', 'construccion', 'licencia contratista', 'tdci', 'plomeria', 'electricidad']
+  },
+  {
+    titleEs: 'Departamento de Salud de Tennessee: Permisos de Alimentos y Restaurantes',
+    titleEn: 'Tennessee Department of Health: Food Service & Mobile Food Permits',
+    url: 'https://www.tn.gov/health/health-program-areas/eh/environmental-health-rules.html',
+    organization: 'Tennessee Department of Health',
+    category: 'tn_state',
+    descriptionEs: 'Inspecciones y licencias sanitarias para restaurantes, camiones de comida (food trucks) y catering.',
+    descriptionEn: 'Health department permits and sanitary inspection codes for food trucks and restaurants.',
+    keywords: ['food truck', 'restaurante', 'comida', 'permiso sanitario', 'inspeccion', 'health department']
+  },
 
-  // 3. Small Business Administration (SBA)
+  // 3. Knox County & Local Municipal Authorities
+  {
+    titleEs: 'Oficina del Secretario del Condado de Knox (Licencias Comerciales Locales)',
+    titleEn: 'Knox County Clerk Business Tax & Licensing Office',
+    url: 'https://www.knoxcounty.org/clerk/business_tax.php',
+    organization: 'Knox County Clerk',
+    category: 'local_knox',
+    descriptionEs: 'Emisión de licencias comerciales estándar y mínimas en el condado de Knox, Tennessee.',
+    descriptionEn: 'Issuance of standard and minimal business tax licenses for Knox County, Tennessee.',
+    keywords: ['knox county', 'knoxville', 'condado de knox', 'clerk', 'licencia local', 'county clerk']
+  },
+  {
+    titleEs: 'Cámara de Comercio de Knoxville (Recursos para Nuevos Negocios)',
+    titleEn: 'Knoxville Chamber of Commerce Business Resources',
+    url: 'https://www.knoxvillechamber.com',
+    organization: 'Knoxville Chamber',
+    category: 'local_knox',
+    descriptionEs: 'Red de desarrollo empresarial, estadísticas económicas del este de Tennessee y eventos comerciales.',
+    descriptionEn: 'Economic development network, East Tennessee business climate data, and networking.',
+    keywords: ['camara de comercio', 'knoxville chamber', 'networking', 'este de tennessee', 'mercado local']
+  },
+
+  // 4. Small Business Administration (SBA) & Federal Support
   {
     titleEs: 'Guía de Inicio y Financiación de Pequeñas Empresas (SBA)',
     titleEn: 'U.S. Small Business Administration Guide to Starting a Business',
@@ -70,8 +125,28 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     descriptionEn: 'Federal resources, guidance, and 7(a)/504 microloan programs for small business owners.',
     keywords: ['sba', 'credito', 'prestamo', 'loan', 'financiacion', 'funding', 'plan de negocios', 'business plan']
   },
+  {
+    titleEs: 'Administración de Seguridad y Salud Ocupacional (OSHA)',
+    titleEn: 'Occupational Safety and Health Administration (OSHA) Small Business Resources',
+    url: 'https://www.osha.gov/smallbusiness',
+    organization: 'U.S. Department of Labor (OSHA)',
+    category: 'sba',
+    descriptionEs: 'Normativas de seguridad laboral y cumplimiento para empresas de construcción y servicios.',
+    descriptionEn: 'Workplace safety regulations and compliance guidelines for employers.',
+    keywords: ['osha', 'seguridad', 'safety', 'empleados', 'trabajadores', 'cumplimiento laboral']
+  },
+  {
+    titleEs: 'Oficina de Marcas y Patentes de Estados Unidos (USPTO)',
+    titleEn: 'United States Patent and Trademark Office (USPTO)',
+    url: 'https://www.uspto.gov/trademarks',
+    organization: 'USPTO',
+    category: 'sba',
+    descriptionEs: 'Búsqueda y registro de marcas registradas y propiedad intelectual en los Estados Unidos.',
+    descriptionEn: 'Official trademark registration and intellectual property search portal.',
+    keywords: ['marca', 'trademark', 'uspto', 'nombre comercial', 'propiedad intelectual', 'patente']
+  },
 
-  // 4. Academic & Demographic Research (Brookings, MSU, Census)
+  // 5. Academic & Economic Research
   {
     titleEs: 'Estudio de Brookings: Estabilización y Auge de Emprendedores Hispanos',
     titleEn: 'Brookings Institution: Stabilizing Latino Entrepreneurs in Growing Economies',
@@ -81,6 +156,16 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     descriptionEs: 'Investigación sobre el impacto de $653B y 3.5 millones de empleos creados por empresas latinas.',
     descriptionEn: 'Research highlighting $653B in revenue and 3.5 million jobs generated by Latino-owned firms.',
     keywords: ['investigacion', 'brookings', 'estadisticas', 'crecimiento', 'estudio', 'latinos', 'hispanos', 'jobs']
+  },
+  {
+    titleEs: 'Iniciativa de Emprendimiento Latino de Stanford (SLEI)',
+    titleEn: 'Stanford Latino Entrepreneurship Initiative (SLEI) State of Latino Entrepreneurship',
+    url: 'https://www.gsb.stanford.edu/faculty-research/centers-initiatives/slei',
+    organization: 'Stanford Graduate School of Business',
+    category: 'academic',
+    descriptionEs: 'Reporte anual sobre acceso a capital bancario, tecnología y escalabilidad de negocios hispanos.',
+    descriptionEn: 'Annual national survey on bank capital access, scaling, and tech adoption among Latino businesses.',
+    keywords: ['stanford', 'slei', 'banca', 'acceso a credito', 'escalar', 'estudio nacional']
   },
   {
     titleEs: 'Investigación de Michigan State University (JSRI): Crecimiento y Barreras de Empresas Latinas',
@@ -103,7 +188,7 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     keywords: ['censo', 'census', 'demografia', 'knoxville tn', 'minority', '1 in 4']
   },
 
-  // 5. Internal Guia Negocios Service & Landing Page Links
+  // 6. Internal Guia Negocios Service & Landing Page Links
   {
     titleEs: 'Paquete de Lanzamiento Completo de Negocio en Tennessee',
     titleEn: 'Complete Business Launch Bundle in Tennessee',
@@ -147,7 +232,7 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
 ];
 
 /**
- * Returns formatted Markdown research citations based on topic keywords
+ * Returns formatted Markdown research citations based on topic keywords and open web research instructions
  */
 export function getRelevantCitations(topic: string, lang: 'es' | 'en' = 'es'): string {
   const queryWords = topic.toLowerCase().split(/\s+/).filter(w => w.length > 2);
@@ -160,16 +245,15 @@ export function getRelevantCitations(topic: string, lang: 'es' | 'en' = 'es'): s
     );
   });
 
-  // Take top matched sources + always include at least 1 federal, 1 state, and 1 internal link
   const selected = new Map<string, CitationSource>();
   matched.forEach(s => selected.set(s.url, s));
   
-  // Guarantee essentials
-  AUTHORITATIVE_SOURCES.filter(s => s.category === 'tn_state' || s.category === 'irs' || s.category === 'internal')
-    .slice(0, 3)
+  // Guarantee state, federal, and internal essentials
+  AUTHORITATIVE_SOURCES.filter(s => s.category === 'tn_state' || s.category === 'irs' || s.category === 'local_knox' || s.category === 'internal')
+    .slice(0, 4)
     .forEach(s => selected.set(s.url, s));
 
-  const list = Array.from(selected.values()).slice(0, 5);
+  const list = Array.from(selected.values()).slice(0, 6);
 
   const header = lang === 'es' ? '## Fuentes y Referencias Oficiales' : '## Official Sources & References';
   
@@ -179,5 +263,9 @@ export function getRelevantCitations(topic: string, lang: 'es' | 'en' = 'es'): s
     return `* [${title}](${item.url}) — *${item.organization}*: ${desc}`;
   });
 
-  return `${header}\n\n${lines.join('\n')}`;
+  const openGuideline = lang === 'es'
+    ? '> *Nota de investigación:* Este artículo también puede incluir citas directas y enlaces a portales municipales, leyes estatales de Tennessee, reglamentos de condados o estudios económicos adicionales según el tema específico tratado.'
+    : '> *Research Note:* This article may also include direct citations and links to municipal portals, Tennessee state statutes, county clerk regulations, or industry economic studies specific to the discussed topic.';
+
+  return `${header}\n\n${lines.join('\n')}\n\n${openGuideline}`;
 }
