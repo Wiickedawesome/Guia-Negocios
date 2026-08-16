@@ -89,7 +89,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   </div>
 
   <script>
-    import { collection, getDocs, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+    import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
     import { db, aiModel } from '../../lib/firebase';
     import { getUniqueUnsplashPhoto } from '../../utils/unsplash';
     import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../utils/research';
@@ -108,31 +108,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const filter = tab.textContent?.trim();
         document.querySelectorAll('tbody tr').forEach(row => {
           const rowEl = row as HTMLElement;
-          const status = rowEl.querySelector('.rounded-full')?.textContent?.trim();
-          const lang = rowEl.querySelectorAll('td')[2]?.textContent?.trim();
-          
-          if (filter === 'All') { rowEl.style.display = ''; return; }
-          if (filter === 'Draft') { rowEl.style.display = status === 'Draft' ? '' : 'none'; return; }
-          if (filter === 'Published') { rowEl.style.display = status === 'Published' ? '' : 'none'; return; }
-          if (filter === '🇺🇸 EN' || filter === 'EN') { rowEl.style.display = lang === 'EN' || lang === 'EN/ES' ? '' : 'none'; return; }
-          if (filter === '🇪🇸 ES' || filter === 'ES') { rowEl.style.display = lang === 'ES' || lang === 'EN/ES' ? '' : 'none'; return; }
+          if (filter === 'All') {
+            rowEl.style.display = '';
+          } else if (filter === 'Draft' || filter === 'Published') {
+            const status = rowEl.querySelector('td:nth-child(2)')?.textContent?.trim();
+            rowEl.style.display = status === filter ? '' : 'none';
+          } else if (filter === 'EN' || filter === 'ES') {
+            const lang = rowEl.querySelector('td:nth-child(3)')?.textContent?.trim();
+            rowEl.style.display = (lang === filter || lang === 'EN/ES') ? '' : 'none';
+          }
         });
       });
     });
 
-    // AI Draft Generator
-    document.getElementById('ai-generate-btn')?.addEventListener('click', async function() {
-      const topicInput = document.getElementById('ai-topic') as HTMLInputElement;
-      const keywordsInput = document.getElementById('ai-keywords') as HTMLInputElement;
-      const langSelect = document.getElementById('ai-lang') as HTMLSelectElement;
-
-      const topic = topicInput?.value?.trim();
-      const customKeywords = keywordsInput?.value?.trim();
-      const primaryLang = langSelect?.value || 'es';
+    // AI Generate Blog Draft
+    document.getElementById('ai-generate-btn')?.addEventListener('click', async () => {
+      const topic = (document.getElementById('ai-topic') as HTMLInputElement)?.value;
+      const customKeywords = (document.getElementById('ai-keywords') as HTMLInputElement)?.value;
+      const primaryLang = (document.getElementById('ai-lang') as HTMLSelectElement)?.value;
 
       if (!topic) {
-        // @ts-ignore
-        window.showToast('Please enter a topic first', 'warning');
+        alert("Please provide a topic for the blog post.");
         return;
       }
 
@@ -141,7 +137,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is writing full blog draft...';
 
       try {
-        // 1. Resolve unique, never-before-used Unsplash cover & body images
         const uniqueCover = await getUniqueUnsplashPhoto(topic);
         const uniqueBodyImage = await getUniqueUnsplashPhoto(`${topic} strategy analysis`);
         const citationsEs = getRelevantCitations(topic, 'es');
@@ -156,7 +151,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Generate a comprehensive, deeply informative, research-backed, long-form (1,500+ words) blog post in both Spanish and English versions.
           
           Requirements for Content:
-          1. Structure: In-depth introduction, detailed educational sections with ## (H2) and ### (H3) headings, practical examples/case studies, common pitfalls, legal/tax compliance in Tennessee, and a complete FAQ section.
+          1. Structure & Layout (Must strictly follow Guia Negocios standard format):
+             - Strong intro hook highlighting the core business challenge with bolded key terms (**negocio**, **empresa**, **LLC**, **impuestos**).
+             - Clear H2 (##) and H3 (###) headings structured for automatic Table of Contents extraction.
+             - Real-world practical case studies: "## Ejemplos Prácticos y Casos de Estudio" with "### Caso 1: [Name/Scenario]" and "### Caso 2: [Name/Scenario]".
+             - Structured Comparison Table in Markdown (e.g. | Sigla | Nombre Oficial | ¿Para quién es? | Uso Principal |).
+             - Critical Pitfalls & Penalties section: "## Errores Críticos que Debe Evitar" with real dollar penalties/risks.
+             - Closing Call to Action: "## ¿Necesita Ayuda para [Tema]?" with direct links to Guia Negocios consultation.
           2. Tone: Authoritative, supportive, clear, and professional. Back claims with facts, statistics, and official requirements.
           3. Research Links & In-Text Citations: Naturally weave relevant Markdown hyperlinks throughout the body text referencing verified government, legal, and academic authorities (e.g., [IRS.gov](https://www.irs.gov), [Tennessee Secretary of State](https://sos.tn.gov/business-services), [Tennessee Department of Revenue](https://www.tn.gov/revenue/taxes/business-tax.html), [SBA.gov](https://www.sba.gov), [Brookings Institution](https://www.brookings.edu), and internal Guia Negocios services like [Paquete de Lanzamiento](/es/services/paquete-lanzamiento-completo)).
           4. References Section: Conclude both articles with a formatted "Fuentes y Referencias Oficiales" / "Official Sources & References" section.
@@ -201,11 +202,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           ? data.keywords 
           : (customKeywords ? customKeywords.split(',').map((k: string) => k.trim()) : [topic]);
 
+        // Save to Firestore
         const docRef = await addDoc(collection(db, 'blogs'), {
           titleEs: data.titleEs || topic,
           titleEn: data.titleEn || topic,
-          slugEs: data.slugEs || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          slugEn: data.slugEn || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          slugEs: data.slugEs || topic.toLowerCase().replace(/\s+/g, '-'),
+          slugEn: data.slugEn || topic.toLowerCase().replace(/\s+/g, '-'),
           contentEs: data.contentEs || '',
           contentEn: data.contentEn || '',
           metaDesc: data.metaDesc || '',
@@ -213,7 +215,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           featuredImage: data.featuredImage || uniqueCover.url,
           author: 'Guia Negocios Team',
           authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-          readTime: 5,
+          readTime: 7,
           status: 'Draft',
           publishDate,
           createdAt: new Date().toISOString(),
@@ -264,7 +266,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             : 'bg-amber-100 text-amber-700';
 
           const viewSlug = blog.slugEs || blog.slugEn || blog.slug;
-          const actions = blog.status === 'Published' 
+          const statusAction = blog.status === 'Published' 
             ? `<a href="/${hasEs ? 'es' : 'en'}/blog/${viewSlug}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>`
             : `<button data-publish-id="${id}" class="publish-btn text-xs text-emerald-600 hover:text-emerald-700 font-medium cursor-pointer">Publish</button>`;
 
@@ -276,9 +278,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <td class="px-6 py-4 text-slate-600">${blog.views || 0}</td>
               <td class="px-6 py-4 text-slate-500">${blog.publishDate || 'N/A'}</td>
               <td class="px-6 py-4 text-right">
-                <div class="flex items-center justify-end gap-2">
-                  <a href="/admin/blog/editor?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
-                  ${actions}
+                <div class="flex items-center justify-end gap-3">
+                  <a href="/admin/blog/editor?id=${id}" class="text-xs text-slate-600 hover:text-brand-primary font-medium">Edit</a>
+                  ${statusAction}
+                  <button data-delete-id="${id}" class="text-xs text-rose-600 hover:text-rose-700 font-medium cursor-pointer">Delete</button>
                 </div>
               </td>
             </tr>
@@ -304,6 +307,28 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               } catch (err: any) {
                 console.error("Publish error:", err);
                 alert("Failed to publish: " + err.message);
+              }
+            }
+          });
+        });
+
+        // Attach delete handlers
+        document.querySelectorAll('[data-delete-id]').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = (btn as HTMLElement).dataset.deleteId;
+            if (!id) return;
+            // @ts-ignore
+            const ok = await window.showConfirm('Delete Post', 'Are you sure you want to permanently delete this blog post from Firestore? This action cannot be undone.');
+            if (ok) {
+              try {
+                await deleteDoc(doc(db, 'blogs', id));
+                // @ts-ignore
+                window.showToast('Post deleted successfully!', 'success');
+                loadBlogs();
+              } catch (err: any) {
+                console.error("Delete error:", err);
+                alert("Failed to delete post: " + err.message);
               }
             }
           });

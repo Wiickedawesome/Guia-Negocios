@@ -230,10 +230,6 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
         readTime: data.readTime || 5,
       };
 
-      if (POST_OVERRIDES[post.slug]) {
-        post = { ...post, ...POST_OVERRIDES[post.slug] };
-      }
-
       posts.push(post);
     }
   });
