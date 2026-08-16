@@ -82,72 +82,16 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           <span class="text-xs text-slate-500">Context-Aware Assistant</span>
         </div>
 
-        <!-- Quick AI Action Pills -->
-        <div class="p-3 bg-slate-50/80 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-xs whitespace-nowrap scrollbar-thin">
-          <span class="text-slate-400 font-medium text-[11px]">Quick Actions:</span>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="improve">
-            Polish & Flow
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="translate">
-            Translate Article
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="seo">
-            Optimize SEO & Keywords
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="faq">
-            Add FAQ Section
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_steps">
-            Step-by-Step Flow
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_comparison">
-            Problem vs Solution
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_timeline">
-            Timeline & Roadmap
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_checklist">
-            Checklist & Audit Card
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_fees">
-            Fee & Cost Breakdown
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_tree">
-            Decision Tree Diagram
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_stats">
-            Data & Metrics Grid
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_split">
-            Split Comparison Card
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_custom">
-            Custom Visual / Flyer
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="citations">
-            Add Citations & Research Links
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="autolink">
-            Auto-Link Official Terms
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="deep_research">
-            Deep Topic Research
-          </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="title_meta">
-            Enhance Title & Meta
-          </button>
-        </div>
-
         <!-- Chat Feed -->
-        <div class="p-4 flex flex-col gap-4 max-h-80 overflow-y-auto bg-slate-50/40" id="copilot-chat">
+        <div class="p-4 flex flex-col gap-4 max-h-96 overflow-y-auto bg-slate-50/40" id="copilot-chat">
           <div class="flex items-start gap-3">
             <div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0 border border-brand-primary/20">
               <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
             <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs text-sm text-slate-700 space-y-1.5 max-w-xl">
-              <p class="font-medium text-slate-900">Hello! I'm your AI Editorial Assistant.</p>
+              <p class="font-medium text-slate-900">AI Editorial Assistant</p>
               <p class="text-xs text-slate-600 leading-relaxed">
-                I have full awareness of this article in both Spanish & English. You can ask me to rewrite sections, boost keyword density, generate FAQs, or translate the entire post. Use the quick actions above or type any request below.
+                I have full awareness of this article in both Spanish & English. Ask me to rewrite sections, expand on regulations, translate, or refine any part of your post.
               </p>
             </div>
           </div>
@@ -732,69 +676,6 @@ Instructions:
     copilotSend?.addEventListener('click', () => handleCopilotPrompt(copilotInput.value));
     copilotInput?.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleCopilotPrompt(copilotInput.value);
-    });
-
-    // Quick Action Pills Handlers
-    document.querySelectorAll('.copilot-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        const action = pill.getAttribute('data-action');
-        const isEnglish = document.getElementById('editor-en-container')?.classList.contains('block');
-        const activeLang = isEnglish ? 'English' : 'Spanish';
-
-        if (action === 'improve') {
-          handleCopilotPrompt(`Improve and polish the writing flow, grammar, and depth of the active ${activeLang} post while keeping markdown formatting.`);
-        } else if (action === 'translate') {
-          const targetLang = isEnglish ? 'Spanish' : 'English';
-          handleCopilotPrompt(`Translate the current ${activeLang} blog post completely into high-quality, natural ${targetLang}, preserving all markdown headers, structure, and infographics.`);
-        } else if (action === 'seo') {
-          handleCopilotPrompt(`Optimize the current post for local Knoxville TN and business search SEO. Ensure keyword density for LLC formation, business consulting, and legal compliance.`);
-        } else if (action === 'faq') {
-          handleCopilotPrompt(`Generate a 4-question FAQ section (## Preguntas Frecuentes / Frequently Asked Questions) in ${activeLang} addressing common concerns for this topic.`);
-        } else if (action === 'infographic_steps') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Step-by-Step Flow Infographic in ${activeLang} for this topic using Guia Negocios brand styling (#1B4E2B green, #F2F7F4 light background, numbered badges).`);
-        } else if (action === 'infographic_comparison') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Problem vs. Solution Matrix Infographic in ${activeLang} for this topic comparing common pitfalls (#D92D3C red) to Guia Negocios solutions (#1B4E2B green).`);
-        } else if (action === 'infographic_timeline') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Timeline & Roadmap Infographic in ${activeLang} (e.g. 30/60/90 Day milestones, launch phases, or legal roadmap) for this topic using Guia Negocios brand styling.`);
-        } else if (action === 'infographic_checklist') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Compliance & Audit Checklist Card in ${activeLang} with visual checkmark icons, mandatory status tags, and penalty warnings for this topic.`);
-        } else if (action === 'infographic_fees') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Itemized Cost & Fee Breakdown Card in ${activeLang} displaying state filing fees, county licenses, permits, and startup expenses for this topic.`);
-        } else if (action === 'infographic_tree') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Decision Tree Diagram in ${activeLang} guiding business owners through choices (e.g. LLC vs S-Corp, or Contractor License vs Registration) for this topic.`);
-        } else if (action === 'infographic_stats') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Data & Metrics Highlight Card in ${activeLang} with key business data in #F0C850 on a #1A2E35 dark background.`);
-        } else if (action === 'infographic_split') {
-          handleCopilotPrompt(`Generate a responsive HTML/CSS Split Comparison Card in ${activeLang} (Bad/Mixed Way in red vs. Good/Separated Way in green) illustrating key choices for this topic.`);
-        } else if (action === 'infographic_custom') {
-          handleCopilotPrompt(`Create a creative, custom-tailored responsive HTML/CSS/SVG visual flyer or infographic component in ${activeLang} that perfectly illustrates the most critical takeaway of this article.`);
-        } else if (action === 'citations') {
-          const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'business formation in Tennessee');
-          const citations = getRelevantCitations(topicVal, isEnglish ? 'en' : 'es');
-          handleCopilotPrompt(`Enrich and back this ${activeLang} article with verified government, legal, and academic citations. Naturally embed in-text markdown links to official sources (IRS, Tennessee Secretary of State, Department of Revenue, SBA, Brookings, and Guia Negocios services) and add an official References section at the bottom.\n\nVerified Sources:\n${citations}`);
-        } else if (action === 'autolink') {
-          const activeEditor = isEnglish ? easyMdeEn : easyMdeEs;
-          if (activeEditor) {
-            const currentText = activeEditor.value();
-            const { newContent, count } = autoLinkContent(currentText);
-            if (count > 0) {
-              activeEditor.value(newContent);
-              // @ts-ignore
-              window.showToast(`Auto-linked ${count} official entity reference(s)!`, 'success');
-              appendCopilotMessage(`Successfully scanned the document and auto-linked ${count} official terms (IRS, State, County, and Service portals) with verified URLs!`, false);
-            } else {
-              // @ts-ignore
-              window.showToast('No unlinked official terms found in active text.', 'info');
-              appendCopilotMessage(`No unlinked standard official terms found. Click "Add Citations & Research Links" or "Deep Topic Research" to research and inject new factual references.`, false);
-            }
-          }
-        } else if (action === 'deep_research') {
-          const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'Tennessee Hispanic Business');
-          handleCopilotPrompt(`Perform a deep investigative research sweep on the topic: "${topicVal}". Identify 4-5 crucial legal, tax, county-level regulations, or empirical statistics with exact official source URLs (including .gov, .edu, state statutes, or local clerk portals) that will make this post an authoritative industry reference guide.`);
-        } else if (action === 'title_meta') {
-          handleCopilotPrompt(`Suggest 3 high-converting, click-worthy Titles and 2 SEO Meta Descriptions (under 160 characters) in both Spanish and English for this post.`);
-        }
-      });
     });
 
     function autoLinkContent(content: string): { newContent: string; count: number } {
