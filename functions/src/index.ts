@@ -172,7 +172,8 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
  */
 export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async (request) => {
   try {
-    const { topic, lang = 'en' } = request.data || {};
+    const { topic, lang = 'en', existingKeywords = [] } = request.data || {};
+    const existingSet = new Set((existingKeywords as string[]).map((k: string) => k.toLowerCase()));
     if (!topic) throw new HttpsError('invalid-argument', 'Missing topic');
 
     // 1. Fetch Google Autocomplete
@@ -223,7 +224,7 @@ export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async 
       };
     });
 
-    return { trends };
+    return { trends: trends.filter((t: any) => !existingSet.has(t.keyword.toLowerCase())) };
   } catch (error: any) {
     console.error('Discover Keywords Error:', error);
     throw new HttpsError('internal', 'Failed to discover keywords');
@@ -360,7 +361,8 @@ export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (requ
 
 // ── Search Console Scanner ──
 export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async (request) => {
-  const { phrase } = request.data || {};
+  const { phrase, existingKeywords = [] } = request.data || {};
+  const existingSet = new Set((existingKeywords as string[]).map((k: string) => k.toLowerCase()));
 
   try {
     const db = getFirestore();
@@ -466,7 +468,7 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
       impressions: row.impressions || 0,
       ctr: row.ctr ? (row.ctr * 100).toFixed(1) + '%' : '0%',
       position: row.position ? Math.round(row.position * 10) / 10 : 99,
-    }));
+    })).filter((kw: any) => kw.keyword && !existingSet.has(kw.keyword.toLowerCase()));
 
     return {
       keywords,

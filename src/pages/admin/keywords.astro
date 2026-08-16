@@ -112,6 +112,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     import { collection, getDocs, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
+    // Track existing keywords to prevent duplicate suggestions
+    const trackedKeywords = new Set<string>();
+
     // Load Keywords from Firestore
     async function loadKeywords() {
       const tbody = document.getElementById('keywords-table-body');
@@ -122,16 +125,37 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         
         if (snapshot.empty) {
           tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No keywords tracked. Use AI to discover some!</td></tr>`;
+          trackedKeywords.clear();
           return;
+        }
+
+        // Auto-cleanup duplicate keywords
+        const seen = new Map<string, string>();
+        const toDelete: string[] = [];
+        snapshot.forEach(d => {
+          const kwLower = (d.data().keyword || '').toLowerCase();
+          if (seen.has(kwLower)) {
+            toDelete.push(d.id);
+          } else {
+            seen.set(kwLower, d.id);
+          }
+        });
+
+        if (toDelete.length > 0) {
+          console.log(`Cleaning ${toDelete.length} duplicate keywords...`);
+          await Promise.all(toDelete.map(dupId => deleteDoc(doc(db, 'keywords', dupId))));
+          return loadKeywords(); // Reload with clean data
         }
 
         let html = '';
         let total = 0, top10 = 0, top20 = 0, top50 = 0;
         let improved = 0, declined = 0, stable = 0;
 
+        trackedKeywords.clear();
         snapshot.forEach(document => {
           const kw = document.data();
           const id = document.id;
+          trackedKeywords.add((kw.keyword || '').toLowerCase());
           
           // Stats computation
           total++;
@@ -304,7 +328,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         try {
           const functions = getFunctions(app);
           const scanApi = httpsCallable(functions, 'scanSearchConsole');
-          const response = await scanApi({ phrase: phrase || null });
+          const response = await scanApi({ phrase: phrase || null, existingKeywords: Array.from(trackedKeywords) });
           const data = response.data as any;
 
           if (data.keywords.length === 0) {
@@ -316,9 +340,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           let suggestions: any[] = [];
           try {
-            // Now run Gemini AI analysis on the results
-            const existingSnap = await getDocs(collection(db, 'keywords'));
-            const existingKeywords = existingSnap.docs.map(d => d.data().keyword?.toLowerCase());
+            // Use tracked keywords to avoid duplicate suggestions
+            const existingList = Array.from(trackedKeywords).join(', ');
 
             const aiPrompt = `
               You are an expert SEO consultant for GUIA DE NEGOCIOS, a premier bilingual business consultancy in Knoxville, TN assisting entrepreneurs and small business owners with LLC formation, web design, and operational growth.
@@ -328,7 +351,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               Search Console Data:
               ${JSON.stringify(data.keywords.slice(0, 15), null, 2)}
               
-              Analyze this data and select the top 5 most valuable keywords we should actively track.
+              IMPORTANT: We are ALREADY tracking these keywords — do NOT suggest any of them or close variations:
+              [${existingList}]
+              
+              Analyze this data and select the top 5 most valuable NEW keywords we should start tracking.
               Format your response as a JSON array:
               [
                 {
@@ -341,7 +367,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                   "reason": "High intent search query for local business setup"
                 }
               ]
-              Respond ONLY with the JSON array.
+              Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
             `;
 
             const aiResult = await aiModel.generateContent(aiPrompt);
@@ -355,7 +381,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }
 
           if (suggestions.length === 0) {
-            suggestions = data.keywords.slice(0, 6).map((k: any) => ({
+            suggestions = data.keywords.slice(0, 12).map((k: any) => ({
               keyword: k.keyword,
               language: 'es',
               volume: k.impressions || 150,
@@ -365,6 +391,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               reason: `${k.impressions} impressions, rank #${k.position || 5}`
             }));
           }
+
+          // Filter out keywords already being tracked
+          suggestions = suggestions.filter((s: any) => !trackedKeywords.has((s.keyword || '').toLowerCase()));
 
           const aiList = document.getElementById('ai-suggestions-list');
           if (aiList) {
@@ -402,12 +431,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const kwData = JSON.parse(scSaveBtn.getAttribute('data-sc-save') || '{}');
         scSaveBtn.disabled = true;
         scSaveBtn.innerText = 'Saving...';
+
+        // Prevent saving duplicates
+        if (trackedKeywords.has((kwData.keyword || '').toLowerCase())) {
+          scSaveBtn.innerText = 'Already tracked!';
+          scSaveBtn.classList.replace('bg-emerald-100', 'bg-amber-100');
+          scSaveBtn.classList.replace('text-emerald-700', 'text-amber-600');
+          return;
+        }
+
         try {
           await addDoc(collection(db, 'keywords'), {
             ...kwData,
             source: 'search-console',
             createdAt: serverTimestamp()
           });
+          trackedKeywords.add((kwData.keyword || '').toLowerCase());
           scSaveBtn.innerText = 'Saved!';
           scSaveBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
           scSaveBtn.classList.replace('text-emerald-700', 'text-slate-400');
@@ -432,7 +471,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const functions = getFunctions(app);
           const discoverKeywordsApi = httpsCallable(functions, 'discoverKeywords');
           
-          const rawDataResponse = await discoverKeywordsApi({ topic });
+          const existingList = Array.from(trackedKeywords).join(', ');
+          const rawDataResponse = await discoverKeywordsApi({ topic, existingKeywords: Array.from(trackedKeywords) });
           const rawTrends = (rawDataResponse.data as any).trends;
 
           const prompt = `
@@ -442,7 +482,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             Here is the raw data from Google:
             ${JSON.stringify(rawTrends, null, 2)}
             
-            Based on this real data, select the best 5 keywords. Some MUST be in English, and some MUST be in Spanish (translate them appropriately based on the context).
+            IMPORTANT: We are ALREADY tracking these keywords — do NOT suggest any of them or close variations:
+            [${existingList}]
+            
+            Based on this real data, select the best 5 NEW keywords we are NOT already tracking. Some MUST be in English, and some MUST be in Spanish (translate them appropriately based on the context).
             Format them exactly into this JSON array schema:
             [
               {
@@ -455,7 +498,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               }
             ]
             
-            Respond ONLY with the JSON array.
+            Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
           `;
 
           const result = await aiModel.generateContent(prompt);
@@ -497,11 +540,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         saveBtn.disabled = true;
         saveBtn.innerText = 'Saving...';
 
+        // Prevent saving duplicates
+        if (trackedKeywords.has((kwData.keyword || '').toLowerCase())) {
+          saveBtn.innerText = 'Already tracked!';
+          saveBtn.classList.replace('bg-emerald-100', 'bg-amber-100');
+          saveBtn.classList.replace('text-emerald-700', 'text-amber-600');
+          return;
+        }
+
         try {
           await addDoc(collection(db, 'keywords'), {
             ...kwData,
             createdAt: serverTimestamp()
           });
+          trackedKeywords.add((kwData.keyword || '').toLowerCase());
 
           saveBtn.innerText = 'Saved!';
           saveBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
