@@ -112,6 +112,12 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="citations">
             Add Citations & Research Links
           </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="autolink">
+            Auto-Link Official Terms
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="deep_research">
+            Deep Topic Research
+          </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="title_meta">
             Enhance Title & Meta
           </button>
@@ -750,14 +756,64 @@ Instructions:
         } else if (action === 'infographic_split') {
           handleCopilotPrompt(`Generate a responsive HTML/CSS Split Comparison Card in ${activeLang} (Bad/Mixed Way in red vs. Good/Separated Way in green) illustrating key choices for this topic.`);
         } else if (action === 'citations') {
-          const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'business formation');
+          const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'business formation in Tennessee');
           const citations = getRelevantCitations(topicVal, isEnglish ? 'en' : 'es');
           handleCopilotPrompt(`Enrich and back this ${activeLang} article with verified government, legal, and academic citations. Naturally embed in-text markdown links to official sources (IRS, Tennessee Secretary of State, Department of Revenue, SBA, Brookings, and Guia Negocios services) and add an official References section at the bottom.\n\nVerified Sources:\n${citations}`);
+        } else if (action === 'autolink') {
+          const activeEditor = isEnglish ? easyMdeEn : easyMdeEs;
+          if (activeEditor) {
+            const currentText = activeEditor.value();
+            const { newContent, count } = autoLinkContent(currentText);
+            if (count > 0) {
+              activeEditor.value(newContent);
+              // @ts-ignore
+              window.showToast(`Auto-linked ${count} official entity reference(s)!`, 'success');
+              appendCopilotMessage(`Successfully scanned the document and auto-linked ${count} official terms (IRS, State, County, and Service portals) with verified URLs!`, false);
+            } else {
+              // @ts-ignore
+              window.showToast('No unlinked official terms found in active text.', 'info');
+              appendCopilotMessage(`No unlinked standard official terms found. Click "Add Citations & Research Links" or "Deep Topic Research" to research and inject new factual references.`, false);
+            }
+          }
+        } else if (action === 'deep_research') {
+          const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'Tennessee Hispanic Business');
+          handleCopilotPrompt(`Perform a deep investigative research sweep on the topic: "${topicVal}". Identify 4-5 crucial legal, tax, county-level regulations, or empirical statistics with exact official source URLs (including .gov, .edu, state statutes, or local clerk portals) that will make this post an authoritative industry reference guide.`);
         } else if (action === 'title_meta') {
           handleCopilotPrompt(`Suggest 3 high-converting, click-worthy Titles and 2 SEO Meta Descriptions (under 160 characters) in both Spanish and English for this post.`);
         }
       });
     });
+
+    function autoLinkContent(content: string): { newContent: string; count: number } {
+      let count = 0;
+      const linkRules: [RegExp, string][] = [
+        [/\b(IRS(?:\.gov)?)\b(?![^\[]*\])(?![^\(]*\))/g, '[IRS](https://www.irs.gov)'],
+        [/\b(Formulario SS-4|Form SS-4)\b(?![^\[]*\])(?![^\(]*\))/g, '[Form SS-4](https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online)'],
+        [/\b(Secretar(?:í|i)a de Estado de Tennessee|Tennessee Secretary of State)\b(?![^\[]*\])(?![^\(]*\))/g, '[Secretaría de Estado de Tennessee](https://sos.tn.gov/business-services)'],
+        [/\b(Departamento de Ingresos de Tennessee|Tennessee Department of Revenue)\b(?![^\[]*\])(?![^\(]*\))/g, '[Tennessee Department of Revenue](https://www.tn.gov/revenue/taxes/business-tax.html)'],
+        [/\b(Secretario del Condado de Knox|Knox County Clerk)\b(?![^\[]*\])(?![^\(]*\))/g, '[Knox County Clerk](https://www.knoxcounty.org/clerk/business_tax.php)'],
+        [/\b(Small Business Administration|SBA)\b(?![^\[]*\])(?![^\(]*\))/g, '[SBA](https://www.sba.gov/business-guide/launch-your-business)'],
+        [/\b(OSHA)\b(?![^\[]*\])(?![^\(]*\))/g, '[OSHA](https://www.osha.gov/smallbusiness)'],
+        [/\b(USPTO|Oficina de Patentes y Marcas)\b(?![^\[]*\])(?![^\(]*\))/g, '[USPTO](https://www.uspto.gov/trademarks)'],
+        [/\b(Brookings Institution|Instituto Brookings)\b(?![^\[]*\])(?![^\(]*\))/g, '[Brookings Institution](https://www.brookings.edu)'],
+        [/\b(Stanford Latino Entrepreneurship Initiative|SLEI)\b(?![^\[]*\])(?![^\(]*\))/g, '[Stanford Latino Entrepreneurship Initiative](https://www.gsb.stanford.edu/faculty-research/centers-initiatives/slei)'],
+        [/\b(Michigan State University|JSRI)\b(?![^\[]*\])(?![^\(]*\))/g, '[Michigan State University JSRI](https://jsri.msu.edu)'],
+        [/\b(U\.S\. Census Bureau|Oficina del Censo)\b(?![^\[]*\])(?![^\(]*\))/g, '[U.S. Census Bureau](https://www.census.gov)'],
+        [/\b(Paquete de Lanzamiento Completo|Complete Launch Bundle)\b(?![^\[]*\])(?![^\(]*\))/g, '[Paquete de Lanzamiento Completo](/es/services/paquete-lanzamiento-completo)'],
+        [/\b(Operaciones y Crecimiento|Operations and Growth)\b(?![^\[]*\])(?![^\(]*\))/g, '[Asesoría en Operaciones y Crecimiento](/es/services/operaciones-crecimiento)'],
+        [/\b(Apoyo Creedava|Creedava Support)\b(?![^\[]*\])(?![^\(]*\))/g, '[Apoyo Creedava](/es/services/apoyo-creedava)']
+      ];
+
+      let result = content;
+      for (const [regex, replacement] of linkRules) {
+        const matches = result.match(regex);
+        if (matches) {
+          count += matches.length;
+          result = result.replace(regex, replacement);
+        }
+      }
+      return { newContent: result, count };
+    }
 
     // =========================================================================
     // 3. LIVE BLOG PREVIEW MODAL LOGIC
