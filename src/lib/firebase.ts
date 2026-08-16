@@ -115,14 +115,13 @@ async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'ge
   return text;
 }
 
-// Active, modern Gemini 3.x models (Gemini 3.7 Flash, 3.6 Flash, 3.5 Flash-Lite, 3-flash, 3.1-pro)
+// Active Gemini 3.x models (Gemini 3.7 Flash, 3.6 Flash, 3.5 Flash-Lite, 3-flash, 3.1-pro)
 const modelCandidates = [
   'gemini-3.7-flash',
   'gemini-3.6-flash',
   'gemini-3.5-flash-lite',
   'gemini-3-flash',
-  'gemini-3.1-pro',
-  'gemini-2.5-flash'
+  'gemini-3.1-pro'
 ];
 
 /**
