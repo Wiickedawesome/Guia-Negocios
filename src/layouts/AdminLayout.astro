@@ -152,11 +152,19 @@ const navItems = [
     import { auth } from '../lib/firebase';
     import { onAuthStateChanged, signOut } from 'firebase/auth';
 
+    function isAuthorizedEmail(email: string | null | undefined): boolean {
+      if (!email) return false;
+      return email.toLowerCase().endsWith('@guianegocios.net');
+    }
+
     // Route Protection
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        // If no user is logged in, redirect to the login page immediately
-        window.location.href = '/admin/login';
+    onAuthStateChanged(auth, async (user) => {
+      if (!user || !isAuthorizedEmail(user.email)) {
+        if (user && !isAuthorizedEmail(user.email)) {
+          await signOut(auth);
+        }
+        // If no user or unauthorized email domain, redirect to the login page immediately
+        window.location.replace('/admin/login');
       } else {
         // Show the admin UI now that user is verified
         const appRoot = document.getElementById('admin-app-root');

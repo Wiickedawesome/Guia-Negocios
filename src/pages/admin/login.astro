@@ -65,24 +65,46 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   <script>
     import { auth } from '../../lib/firebase';
-    import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
+    import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
+
+    function isAuthorizedEmail(email: string | null | undefined): boolean {
+      if (!email) return false;
+      return email.toLowerCase().endsWith('@guianegocios.net');
+    }
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        window.location.href = '/admin/dashboard';
+        if (!isAuthorizedEmail(user.email)) {
+          signOut(auth);
+          const errorDiv = document.getElementById('auth-error');
+          if (errorDiv) {
+            errorDiv.className = 'mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm font-medium border border-red-100';
+            errorDiv.textContent = 'Access Denied: Only @guianegocios.net accounts are authorized to access the Admin Dashboard.';
+            errorDiv.classList.remove('hidden');
+          }
+          return;
+        }
+        window.location.replace('/admin/dashboard');
       }
     });
 
     document.querySelector('form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const emailInput = document.getElementById('email-address');
-      const passwordInput = document.getElementById('password');
-      const errorDiv = document.getElementById('auth-error');
-      const btn = e.target.querySelector('button[type="submit"]');
+      const emailInput = document.getElementById('email-address') as HTMLInputElement;
+      const passwordInput = document.getElementById('password') as HTMLInputElement;
+      const errorDiv = document.getElementById('auth-error') as HTMLDivElement;
+      const btn = (e.target as HTMLElement).querySelector('button[type="submit"]') as HTMLButtonElement;
       
-      const email = emailInput.value;
-      const password = passwordInput.value;
+      const email = emailInput?.value?.trim() || '';
+      const password = passwordInput?.value || '';
+      
+      if (!isAuthorizedEmail(email)) {
+        errorDiv.className = 'mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm font-medium border border-red-100';
+        errorDiv.textContent = 'Access Denied: Only @guianegocios.net accounts are authorized.';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
       
       const originalText = btn.textContent;
       btn.textContent = 'Signing in...';
@@ -91,10 +113,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       errorDiv.classList.add('hidden');
       
       try {
-        await signInWithEmailAndPassword(auth, email, password);
-        // Successful login, Firebase will persist the token automatically.
-        window.location.href = '/admin/dashboard';
-      } catch (error) {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        if (!isAuthorizedEmail(cred.user.email)) {
+          await signOut(auth);
+          throw new Error('Access Denied: Only @guianegocios.net accounts are authorized.');
+        }
+        window.location.replace('/admin/dashboard');
+      } catch (error: any) {
         console.error('Login Error:', error);
         
         btn.textContent = originalText;
@@ -111,9 +136,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     document.getElementById('forgot-password')?.addEventListener('click', async (e) => {
       e.preventDefault();
       const emailInput = document.getElementById('email-address') as HTMLInputElement;
-      const errorDiv = document.getElementById('auth-error');
+      const errorDiv = document.getElementById('auth-error') as HTMLDivElement;
       
-      if (!emailInput.value) {
+      if (!emailInput?.value) {
         errorDiv.className = 'mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm font-medium border border-red-100';
         errorDiv.textContent = 'Please enter your email address first.';
         errorDiv.classList.remove('hidden');
@@ -135,15 +160,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     // Google Sign-In logic
     document.getElementById('google-signin')?.addEventListener('click', async (e) => {
       e.preventDefault();
-      const errorDiv = document.getElementById('auth-error');
+      const errorDiv = document.getElementById('auth-error') as HTMLDivElement;
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ hd: 'guianegocios.net', prompt: 'select_account' });
       
       try {
-        await signInWithPopup(auth, provider);
-        window.location.href = '/admin/dashboard';
+        const cred = await signInWithPopup(auth, provider);
+        if (!isAuthorizedEmail(cred.user.email)) {
+          await signOut(auth);
+          throw new Error('Access Denied: Only @guianegocios.net accounts are authorized to access the Admin Dashboard.');
+        }
+        window.location.replace('/admin/dashboard');
       } catch (error: any) {
+        console.error('Google Sign-In Error:', error);
         errorDiv.className = 'mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm font-medium border border-red-100';
-        errorDiv.textContent = 'Google Sign-In Error: ' + (error.message || 'Could not sign in with Google.');
+        errorDiv.textContent = error.message || 'Could not sign in with Google.';
         errorDiv.classList.remove('hidden');
       }
     });
