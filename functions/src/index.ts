@@ -45,7 +45,7 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
       dateRanges: [{ startDate: startDate, endDate: 'today' }],
       dimensions: [{ name: 'pagePath' }],
       metrics: [{ name: 'screenPageViews' }],
-      limit: 5,
+      limit: 10,
       orderBys: [{ desc: true, metric: { metricName: 'screenPageViews' } }]
     });
 
@@ -59,7 +59,7 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
       dateRanges: [{ startDate: startDate, endDate: 'today' }],
       dimensions: [{ name: 'city' }],
       metrics: [{ name: 'activeUsers' }],
-      limit: 5,
+      limit: 8,
       orderBys: [{ desc: true, metric: { metricName: 'activeUsers' } }]
     });
 
@@ -73,7 +73,7 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
       dateRanges: [{ startDate: startDate, endDate: 'today' }],
       dimensions: [{ name: 'language' }],
       metrics: [{ name: 'activeUsers' }],
-      limit: 2,
+      limit: 6,
       orderBys: [{ desc: true, metric: { metricName: 'activeUsers' } }]
     });
 
@@ -108,12 +108,25 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
       users: parseInt(row.metricValues?.[0]?.value || '0', 10)
     }));
 
+    // Bounce Rate in GA4 is 0.0 to 1.0 (e.g. 0.64 = 64.0%)
+    const rawBounce = parseFloat(metrics[2]?.value || '0');
+    const bouncePct = rawBounce <= 1.0 ? (rawBounce * 100).toFixed(1) : rawBounce.toFixed(1);
+
+    // Format session duration nicely
+    const rawSessionSec = parseFloat(metrics[3]?.value || '0');
+    let sessionFormatted = `${rawSessionSec.toFixed(0)}s`;
+    if (rawSessionSec >= 60) {
+      const mins = Math.floor(rawSessionSec / 60);
+      const secs = Math.floor(rawSessionSec % 60);
+      sessionFormatted = `${mins}m ${secs}s`;
+    }
+
     return {
       totals: {
         activeUsers: metrics[0]?.value || '0',
         newUsers: metrics[1]?.value || '0',
-        bounceRate: metrics[2]?.value ? parseFloat(metrics[2].value).toFixed(2) + '%' : '0%',
-        avgSessionDuration: metrics[3]?.value ? parseFloat(metrics[3].value).toFixed(1) + 's' : '0s'
+        bounceRate: `${bouncePct}%`,
+        avgSessionDuration: sessionFormatted
       },
       topPages,
       topCities,

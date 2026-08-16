@@ -38,11 +38,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <!-- Main Chart -->
     <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm lg:col-span-2">
-      <h3 class="text-lg font-bold text-slate-900 mb-6">Traffic Volume</h3>
-      <div class="h-64 flex items-center justify-center bg-slate-50 border border-slate-100 rounded-lg text-slate-400">
-        <div class="text-center">
-          <svg class="w-10 h-10 mx-auto mb-2 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
-          [GA4 Line Chart Component]
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Traffic Volume</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Daily active users from GA4</p>
+        </div>
+        <div id="chart-total-tag" class="text-xs font-bold px-2.5 py-1 rounded-full bg-brand-primary/10 text-brand-primary">
+          Live Data
+        </div>
+      </div>
+      <div id="traffic-chart-container" class="h-64 flex items-center justify-center bg-slate-50/50 border border-slate-100 rounded-lg relative overflow-hidden">
+        <div class="text-center text-slate-400">
+          <svg class="w-8 h-8 mx-auto mb-2 animate-spin text-brand-primary" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-xs">Loading GA4 chart...</span>
         </div>
       </div>
     </div>
@@ -51,9 +62,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
       <h3 class="text-lg font-bold text-slate-900 mb-6">Traffic Sources</h3>
       <div class="space-y-4" id="traffic-sources-container">
-        <div class="animate-pulse flex items-center gap-4">
-          <div class="h-4 bg-slate-200 rounded w-1/4"></div>
-          <div class="h-2 bg-slate-200 rounded flex-1"></div>
+        <div class="animate-pulse space-y-4">
+          <div class="h-8 bg-slate-100 rounded-lg"></div>
+          <div class="h-8 bg-slate-100 rounded-lg"></div>
+          <div class="h-8 bg-slate-100 rounded-lg"></div>
         </div>
       </div>
     </div>
@@ -62,8 +74,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Top Pages -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-      <div class="p-6 border-b border-slate-200">
-        <h3 class="text-lg font-bold text-slate-900">Top Pages (30 Days)</h3>
+      <div class="p-6 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-slate-900">Top Pages</h3>
+        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Views</span>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-left text-sm">
@@ -85,16 +98,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <!-- Demographics -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
       <h3 class="text-lg font-bold text-slate-900 mb-6">Demographics</h3>
-      <div class="grid grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <h4 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Location</h4>
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Top Cities</h4>
           <ul class="space-y-2 text-sm" id="demographic-locations">
             <li class="text-slate-500">Loading locations...</li>
           </ul>
         </div>
         <div>
-          <h4 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Language</h4>
-          <div class="flex flex-col items-center justify-center space-y-2 mt-4" id="demographic-languages">
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Languages</h4>
+          <div class="flex flex-col space-y-2" id="demographic-languages">
              <span class="text-slate-500 text-sm">Loading languages...</span>
           </div>
         </div>
@@ -105,6 +118,118 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { app } from '../../lib/firebase';
     import { getFunctions, httpsCallable } from 'firebase/functions';
+
+    // Channel color and icon styling registry
+    const channelConfig: Record<string, { color: string; icon: string }> = {
+      'Organic Social': {
+        color: '#ec4899', // pink-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />'
+      },
+      'Direct': {
+        color: '#3b82f6', // blue-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />'
+      },
+      'Organic Search': {
+        color: '#10b981', // emerald-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />'
+      },
+      'Unassigned': {
+        color: '#64748b', // slate-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
+      },
+      'Referral': {
+        color: '#8b5cf6', // purple-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />'
+      },
+      'Paid Search': {
+        color: '#f59e0b', // amber-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
+      },
+      'Email': {
+        color: '#06b6d4', // cyan-500
+        icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />'
+      }
+    };
+
+    function renderTimeSeriesChart(timeSeries: Array<{ date: string; users: string }>) {
+      const container = document.getElementById('traffic-chart-container');
+      if (!container) return;
+
+      if (!timeSeries || timeSeries.length === 0) {
+        container.innerHTML = `
+          <div class="text-center text-slate-400 text-sm">
+            <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+            </svg>
+            No daily traffic data recorded in this period.
+          </div>
+        `;
+        return;
+      }
+
+      const values = timeSeries.map(item => parseInt(item.users || '0', 10));
+      const maxVal = Math.max(...values, 5);
+      const width = 600;
+      const height = 200;
+      const padding = 30;
+
+      const points = values.map((val, idx) => {
+        const x = padding + (idx / Math.max(values.length - 1, 1)) * (width - padding * 2);
+        const y = height - padding - (val / maxVal) * (height - padding * 2);
+        return { x, y, val, date: timeSeries[idx].date };
+      });
+
+      const polylinePoints = points.map(p => `${p.x},${p.y}`).join(' ');
+      const areaPoints = `${points[0].x},${height - padding} ${polylinePoints} ${points[points.length - 1].x},${height - padding}`;
+
+      // Date labels
+      const firstDate = timeSeries[0]?.date ? formatDateLabel(timeSeries[0].date) : '';
+      const lastDate = timeSeries[timeSeries.length - 1]?.date ? formatDateLabel(timeSeries[timeSeries.length - 1].date) : '';
+      const midIdx = Math.floor(timeSeries.length / 2);
+      const midDate = timeSeries[midIdx]?.date ? formatDateLabel(timeSeries[midIdx].date) : '';
+
+      container.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" class="w-full h-full p-2" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0" />
+            </linearGradient>
+          </defs>
+          
+          <!-- Grid Lines -->
+          <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#e2e8f0" stroke-width="1" />
+          <line x1="${padding}" y1="${height / 2}" x2="${width - padding}" y2="${height / 2}" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4 4" />
+          
+          <!-- Area Fill -->
+          <polygon points="${areaPoints}" fill="url(#chartGradient)" />
+          
+          <!-- Line -->
+          <polyline points="${polylinePoints}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          
+          <!-- Points -->
+          ${points.map(p => `
+            <circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#ffffff" stroke="#2563eb" stroke-width="2">
+              <title>${p.val} users (${p.date})</title>
+            </circle>
+          `).join('')}
+
+          <!-- Axis Labels -->
+          <text x="${padding}" y="${height - 8}" font-size="10" fill="#94a3b8">${firstDate}</text>
+          <text x="${width / 2}" y="${height - 8}" font-size="10" fill="#94a3b8" text-anchor="middle">${midDate}</text>
+          <text x="${width - padding}" y="${height - 8}" font-size="10" fill="#94a3b8" text-anchor="end">${lastDate}</text>
+          <text x="${padding - 5}" y="${padding + 5}" font-size="10" fill="#94a3b8" text-anchor="end">${maxVal}</text>
+          <text x="${padding - 5}" y="${height - padding}" font-size="10" fill="#94a3b8" text-anchor="end">0</text>
+        </svg>
+      `;
+    }
+
+    function formatDateLabel(dateStr: string) {
+      if (!dateStr || dateStr.length !== 8) return dateStr;
+      const month = dateStr.substring(4, 6);
+      const day = dateStr.substring(6, 8);
+      return `${month}/${day}`;
+    }
 
     async function loadAnalytics(range: string = '30') {
       try {
@@ -126,82 +251,80 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           document.getElementById('metric-session')!.innerText = data.totals.avgSessionDuration;
         }
 
+        // Render Chart
+        if (data.timeSeries) {
+          renderTimeSeriesChart(data.timeSeries);
+        }
+
+        // Render Top Pages
         if (data.topPages) {
           const tbody = document.getElementById('top-pages-body');
           if (tbody) {
             tbody.innerHTML = data.topPages.map((page: any) => `
               <tr>
-                <td class="px-6 py-3 text-slate-900">${page.path}</td>
-                <td class="px-6 py-3 text-right text-slate-600">${page.views}</td>
+                <td class="px-6 py-3 font-medium text-slate-800">${page.path}</td>
+                <td class="px-6 py-3 text-right font-bold text-slate-600">${page.views}</td>
               </tr>
             `).join('');
           }
         }
 
+        // Render Demographics - Cities
         if (data.topCities) {
           const locList = document.getElementById('demographic-locations');
           if (locList) {
             locList.innerHTML = data.topCities.map((loc: any) => `
-              <li class="flex justify-between">
-                <span class="text-slate-700 truncate w-3/4" title="${loc.city}">${loc.city}</span>
-                <span class="font-medium text-slate-900">${loc.users}</span>
+              <li class="flex justify-between items-center py-1 border-b border-slate-50 last:border-0">
+                <span class="text-slate-700 truncate font-medium" title="${loc.city}">${loc.city}</span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800">${loc.users} users</span>
               </li>
             `).join('');
           }
         }
 
+        // Render Demographics - Languages
         if (data.languages) {
           const langList = document.getElementById('demographic-languages');
           if (langList) {
             langList.innerHTML = data.languages.map((lang: any) => `
-              <div class="w-full flex justify-between px-4 py-2 bg-slate-50 rounded-lg">
-                <span class="text-slate-700 font-medium uppercase">${lang.language}</span>
-                <span class="font-bold text-brand-primary">${lang.users} Users</span>
+              <div class="w-full flex justify-between items-center px-4 py-2.5 bg-slate-50/80 rounded-lg border border-slate-100">
+                <span class="text-slate-700 font-semibold text-xs uppercase tracking-wider">${lang.language}</span>
+                <span class="font-bold text-sm text-brand-primary">${lang.users} Users</span>
               </div>
             `).join('');
           }
         }
 
+        // Render Traffic Sources with guaranteed inline color styling
         if (data.trafficSources) {
           const container = document.getElementById('traffic-sources-container');
           if (container) {
             const total = data.trafficSources.reduce((sum: number, src: any) => sum + src.users, 0);
             
-            const colorMap: Record<string, string> = {
-              'Organic Search': 'brand-primary',
-              'Direct': 'blue-500',
-              'Referral': 'purple-500',
-              'Email': 'amber-500',
-              'Organic Social': 'pink-500',
-              'Paid Search': 'emerald-500'
-            };
-
-            const iconMap: Record<string, string> = {
-              'Organic Search': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />',
-              'Direct': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />',
-              'Referral': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />',
-              'Email': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />'
-            };
-            
             if (total === 0) {
-              container.innerHTML = '<p class="text-slate-500 text-sm">No traffic data available.</p>';
+              container.innerHTML = '<p class="text-slate-500 text-sm">No traffic data available for this range.</p>';
             } else {
               container.innerHTML = data.trafficSources.map((src: any) => {
-                const percent = Math.round((src.users / total) * 100);
-                const colorClass = colorMap[src.channel] || 'slate-500';
-                const iconPath = iconMap[src.channel] || '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />';
+                const percent = Math.max(1, Math.round((src.users / total) * 100));
+                const config = channelConfig[src.channel] || {
+                  color: '#64748b',
+                  icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                };
                 
                 return `
                   <div>
-                    <div class="flex justify-between text-sm mb-1">
+                    <div class="flex justify-between items-center text-sm mb-1.5">
                       <span class="font-medium text-slate-700 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-${colorClass}" fill="none" viewBox="0 0 24 24" stroke="currentColor">${iconPath}</svg> 
-                        ${src.channel}
+                        <svg class="w-4 h-4" style="color: ${config.color};" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          ${config.icon}
+                        </svg> 
+                        <span>${src.channel}</span>
+                        <span class="text-xs text-slate-400">(${src.users})</span>
                       </span>
-                      <span class="text-slate-500">${percent}%</span>
+                      <span class="text-xs font-bold text-slate-700">${percent}%</span>
                     </div>
-                    <div class="w-full bg-slate-100 rounded-full h-2">
-                      <div class="bg-${colorClass} h-2 rounded-full" style="width: ${percent}%"></div>
+                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                      <div class="h-2.5 rounded-full transition-all duration-700 ease-out" style="width: ${percent}%; background-color: ${config.color};"></div>
                     </div>
                   </div>
                 `;
@@ -236,6 +359,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     });
 
     // Call after slight delay to ensure auth is ready
-    setTimeout(() => loadAnalytics('30'), 1500);
+    setTimeout(() => loadAnalytics('30'), 500);
   </script>
 </AdminLayout>
