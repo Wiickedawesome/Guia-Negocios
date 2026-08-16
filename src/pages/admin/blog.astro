@@ -23,17 +23,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div>
         <label class="block text-xs text-slate-300 mb-1.5 font-medium">Topic</label>
-        <input id="ai-topic" type="text" placeholder="e.g., Tax tips for small business" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+        <input id="ai-topic" type="text" placeholder="e.g., How to make a successful business plan" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
       </div>
       <div>
         <label class="block text-xs text-slate-300 mb-1.5 font-medium">Target Keywords</label>
-        <input type="text" placeholder="e.g., tax, small business, knoxville" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+        <input id="ai-keywords" type="text" placeholder="e.g., tax, llc, business, plan" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
       </div>
       <div>
-        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Language</label>
-        <select class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:border-brand-primary">
-          <option value="en" class="text-slate-900">EN - English</option>
-          <option value="es" class="text-slate-900">ES - Spanish</option>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Primary Language</label>
+        <select id="ai-lang" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:border-brand-primary">
+          <option value="es" class="text-slate-900" selected>ES - Spanish (Bilingual)</option>
+          <option value="en" class="text-slate-900">EN - English (Bilingual)</option>
         </select>
       </div>
     </div>
@@ -120,7 +120,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     // AI Draft Generator
     document.getElementById('ai-generate-btn')?.addEventListener('click', async function() {
       const topicInput = document.getElementById('ai-topic') as HTMLInputElement;
+      const keywordsInput = document.getElementById('ai-keywords') as HTMLInputElement;
+      const langSelect = document.getElementById('ai-lang') as HTMLSelectElement;
+
       const topic = topicInput?.value?.trim();
+      const customKeywords = keywordsInput?.value?.trim();
+      const primaryLang = langSelect?.value || 'es';
+
       if (!topic) {
         // @ts-ignore
         window.showToast('Please enter a topic first', 'warning');
@@ -135,11 +141,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const prompt = `
           You are an expert bilingual SEO blog writer for GUIA DE NEGOCIOS (consultancy in Knoxville, TN for entrepreneurs and growing small businesses).
           Topic: "${topic}".
+          ${customKeywords ? `Target Keywords: "${customKeywords}".` : ''}
+          Primary Focus: ${primaryLang === 'es' ? 'Spanish (with full English translation)' : 'English (with full Spanish translation)'}.
           
           Generate a comprehensive, high-quality blog post draft with both Spanish and English versions.
-          Include proper H2 headings (##), bullet points, and an embedded Unsplash image markdown with a highly descriptive alt attribute: ![Descriptive English/Spanish explanation of the image](https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80).
+          Include proper H2 headings (##), bullet points, and an embedded Unsplash image markdown with a highly descriptive alt attribute: ![Descriptive explanation of the image](https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80).
           
-          Format your output strictly as a JSON object:
+          Format your output strictly as a JSON object (do not wrap in additional commentary):
           {
             "titleEs": "string (Spanish Title)",
             "titleEn": "string (English Title)",
@@ -155,11 +163,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         const result = await aiModel.generateContent(prompt);
         const text = result.response.text();
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const cleanedText = text.replace(/```json\s*/gi, '').replace(/```\s*$/gi, '').trim();
+        const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
         if (!jsonMatch) throw new Error("Could not parse AI response JSON");
 
         const data = JSON.parse(jsonMatch[0]);
         const publishDate = new Date().toISOString().split('T')[0];
+
+        const rawKeywords = data.keywords && Array.isArray(data.keywords) 
+          ? data.keywords 
+          : (customKeywords ? customKeywords.split(',').map((k: string) => k.trim()) : [topic]);
 
         const docRef = await addDoc(collection(db, 'blogs'), {
           titleEs: data.titleEs || topic,
@@ -169,7 +182,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           contentEs: data.contentEs || '',
           contentEn: data.contentEn || '',
           metaDesc: data.metaDesc || '',
-          keywords: data.keywords || [topic],
+          keywords: rawKeywords,
           featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
           author: 'Guia Negocios Team',
           authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
@@ -185,11 +198,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         setTimeout(() => {
           window.location.href = `/admin/blog/editor?id=${docRef.id}`;
-        }, 1200);
+        }, 800);
 
       } catch (err: any) {
         console.error("AI Draft Generation Error:", err);
-        alert('Failed to generate draft: ' + (err.message || 'Unknown error'));
+        const errMsg = err?.message || 'Unknown error';
+        alert('Failed to generate draft with AI: ' + errMsg);
         btn.disabled = false;
         btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Generate Draft with Gemini';
       }

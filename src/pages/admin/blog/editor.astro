@@ -319,9 +319,9 @@ Output ONLY the raw markdown text.`;
           cm.replaceSelection(prefix + contentToInsert + '\\n\\n');
           activeEditor.codemirror.focus();
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('AI Generation Error:', error);
-        appendMessage('Sorry, there was an error communicating with the AI service. Please check your Firebase configuration.', false);
+        appendMessage('Error: ' + (error?.message || 'Sorry, there was an error communicating with the AI service.'), false);
       }
     });
     

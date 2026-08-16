@@ -35,7 +35,7 @@ export const scheduledAeoInjector = onSchedule({
     const { GoogleGenerativeAI } = await import("@google/generative-ai");
     const genAI = new GoogleGenerativeAI(geminiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.7-flash",
+      model: "gemini-3.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
