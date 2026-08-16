@@ -18,7 +18,7 @@ const analyticsDataClient = fs.existsSync(keyFilename)
   ? new BetaAnalyticsDataClient({ keyFilename })
   : new BetaAnalyticsDataClient();
 
-const PROPERTY_ID = '401979686';
+const PROPERTY_ID = '546623303';
 
 export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async (request) => {
   const rangeStr = request.data?.range || '30';
