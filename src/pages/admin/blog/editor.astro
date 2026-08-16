@@ -85,20 +85,32 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         <!-- Quick AI Action Pills -->
         <div class="p-3 bg-slate-50/80 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-xs whitespace-nowrap scrollbar-thin">
           <span class="text-slate-400 font-medium text-[11px]">Quick Actions:</span>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="improve">
-            ✍️ Polish & Flow
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="improve">
+            Polish & Flow
           </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="translate">
-            🌐 Translate Article
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="translate">
+            Translate Article
           </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="seo">
-            🔍 Optimize SEO & Keywords
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="seo">
+            Optimize SEO & Keywords
           </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="faq">
-            ❓ Add FAQ Section
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="faq">
+            Add FAQ Section
           </button>
-          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="title_meta">
-            💡 Enhance Title & Meta
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_steps">
+            Step-by-Step Infographic
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_comparison">
+            Problem vs Solution Matrix
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_stats">
+            Data & Metrics Grid
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_split">
+            Split Comparison Card
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="title_meta">
+            Enhance Title & Meta
           </button>
         </div>
 
@@ -607,8 +619,23 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
       try {
         const fullSystemContext = `
-You are the expert bilingual Editor Copilot for GUIA DE NEGOCIOS.
-You are helping the editor compose and refine an article.
+You are the lead bilingual business editor, designer, and SEO strategist for GUIA DE NEGOCIOS (consultancy in Knoxville, TN for Hispanic entrepreneurs).
+You help write in-depth, authoritative, well-structured articles and design responsive HTML/CSS/SVG infographics for blog posts and social media flyers.
+
+BRAND IDENTITY & DESIGN SYSTEM:
+- Primary Color: #1B4E2B (Deep Forest Green)
+- Accent Color: #F0C850 (Golden Yellow / Warm Amber)
+- Dark Slate: #1A2E35 (Navy / Charcoal)
+- Light Background: #F2F7F4 (Minty Soft White)
+- Danger / Warning: #D92D3C (Red for common mistakes and risks)
+- Body Text / Slate: #1E2A2F, #334155, #64748b
+
+INFOGRAPHIC CAPABILITIES:
+When asked to create an infographic, visual chart, process map, or comparison, generate responsive, self-contained HTML/CSS/SVG components formatted cleanly with Tailwind utility classes and inline styles matching the above brand tokens:
+1. Step-by-Step Process Flow: Numbered step cards (#1B4E2B badge with white text, title, concise description, and flow indicators).
+2. Problem vs. Solution Matrix: 2-column or 3-column rows showing Red problem boxes (#fef2f2 / #D92D3C) with warning icons -> Arrow -> Green solution boxes (#F2F7F4 / #1B4E2B) with checkmark icons.
+3. Data & Metrics Highlight Card: #1A2E35 slate dark background, bold stats in #F0C850 (e.g., 178%, $653B, 3.5M), labels, and source badges.
+4. Split Decision Card (Bad vs. Good Way): Side-by-side comparison panels (Red danger panel for wrong/mixed methods vs. Green panel for Guia Negocios recommended method).
 
 Current Document Context:
 - Active Tab Language: ${activeLang}
@@ -625,18 +652,18 @@ ${selectedText ? `- Editor Selected Text: """${selectedText}"""` : ''}
 User Request: "${userPrompt}"
 
 Instructions:
-1. Provide a direct, highly helpful editorial response.
-2. If providing new or rewritten markdown content, format it cleanly in markdown.
-3. If providing translations or suggestions, explain concisely what was improved.
+1. Provide a direct, highly helpful, and actionable editorial response in ${activeLang}.
+2. Ensure explanations are detailed, comprehensive, and tailored to business owners.
+3. If outputting markdown or an infographic component, output clean markdown with the embedded HTML/CSS/SVG block so it can be inserted into the editor with 1 click.
 `;
 
         const result = await aiModel.generateContent(fullSystemContext);
         const responseText = result.response.text();
 
-        // Check if response contains markdown content that can be inserted
+        // Action buttons without emojis
         const actions: any[] = [
           {
-            label: '📝 Apply / Insert into Editor',
+            label: 'Apply to Editor',
             handler: () => {
               if (activeEditor) {
                 const cm = activeEditor.codemirror;
@@ -654,7 +681,7 @@ Instructions:
             }
           },
           {
-            label: '🌐 Fill Opposite Language Tab',
+            label: 'Fill Opposite Language Tab',
             handler: () => {
               if (otherEditor) {
                 otherEditor.value(responseText);
@@ -665,7 +692,7 @@ Instructions:
             }
           },
           {
-            label: '📋 Copy Text',
+            label: 'Copy Text',
             handler: () => {
               navigator.clipboard.writeText(responseText);
               // @ts-ignore
@@ -694,14 +721,22 @@ Instructions:
         const activeLang = isEnglish ? 'English' : 'Spanish';
 
         if (action === 'improve') {
-          handleCopilotPrompt(`Improve and polish the writing flow, grammar, and engagement of the active ${activeLang} post while keeping markdown formatting.`);
+          handleCopilotPrompt(`Improve and polish the writing flow, grammar, and depth of the active ${activeLang} post while keeping markdown formatting.`);
         } else if (action === 'translate') {
           const targetLang = isEnglish ? 'Spanish' : 'English';
-          handleCopilotPrompt(`Translate the current ${activeLang} blog post completely into high-quality, natural ${targetLang}, preserving all markdown headers and structure.`);
+          handleCopilotPrompt(`Translate the current ${activeLang} blog post completely into high-quality, natural ${targetLang}, preserving all markdown headers, structure, and infographics.`);
         } else if (action === 'seo') {
           handleCopilotPrompt(`Optimize the current post for local Knoxville TN and business search SEO. Ensure keyword density for LLC formation, business consulting, and legal compliance.`);
         } else if (action === 'faq') {
           handleCopilotPrompt(`Generate a 4-question FAQ section (## Preguntas Frecuentes / Frequently Asked Questions) in ${activeLang} addressing common concerns for this topic.`);
+        } else if (action === 'infographic_steps') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Step-by-Step Flow Infographic in ${activeLang} for this topic using Guia Negocios brand styling (#1B4E2B green, #F2F7F4 light background, numbered badges).`);
+        } else if (action === 'infographic_comparison') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Problem vs. Solution Matrix Infographic in ${activeLang} for this topic comparing common pitfalls (#D92D3C red) to Guia Negocios solutions (#1B4E2B green).`);
+        } else if (action === 'infographic_stats') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Data & Metrics Highlight Card in ${activeLang} with key business data in #F0C850 on a #1A2E35 dark background.`);
+        } else if (action === 'infographic_split') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Split Comparison Card in ${activeLang} (Bad/Mixed Way in red vs. Good/Separated Way in green) illustrating key choices for this topic.`);
         } else if (action === 'title_meta') {
           handleCopilotPrompt(`Suggest 3 high-converting, click-worthy Titles and 2 SEO Meta Descriptions (under 160 characters) in both Spanish and English for this post.`);
         }

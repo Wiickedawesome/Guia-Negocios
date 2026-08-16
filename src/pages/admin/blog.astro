@@ -144,23 +144,38 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const uniqueBodyImage = await getUniqueUnsplashPhoto(`${topic} strategy analysis`);
 
         const prompt = `
-          You are an expert bilingual SEO blog writer for GUIA DE NEGOCIOS (consultancy in Knoxville, TN for entrepreneurs and growing small businesses).
+          You are the lead bilingual business consultant and SEO content director for GUIA DE NEGOCIOS (expert Hispanic business consultancy in Knoxville, TN).
           Topic: "${topic}".
           ${customKeywords ? `Target Keywords: "${customKeywords}".` : ''}
           Primary Focus: ${primaryLang === 'es' ? 'Spanish (with full English translation)' : 'English (with full Spanish translation)'}.
           
-          Generate a comprehensive, high-quality blog post draft with both Spanish and English versions.
-          Include proper H2 headings (##), bullet points, and embed this exact unique image into the body markdown: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}).
+          Generate a comprehensive, deeply informative, long-form (1,500+ words) blog post in both Spanish and English versions.
           
-          Format your output strictly as a JSON object (do not wrap in additional commentary):
+          Requirements for Content:
+          1. Structure: In-depth introduction, detailed educational sections with ## (H2) and ### (H3) headings, practical examples/case studies, common pitfalls, legal/tax compliance in Tennessee, and a complete FAQ section.
+          2. Tone: Authoritative, supportive, clear, and professional. Avoid generic AI fluff—provide actionable, specific advice.
+          3. Visuals & Unique Image: Embed this exact unique image: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}).
+          4. Embedded Branded Infographics: Embed at least 1 or 2 responsive HTML/CSS/SVG infographics directly within the markdown. Use GUIA NEGOCIOS brand colors:
+             - Primary Green: #1B4E2B
+             - Accent Gold: #F0C850
+             - Dark Slate: #1A2E35
+             - Light Background: #F2F7F4
+             - Warning Red: #D92D3C
+             Infographic Types to choose from:
+             - Step-by-Step Flow Map (numbered step cards with arrows/badges)
+             - Problem vs. Solution Matrix (red obstacle boxes -> arrow -> green solution boxes)
+             - Stats & Metrics Highlight Grid (key percentage/dollar figures in #F0C850 on #1A2E35 background)
+             - Split Decision Card (Bad/Mixed Way in red vs. Good/Separated Way in green)
+          
+          Format your output strictly as a JSON object (do not wrap in commentary):
           {
-            "titleEs": "string (Spanish Title)",
-            "titleEn": "string (English Title)",
+            "titleEs": "string (Compelling Spanish Title)",
+            "titleEn": "string (Compelling English Title)",
             "slugEs": "string (spanish-slug)",
             "slugEn": "string (english-slug)",
-            "contentEs": "string (Full Spanish article markdown with ## headings and ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}) image)",
-            "contentEn": "string (Full English article markdown with ## headings and ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}) image)",
-            "metaDesc": "string (150-160 char SEO summary)",
+            "contentEs": "string (Full in-depth Spanish article with ## headings, embedded CSS/SVG infographic, and image markdown)",
+            "contentEn": "string (Full in-depth English article with ## headings, embedded CSS/SVG infographic, and image markdown)",
+            "metaDesc": "string (150-160 char high-CTR SEO summary)",
             "keywords": ["string", "string", "string"],
             "featuredImage": "${uniqueCover.url}"
           }

@@ -380,6 +380,43 @@ export function markdownToHtml(md: string): string {
       continue;
     }
     
+    // Blockquotes
+    if (line.startsWith('>')) {
+      if (inList) { html.push(`</${listType}>`); inList = false; }
+      const text = inlineMarkdown(line.replace(/^>\s*/, ''));
+      html.push(`<blockquote class="border-l-4 border-brand-primary bg-[#F2F7F4] py-3 px-5 rounded-r-xl my-5 text-brand-dark italic shadow-xs">${text}</blockquote>`);
+      continue;
+    }
+
+    // Raw HTML / SVG / Style blocks (do not wrap in <p>)
+    const trimmedLine = line.trim();
+    if (
+      trimmedLine.startsWith('<div') || 
+      trimmedLine.startsWith('</div') || 
+      trimmedLine.startsWith('<svg') || 
+      trimmedLine.startsWith('</svg') || 
+      trimmedLine.startsWith('<style') || 
+      trimmedLine.startsWith('</style') || 
+      trimmedLine.startsWith('<section') || 
+      trimmedLine.startsWith('</section') || 
+      trimmedLine.startsWith('<header') || 
+      trimmedLine.startsWith('</header') || 
+      trimmedLine.startsWith('<footer') || 
+      trimmedLine.startsWith('</footer') || 
+      trimmedLine.startsWith('<figure') || 
+      trimmedLine.startsWith('</figure') || 
+      trimmedLine.startsWith('<table') || 
+      trimmedLine.startsWith('</table') || 
+      trimmedLine.startsWith('<path') || 
+      trimmedLine.startsWith('<span') || 
+      trimmedLine.startsWith('</span') || 
+      trimmedLine.startsWith('<!--')
+    ) {
+      if (inList) { html.push(`</${listType}>`); inList = false; }
+      html.push(line);
+      continue;
+    }
+    
     // Close list if we hit a non-list line
     if (inList && line.trim() === '') {
       html.push(`</${listType}>`);
