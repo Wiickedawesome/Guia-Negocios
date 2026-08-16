@@ -58,6 +58,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <div id="gemini-key-status" class="mt-2 text-xs hidden"></div>
         </div>
         <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-sm font-medium text-slate-700">Unsplash Access Key</label>
+            <span id="unsplash-badge" class="text-xs text-slate-400">Untested</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="api-unsplash" type="password" placeholder="Enter Unsplash Access Key..." class="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
+            <button id="btn-show-unsplash" type="button" class="px-3 py-2 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex-shrink-0">Show</button>
+            <button id="btn-test-unsplash" type="button" class="px-3 py-2 text-sm bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-slate-700 font-medium flex-shrink-0 flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              Test Key
+            </button>
+          </div>
+          <div id="unsplash-key-status" class="mt-2 text-xs hidden"></div>
+        </div>
+        <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">GA4 Measurement ID</label>
           <input id="api-ga4" type="text" placeholder="G-XXXXXXXXXX" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
         </div>
@@ -129,6 +144,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { app, getGeminiApiKey, testGeminiApiKey, DEFAULT_GEMINI_KEY } from '../../lib/firebase';
+    import { getUnsplashAccessKey, testUnsplashKey } from '../../utils/unsplash';
     import { getAuth, updateProfile } from 'firebase/auth';
     import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -145,11 +161,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         // Load Settings
         let currentGeminiKey = '';
+        let currentUnsplashKey = '';
         try {
           const settingsDoc = await getDoc(doc(db, 'settings', 'admin'));
           if (settingsDoc.exists()) {
             const data = settingsDoc.data();
             currentGeminiKey = data.geminiKey || '';
+            currentUnsplashKey = data.unsplashKey || '';
             (document.getElementById('api-ga4') as HTMLInputElement).value = data.ga4Id || '';
             (document.getElementById('api-gsc') as HTMLInputElement).value = data.gscUrl || '';
             (document.getElementById('pref-lang') as HTMLSelectElement).value = data.language || 'en';
@@ -160,9 +178,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           console.warn('Settings load notice:', e);
         }
 
-        // If no key found in Firestore, load from getGeminiApiKey
         if (!currentGeminiKey) {
           currentGeminiKey = await getGeminiApiKey();
+        }
+        if (!currentUnsplashKey) {
+          currentUnsplashKey = await getUnsplashAccessKey();
         }
 
         const geminiInput = document.getElementById('api-gemini') as HTMLInputElement;
@@ -172,10 +192,18 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             runKeyTest(currentGeminiKey, false);
           }
         }
+
+        const unsplashInput = document.getElementById('api-unsplash') as HTMLInputElement;
+        if (unsplashInput) {
+          unsplashInput.value = currentUnsplashKey;
+          if (currentUnsplashKey) {
+            runUnsplashTest(currentUnsplashKey, false);
+          }
+        }
       }
     });
 
-    // Test Key Function
+    // Test Gemini Key Function
     async function runKeyTest(keyToTest: string, showAlert = true) {
       const statusEl = document.getElementById('gemini-key-status');
       const badgeEl = document.getElementById('key-badge');
@@ -221,6 +249,52 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       runKeyTest(keyVal, true);
     });
 
+    // Test Unsplash Key Function
+    async function runUnsplashTest(keyToTest: string, showAlert = true) {
+      const statusEl = document.getElementById('unsplash-key-status');
+      const badgeEl = document.getElementById('unsplash-badge');
+      const testBtn = document.getElementById('btn-test-unsplash') as HTMLButtonElement;
+
+      if (!keyToTest) {
+        if (badgeEl) { badgeEl.textContent = 'Curated Pool Active'; badgeEl.className = 'text-xs text-brand-primary font-medium'; }
+        if (statusEl) { statusEl.className = 'mt-2 text-xs text-slate-500'; statusEl.textContent = 'Using curated pool of 65+ unique business photos.'; statusEl.classList.remove('hidden'); }
+        return;
+      }
+
+      if (testBtn) { testBtn.disabled = true; testBtn.innerText = 'Testing...'; }
+      if (badgeEl) { badgeEl.textContent = 'Verifying...'; badgeEl.className = 'text-xs text-slate-400'; }
+
+      const result = await testUnsplashKey(keyToTest);
+
+      if (testBtn) {
+        testBtn.disabled = false;
+        testBtn.innerHTML = '<svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Test Key';
+      }
+
+      if (result.valid) {
+        if (badgeEl) { badgeEl.textContent = '✓ Active & Verified'; badgeEl.className = 'text-xs text-emerald-600 font-semibold'; }
+        if (statusEl) {
+          statusEl.className = 'mt-2 text-xs text-emerald-600 font-medium';
+          statusEl.textContent = '✓ Connected to Unsplash API. Unique photo search & album tracking are active!';
+          statusEl.classList.remove('hidden');
+        }
+        if (showAlert) showToast('Unsplash Access Key verified successfully!', 'success');
+      } else {
+        if (badgeEl) { badgeEl.textContent = '✕ Error'; badgeEl.className = 'text-xs text-red-500 font-semibold'; }
+        if (statusEl) {
+          statusEl.className = 'mt-2 text-xs text-red-600 font-medium';
+          statusEl.textContent = `Unsplash issue: ${result.error}`;
+          statusEl.classList.remove('hidden');
+        }
+        if (showAlert) showToast(`Unsplash error: ${result.error}`, 'error');
+      }
+    }
+
+    document.getElementById('btn-test-unsplash')?.addEventListener('click', () => {
+      const keyVal = (document.getElementById('api-unsplash') as HTMLInputElement)?.value?.trim();
+      runUnsplashTest(keyVal, true);
+    });
+
     // Save Profile
     document.getElementById('btn-save-profile')?.addEventListener('click', async () => {
       const btn = document.getElementById('btn-save-profile') as HTMLButtonElement;
@@ -255,8 +329,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           localStorage.removeItem('gemini_api_key');
         }
 
+        const unsplashVal = (document.getElementById('api-unsplash') as HTMLInputElement)?.value?.trim() || '';
+        if (unsplashVal) {
+          localStorage.setItem('unsplash_access_key', unsplashVal);
+        } else {
+          localStorage.removeItem('unsplash_access_key');
+        }
+
         await setDoc(doc(db, 'settings', 'admin'), {
           geminiKey: geminiVal,
+          unsplashKey: unsplashVal,
           ga4Id: (document.getElementById('api-ga4') as HTMLInputElement).value,
           gscUrl: (document.getElementById('api-gsc') as HTMLInputElement).value,
           language: (document.getElementById('pref-lang') as HTMLSelectElement).value,
@@ -264,9 +346,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           aiSuggestions: (document.getElementById('pref-ai') as HTMLInputElement).checked,
         }, { merge: true });
 
-        if (geminiVal) {
-          await runKeyTest(geminiVal, false);
-        }
+        if (geminiVal) await runKeyTest(geminiVal, false);
+        if (unsplashVal) await runUnsplashTest(unsplashVal, false);
 
         showToast('Settings saved successfully!', 'success');
       } catch (e: any) {
@@ -289,9 +370,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       });
     });
 
-    // Show/hide API key
+    // Show/hide API keys
     document.getElementById('btn-show-key')?.addEventListener('click', function() {
       const input = document.getElementById('api-gemini') as HTMLInputElement;
+      if (input?.type === 'password') {
+        input.type = 'text';
+        this.textContent = 'Hide';
+      } else if (input) {
+        input.type = 'password';
+        this.textContent = 'Show';
+      }
+    });
+
+    document.getElementById('btn-show-unsplash')?.addEventListener('click', function() {
+      const input = document.getElementById('api-unsplash') as HTMLInputElement;
       if (input?.type === 'password') {
         input.type = 'text';
         this.textContent = 'Hide';

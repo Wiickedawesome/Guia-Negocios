@@ -3,93 +3,145 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 ---
 
 <AdminLayout title="Blog Editor | Admin">
-  <div class="mb-8 flex justify-between items-center">
+  <!-- Top Navigation & Action Bar -->
+  <div class="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <a href="/admin/blog" class="text-sm text-slate-500 hover:text-brand-primary flex items-center gap-1">
+        <a href="/admin/blog" class="text-sm text-slate-500 hover:text-brand-primary flex items-center gap-1 transition-colors">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          Back to Blog
+          Back to Blog Manager
         </a>
       </div>
-      <h1 class="text-2xl font-bold text-slate-900 font-heading">Edit Post</h1>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading flex items-center gap-3">
+        <span id="editor-page-title">Edit Post</span>
+        <span id="post-status-badge" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-amber-100 text-amber-800 border border-amber-200">Draft</span>
+      </h1>
     </div>
-    <div class="flex gap-3">
-      <button class="px-4 py-2 border border-slate-200 text-slate-600 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors" onclick="showToast('Opening preview in new tab...', 'info')">
+    <div class="flex items-center gap-2.5">
+      <button id="btn-preview" type="button" class="px-4 py-2 border border-slate-200 text-slate-700 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-1.5 shadow-sm">
+        <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
         Preview
       </button>
-      <button id="btn-save-draft" class="px-4 py-2 border border-slate-200 text-slate-600 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+      <button id="btn-save-draft" type="button" class="px-4 py-2 border border-slate-200 text-slate-700 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
         Save Draft
       </button>
-      <button id="btn-publish" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
-        Publish
+      <button id="btn-publish" type="button" class="px-5 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-95 hover:shadow transition-all flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+        Publish Now
       </button>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main Content Area -->
     <div class="lg:col-span-2 space-y-6">
       <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-        <!-- Tabs -->
-        <div class="border-b border-slate-200 mb-6">
+        <!-- Language Switcher Tabs -->
+        <div class="border-b border-slate-200 mb-6 flex justify-between items-center">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            <button id="tab-es" class="border-brand-primary text-brand-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-              Español (Primary)
+            <button id="tab-es" type="button" class="border-brand-primary text-brand-primary whitespace-nowrap py-3 px-1 border-b-2 font-semibold text-sm flex items-center gap-2">
+              <span>🇪🇸</span> Español (Primary)
+              <span id="wordcount-es-badge" class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-normal">0 words</span>
             </button>
-            <button id="tab-en" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-              English
+            <button id="tab-en" type="button" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+              <span>🇺🇸</span> English
+              <span id="wordcount-en-badge" class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-normal">0 words</span>
             </button>
           </nav>
+          <div class="text-xs text-slate-400 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> Markdown Editor
+          </div>
         </div>
 
         <!-- Spanish Editor -->
-        <div id="editor-es-container" class="block">
-          <input type="text" id="title-es" placeholder="Título de la publicación (Español)" class="w-full text-2xl font-bold text-slate-900 placeholder-slate-300 border-none focus:outline-none focus:ring-0 mb-4 p-0 bg-transparent" />
-          <textarea id="md-es" class="w-full h-[600px] p-6 text-slate-700 bg-white border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:border-brand-primary resize-y shadow-inner" placeholder="Escribe tu contenido en Markdown aquí..."></textarea>
+        <div id="editor-es-container" class="block space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Título en Español</label>
+            <input type="text" id="title-es" placeholder="Título de la publicación (Español)" class="w-full text-2xl font-bold text-slate-900 placeholder-slate-300 border border-transparent hover:border-slate-200 focus:border-brand-primary focus:ring-0 rounded-lg p-2 transition-all bg-slate-50/50 focus:bg-white" />
+          </div>
+          <textarea id="md-es" class="w-full h-[550px] p-6 text-slate-700 bg-white border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:border-brand-primary resize-y shadow-inner" placeholder="Escribe tu contenido en Markdown aquí..."></textarea>
         </div>
 
         <!-- English Editor -->
-        <div id="editor-en-container" class="hidden">
-          <input type="text" id="title-en" placeholder="Post Title (English)" class="w-full text-2xl font-bold text-slate-900 placeholder-slate-300 border-none focus:outline-none focus:ring-0 mb-4 p-0 bg-transparent" />
-          <textarea id="md-en" class="w-full h-[600px] p-6 text-slate-700 bg-white border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:border-brand-primary resize-y shadow-inner" placeholder="Write your Markdown content here..."></textarea>
+        <div id="editor-en-container" class="hidden space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">English Title</label>
+            <input type="text" id="title-en" placeholder="Post Title (English)" class="w-full text-2xl font-bold text-slate-900 placeholder-slate-300 border border-transparent hover:border-slate-200 focus:border-brand-primary focus:ring-0 rounded-lg p-2 transition-all bg-slate-50/50 focus:bg-white" />
+          </div>
+          <textarea id="md-en" class="w-full h-[550px] p-6 text-slate-700 bg-white border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:border-brand-primary resize-y shadow-inner" placeholder="Write your Markdown content here..."></textarea>
         </div>
       </div>
       
-      <!-- Smart Chat Blog Agent -->
-      <div class="bg-slate-50 border border-slate-200 rounded-xl flex flex-col shadow-sm mt-2">
-        <div class="p-4 border-b border-slate-200 flex items-center gap-2 bg-white rounded-t-xl">
-           <span class="bg-brand-primary/10 text-brand-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border border-brand-primary/20">Gemini</span>
-           <h3 class="font-bold text-slate-800 text-sm">Blog Copilot</h3>
+      <!-- Smart AI Blog Copilot & Editor Assistant -->
+      <div class="bg-white border border-slate-200 rounded-xl flex flex-col shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-gradient-to-r from-slate-50 to-white">
+          <div class="flex items-center gap-2">
+            <span class="bg-brand-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">Gemini 3.5</span>
+            <h3 class="font-bold text-slate-800 text-sm">Full-Document AI Copilot</h3>
+          </div>
+          <span class="text-xs text-slate-500">Context-Aware Assistant</span>
         </div>
-        <div class="p-4 flex flex-col gap-4 max-h-64 overflow-y-auto" id="copilot-chat">
-           <div class="flex items-start gap-3">
-             <div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0 border border-brand-primary/20">
-               <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-             </div>
-             <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-sm text-slate-700">
-               Hello! I can help you draft sections, translate text, or optimize your SEO. What should we write today?
-             </div>
-           </div>
-        </div>
-        <div class="p-3 border-t border-slate-200 bg-white rounded-b-xl relative">
-          <input type="text" id="copilot-input" placeholder="e.g., Write a concluding paragraph about LLC tax benefits..." class="w-full pl-3 pr-12 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-slate-50" />
-          <button id="copilot-send" class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-brand-primary text-white rounded-md hover:bg-opacity-90 shadow-sm">
-             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+
+        <!-- Quick AI Action Pills -->
+        <div class="p-3 bg-slate-50/80 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-xs whitespace-nowrap scrollbar-thin">
+          <span class="text-slate-400 font-medium text-[11px]">Quick Actions:</span>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="improve">
+            ✍️ Polish & Flow
           </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="translate">
+            🌐 Translate Article
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="seo">
+            🔍 Optimize SEO & Keywords
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="faq">
+            ❓ Add FAQ Section
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium flex items-center gap-1" data-action="title_meta">
+            💡 Enhance Title & Meta
+          </button>
+        </div>
+
+        <!-- Chat Feed -->
+        <div class="p-4 flex flex-col gap-4 max-h-80 overflow-y-auto bg-slate-50/40" id="copilot-chat">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0 border border-brand-primary/20">
+              <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </div>
+            <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs text-sm text-slate-700 space-y-1.5 max-w-xl">
+              <p class="font-medium text-slate-900">Hello! I'm your AI Editorial Assistant.</p>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                I have full awareness of this article in both Spanish & English. You can ask me to rewrite sections, boost keyword density, generate FAQs, or translate the entire post. Use the quick actions above or type any request below.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-3 border-t border-slate-200 bg-white">
+          <div class="relative flex items-center">
+            <input type="text" id="copilot-input" placeholder="e.g. 'Rewrite the introduction to emphasize Tennessee LLC tax perks'..." class="w-full pl-3 pr-24 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-slate-50/50" />
+            <button id="copilot-send" type="button" class="absolute right-2 px-3 py-1.5 bg-brand-primary text-white text-xs font-semibold rounded-md hover:bg-opacity-90 transition-colors shadow-xs flex items-center gap-1">
+              <span>Send</span>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Sidebar Settings -->
     <div class="space-y-6">
+      <!-- Publish Settings -->
       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Publish Settings</h3>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
             <select id="status-select" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50">
-              <option>Draft</option>
-              <option selected>Published</option>
-              <option>Archived</option>
+              <option value="Draft">Draft</option>
+              <option value="Published" selected>Published</option>
+              <option value="Archived">Archived</option>
             </select>
           </div>
           <div>
@@ -99,6 +151,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         </div>
       </div>
 
+      <!-- SEO & Meta -->
       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">SEO & Meta</h3>
         <div class="space-y-4">
@@ -121,17 +174,32 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         </div>
       </div>
 
+      <!-- Featured Image & Unsplash Album Picker -->
       <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Featured Image (URL)</h3>
-        <input type="text" id="featured-image" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 mb-3" placeholder="https://example.com/image.jpg" />
-        <div class="w-full aspect-video bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center relative">
-          <span class="text-slate-400 text-sm" id="featured-image-placeholder">No image selected</span>
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-slate-900">Featured Cover Image</h3>
+          <button id="btn-open-unsplash-modal" type="button" class="text-xs text-brand-primary hover:text-brand-dark font-semibold flex items-center gap-1 bg-brand-primary/10 px-2.5 py-1 rounded-md border border-brand-primary/20 hover:bg-brand-primary/20 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            Photo Album
+          </button>
+        </div>
+        
+        <input type="text" id="featured-image" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50 mb-3" placeholder="https://images.unsplash.com/..." />
+        
+        <div class="w-full aspect-video bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center relative group">
+          <span class="text-slate-400 text-xs" id="featured-image-placeholder">No cover image selected</span>
           <img id="featured-image-preview" src="" alt="Featured Preview" class="absolute inset-0 w-full h-full object-cover hidden" />
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <button type="button" id="btn-change-image" class="px-3 py-1.5 bg-white/90 text-slate-800 text-xs font-semibold rounded shadow hover:bg-white transition-all">
+              Change Image
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm mt-6">
-        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Post Meta</h3>
+      <!-- Post Meta -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Author & Reading Meta</h3>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Author Name</label>
@@ -144,20 +212,178 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
                 <svg id="avatar-placeholder" class="w-6 h-6 text-slate-400 absolute" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 <img id="avatar-preview" src="" alt="Avatar" class="absolute inset-0 w-full h-full object-cover hidden" />
               </div>
-              <input type="text" id="author-avatar" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://i.pravatar.cc/150?u=guia" />
+              <input type="text" id="author-avatar" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" placeholder="https://images.unsplash.com/..." />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Read Time (minutes)</label>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Estimated Read Time (minutes)</label>
             <input type="number" id="read-time" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" value="5" />
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+
+  <!-- ========================================================================= -->
+  <!-- 1. LIVE BLOG PREVIEW MODAL -->
+  <!-- ========================================================================= -->
+  <div id="preview-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+      <!-- Preview Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Live Post Preview</h2>
+            <p class="text-xs text-slate-500">Real-time rendered representation of the article</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Language Toggle in Preview -->
+          <div class="bg-slate-200/80 p-0.5 rounded-lg flex items-center text-xs font-semibold">
+            <button id="preview-lang-es" type="button" class="px-3 py-1.5 rounded-md bg-white text-brand-primary shadow-xs transition-all">🇪🇸 Español</button>
+            <button id="preview-lang-en" type="button" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all">🇺🇸 English</button>
+          </div>
+
+          <!-- Viewport Switcher -->
+          <div class="bg-slate-200/80 p-0.5 rounded-lg hidden sm:flex items-center text-xs font-semibold">
+            <button id="preview-view-desktop" type="button" class="px-2.5 py-1.5 rounded-md bg-white text-slate-800 shadow-xs" title="Desktop View">💻 Desktop</button>
+            <button id="preview-view-mobile" type="button" class="px-2.5 py-1.5 rounded-md text-slate-600 hover:text-slate-900" title="Mobile View">📱 Mobile</button>
+          </div>
+
+          <!-- Close Preview Button -->
+          <button id="btn-close-preview" type="button" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Modal Body (Article rendering) -->
+      <div class="flex-1 overflow-y-auto p-6 sm:p-10 bg-slate-50/50 flex justify-center">
+        <div id="preview-viewport-container" class="w-full max-w-3xl bg-white rounded-xl shadow-xs border border-slate-200/80 p-6 sm:p-10 transition-all">
+          
+          <!-- Article Header -->
+          <div class="mb-8 border-b border-slate-100 pb-8">
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              <span id="preview-badge-status" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Published</span>
+              <span id="preview-badge-date" class="text-xs text-slate-500">August 16, 2026</span>
+              <span class="text-slate-300">•</span>
+              <span id="preview-badge-readtime" class="text-xs text-slate-500">5 min read</span>
+            </div>
+
+            <h1 id="preview-title" class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading leading-tight mb-6">
+              Post Title Preview
+            </h1>
+
+            <div class="flex items-center gap-3">
+              <img id="preview-author-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Author" class="w-10 h-10 rounded-full object-cover border border-slate-200" />
+              <div>
+                <p id="preview-author-name" class="text-sm font-bold text-slate-900">Guia Negocios Team</p>
+                <p class="text-xs text-slate-500">Business & Legal Advisory</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Featured Cover Image in Preview -->
+          <div id="preview-featured-container" class="mb-10 rounded-xl overflow-hidden border border-slate-200 aspect-video bg-slate-100 relative">
+            <img id="preview-featured-img" src="" alt="Featured cover" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- Table of Contents Preview -->
+          <div id="preview-toc-box" class="mb-10 p-5 rounded-xl bg-slate-50 border border-slate-200 hidden">
+            <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+              <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+              Table of Contents
+            </h4>
+            <div id="preview-toc-list" class="space-y-1.5 text-sm text-brand-primary"></div>
+          </div>
+
+          <!-- Markdown Rendered HTML -->
+          <div id="preview-content-html" class="prose prose-slate max-w-none prose-headings:font-heading prose-headings:text-slate-900 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-p:leading-relaxed prose-img:rounded-xl prose-img:border prose-img:border-slate-200 prose-img:shadow-sm">
+          </div>
+
+          <!-- Tags & Keywords -->
+          <div class="mt-12 pt-6 border-t border-slate-100 flex flex-wrap items-center gap-2">
+            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tags:</span>
+            <div id="preview-tags-container" class="flex flex-wrap gap-1.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Modal Footer Actions -->
+      <div class="px-6 py-4 border-t border-slate-200 bg-white flex justify-between items-center">
+        <button id="btn-back-editor" type="button" class="px-4 py-2 border border-slate-200 text-slate-700 bg-white text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+          Back to Editor
+        </button>
+        <div class="flex gap-2">
+          <button id="btn-preview-save" type="button" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-95 transition-colors">
+            Publish Post
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. UNSPLASH PHOTO PICKER & ALBUM MODAL -->
+  <!-- ========================================================================= -->
+  <div id="unsplash-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden border border-slate-200">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-brand-primary/10 text-brand-primary flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Unsplash Photo Picker & Used Album</h2>
+            <p class="text-xs text-slate-500">Pick high-resolution business photos. Images already used are tracked to prevent duplicates.</p>
+          </div>
+        </div>
+        <button id="btn-close-unsplash" type="button" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="p-4 border-b border-slate-200 bg-white flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full sm:w-80">
+          <input type="text" id="unsplash-search-input" placeholder="Search photos (e.g. LLC, taxes, startup)..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-slate-50" />
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button id="tab-unsplash-all" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand-primary text-white shadow-xs">Fresh Unsplash Photos</button>
+          <button id="tab-unsplash-used" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100 border border-slate-200">Used Album Registry</button>
+        </div>
+      </div>
+
+      <!-- Photo Grid Content -->
+      <div class="flex-1 overflow-y-auto p-6 bg-slate-50/50">
+        <div id="unsplash-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <!-- Loaded dynamically -->
+        </div>
+        <div id="unsplash-loading" class="hidden text-center py-12">
+          <svg class="w-8 h-8 animate-spin text-brand-primary mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <p class="text-xs text-slate-500">Searching Unsplash photo collection...</p>
+        </div>
+      </div>
+
+      <!-- Footer Notice -->
+      <div class="px-6 py-3 border-t border-slate-200 bg-white flex items-center justify-between text-xs text-slate-500">
+        <span>Photos provided via Unsplash API • Tracked in Firestore Album</span>
+        <button id="btn-done-unsplash" type="button" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition-colors">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EasyMDE & Marked CDN Scripts -->
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://unpkg.com/easymde/dist/easymde.min.js" is:inline></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" is:inline></script>
 
   <style is:inline>
     .editor-toolbar { border-color: #e2e8f0; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; background-color: #f8fafc; }
@@ -168,69 +394,114 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
   <script>
     import { aiModel, db } from '../../../lib/firebase';
     import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+    import { 
+      searchUnsplashPhotos, 
+      getUsedPhotoSet, 
+      markPhotoAsUsed, 
+      getUniqueUnsplashPhoto,
+      CURATED_UNSPLASH_POOL 
+    } from '../../../utils/unsplash';
 
-    let easyMdeEs, easyMdeEn;
-
-    // Initialize EasyMDE after DOM loads
-    document.addEventListener('DOMContentLoaded', () => {
-      easyMdeEs = new EasyMDE({ 
-        element: document.getElementById('md-es'),
-        spellChecker: false,
-        placeholder: "Escribe tu contenido en Markdown aquí...",
-        status: false
-      });
-      easyMdeEn = new EasyMDE({ 
-        element: document.getElementById('md-en'),
-        spellChecker: false,
-        placeholder: "Write your Markdown content here...",
-        status: false
-      });
-      
-      // Load post if ID exists
-      loadPost();
-    });
+    let easyMdeEs: any, easyMdeEn: any;
+    let currentPreviewLang: 'es' | 'en' = 'es';
 
     // Parse URL ID
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
 
+    // Initialize EasyMDE after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+      // @ts-ignore
+      easyMdeEs = new EasyMDE({ 
+        element: document.getElementById('md-es'),
+        spellChecker: false,
+        placeholder: "Escribe tu contenido en Markdown aquí...",
+        status: false,
+        toolbar: ["bold", "italic", "heading-2", "heading-3", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "|", "preview", "side-by-side", "fullscreen", "|", "guide"]
+      });
+
+      // @ts-ignore
+      easyMdeEn = new EasyMDE({ 
+        element: document.getElementById('md-en'),
+        spellChecker: false,
+        placeholder: "Write your Markdown content here...",
+        status: false,
+        toolbar: ["bold", "italic", "heading-2", "heading-3", "|", "quote", "unordered-list", "ordered-list", "|", "link", "image", "table", "|", "preview", "side-by-side", "fullscreen", "|", "guide"]
+      });
+
+      // Word count listeners
+      easyMdeEs.codemirror.on('change', () => updateWordCount('es'));
+      easyMdeEn.codemirror.on('change', () => updateWordCount('en'));
+
+      loadPost();
+    });
+
+    function updateWordCount(lang: 'es' | 'en') {
+      const editor = lang === 'es' ? easyMdeEs : easyMdeEn;
+      const text = editor ? editor.value().trim() : '';
+      const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+      const badge = document.getElementById(`wordcount-${lang}-badge`);
+      if (badge) badge.textContent = `${words} words`;
+    }
+
     // Load Existing Post
     async function loadPost() {
-      if (!postId) return;
+      if (!postId) {
+        // New post defaults
+        (document.getElementById('publish-date') as HTMLInputElement).value = new Date().toISOString().split('T')[0];
+        document.getElementById('editor-page-title')!.textContent = 'New Blog Post';
+        return;
+      }
+
       try {
         const docRef = doc(db, 'blogs', postId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
           
-          document.getElementById('title-es').value = data.titleEs || '';
-          document.getElementById('title-en').value = data.titleEn || '';
+          (document.getElementById('title-es') as HTMLInputElement).value = data.titleEs || '';
+          (document.getElementById('title-en') as HTMLInputElement).value = data.titleEn || '';
           
           if (easyMdeEs) easyMdeEs.value(data.contentEs || '');
           if (easyMdeEn) easyMdeEn.value(data.contentEn || '');
           
-          document.getElementById('slug-es').value = data.slugEs || '';
-          document.getElementById('slug-en').value = data.slugEn || '';
-          document.getElementById('meta-desc').value = data.metaDesc || '';
-          document.getElementById('keywords').value = (data.keywords || []).join(', ');
-          document.getElementById('featured-image').value = data.featuredImage || '';
-          document.getElementById('author').value = data.author || '';
-          document.getElementById('author-avatar').value = data.authorAvatar || '';
-          document.getElementById('read-time').value = data.readTime || 5;
-          document.getElementById('publish-date').value = data.publishDate || '';
-          document.getElementById('status-select').value = data.status || 'Draft';
+          (document.getElementById('slug-es') as HTMLInputElement).value = data.slugEs || '';
+          (document.getElementById('slug-en') as HTMLInputElement).value = data.slugEn || '';
+          (document.getElementById('meta-desc') as HTMLTextAreaElement).value = data.metaDesc || '';
+          (document.getElementById('keywords') as HTMLInputElement).value = (data.keywords || []).join(', ');
+          (document.getElementById('featured-image') as HTMLInputElement).value = data.featuredImage || '';
+          (document.getElementById('author') as HTMLInputElement).value = data.author || 'Guia Negocios Team';
+          (document.getElementById('author-avatar') as HTMLInputElement).value = data.authorAvatar || '';
+          (document.getElementById('read-time') as HTMLInputElement).value = data.readTime || 5;
+          (document.getElementById('publish-date') as HTMLInputElement).value = data.publishDate || '';
+          (document.getElementById('status-select') as HTMLSelectElement).value = data.status || 'Draft';
           
-          // Trigger events to update UI
-          document.getElementById('meta-desc').dispatchEvent(new Event('input'));
-          document.getElementById('featured-image').dispatchEvent(new Event('input'));
-          document.getElementById('author-avatar').dispatchEvent(new Event('input'));
-        } else {
-          // New post defaults
-          document.getElementById('publish-date').value = new Date().toISOString().split('T')[0];
+          updateStatusBadge(data.status || 'Draft');
+          updateWordCount('es');
+          updateWordCount('en');
+
+          // Trigger inputs
+          document.getElementById('meta-desc')?.dispatchEvent(new Event('input'));
+          document.getElementById('featured-image')?.dispatchEvent(new Event('input'));
+          document.getElementById('author-avatar')?.dispatchEvent(new Event('input'));
         }
       } catch (e) {
         console.error("Error loading document:", e);
-        showToast('Error loading blog post', 'error');
+        // @ts-ignore
+        window.showToast('Error loading blog post', 'error');
+      }
+    }
+
+    function updateStatusBadge(status: string) {
+      const badge = document.getElementById('post-status-badge');
+      if (!badge) return;
+      badge.textContent = status;
+      if (status === 'Published') {
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200';
+      } else if (status === 'Archived') {
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-slate-100 text-slate-800 border border-slate-200';
+      } else {
+        badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-semibold bg-amber-100 text-amber-800 border border-amber-200';
       }
     }
 
@@ -240,150 +511,575 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     const containerEs = document.getElementById('editor-es-container');
     const containerEn = document.getElementById('editor-en-container');
 
-    function switchTab(lang) {
+    function switchTab(lang: 'es' | 'en') {
       if (lang === 'es') {
-        tabEs.className = 'border-brand-primary text-brand-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
-        tabEn.className = 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
-        containerEs.classList.remove('hidden');
-        containerEs.classList.add('block');
-        containerEn.classList.add('hidden');
-        containerEn.classList.remove('block');
+        tabEs!.className = 'border-brand-primary text-brand-primary whitespace-nowrap py-3 px-1 border-b-2 font-semibold text-sm flex items-center gap-2';
+        tabEn!.className = 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2';
+        containerEs!.classList.remove('hidden');
+        containerEs!.classList.add('block');
+        containerEn!.classList.add('hidden');
+        containerEn!.classList.remove('block');
+        if (easyMdeEs) easyMdeEs.codemirror.refresh();
       } else {
-        tabEn.className = 'border-brand-primary text-brand-primary whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
-        tabEs.className = 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm';
-        containerEn.classList.remove('hidden');
-        containerEn.classList.add('block');
-        containerEs.classList.add('hidden');
-        containerEs.classList.remove('block');
+        tabEn!.className = 'border-brand-primary text-brand-primary whitespace-nowrap py-3 px-1 border-b-2 font-semibold text-sm flex items-center gap-2';
+        tabEs!.className = 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2';
+        containerEn!.classList.remove('hidden');
+        containerEn!.classList.add('block');
+        containerEs!.classList.add('hidden');
+        containerEs!.classList.remove('block');
+        if (easyMdeEn) easyMdeEn.codemirror.refresh();
       }
     }
 
     tabEs?.addEventListener('click', () => switchTab('es'));
     tabEn?.addEventListener('click', () => switchTab('en'));
 
-    // Copilot Smart Agent Logic
-    const copilotInput = document.getElementById('copilot-input');
-    const copilotSend = document.getElementById('copilot-send');
-    const copilotChat = document.getElementById('copilot-chat');
+    // =========================================================================
+    // FULL-DOCUMENT AI COPILOT LOGIC
+    // =========================================================================
+    const copilotInput = document.getElementById('copilot-input') as HTMLInputElement;
+    const copilotSend = document.getElementById('copilot-send') as HTMLButtonElement;
+    const copilotChat = document.getElementById('copilot-chat') as HTMLElement;
 
-    function appendMessage(text, isUser = false) {
+    function appendCopilotMessage(content: string, isUser = false, actions: any[] = []) {
       const div = document.createElement('div');
       div.className = isUser ? 'flex items-start gap-3 flex-row-reverse' : 'flex items-start gap-3';
       
       const avatar = isUser 
-        ? `<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>`
+        ? `<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>`
         : `<div class="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0 border border-brand-primary/20"><svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>`;
       
       const bubbleClasses = isUser
-        ? 'bg-brand-primary text-white p-3 rounded-2xl rounded-tr-none shadow-sm text-sm'
-        : 'bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-sm text-slate-700';
+        ? 'bg-brand-primary text-white p-3 rounded-2xl rounded-tr-none shadow-xs text-sm'
+        : 'bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs text-sm text-slate-800 space-y-2 max-w-xl';
         
+      let actionsHtml = '';
+      if (actions.length > 0) {
+        actionsHtml = `<div class="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
+          ${actions.map((act, i) => `<button type="button" class="copilot-action-btn text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 hover:bg-brand-primary hover:text-white transition-all text-slate-700 flex items-center gap-1" data-action-index="${i}">${act.label}</button>`).join('')}
+        </div>`;
+      }
+
       div.innerHTML = `
         ${avatar}
-        <div class="${bubbleClasses}">${text}</div>
+        <div class="${bubbleClasses}">
+          <div class="prose prose-xs max-w-none text-slate-700 prose-headings:text-slate-900">${// @ts-ignore
+            window.marked ? window.marked.parse(content) : content}</div>
+          ${actionsHtml}
+        </div>
       `;
+
+      // Bind action buttons
+      if (actions.length > 0) {
+        div.querySelectorAll('.copilot-action-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-action-index') || '0', 10);
+            if (actions[idx] && actions[idx].handler) {
+              actions[idx].handler();
+            }
+          });
+        });
+      }
+
       copilotChat.appendChild(div);
       copilotChat.scrollTop = copilotChat.scrollHeight;
     }
 
-    copilotSend?.addEventListener('click', async () => {
-      const text = copilotInput.value.trim();
-      if (!text) return;
-      
-      copilotInput.value = '';
-      appendMessage(text, true);
-      
-      simulateAction('Gemini is writing...', 'Content inserted into editor', 2000);
-      
-      try {
-        const isEnglish = document.getElementById('editor-en-container').classList.contains('block');
-        const langStr = isEnglish ? 'English' : 'Spanish';
-        
-        const prompt = `You are an expert SEO blog writer writing in ${langStr}. Write a comprehensive, long-form blog post section in Markdown format based on this request: "${text}". 
-Include proper headings (##), lists, and embed relevant high-quality Unsplash images with descriptive, SEO-optimized alt text using markdown syntax: \`![Detailed description of the image and topic](https://images.unsplash.com/photo-...)\`.
-Output ONLY the raw markdown text.`;
+    async function handleCopilotPrompt(userPrompt: string) {
+      if (!userPrompt.trim()) return;
 
-        const result = await aiModel.generateContent(prompt);
-        const contentToInsert = await result.response.text();
-        
-        appendMessage('I have generated the markdown content (with images!) and injected it directly into the editor.', false);
-        
-        // Inject into the active EasyMDE editor
+      appendCopilotMessage(userPrompt, true);
+      copilotInput.value = '';
+
+      const isEnglish = document.getElementById('editor-en-container')?.classList.contains('block');
+      const activeLang = isEnglish ? 'English' : 'Spanish';
+      const activeEditor = isEnglish ? easyMdeEn : easyMdeEs;
+      const otherEditor = isEnglish ? easyMdeEs : easyMdeEn;
+
+      const titleEs = (document.getElementById('title-es') as HTMLInputElement)?.value || '';
+      const titleEn = (document.getElementById('title-en') as HTMLInputElement)?.value || '';
+      const currentContentEs = easyMdeEs ? easyMdeEs.value() : '';
+      const currentContentEn = easyMdeEn ? easyMdeEn.value() : '';
+      const metaDesc = (document.getElementById('meta-desc') as HTMLTextAreaElement)?.value || '';
+      const keywords = (document.getElementById('keywords') as HTMLInputElement)?.value || '';
+
+      const selectedText = activeEditor ? activeEditor.codemirror.getSelection() : '';
+
+      try {
+        const fullSystemContext = `
+You are the expert bilingual Editor Copilot for GUIA DE NEGOCIOS.
+You are helping the editor compose and refine an article.
+
+Current Document Context:
+- Active Tab Language: ${activeLang}
+- Spanish Title: "${titleEs}"
+- English Title: "${titleEn}"
+- Spanish Body Content:
+"""${currentContentEs.slice(0, 4000)}"""
+- English Body Content:
+"""${currentContentEn.slice(0, 4000)}"""
+- Meta Description: "${metaDesc}"
+- Keywords: "${keywords}"
+${selectedText ? `- Editor Selected Text: """${selectedText}"""` : ''}
+
+User Request: "${userPrompt}"
+
+Instructions:
+1. Provide a direct, highly helpful editorial response.
+2. If providing new or rewritten markdown content, format it cleanly in markdown.
+3. If providing translations or suggestions, explain concisely what was improved.
+`;
+
+        const result = await aiModel.generateContent(fullSystemContext);
+        const responseText = result.response.text();
+
+        // Check if response contains markdown content that can be inserted
+        const actions: any[] = [
+          {
+            label: '📝 Apply / Insert into Editor',
+            handler: () => {
+              if (activeEditor) {
+                const cm = activeEditor.codemirror;
+                if (selectedText) {
+                  cm.replaceSelection(responseText);
+                } else {
+                  const cursor = cm.getCursor();
+                  const prefix = cursor.ch > 0 ? '\n\n' : '';
+                  cm.replaceSelection(prefix + responseText + '\n\n');
+                }
+                activeEditor.codemirror.focus();
+                // @ts-ignore
+                window.showToast('Content applied to editor!', 'success');
+              }
+            }
+          },
+          {
+            label: '🌐 Fill Opposite Language Tab',
+            handler: () => {
+              if (otherEditor) {
+                otherEditor.value(responseText);
+                switchTab(isEnglish ? 'es' : 'en');
+                // @ts-ignore
+                window.showToast('Updated translated tab content!', 'success');
+              }
+            }
+          },
+          {
+            label: '📋 Copy Text',
+            handler: () => {
+              navigator.clipboard.writeText(responseText);
+              // @ts-ignore
+              window.showToast('Copied to clipboard!', 'info');
+            }
+          }
+        ];
+
+        appendCopilotMessage(responseText, false, actions);
+      } catch (error: any) {
+        console.error('Copilot AI Error:', error);
+        appendCopilotMessage('Error communicating with AI: ' + (error?.message || 'Please verify API connection in Settings.'), false);
+      }
+    }
+
+    copilotSend?.addEventListener('click', () => handleCopilotPrompt(copilotInput.value));
+    copilotInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleCopilotPrompt(copilotInput.value);
+    });
+
+    // Quick Action Pills Handlers
+    document.querySelectorAll('.copilot-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const action = pill.getAttribute('data-action');
+        const isEnglish = document.getElementById('editor-en-container')?.classList.contains('block');
+        const activeLang = isEnglish ? 'English' : 'Spanish';
+
+        if (action === 'improve') {
+          handleCopilotPrompt(`Improve and polish the writing flow, grammar, and engagement of the active ${activeLang} post while keeping markdown formatting.`);
+        } else if (action === 'translate') {
+          const targetLang = isEnglish ? 'Spanish' : 'English';
+          handleCopilotPrompt(`Translate the current ${activeLang} blog post completely into high-quality, natural ${targetLang}, preserving all markdown headers and structure.`);
+        } else if (action === 'seo') {
+          handleCopilotPrompt(`Optimize the current post for local Knoxville TN and business search SEO. Ensure keyword density for LLC formation, business consulting, and legal compliance.`);
+        } else if (action === 'faq') {
+          handleCopilotPrompt(`Generate a 4-question FAQ section (## Preguntas Frecuentes / Frequently Asked Questions) in ${activeLang} addressing common concerns for this topic.`);
+        } else if (action === 'title_meta') {
+          handleCopilotPrompt(`Suggest 3 high-converting, click-worthy Titles and 2 SEO Meta Descriptions (under 160 characters) in both Spanish and English for this post.`);
+        }
+      });
+    });
+
+    // =========================================================================
+    // 3. LIVE BLOG PREVIEW MODAL LOGIC
+    // =========================================================================
+    const previewModal = document.getElementById('preview-modal') as HTMLElement;
+    const btnPreview = document.getElementById('btn-preview') as HTMLButtonElement;
+    const btnClosePreview = document.getElementById('btn-close-preview') as HTMLButtonElement;
+    const btnBackEditor = document.getElementById('btn-back-editor') as HTMLButtonElement;
+    const btnPreviewSave = document.getElementById('btn-preview-save') as HTMLButtonElement;
+
+    const previewLangEs = document.getElementById('preview-lang-es') as HTMLButtonElement;
+    const previewLangEn = document.getElementById('preview-lang-en') as HTMLButtonElement;
+    const previewViewDesktop = document.getElementById('preview-view-desktop') as HTMLButtonElement;
+    const previewViewMobile = document.getElementById('preview-view-mobile') as HTMLButtonElement;
+    const previewViewportContainer = document.getElementById('preview-viewport-container') as HTMLElement;
+
+    function openPreviewModal() {
+      renderPreview(currentPreviewLang);
+      previewModal.classList.remove('hidden');
+      previewModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePreviewModal() {
+      previewModal.classList.add('hidden');
+      previewModal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    function renderPreview(lang: 'es' | 'en') {
+      currentPreviewLang = lang;
+
+      // Update Preview Lang Button styles
+      if (lang === 'es') {
+        previewLangEs.className = 'px-3 py-1.5 rounded-md bg-white text-brand-primary shadow-xs transition-all';
+        previewLangEn.className = 'px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all';
+      } else {
+        previewLangEn.className = 'px-3 py-1.5 rounded-md bg-white text-brand-primary shadow-xs transition-all';
+        previewLangEs.className = 'px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all';
+      }
+
+      const title = lang === 'es' 
+        ? ((document.getElementById('title-es') as HTMLInputElement)?.value || 'Sin Título')
+        : ((document.getElementById('title-en') as HTMLInputElement)?.value || 'Untitled Post');
+
+      const markdown = lang === 'es'
+        ? (easyMdeEs ? easyMdeEs.value() : '')
+        : (easyMdeEn ? easyMdeEn.value() : '');
+
+      const featuredImg = (document.getElementById('featured-image') as HTMLInputElement)?.value || '';
+      const author = (document.getElementById('author') as HTMLInputElement)?.value || 'Guia Negocios Team';
+      const authorAvatar = (document.getElementById('author-avatar') as HTMLInputElement)?.value || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80';
+      const readTime = (document.getElementById('read-time') as HTMLInputElement)?.value || '5';
+      const publishDate = (document.getElementById('publish-date') as HTMLInputElement)?.value || new Date().toISOString().split('T')[0];
+      const status = (document.getElementById('status-select') as HTMLSelectElement)?.value || 'Draft';
+      const keywords = ((document.getElementById('keywords') as HTMLInputElement)?.value || '').split(',').map(k => k.trim()).filter(Boolean);
+
+      // Set Metadata
+      document.getElementById('preview-title')!.textContent = title;
+      document.getElementById('preview-author-name')!.textContent = author;
+      (document.getElementById('preview-author-avatar') as HTMLImageElement).src = authorAvatar;
+      document.getElementById('preview-badge-date')!.textContent = publishDate;
+      document.getElementById('preview-badge-readtime')!.textContent = `${readTime} min read`;
+      
+      const badgeStatus = document.getElementById('preview-badge-status')!;
+      badgeStatus.textContent = status;
+      badgeStatus.className = status === 'Published' 
+        ? 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200'
+        : 'px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200';
+
+      // Featured Cover Image
+      const featuredContainer = document.getElementById('preview-featured-container')!;
+      const featuredImgEl = document.getElementById('preview-featured-img') as HTMLImageElement;
+      if (featuredImg) {
+        featuredImgEl.src = featuredImg;
+        featuredContainer.classList.remove('hidden');
+      } else {
+        featuredContainer.classList.add('hidden');
+      }
+
+      // Parse Markdown to HTML
+      // @ts-ignore
+      const html = window.marked ? window.marked.parse(markdown) : markdown;
+      const contentEl = document.getElementById('preview-content-html')!;
+      contentEl.innerHTML = html;
+
+      // Extract Table of Contents from H2 & H3 headings
+      const headings = contentEl.querySelectorAll('h2, h3');
+      const tocBox = document.getElementById('preview-toc-box')!;
+      const tocList = document.getElementById('preview-toc-list')!;
+      tocList.innerHTML = '';
+
+      if (headings.length > 1) {
+        tocBox.classList.remove('hidden');
+        headings.forEach((h, i) => {
+          const id = `heading-${i}`;
+          h.id = id;
+          const a = document.createElement('a');
+          a.href = `#${id}`;
+          a.className = h.tagName === 'H3' ? 'block pl-4 text-xs text-slate-500 hover:text-brand-primary transition-colors' : 'block text-sm font-medium text-slate-700 hover:text-brand-primary transition-colors';
+          a.textContent = h.textContent;
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            h.scrollIntoView({ behavior: 'smooth' });
+          });
+          tocList.appendChild(a);
+        });
+      } else {
+        tocBox.classList.add('hidden');
+      }
+
+      // Render Tags
+      const tagsContainer = document.getElementById('preview-tags-container')!;
+      tagsContainer.innerHTML = keywords.map(tag => `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-medium">${tag}</span>`).join('');
+    }
+
+    btnPreview?.addEventListener('click', openPreviewModal);
+    btnClosePreview?.addEventListener('click', closePreviewModal);
+    btnBackEditor?.addEventListener('click', closePreviewModal);
+    btnPreviewSave?.addEventListener('click', () => {
+      closePreviewModal();
+      saveBlogPost('Published');
+    });
+
+    previewLangEs?.addEventListener('click', () => renderPreview('es'));
+    previewLangEn?.addEventListener('click', () => renderPreview('en'));
+
+    // Viewport Toggle
+    previewViewDesktop?.addEventListener('click', () => {
+      previewViewportContainer.style.maxWidth = '48rem'; // max-w-3xl
+      previewViewDesktop.className = 'px-2.5 py-1.5 rounded-md bg-white text-slate-800 shadow-xs';
+      previewViewMobile.className = 'px-2.5 py-1.5 rounded-md text-slate-600 hover:text-slate-900';
+    });
+
+    previewViewMobile?.addEventListener('click', () => {
+      previewViewportContainer.style.maxWidth = '390px';
+      previewViewMobile.className = 'px-2.5 py-1.5 rounded-md bg-white text-slate-800 shadow-xs';
+      previewViewDesktop.className = 'px-2.5 py-1.5 rounded-md text-slate-600 hover:text-slate-900';
+    });
+
+    // =========================================================================
+    // 4. UNSPLASH PHOTO PICKER & USED ALBUM MODAL LOGIC
+    // =========================================================================
+    const unsplashModal = document.getElementById('unsplash-modal') as HTMLElement;
+    const btnOpenUnsplash = document.getElementById('btn-open-unsplash-modal');
+    const btnChangeImage = document.getElementById('btn-change-image');
+    const btnCloseUnsplash = document.getElementById('btn-close-unsplash');
+    const btnDoneUnsplash = document.getElementById('btn-done-unsplash');
+    const unsplashSearchInput = document.getElementById('unsplash-search-input') as HTMLInputElement;
+    const unsplashGrid = document.getElementById('unsplash-grid') as HTMLElement;
+    const unsplashLoading = document.getElementById('unsplash-loading') as HTMLElement;
+
+    const tabUnsplashAll = document.getElementById('tab-unsplash-all') as HTMLButtonElement;
+    const tabUnsplashUsed = document.getElementById('tab-unsplash-used') as HTMLButtonElement;
+
+    let currentUnsplashFilter: 'all' | 'used' = 'all';
+
+    function openUnsplashModal() {
+      unsplashModal.classList.remove('hidden');
+      unsplashModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      
+      const topicVal = (document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'business';
+      if (!unsplashSearchInput.value) {
+        unsplashSearchInput.value = topicVal.split(' ')[0] || 'business';
+      }
+      loadUnsplashPhotos(unsplashSearchInput.value.trim());
+    }
+
+    function closeUnsplashModal() {
+      unsplashModal.classList.add('hidden');
+      unsplashModal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    btnOpenUnsplash?.addEventListener('click', openUnsplashModal);
+    btnChangeImage?.addEventListener('click', openUnsplashModal);
+    btnCloseUnsplash?.addEventListener('click', closeUnsplashModal);
+    btnDoneUnsplash?.addEventListener('click', closeUnsplashModal);
+
+    let searchDebounce: any = null;
+    unsplashSearchInput?.addEventListener('input', (e: any) => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        loadUnsplashPhotos(e.target.value.trim());
+      }, 400);
+    });
+
+    tabUnsplashAll?.addEventListener('click', () => {
+      currentUnsplashFilter = 'all';
+      tabUnsplashAll.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand-primary text-white shadow-xs';
+      tabUnsplashUsed.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100 border border-slate-200';
+      loadUnsplashPhotos(unsplashSearchInput.value.trim());
+    });
+
+    tabUnsplashUsed?.addEventListener('click', async () => {
+      currentUnsplashFilter = 'used';
+      tabUnsplashUsed.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand-primary text-white shadow-xs';
+      tabUnsplashAll.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100 border border-slate-200';
+      loadUsedAlbumPhotos();
+    });
+
+    async function loadUnsplashPhotos(query: string) {
+      if (currentUnsplashFilter === 'used') {
+        return loadUsedAlbumPhotos();
+      }
+
+      unsplashLoading.classList.remove('hidden');
+      unsplashGrid.innerHTML = '';
+
+      try {
+        const [photos, usedSet] = await Promise.all([
+          searchUnsplashPhotos(query || 'business strategy', 1, 15),
+          getUsedPhotoSet()
+        ]);
+
+        unsplashLoading.classList.add('hidden');
+
+        if (!photos || photos.length === 0) {
+          unsplashGrid.innerHTML = `<div class="col-span-3 text-center py-8 text-slate-500 text-sm">No photos found. Try a different query like "consulting", "law", or "taxes".</div>`;
+          return;
+        }
+
+        photos.forEach(photo => {
+          const isUsed = usedSet.has(photo.id);
+          const card = createPhotoCard(photo, isUsed);
+          unsplashGrid.appendChild(card);
+        });
+      } catch (e) {
+        console.error("Error loading photos:", e);
+        unsplashLoading.classList.add('hidden');
+      }
+    }
+
+    async function loadUsedAlbumPhotos() {
+      unsplashLoading.classList.remove('hidden');
+      unsplashGrid.innerHTML = '';
+
+      try {
+        const usedSet = await getUsedPhotoSet();
+        const photos = CURATED_UNSPLASH_POOL.map(p => ({
+          id: p.id,
+          url: p.url,
+          thumbUrl: p.url.replace('&w=1200', '&w=400'),
+          alt: p.alt,
+          photographer: 'Curated Photo',
+          photographerUrl: 'https://unsplash.com'
+        }));
+
+        unsplashLoading.classList.add('hidden');
+
+        photos.forEach(photo => {
+          const isUsed = usedSet.has(photo.id);
+          const card = createPhotoCard(photo, isUsed);
+          unsplashGrid.appendChild(card);
+        });
+      } catch (e) {
+        console.error("Error loading used album:", e);
+        unsplashLoading.classList.add('hidden');
+      }
+    }
+
+    function createPhotoCard(photo: any, isUsed: boolean) {
+      const card = document.createElement('div');
+      card.className = 'group relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col';
+
+      const badgeHtml = isUsed
+        ? `<span class="absolute top-2 left-2 px-2 py-0.5 bg-amber-500/90 backdrop-blur-xs text-white text-[10px] font-bold rounded-full shadow-xs">📁 In Used Album</span>`
+        : `<span class="absolute top-2 left-2 px-2 py-0.5 bg-emerald-500/90 backdrop-blur-xs text-white text-[10px] font-bold rounded-full shadow-xs">✓ Fresh & Unused</span>`;
+
+      card.innerHTML = `
+        <div class="aspect-video bg-slate-100 relative overflow-hidden">
+          <img src="${photo.thumbUrl}" alt="${photo.alt}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          ${badgeHtml}
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 gap-1.5">
+            <button type="button" class="btn-set-cover w-full py-1.5 bg-brand-primary hover:bg-brand-dark text-white text-xs font-semibold rounded shadow-xs transition-colors">
+              🌟 Set as Cover Image
+            </button>
+            <button type="button" class="btn-insert-editor w-full py-1 bg-white/90 hover:bg-white text-slate-800 text-xs font-medium rounded shadow-xs transition-colors">
+              📝 Insert in Markdown
+            </button>
+          </div>
+        </div>
+        <div class="p-2.5 flex items-center justify-between text-[11px] text-slate-500 bg-white">
+          <span class="truncate max-w-[150px]">${photo.alt}</span>
+          <a href="${photo.photographerUrl}" target="_blank" rel="noopener" class="text-slate-400 hover:text-brand-primary underline truncate max-w-[90px]">by ${photo.photographer}</a>
+        </div>
+      `;
+
+      card.querySelector('.btn-set-cover')?.addEventListener('click', async () => {
+        (document.getElementById('featured-image') as HTMLInputElement).value = photo.url;
+        document.getElementById('featured-image')?.dispatchEvent(new Event('input'));
+        await markPhotoAsUsed({ id: photo.id, url: photo.url, alt: photo.alt, blogId: postId || '' });
+        // @ts-ignore
+        window.showToast('Featured cover image set!', 'success');
+        closeUnsplashModal();
+      });
+
+      card.querySelector('.btn-insert-editor')?.addEventListener('click', async () => {
+        const isEnglish = document.getElementById('editor-en-container')?.classList.contains('block');
         const activeEditor = isEnglish ? easyMdeEn : easyMdeEs;
         if (activeEditor) {
           const cm = activeEditor.codemirror;
-          const cursor = cm.getCursor();
-          
-          // Add spacing if not at start of line
-          const prefix = cursor.ch > 0 ? '\\n\\n' : '';
-          cm.replaceSelection(prefix + contentToInsert + '\\n\\n');
+          const imgMarkdown = `\n\n![${photo.alt}](${photo.url})\n\n`;
+          cm.replaceSelection(imgMarkdown);
           activeEditor.codemirror.focus();
         }
-      } catch (error: any) {
-        console.error('AI Generation Error:', error);
-        appendMessage('Error: ' + (error?.message || 'Sorry, there was an error communicating with the AI service.'), false);
-      }
-    });
-    
-    copilotInput?.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') copilotSend.click();
-    });
+        await markPhotoAsUsed({ id: photo.id, url: photo.url, alt: photo.alt, blogId: postId || '' });
+        // @ts-ignore
+        window.showToast('Image embedded into editor!', 'success');
+        closeUnsplashModal();
+      });
 
-    // Firestore Saving Logic
-    async function saveBlogPost(status) {
-      const titleEs = document.getElementById('title-es').value;
-      const titleEn = document.getElementById('title-en').value;
-      const publishDate = document.getElementById('publish-date').value || new Date().toISOString().split('T')[0];
-      const slugEn = document.getElementById('slug-en').value;
-      const slugEs = document.getElementById('slug-es').value;
-      const metaDesc = document.getElementById('meta-desc').value;
-      const keywords = document.getElementById('keywords').value;
-      const featuredImage = document.getElementById('featured-image').value;
-      const author = document.getElementById('author').value;
-      const authorAvatar = document.getElementById('author-avatar').value;
-      const readTime = parseInt(document.getElementById('read-time').value, 10) || 5;
+      return card;
+    }
+
+    // =========================================================================
+    // 5. FIRESTORE SAVING LOGIC
+    // =========================================================================
+    async function saveBlogPost(statusOverride?: string) {
+      const titleEs = (document.getElementById('title-es') as HTMLInputElement).value;
+      const titleEn = (document.getElementById('title-en') as HTMLInputElement).value;
+      const publishDate = (document.getElementById('publish-date') as HTMLInputElement).value || new Date().toISOString().split('T')[0];
+      const slugEn = (document.getElementById('slug-en') as HTMLInputElement).value;
+      const slugEs = (document.getElementById('slug-es') as HTMLInputElement).value;
+      const metaDesc = (document.getElementById('meta-desc') as HTMLTextAreaElement).value;
+      const keywords = (document.getElementById('keywords') as HTMLInputElement).value;
+      const featuredImage = (document.getElementById('featured-image') as HTMLInputElement).value;
+      const author = (document.getElementById('author') as HTMLInputElement).value;
+      const authorAvatar = (document.getElementById('author-avatar') as HTMLInputElement).value;
+      const readTime = parseInt((document.getElementById('read-time') as HTMLInputElement).value, 10) || 5;
       
       const contentEs = easyMdeEs ? easyMdeEs.value() : '';
       const contentEn = easyMdeEn ? easyMdeEn.value() : '';
 
       if (!titleEn && !titleEs) {
-        showToast('Please provide a title', 'warning');
+        // @ts-ignore
+        window.showToast('Please provide a title', 'warning');
         return;
       }
 
-      simulateAction('Saving blog post...', 'Post saved securely to Firestore', 1500);
+      const status = statusOverride || (document.getElementById('status-select') as HTMLSelectElement).value;
 
-      const data = {
+      const data: any = {
         titleEn,
         titleEs,
         contentEn,
         contentEs,
         slugEn,
         slugEs,
-        status: document.getElementById('status-select').value, // Use dropdown status or override
+        status,
         publishDate,
         metaDesc,
         featuredImage,
         author,
         authorAvatar,
         readTime,
-        keywords: keywords.split(',').map(k => k.trim()).filter(k => k),
+        keywords: keywords.split(',').map(k => k.trim()).filter(Boolean),
+        updatedAt: new Date().toISOString()
       };
-      
-      if (status) data.status = status;
 
       try {
         if (postId) {
-          // Update existing
           await updateDoc(doc(db, 'blogs', postId), data);
         } else {
-          // Create new
           data.createdAt = new Date().toISOString();
           data.views = 0;
-          await addDoc(collection(db, 'blogs'), data);
+          const newDoc = await addDoc(collection(db, 'blogs'), data);
+          // If we just created a new post, update URL quietly
+          window.history.replaceState({}, '', `/admin/blog/editor?id=${newDoc.id}`);
         }
 
-        if (status === 'Published' || data.status === 'Published') {
+        if (status === 'Published') {
           try {
             await addDoc(collection(db, 'notifications'), {
               title: 'Blog Post Published',
@@ -398,44 +1094,44 @@ Output ONLY the raw markdown text.`;
           }
         }
 
-        showToast(status === 'Published' || data.status === 'Published' ? 'Post published successfully!' : 'Draft saved!', 'success');
-        
-        setTimeout(() => {
-          window.location.href = '/admin/blog';
-        }, 1500);
+        updateStatusBadge(status);
+        // @ts-ignore
+        window.showToast(status === 'Published' ? 'Post published successfully!' : 'Draft saved securely!', 'success');
       } catch (error) {
         console.error('Error saving blog: ', error);
-        showToast('Error saving to database.', 'error');
+        // @ts-ignore
+        window.showToast('Error saving to database.', 'error');
       }
     }
 
     document.getElementById('btn-save-draft')?.addEventListener('click', () => saveBlogPost('Draft'));
     document.getElementById('btn-publish')?.addEventListener('click', () => saveBlogPost('Published'));
 
-    // --- UX Enhancements ---
-
-    // 1. Dynamic Meta Description Counter
+    // =========================================================================
+    // 6. UX ENHANCEMENTS
+    // =========================================================================
+    // Dynamic Meta Description Counter
     const metaDesc = document.getElementById('meta-desc');
     const metaCounter = document.getElementById('meta-counter');
-    metaDesc?.addEventListener('input', (e) => {
+    metaDesc?.addEventListener('input', (e: any) => {
       const length = e.target.value.length;
-      metaCounter.textContent = `${length} / 160`;
-      if (length > 160) {
-        metaCounter.classList.add('text-red-500');
-        metaCounter.classList.remove('text-slate-500');
-      } else {
-        metaCounter.classList.remove('text-red-500');
-        metaCounter.classList.add('text-slate-500');
+      if (metaCounter) {
+        metaCounter.textContent = `${length} / 160`;
+        if (length > 160) {
+          metaCounter.className = 'text-xs text-red-500 mt-1 text-right font-medium';
+        } else {
+          metaCounter.className = 'text-xs text-slate-500 mt-1 text-right';
+        }
       }
     });
 
-    // 2. Image Previews
-    function setupImagePreview(inputId, previewId, placeholderId) {
-      const input = document.getElementById(inputId);
-      const preview = document.getElementById(previewId);
+    // Image Previews
+    function setupImagePreview(inputId: string, previewId: string, placeholderId: string) {
+      const input = document.getElementById(inputId) as HTMLInputElement;
+      const preview = document.getElementById(previewId) as HTMLImageElement;
       const placeholder = document.getElementById(placeholderId);
       
-      input?.addEventListener('input', (e) => {
+      input?.addEventListener('input', (e: any) => {
         const url = e.target.value.trim();
         if (url) {
           preview.src = url;
@@ -452,38 +1148,36 @@ Output ONLY the raw markdown text.`;
     setupImagePreview('featured-image', 'featured-image-preview', 'featured-image-placeholder');
     setupImagePreview('author-avatar', 'avatar-preview', 'avatar-placeholder');
 
-    // 3. Auto-generate Slugs
-    function generateSlug(text) {
+    // Auto-generate Slugs
+    function generateSlug(text: string) {
       return text.toString().toLowerCase()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
     }
 
-    const titleEn = document.getElementById('title-en');
-    const titleEs = document.getElementById('title-es');
-    const slugEn = document.getElementById('slug-en');
-    const slugEs = document.getElementById('slug-es');
+    const titleEn = document.getElementById('title-en') as HTMLInputElement;
+    const titleEs = document.getElementById('title-es') as HTMLInputElement;
+    const slugEn = document.getElementById('slug-en') as HTMLInputElement;
+    const slugEs = document.getElementById('slug-es') as HTMLInputElement;
 
-    titleEn?.addEventListener('input', (e) => {
+    titleEn?.addEventListener('input', (e: any) => {
       if (!slugEn.value || slugEn.dataset.autoGenerated === 'true') {
         slugEn.value = generateSlug(e.target.value);
         slugEn.dataset.autoGenerated = 'true';
       }
     });
     
-    titleEs?.addEventListener('input', (e) => {
+    titleEs?.addEventListener('input', (e: any) => {
       if (!slugEs.value || slugEs.dataset.autoGenerated === 'true') {
         slugEs.value = generateSlug(e.target.value);
         slugEs.dataset.autoGenerated = 'true';
       }
     });
 
-    // Remove auto-generated flag if user manually edits the slug
-    slugEn?.addEventListener('input', () => slugEn.dataset.autoGenerated = 'false');
-    slugEs?.addEventListener('input', () => slugEs.dataset.autoGenerated = 'false');
-    
+    slugEn?.addEventListener('input', () => { if (slugEn) slugEn.dataset.autoGenerated = 'false'; });
+    slugEs?.addEventListener('input', () => { if (slugEs) slugEs.dataset.autoGenerated = 'false'; });
   </script>
 </AdminLayout>

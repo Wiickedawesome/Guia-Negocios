@@ -91,6 +91,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { collection, getDocs, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
     import { db, aiModel } from '../../lib/firebase';
+    import { getUniqueUnsplashPhoto } from '../../utils/unsplash';
     
     // Filter tabs
     document.querySelectorAll('.flex.items-center.gap-1 button').forEach(tab => {
@@ -138,6 +139,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is writing full blog draft...';
 
       try {
+        // 1. Resolve unique, never-before-used Unsplash cover & body images
+        const uniqueCover = await getUniqueUnsplashPhoto(topic);
+        const uniqueBodyImage = await getUniqueUnsplashPhoto(`${topic} strategy analysis`);
+
         const prompt = `
           You are an expert bilingual SEO blog writer for GUIA DE NEGOCIOS (consultancy in Knoxville, TN for entrepreneurs and growing small businesses).
           Topic: "${topic}".
@@ -145,7 +150,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Primary Focus: ${primaryLang === 'es' ? 'Spanish (with full English translation)' : 'English (with full Spanish translation)'}.
           
           Generate a comprehensive, high-quality blog post draft with both Spanish and English versions.
-          Include proper H2 headings (##), bullet points, and an embedded Unsplash image markdown with a highly descriptive alt attribute: ![Descriptive explanation of the image](https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80).
+          Include proper H2 headings (##), bullet points, and embed this exact unique image into the body markdown: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}).
           
           Format your output strictly as a JSON object (do not wrap in additional commentary):
           {
@@ -153,11 +158,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             "titleEn": "string (English Title)",
             "slugEs": "string (spanish-slug)",
             "slugEn": "string (english-slug)",
-            "contentEs": "string (Full Spanish article markdown with ## headings and ![Descriptive alt text](unsplash_url) image)",
-            "contentEn": "string (Full English article markdown with ## headings and ![Descriptive alt text](unsplash_url) image)",
+            "contentEs": "string (Full Spanish article markdown with ## headings and ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}) image)",
+            "contentEn": "string (Full English article markdown with ## headings and ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}) image)",
             "metaDesc": "string (150-160 char SEO summary)",
             "keywords": ["string", "string", "string"],
-            "featuredImage": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
+            "featuredImage": "${uniqueCover.url}"
           }
         `;
 
@@ -183,7 +188,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           contentEn: data.contentEn || '',
           metaDesc: data.metaDesc || '',
           keywords: rawKeywords,
-          featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+          featuredImage: data.featuredImage || uniqueCover.url,
           author: 'Guia Negocios Team',
           authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
           readTime: 5,
