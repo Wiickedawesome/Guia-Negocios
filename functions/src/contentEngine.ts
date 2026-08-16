@@ -90,7 +90,7 @@ export const scheduledContentEngine = onSchedule({
     const { GoogleGenerativeAI } = await import('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(geminiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-pro",
+      model: "gemini-2.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
     

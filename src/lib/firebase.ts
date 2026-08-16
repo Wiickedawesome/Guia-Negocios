@@ -115,8 +115,8 @@ async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'ge
   return text;
 }
 
-// Models to try in order of priority
-const modelCandidates = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+// Active, modern Gemini models to try in order of priority (Gemini 1.5 was retired Sept 2025)
+const modelCandidates = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro', 'gemini-2.0-flash-lite'];
 
 /**
  * Universal AI Model wrapper that provides:
