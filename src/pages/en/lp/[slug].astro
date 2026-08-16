@@ -6,20 +6,24 @@ import { db } from '../../../lib/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export async function getStaticPaths() {
-  const snapshot = await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'en')));
-  
-  if (snapshot.empty) {
-    // Return a dummy path if DB is empty so build doesn't crash if strictly checked
+  try {
+    const snapshot = await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'en')));
+    
+    if (snapshot.empty) {
+      return [{ params: { slug: 'empty' }, props: { lp: null } }];
+    }
+
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        params: { slug: data.slug },
+        props: { lp: data }
+      };
+    });
+  } catch (err) {
+    console.warn("Could not load EN landing pages at build time:", err);
     return [{ params: { slug: 'empty' }, props: { lp: null } }];
   }
-
-  return snapshot.docs.map(doc => {
-    const data = doc.data();
-    return {
-      params: { slug: data.slug },
-      props: { lp: data }
-    };
-  });
 }
 
 const { slug } = Astro.params;

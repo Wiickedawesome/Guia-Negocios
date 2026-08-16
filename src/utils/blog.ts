@@ -241,8 +241,24 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
   posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   return posts;
   } catch (error) {
-    console.error("FATAL ERROR in getBlogPosts:", error);
-    throw error;
+    console.warn("Warning in getBlogPosts (falling back to static overrides):", error);
+    const fallbackPosts: BlogPost[] = Object.entries(POST_OVERRIDES)
+      .filter(([slug, p]) => (lang === 'en' && p.lang === 'en') || (lang === 'es' && (!p.lang || p.lang === 'es')))
+      .map(([slug, p]) => ({
+        title: p.title || slug,
+        slug: slug,
+        date: p.date || new Date().toISOString().split('T')[0],
+        author: p.author || 'Guia Negocios Team',
+        excerpt: p.excerpt || '',
+        lang: lang,
+        altSlug: p.altSlug || slug,
+        tags: p.tags || [],
+        content: p.content || '',
+        featuredImage: p.featuredImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+        authorAvatar: p.authorAvatar || '/images/team-avatar.webp',
+        readTime: p.readTime || 5,
+      }));
+    return fallbackPosts;
   }
 }
 

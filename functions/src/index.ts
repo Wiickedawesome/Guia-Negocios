@@ -931,6 +931,46 @@ export const submitContactForm = onCall({ cors: true, invoker: 'public' }, async
   }
 });
 
+// ── AI Content Generator (Server-Side Fallback) ──
+export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
+  const { prompt, temperature, model: requestedModel } = request.data || {};
+  if (!prompt) {
+    throw new HttpsError('invalid-argument', 'Prompt is required.');
+  }
+
+  const db = getFirestore();
+  const settingsDoc = await db.collection('settings').doc('admin').get();
+  const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
+  const apiKey = geminiKey || process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new HttpsError('failed-precondition', 'Gemini API key is not configured in Admin Settings.');
+  }
+
+  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const modelNames = [requestedModel, 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'].filter(Boolean);
+  let lastErr: any = null;
+
+  for (const mName of modelNames) {
+    try {
+      const model = genAI.getGenerativeModel({
+        model: mName as string,
+        generationConfig: { temperature: temperature || 0.7 }
+      });
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+      return { text };
+    } catch (e: any) {
+      console.warn(`Model ${mName} failed in generateAiContent:`, e?.message || e);
+      lastErr = e;
+    }
+  }
+
+  throw new HttpsError('internal', lastErr?.message || 'Failed to generate AI content.');
+});
+
 export * from './contentEngine';
 export * from './dataJournalism';
 export * from './aeoInjector';
