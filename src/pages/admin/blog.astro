@@ -93,6 +93,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     import { db, aiModel } from '../../lib/firebase';
     import { getUniqueUnsplashPhoto } from '../../utils/unsplash';
     import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../utils/research';
+    import { getInfographicSystemPrompt } from '../../utils/infographics';
     
     // Filter tabs
     document.querySelectorAll('.flex.items-center.gap-1 button').forEach(tab => {
@@ -159,18 +160,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           2. Tone: Authoritative, supportive, clear, and professional. Back claims with facts, statistics, and official requirements.
           3. Research Links & In-Text Citations: Naturally weave relevant Markdown hyperlinks throughout the body text referencing verified government, legal, and academic authorities (e.g., [IRS.gov](https://www.irs.gov), [Tennessee Secretary of State](https://sos.tn.gov/business-services), [Tennessee Department of Revenue](https://www.tn.gov/revenue/taxes/business-tax.html), [SBA.gov](https://www.sba.gov), [Brookings Institution](https://www.brookings.edu), and internal Guia Negocios services like [Paquete de Lanzamiento](/es/services/paquete-lanzamiento-completo)).
           4. References Section: Conclude both articles with a formatted "Fuentes y Referencias Oficiales" / "Official Sources & References" section.
-          5. Visuals & Unique Image: Embed this exact unique image: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}).
-          6. Embedded Branded Infographics: Embed at least 1 or 2 responsive HTML/CSS/SVG infographics directly within the markdown. Use GUIA NEGOCIOS brand colors:
-             - Primary Green: #1B4E2B
-             - Accent Gold: #F0C850
-             - Dark Slate: #1A2E35
-             - Light Background: #F2F7F4
-             - Warning Red: #D92D3C
-             Infographic Types to choose from:
-             - Step-by-Step Flow Map (numbered step cards with arrows/badges)
-             - Problem vs. Solution Matrix (red obstacle boxes -> arrow -> green solution boxes)
-             - Stats & Metrics Highlight Grid (key percentage/dollar figures in #F0C850 on #1A2E35 background)
-             - Split Decision Card (Bad/Mixed Way in red vs. Good/Separated Way in green)
+          // Infographic Guidelines
+          ${getInfographicSystemPrompt()}
+          
+          Requirements for Visuals & Infographics:
+          - Embed this exact unique image: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}).
+          - Embed at least 1 or 2 high-impact, custom-designed HTML/CSS/SVG infographics directly within the markdown. Choose or invent whichever format best fits this specific topic (e.g. Timelines, Compliance Checklists, Fee Calculators, Decision Trees, Step Maps, or Comparison Matrices).
           
           Verified Research Reference Library to use:
           [SPANISH CITATIONS]:

@@ -98,16 +98,31 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
             Add FAQ Section
           </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_steps">
-            Step-by-Step Infographic
+            Step-by-Step Flow
           </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_comparison">
-            Problem vs Solution Matrix
+            Problem vs Solution
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_timeline">
+            Timeline & Roadmap
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_checklist">
+            Checklist & Audit Card
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_fees">
+            Fee & Cost Breakdown
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_tree">
+            Decision Tree Diagram
           </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_stats">
             Data & Metrics Grid
           </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_split">
             Split Comparison Card
+          </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_custom">
+            Custom Visual / Flyer
           </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="citations">
             Add Citations & Research Links
@@ -423,6 +438,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       CURATED_UNSPLASH_POOL 
     } from '../../../utils/unsplash';
     import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../../utils/research';
+    import { getInfographicSystemPrompt } from '../../../utils/infographics';
 
     let easyMdeEs: any, easyMdeEn: any;
     let currentPreviewLang: 'es' | 'en' = 'es';
@@ -632,20 +648,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 You are the lead bilingual business editor, designer, and SEO strategist for GUIA DE NEGOCIOS (consultancy in Knoxville, TN for Hispanic entrepreneurs).
 You help write in-depth, authoritative, well-structured articles and design responsive HTML/CSS/SVG infographics for blog posts and social media flyers.
 
-BRAND IDENTITY & DESIGN SYSTEM:
-- Primary Color: #1B4E2B (Deep Forest Green)
-- Accent Color: #F0C850 (Golden Yellow / Warm Amber)
-- Dark Slate: #1A2E35 (Navy / Charcoal)
-- Light Background: #F2F7F4 (Minty Soft White)
-- Danger / Warning: #D92D3C (Red for common mistakes and risks)
-- Body Text / Slate: #1E2A2F, #334155, #64748b
-
-INFOGRAPHIC CAPABILITIES:
-When asked to create an infographic, visual chart, process map, or comparison, generate responsive, self-contained HTML/CSS/SVG components formatted cleanly with Tailwind utility classes and inline styles matching the above brand tokens:
-1. Step-by-Step Process Flow: Numbered step cards (#1B4E2B badge with white text, title, concise description, and flow indicators).
-2. Problem vs. Solution Matrix: 2-column or 3-column rows showing Red problem boxes (#fef2f2 / #D92D3C) with warning icons -> Arrow -> Green solution boxes (#F2F7F4 / #1B4E2B) with checkmark icons.
-3. Data & Metrics Highlight Card: #1A2E35 slate dark background, bold stats in #F0C850 (e.g., 178%, $653B, 3.5M), labels, and source badges.
-4. Split Decision Card (Bad vs. Good Way): Side-by-side comparison panels (Red danger panel for wrong/mixed methods vs. Green panel for Guia Negocios recommended method).
+${getInfographicSystemPrompt()}
 
 RESEARCH CITATIONS & OPEN WEB POLICY:
 You are NOT restricted to a fixed list of sites. You are authorized and encouraged to research, reference, and cite ANY verified official source across the open web relevant to the topic:
@@ -751,10 +754,20 @@ Instructions:
           handleCopilotPrompt(`Generate a responsive HTML/CSS Step-by-Step Flow Infographic in ${activeLang} for this topic using Guia Negocios brand styling (#1B4E2B green, #F2F7F4 light background, numbered badges).`);
         } else if (action === 'infographic_comparison') {
           handleCopilotPrompt(`Generate a responsive HTML/CSS Problem vs. Solution Matrix Infographic in ${activeLang} for this topic comparing common pitfalls (#D92D3C red) to Guia Negocios solutions (#1B4E2B green).`);
+        } else if (action === 'infographic_timeline') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Timeline & Roadmap Infographic in ${activeLang} (e.g. 30/60/90 Day milestones, launch phases, or legal roadmap) for this topic using Guia Negocios brand styling.`);
+        } else if (action === 'infographic_checklist') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Compliance & Audit Checklist Card in ${activeLang} with visual checkmark icons, mandatory status tags, and penalty warnings for this topic.`);
+        } else if (action === 'infographic_fees') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Itemized Cost & Fee Breakdown Card in ${activeLang} displaying state filing fees, county licenses, permits, and startup expenses for this topic.`);
+        } else if (action === 'infographic_tree') {
+          handleCopilotPrompt(`Generate a responsive HTML/CSS Decision Tree Diagram in ${activeLang} guiding business owners through choices (e.g. LLC vs S-Corp, or Contractor License vs Registration) for this topic.`);
         } else if (action === 'infographic_stats') {
           handleCopilotPrompt(`Generate a responsive HTML/CSS Data & Metrics Highlight Card in ${activeLang} with key business data in #F0C850 on a #1A2E35 dark background.`);
         } else if (action === 'infographic_split') {
           handleCopilotPrompt(`Generate a responsive HTML/CSS Split Comparison Card in ${activeLang} (Bad/Mixed Way in red vs. Good/Separated Way in green) illustrating key choices for this topic.`);
+        } else if (action === 'infographic_custom') {
+          handleCopilotPrompt(`Create a creative, custom-tailored responsive HTML/CSS/SVG visual flyer or infographic component in ${activeLang} that perfectly illustrates the most critical takeaway of this article.`);
         } else if (action === 'citations') {
           const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'business formation in Tennessee');
           const citations = getRelevantCitations(topicVal, isEnglish ? 'en' : 'es');
