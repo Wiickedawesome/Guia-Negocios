@@ -109,6 +109,9 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="infographic_split">
             Split Comparison Card
           </button>
+          <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="citations">
+            Add Citations & Research Links
+          </button>
           <button type="button" class="copilot-pill px-2.5 py-1 bg-white hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary/30 border border-slate-200 rounded-full text-slate-600 transition-all font-medium" data-action="title_meta">
             Enhance Title & Meta
           </button>
@@ -413,6 +416,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       getUniqueUnsplashPhoto,
       CURATED_UNSPLASH_POOL 
     } from '../../../utils/unsplash';
+    import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../../utils/research';
 
     let easyMdeEs: any, easyMdeEn: any;
     let currentPreviewLang: 'es' | 'en' = 'es';
@@ -637,6 +641,16 @@ When asked to create an infographic, visual chart, process map, or comparison, g
 3. Data & Metrics Highlight Card: #1A2E35 slate dark background, bold stats in #F0C850 (e.g., 178%, $653B, 3.5M), labels, and source badges.
 4. Split Decision Card (Bad vs. Good Way): Side-by-side comparison panels (Red danger panel for wrong/mixed methods vs. Green panel for Guia Negocios recommended method).
 
+RESEARCH CITATIONS & LINKING:
+You have access to verified government, legal, academic, and internal sources:
+- IRS (https://www.irs.gov): EIN registration (Form SS-4), business structures, tax classification.
+- Tennessee Secretary of State (https://sos.tn.gov/business-services): Articles of Organization, filing fees, annual reports.
+- Tennessee Department of Revenue (https://www.tn.gov/revenue/taxes/business-tax.html): Business Tax, Sales Tax, Franchise & Excise.
+- Small Business Administration (https://www.sba.gov): Microloans, startup funding, SBA 7(a).
+- Brookings Institution & MSU JSRI: Latino business growth data ($653B revenue, 178% surge).
+- Guia Negocios Internal Links: [/es/services/paquete-lanzamiento-completo](/es/services/paquete-lanzamiento-completo), [/es/services/operaciones-crecimiento](/es/services/operaciones-crecimiento), [/es/services/apoyo-creedava](/es/services/apoyo-creedava), [/es/contact](/es/contact).
+When asked to add citations or research, naturally weave these exact Markdown links into relevant sentences in the body text and append an "Official Sources & References" / "Fuentes y Referencias Oficiales" section.
+
 Current Document Context:
 - Active Tab Language: ${activeLang}
 - Spanish Title: "${titleEs}"
@@ -737,6 +751,10 @@ Instructions:
           handleCopilotPrompt(`Generate a responsive HTML/CSS Data & Metrics Highlight Card in ${activeLang} with key business data in #F0C850 on a #1A2E35 dark background.`);
         } else if (action === 'infographic_split') {
           handleCopilotPrompt(`Generate a responsive HTML/CSS Split Comparison Card in ${activeLang} (Bad/Mixed Way in red vs. Good/Separated Way in green) illustrating key choices for this topic.`);
+        } else if (action === 'citations') {
+          const topicVal = ((document.getElementById('title-es') as HTMLInputElement)?.value || (document.getElementById('title-en') as HTMLInputElement)?.value || 'business formation');
+          const citations = getRelevantCitations(topicVal, isEnglish ? 'en' : 'es');
+          handleCopilotPrompt(`Enrich and back this ${activeLang} article with verified government, legal, and academic citations. Naturally embed in-text markdown links to official sources (IRS, Tennessee Secretary of State, Department of Revenue, SBA, Brookings, and Guia Negocios services) and add an official References section at the bottom.\n\nVerified Sources:\n${citations}`);
         } else if (action === 'title_meta') {
           handleCopilotPrompt(`Suggest 3 high-converting, click-worthy Titles and 2 SEO Meta Descriptions (under 160 characters) in both Spanish and English for this post.`);
         }
