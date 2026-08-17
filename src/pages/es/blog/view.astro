@@ -102,47 +102,56 @@ const t = useTranslations('es');
 
   <script>
     import { db } from '../../../lib/firebase';
-    import { collection, query, where, getDocs } from 'firebase/firestore';
+    import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
     import { markdownToHtml, processHtmlForBlog, formatDate } from '../../../utils/blog';
 
     async function loadDynamicPost() {
-      // Extract slug from URL pathname or search query
-      const pathParts = window.location.pathname.split('/').filter(Boolean);
-      let slug = pathParts[pathParts.length - 1];
-      if (slug === 'view' && pathParts.length > 2) {
-        slug = pathParts[pathParts.length - 2];
-      }
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('slug')) {
-        slug = urlParams.get('slug')!;
+      const docId = urlParams.get('id');
+      let slug = urlParams.get('slug') || '';
+      
+      if (!slug && !docId) {
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        slug = pathParts[pathParts.length - 1];
+        if (slug === 'view' && pathParts.length > 2) {
+          slug = pathParts[pathParts.length - 2];
+        }
       }
 
-      if (!slug) {
+      if (!slug && !docId) {
         showNotFound();
         return;
       }
 
       try {
-        // Query Firestore for this post
-        const blogsRef = collection(db, 'blogs');
         let postData: any = null;
 
-        // Try slugEs match
-        const qEs = query(blogsRef, where('slugEs', '==', slug));
-        const snapEs = await getDocs(qEs);
-        if (!snapEs.empty) {
-          postData = snapEs.docs[0].data();
-        } else {
-          // Fallback to slugEn or slug
-          const qEn = query(blogsRef, where('slugEn', '==', slug));
-          const snapEn = await getDocs(qEn);
-          if (!snapEn.empty) {
-            postData = snapEn.docs[0].data();
+        // Try direct ID match if provided (works for draft and published posts)
+        if (docId) {
+          const docSnap = await getDoc(doc(db, 'blogs', docId));
+          if (docSnap.exists()) {
+            postData = docSnap.data();
+          }
+        }
+
+        // Query Firestore for this post by slug if not found by ID
+        if (!postData && slug) {
+          const blogsRef = collection(db, 'blogs');
+          const qEs = query(blogsRef, where('slugEs', '==', slug));
+          const snapEs = await getDocs(qEs);
+          if (!snapEs.empty) {
+            postData = snapEs.docs[0].data();
           } else {
-            const qGeneric = query(blogsRef, where('slug', '==', slug));
-            const snapGeneric = await getDocs(qGeneric);
-            if (!snapGeneric.empty) {
-              postData = snapGeneric.docs[0].data();
+            const qEn = query(blogsRef, where('slugEn', '==', slug));
+            const snapEn = await getDocs(qEn);
+            if (!snapEn.empty) {
+              postData = snapEn.docs[0].data();
+            } else {
+              const qGeneric = query(blogsRef, where('slug', '==', slug));
+              const snapGeneric = await getDocs(qGeneric);
+              if (!snapGeneric.empty) {
+                postData = snapGeneric.docs[0].data();
+              }
             }
           }
         }
