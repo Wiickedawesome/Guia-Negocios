@@ -6,33 +6,43 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
   <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <a href="/admin/landing-pages" class="text-sm text-slate-500 hover:text-brand-primary flex items-center gap-1 transition-colors">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        <a href="/admin/landing-pages" class="text-xs text-slate-500 hover:text-brand-primary flex items-center gap-1 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           Back to Landing Pages
         </a>
       </div>
       <h1 class="text-2xl font-bold text-slate-900 font-heading">Visual Landing Page Builder</h1>
-      <p id="page-subtitle" class="text-sm text-slate-500 mt-1">Editing Landing Page</p>
+      <p id="page-subtitle" class="text-xs text-slate-500 mt-0.5">Editing: Bilingual Landing Page</p>
     </div>
     
     <div class="flex flex-wrap items-center gap-2">
+      <!-- Dual Language Tabs -->
+      <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-xs mr-2">
+        <button id="tab-lang-es" class="px-3 py-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all">
+          <span>🇪🇸</span> Español
+        </button>
+        <button id="tab-lang-en" class="px-3 py-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all">
+          <span>🇺🇸</span> English
+        </button>
+      </div>
+
       <!-- Viewport Toggle -->
-      <div class="flex bg-slate-100 rounded-lg p-1 mr-2">
-        <button id="view-desktop" class="p-1.5 bg-white text-brand-dark shadow-xs rounded font-medium flex items-center gap-1.5 text-xs px-2.5" title="Desktop View">
-          <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      <div class="flex bg-slate-100 rounded-xl p-1 mr-2 border border-slate-200 shadow-xs">
+        <button id="view-desktop" class="p-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-medium flex items-center gap-1 text-xs px-2.5" title="Desktop View">
+          <svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
           Desktop
         </button>
-        <button id="view-mobile" class="p-1.5 text-slate-500 hover:text-slate-900 rounded font-medium flex items-center gap-1.5 text-xs px-2.5 transition-colors" title="Mobile View">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+        <button id="view-mobile" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-medium flex items-center gap-1 text-xs px-2.5 transition-colors" title="Mobile View">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
           Mobile
         </button>
       </div>
       
-      <button id="btn-save-draft" class="px-4 py-2 text-sm border border-slate-200 rounded-lg text-slate-700 bg-white hover:bg-slate-50 font-medium transition-colors shadow-xs">
+      <button id="btn-save-draft" class="px-4 py-2 text-xs border border-slate-200 rounded-xl text-slate-700 bg-white hover:bg-slate-50 font-bold transition-all shadow-xs">
         Save Draft
       </button>
-      <button id="btn-publish" class="px-4 py-2 text-sm bg-brand-primary text-white rounded-lg hover:bg-opacity-95 font-medium shadow-sm transition-colors flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      <button id="btn-publish" class="px-4 py-2 text-xs bg-brand-primary text-white rounded-xl hover:bg-opacity-95 font-bold shadow-sm transition-all flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
         Publish Live
       </button>
     </div>
@@ -40,113 +50,143 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
   <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
     <!-- Left Sidebar: Design Elements & AI Copilot -->
-    <div class="xl:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 h-[calc(100vh-14rem)] overflow-y-auto flex flex-col justify-between">
+    <div class="xl:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 h-[calc(100vh-14rem)] overflow-y-auto flex flex-col justify-between">
       <div>
-        <h3 class="font-bold text-slate-900 mb-3 border-b border-slate-100 pb-2.5 flex items-center justify-between text-sm">
-          <span>Website Components</span>
-          <span class="bg-[#F2F7F4] text-[#1B4E2B] text-xs font-bold px-2.5 py-0.5 rounded-full">+ Add to page</span>
-        </h3>
+        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+          <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Design Components</h3>
+          <span class="bg-[#F2F7F4] text-[#1B4E2B] text-[10px] font-bold px-2 py-0.5 rounded-full">+ Insert</span>
+        </div>
         
-        <div class="space-y-2.5">
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="hero">
-            <div class="p-2 bg-[#1A2E35] text-[#F0C850] rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        <div class="space-y-2">
+          <!-- Hero Section -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="hero">
+            <div class="p-2 bg-[#1A2E35] text-[#F0C850] rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
             </div>
             <div>
-              <div class="font-bold text-xs text-slate-800">Hero Section</div>
-              <div class="text-[11px] text-slate-500">Dark navy banner & dual CTAs</div>
+              <div class="font-bold text-xs text-slate-800">Dark Hero Banner</div>
+              <div class="text-[10px] text-slate-500">Navy gradient, gold underline & CTAs</div>
             </div>
           </button>
 
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="features">
-            <div class="p-2 bg-emerald-50 text-[#1B4E2B] rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+          <!-- 4-Stat Metric Bar -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="stats">
+            <div class="p-2 bg-emerald-50 text-[#1B4E2B] rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
             </div>
             <div>
-              <div class="font-bold text-xs text-slate-800">Value Proposition Grid</div>
-              <div class="text-[11px] text-slate-500">3-column benefit cards with SVGs</div>
+              <div class="font-bold text-xs text-slate-800">4-Stat Metric Grid</div>
+              <div class="text-[10px] text-slate-500">MSU, Brookings, Stanford citations</div>
             </div>
           </button>
 
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="process">
-            <div class="p-2 bg-blue-50 text-[#2563EB] rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <!-- Obstacles vs Solutions Matrix -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="barriers">
+            <div class="p-2 bg-rose-50 text-rose-600 rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
             <div>
-              <div class="font-bold text-xs text-slate-800">3-Step Process Flow</div>
-              <div class="text-[11px] text-slate-500">Numbered step-by-step roadmap</div>
+              <div class="font-bold text-xs text-slate-800">Obstacles vs Solutions</div>
+              <div class="text-[10px] text-slate-500">Red danger boxes → Green checkmarks</div>
             </div>
           </button>
 
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="pricing">
-            <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <!-- Split Finances Card -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="split">
+            <div class="p-2 bg-amber-50 text-amber-600 rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
             </div>
             <div>
-              <div class="font-bold text-xs text-slate-800">Pricing & Packages</div>
-              <div class="text-[11px] text-slate-500">Básico vs Completo with checklists</div>
+              <div class="font-bold text-xs text-slate-800">Split Finances Matrix</div>
+              <div class="text-[10px] text-slate-500">Mixed money vs Separated accounts</div>
             </div>
           </button>
 
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="testimonials">
-            <div class="p-2 bg-amber-50 text-[#F0C850] rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+          <!-- 6-Step Snake Map Roadmap -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="snakeMap">
+            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
             <div>
-              <div class="font-bold text-xs text-slate-800">Testimonials</div>
-              <div class="text-[11px] text-slate-500">5-star client review cards</div>
+              <div class="font-bold text-xs text-slate-800">6-Step Snake Roadmap</div>
+              <div class="text-[10px] text-slate-500">Numbered step-by-step formation</div>
             </div>
           </button>
 
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="faq">
-            <div class="p-2 bg-purple-50 text-[#7C3AED] rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <!-- Pricing & Packages Matrix -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="pricing">
+            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <div>
+              <div class="font-bold text-xs text-slate-800">2-Tier Pricing Matrix</div>
+              <div class="text-[10px] text-slate-500">Básico vs Completo with checklists</div>
+            </div>
+          </button>
+
+          <!-- Testimonials -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="testimonials">
+            <div class="p-2 bg-amber-50 text-[#F0C850] rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
+            </div>
+            <div>
+              <div class="font-bold text-xs text-slate-800">5-Star Testimonials</div>
+              <div class="text-[10px] text-slate-500">Authentic client review cards</div>
+            </div>
+          </button>
+
+          <!-- FAQ Accordion -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="faq">
+            <div class="p-2 bg-purple-50 text-[#7C3AED] rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
             <div>
               <div class="font-bold text-xs text-slate-800">FAQ Accordion</div>
-              <div class="text-[11px] text-slate-500">Top customer objections answered</div>
+              <div class="text-[10px] text-slate-500">SSN, timelines & bilingual support</div>
             </div>
           </button>
 
-          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="cta">
-            <div class="p-2 bg-[#1A2E35] text-white rounded-lg">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          <!-- Lead Form & Contact Band -->
+          <button class="add-block-btn w-full text-left p-2.5 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-2.5" data-type="cta">
+            <div class="p-2 bg-[#1A2E35] text-white rounded-lg shrink-0">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
             </div>
             <div>
-              <div class="font-bold text-xs text-slate-800">Lead Form & Final CTA</div>
-              <div class="text-[11px] text-slate-500">Lead capture form + phone CTA</div>
+              <div class="font-bold text-xs text-slate-800">Lead Form & Contact Band</div>
+              <div class="text-[10px] text-slate-500">Form + Phone, Email, Location</div>
             </div>
           </button>
         </div>
       </div>
 
       <!-- Context-Aware AI Page Copilot -->
-      <div class="mt-6 border-t border-slate-100 pt-4">
+      <div class="mt-4 border-t border-slate-100 pt-3">
         <div class="flex items-center justify-between mb-2">
-          <h3 class="font-bold text-slate-900 flex items-center gap-2 text-xs">
-            <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <h3 class="font-bold text-slate-900 flex items-center gap-1.5 text-xs">
+            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             AI Page Copilot
           </h3>
-          <span class="bg-amber-400/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase border border-amber-400/30">Gemini</span>
+          <button id="btn-ai-translate-sync" class="px-2 py-0.5 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white rounded-md font-bold text-[10px] transition-all flex items-center gap-1" title="Translate and synchronize with the other language">
+            🌐 Auto-Traducir
+          </button>
         </div>
-        <p class="text-[11px] text-slate-500 mb-2.5">Tell the AI what section to build, re-write, or modify.</p>
         
         <div class="relative">
-          <textarea id="ai-builder-prompt" rows="2" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white resize-none" placeholder="e.g. Generar landing page completa de Paquete de Lanzamiento..."></textarea>
+          <textarea id="ai-builder-prompt" rows="2" class="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white resize-none" placeholder="e.g. Diseñar página completa de Paquete de Lanzamiento..."></textarea>
           <button id="ai-builder-submit" class="absolute bottom-2 right-2 p-1.5 bg-brand-primary text-white rounded-lg hover:bg-opacity-90 transition-colors shadow-xs" title="Send request">
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
           </button>
         </div>
 
-        <div class="flex flex-wrap gap-1.5 mt-2">
-          <button class="ai-quick-btn text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-medium transition-colors" data-prompt="Diseñar landing page completa de alta conversión para este servicio con Hero, Beneficios, Proceso de 3 pasos, Precios, FAQ y Formulario de contacto.">
-            ✨ Generar Página Completa
+        <div class="flex flex-wrap gap-1 mt-2">
+          <button class="ai-quick-btn text-[9px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium transition-colors" data-prompt="Diseñar landing page completa de alta conversión con Hero, 4 Estadísticas, Matriz de Barreras vs Soluciones, 6 Pasos, Precios, FAQ y Formulario.">
+            ✨ Página Completa
           </button>
-          <button class="ai-quick-btn text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-medium transition-colors" data-prompt="Añadir tabla de precios comparativa con 2 paquetes (Básico y Completo) y botón de contacto.">
-            ➕ Añadir Precios
+          <button class="ai-quick-btn text-[9px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium transition-colors" data-prompt="Añadir sección de separación de finanzas personales vs de negocio (Split Finances).">
+            ➕ Separar Dinero
           </button>
-          <button class="ai-quick-btn text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-0.5 rounded-md font-medium transition-colors" data-prompt="Añadir sección de preguntas frecuentes (FAQ) respondiendo sobre SSN, tiempo de trámite y atención en español.">
-            ➕ Añadir FAQ
+          <button class="ai-quick-btn text-[9px] bg-slate-100 hover:bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-medium transition-colors" data-prompt="Añadir tabla de precios comparativa con 2 paquetes (Básico y Completo) y botón de llamada directa.">
+            ➕ Precios
           </button>
         </div>
       </div>
@@ -158,11 +198,11 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         <div id="canvas" class="min-h-full flex flex-col gap-4">
           
           <div id="empty-state" class="p-16 flex flex-col items-center justify-center text-slate-400 bg-white rounded-2xl border-2 border-dashed border-slate-200 my-8 text-center">
-            <div class="w-16 h-16 mb-4 rounded-2xl bg-[#F2F7F4] text-[#1B4E2B] flex items-center justify-center font-bold text-2xl shadow-xs">
+            <div class="w-14 h-14 mb-3 rounded-2xl bg-[#F2F7F4] text-[#1B4E2B] flex items-center justify-center font-bold text-xl shadow-xs">
               +
             </div>
-            <p class="font-bold text-slate-700 text-base mb-1 font-heading">Su página está vacía</p>
-            <p class="text-xs text-slate-500 max-w-sm mb-4">Haga clic en los componentes de la izquierda o pídale al Asistente IA que diseñe la página completa en segundos.</p>
+            <p class="font-bold text-slate-700 text-sm mb-1 font-heading">Su página está vacía</p>
+            <p class="text-xs text-slate-500 max-w-sm mb-4">Haga clic en los componentes de la izquierda o use el Asistente IA para generar una página completa.</p>
           </div>
 
         </div>
@@ -170,16 +210,19 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     </div>
 
     <!-- Right Sidebar: Page & Selected Block Settings -->
-    <div class="xl:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 h-[calc(100vh-14rem)] overflow-y-auto">
+    <div class="xl:col-span-3 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 h-[calc(100vh-14rem)] overflow-y-auto">
       
       <!-- Page Settings -->
       <div id="page-settings" class="block animate-fade-in">
-        <h3 class="font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2.5 flex items-center gap-2 text-sm">
-          <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          Page Settings
-        </h3>
+        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+          <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            Page Settings
+          </h3>
+          <span id="active-lang-pill" class="px-2 py-0.5 bg-[#F2F7F4] text-[#1B4E2B] text-[10px] font-bold rounded-full uppercase">🇪🇸 ES</span>
+        </div>
         
-        <div class="space-y-4">
+        <div class="space-y-3.5">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Page Title</label>
             <input type="text" id="lp-title" value="Paquete de Lanzamiento de Negocios | Guia Negocios" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-brand-primary" />
@@ -192,36 +235,29 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
             <label class="block text-xs font-bold text-slate-700 mb-1">SEO Description</label>
             <textarea id="lp-meta-desc" rows="3" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-brand-primary resize-none">Registre su empresa en EE.UU., obtenga su número EIN y blindaje sus finanzas con Guia de Negocios. Asesoría 100% en español.</textarea>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Target Language</label>
-            <select id="lp-lang" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-brand-primary bg-white">
-              <option value="es">Español (Primary)</option>
-              <option value="en">English</option>
-            </select>
-          </div>
         </div>
       </div>
 
       <!-- Block Selected Controls -->
       <div id="block-settings" class="hidden animate-fade-in">
-        <div class="flex items-center justify-between border-b border-slate-100 mb-4 pb-2.5">
-          <h3 class="font-bold text-brand-primary flex items-center gap-2 text-xs" id="block-settings-title">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+        <div class="flex items-center justify-between border-b border-slate-100 mb-3 pb-2.5">
+          <h3 class="font-bold text-brand-primary flex items-center gap-1.5 text-xs" id="block-settings-title">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
             Section Controls
           </h3>
-          <button class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-medium" id="back-to-page-settings">
+          <button class="text-xs px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-bold" id="back-to-page-settings">
             Done
           </button>
         </div>
         
-        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-4">
-          <p class="text-xs text-emerald-800 font-medium flex items-start gap-2">
-            <svg class="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-            <span><strong>Click any text directly on the canvas</strong> to edit headlines, bullet points, and buttons in real time.</span>
+        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 mb-3">
+          <p class="text-xs text-emerald-800 font-medium flex items-start gap-1.5">
+            <svg class="w-3.5 h-3.5 shrink-0 text-emerald-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+            <span><strong>Click text directly on canvas</strong> to edit headlines, bullets, and buttons.</span>
           </p>
         </div>
 
-        <div class="space-y-3">
+        <div class="space-y-2.5">
           <div class="grid grid-cols-2 gap-2">
             <button id="btn-move-up" class="py-2 px-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 shadow-xs">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
@@ -233,15 +269,15 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
             </button>
           </div>
           
-          <button id="btn-duplicate-block" class="w-full py-2.5 px-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 shadow-xs">
+          <button id="btn-duplicate-block" class="w-full py-2 px-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 shadow-xs">
             <svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
             Duplicate Section
           </button>
 
-          <hr class="border-slate-100 my-2">
+          <hr class="border-slate-100 my-1">
 
-          <button id="delete-active-block-btn" class="w-full py-2.5 border border-red-200 text-red-600 rounded-xl hover:bg-red-50 text-xs font-bold transition-colors flex justify-center items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          <button id="delete-active-block-btn" class="w-full py-2 border border-red-200 text-red-600 rounded-xl hover:bg-red-50 text-xs font-bold transition-colors flex justify-center items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             Remove Section
           </button>
         </div>
@@ -283,23 +319,105 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     const btnMoveDown = document.getElementById('btn-move-down') as HTMLElement;
     const btnDuplicate = document.getElementById('btn-duplicate-block') as HTMLElement;
 
+    const tabEs = document.getElementById('tab-lang-es') as HTMLElement;
+    const tabEn = document.getElementById('tab-lang-en') as HTMLElement;
+    const activeLangPill = document.getElementById('active-lang-pill') as HTMLElement;
+
     const viewDesktop = document.getElementById('view-desktop') as HTMLElement;
     const viewMobile = document.getElementById('view-mobile') as HTMLElement;
     const canvasViewportWrapper = document.getElementById('canvas-viewport-wrapper') as HTMLElement;
 
     let activeBlock: HTMLElement | null = null;
+    let currentLang: 'es' | 'en' = 'es';
+
+    interface PageLangState {
+      title: string;
+      slug: string;
+      metaDesc: string;
+      content: string;
+    }
+
+    const bilingualState: { es: PageLangState; en: PageLangState } = {
+      es: { title: '', slug: '', metaDesc: '', content: '' },
+      en: { title: '', slug: '', metaDesc: '', content: '' }
+    };
+
+    // Save current language into state
+    function captureCurrentLangState() {
+      const titleInput = document.getElementById('lp-title') as HTMLInputElement;
+      const slugInput = document.getElementById('lp-slug') as HTMLInputElement;
+      const descInput = document.getElementById('lp-meta-desc') as HTMLTextAreaElement;
+
+      // Clone canvas and clean internal attributes
+      const clone = canvas.cloneNode(true) as HTMLElement;
+      const empty = clone.querySelector('#empty-state');
+      if (empty) empty.remove();
+      clone.querySelectorAll('.builder-block').forEach(b => b.classList.remove('builder-block-selected'));
+      clone.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+
+      bilingualState[currentLang] = {
+        title: titleInput.value.trim(),
+        slug: slugInput.value.trim(),
+        metaDesc: descInput.value.trim(),
+        content: clone.innerHTML.trim()
+      };
+    }
+
+    // Switch Language Tab
+    function switchLanguage(targetLang: 'es' | 'en') {
+      if (currentLang === targetLang) return;
+      captureCurrentLangState();
+      currentLang = targetLang;
+
+      // Update UI Tabs
+      if (currentLang === 'es') {
+        tabEs.className = 'px-3 py-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all';
+        tabEn.className = 'px-3 py-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all';
+        activeLangPill.textContent = '🇪🇸 ES';
+      } else {
+        tabEn.className = 'px-3 py-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all';
+        tabEs.className = 'px-3 py-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all';
+        activeLangPill.textContent = '🇺🇸 EN';
+      }
+
+      // Populate Inputs from targetLang State
+      (document.getElementById('lp-title') as HTMLInputElement).value = bilingualState[currentLang].title || '';
+      (document.getElementById('lp-slug') as HTMLInputElement).value = bilingualState[currentLang].slug || '';
+      (document.getElementById('lp-meta-desc') as HTMLTextAreaElement).value = bilingualState[currentLang].metaDesc || '';
+
+      if (bilingualState[currentLang].content && bilingualState[currentLang].content.trim()) {
+        if (emptyState) emptyState.style.display = 'none';
+        canvas.innerHTML = bilingualState[currentLang].content;
+        canvas.querySelectorAll('.builder-block').forEach(b => {
+          b.querySelectorAll('h1, h2, h3, h4, h5, p, span, a, button, li').forEach(el => {
+            if (!el.getAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
+          });
+          attachBlockEvents(b as HTMLElement);
+        });
+      } else {
+        canvas.innerHTML = '';
+        if (emptyState) {
+          canvas.appendChild(emptyState);
+          emptyState.style.display = 'flex';
+        }
+      }
+      showPageSettings();
+    }
+
+    tabEs.addEventListener('click', () => switchLanguage('es'));
+    tabEn.addEventListener('click', () => switchLanguage('en'));
 
     // Viewport Switcher
     viewDesktop?.addEventListener('click', () => {
       canvasViewportWrapper.style.maxWidth = '100%';
-      viewDesktop.className = 'p-1.5 bg-white text-brand-dark shadow-xs rounded font-medium flex items-center gap-1.5 text-xs px-2.5';
-      viewMobile.className = 'p-1.5 text-slate-500 hover:text-slate-900 rounded font-medium flex items-center gap-1.5 text-xs px-2.5 transition-colors';
+      viewDesktop.className = 'p-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-medium flex items-center gap-1 text-xs px-2.5';
+      viewMobile.className = 'p-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-medium flex items-center gap-1 text-xs px-2.5 transition-colors';
     });
 
     viewMobile?.addEventListener('click', () => {
       canvasViewportWrapper.style.maxWidth = '420px';
-      viewMobile.className = 'p-1.5 bg-white text-brand-dark shadow-xs rounded font-medium flex items-center gap-1.5 text-xs px-2.5';
-      viewDesktop.className = 'p-1.5 text-slate-500 hover:text-slate-900 rounded font-medium flex items-center gap-1.5 text-xs px-2.5 transition-colors';
+      viewMobile.className = 'p-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-medium flex items-center gap-1 text-xs px-2.5';
+      viewDesktop.className = 'p-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-medium flex items-center gap-1 text-xs px-2.5 transition-colors';
     });
 
     function showPageSettings() {
@@ -326,7 +444,6 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     function attachBlockEvents(block: HTMLElement) {
       block.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).getAttribute('contenteditable') === 'true') {
-          // Allow in-place editing
           return;
         }
         selectBlock(block);
@@ -400,7 +517,6 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       const title = (document.getElementById('lp-title') as HTMLInputElement)?.value || '';
       const slug = (document.getElementById('lp-slug') as HTMLInputElement)?.value || '';
       const metaDesc = (document.getElementById('lp-meta-desc') as HTMLTextAreaElement)?.value || '';
-      const lang = (document.getElementById('lp-lang') as HTMLSelectElement)?.value || 'es';
       
       const currentBlocksCount = canvas.querySelectorAll('.builder-block').length;
       const activeBlockHtml = activeBlock ? activeBlock.outerHTML : '';
@@ -412,26 +528,26 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       try {
         const systemPrompt = `
 You are the lead UX designer, conversion copywriter, and Tailwind CSS engineer for GUIA DE NEGOCIOS (a high-authority bilingual business consultancy).
-The user is building or modifying a landing page using the Visual Page Builder.
+The user is building or modifying a landing page in ${currentLang === 'es' ? 'SPANISH' : 'ENGLISH'}.
 
 CURRENT PAGE STATE:
+- Language: "${currentLang}"
 - Title: "${title}"
 - Slug: "${slug}"
 - Meta Description: "${metaDesc}"
-- Language: "${lang}"
 - Total Sections on Page: ${currentBlocksCount}
 ${activeBlock ? `- Currently Selected Section HTML:\n"""${activeBlockHtml.slice(0, 2000)}"""` : ''}
 
 USER INSTRUCTION: "${userPrompt}"
 
-DESIGN GUIDELINES:
+DESIGN GUIDELINES (GUIA DE NEGOCIOS):
 1. Colors: Forest Green (#1B4E2B), Slate Navy (#1A2E35), Golden Amber (#F0C850), Soft Mint (#F2F7F4), Danger Crimson (#D92D3C).
-2. Typography: Clean sans-serif, bold high-contrast headlines, short paragraphs (max 2-3 sentences), responsive padding ('p-8 sm:p-12').
+2. Typography: Clean sans-serif, bold high-contrast headlines with gold SVG underline accents, short 2-3 sentence paragraphs, responsive padding ('p-8 sm:p-12').
 3. Strict Zero-Emoji Rule: NEVER output unicode emojis. Use clean inline SVGs or sleek typography badges.
 4. Editable Text: Add contenteditable="true" to all headings, paragraphs, and CTA button labels so the user can click and edit them.
 5. HTML Output: Output ONLY clean, self-contained section HTML wrapped in <section class="builder-block ...">...</section>. Do NOT include markdown code fences (\`\`\`html).
 
-If the user asks to generate a complete landing page, output 4 to 6 connected <section class="builder-block ...">...</section> elements (Hero, Value Proposition, Process Flow, Pricing Matrix, Testimonials, Lead Form & CTA).
+If the user asks to generate a complete landing page, output 5 to 7 connected <section class="builder-block ...">...</section> elements (Hero with Gold SVG underline, 4-Stat Metric Bar, Obstacles vs Solutions Matrix, Split Finances Card, 6-Step Snake Roadmap, 2-Tier Pricing Matrix, Testimonials, FAQ Accordion, Lead Form & Contact Band).
 `;
 
         const result = await aiModel.generateContent(systemPrompt);
@@ -441,11 +557,9 @@ If the user asks to generate a complete landing page, output 4 to 6 connected <s
         if (emptyState) emptyState.style.display = 'none';
 
         if (userPrompt.toLowerCase().includes('completa') || userPrompt.toLowerCase().includes('entire') || currentBlocksCount === 0) {
-          // Replace canvas content with full landing page
           canvas.innerHTML = rawHtml;
           canvas.querySelectorAll('.builder-block').forEach(b => attachBlockEvents(b as HTMLElement));
         } else if (activeBlock && (userPrompt.toLowerCase().includes('modificar') || userPrompt.toLowerCase().includes('cambiar') || userPrompt.toLowerCase().includes('edit'))) {
-          // Replace active block
           const temp = document.createElement('div');
           temp.innerHTML = rawHtml;
           const newBlock = temp.firstElementChild as HTMLElement;
@@ -455,7 +569,6 @@ If the user asks to generate a complete landing page, output 4 to 6 connected <s
             selectBlock(newBlock);
           }
         } else {
-          // Append as new section
           const temp = document.createElement('div');
           temp.innerHTML = rawHtml;
           Array.from(temp.children).forEach(child => {
@@ -475,7 +588,7 @@ If the user asks to generate a complete landing page, output 4 to 6 connected <s
         window.showToast('AI Generation error: ' + (err.message || 'Check connection'), 'error');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>';
+        submitBtn.innerHTML = '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>';
       }
     }
 
@@ -493,52 +606,122 @@ If the user asks to generate a complete landing page, output 4 to 6 connected <s
       });
     });
 
-    // =========================================================================
-    // SAVE & PUBLISH TO FIRESTORE
-    // =========================================================================
-    async function saveLandingPage(status: 'Draft' | 'Active') {
-      const title = (document.getElementById('lp-title') as HTMLInputElement)?.value.trim();
-      const slug = (document.getElementById('lp-slug') as HTMLInputElement)?.value.trim();
-      const metaDesc = (document.getElementById('lp-meta-desc') as HTMLTextAreaElement)?.value.trim();
-      const lang = (document.getElementById('lp-lang') as HTMLSelectElement)?.value || 'es';
+    // Auto-Translate & Synchronize Dual Language
+    document.getElementById('btn-ai-translate-sync')?.addEventListener('click', async () => {
+      captureCurrentLangState();
+      const otherLang = currentLang === 'es' ? 'en' : 'es';
+      const sourceState = bilingualState[currentLang];
 
-      if (!title || !slug) {
+      if (!sourceState.content || !sourceState.content.trim()) {
         // @ts-ignore
-        window.showToast('Title and URL Slug are required', 'warning');
+        window.showToast('Please add content to current language before translating.', 'warning');
         return;
       }
 
-      // Clone canvas and clean internal attributes
-      const clone = canvas.cloneNode(true) as HTMLElement;
-      const empty = clone.querySelector('#empty-state');
-      if (empty) empty.remove();
-
-      clone.querySelectorAll('.builder-block').forEach(b => {
-        b.classList.remove('builder-block-selected');
-      });
-
-      clone.querySelectorAll('[contenteditable="true"]').forEach(el => {
-        el.removeAttribute('contenteditable');
-      });
-
-      const cleanHtml = clone.innerHTML.trim();
-      const docId = `${lang}_${slug}`;
+      // @ts-ignore
+      window.showToast(`Translating and adapting to ${otherLang.toUpperCase()}...`, 'info');
 
       try {
-        await setDoc(doc(db, 'landingPages', docId), {
-          title,
-          slug,
-          metaDesc,
-          lang,
-          content: cleanHtml,
-          status,
-          updatedAt: new Date().toISOString(),
-          views: 0,
-          conversions: 0
-        });
+        const translatePrompt = `
+You are the lead bilingual conversion copywriter for GUIA DE NEGOCIOS.
+Translate and culturally adapt the following landing page from ${currentLang.toUpperCase()} to ${otherLang.toUpperCase()}:
+
+SOURCE TITLE: "${sourceState.title}"
+SOURCE SLUG: "${sourceState.slug}"
+SOURCE META DESCRIPTION: "${sourceState.metaDesc}"
+SOURCE HTML CONTENT:
+"""
+${sourceState.content}
+"""
+
+STRICT INSTRUCTIONS:
+- Translate all headlines, paragraphs, bullets, and button texts naturally into ${otherLang === 'en' ? 'English' : 'Spanish'}.
+- Maintain all Tailwind CSS classes, inline SVG icons, and HTML structural layout 100% intact.
+- Add contenteditable="true" to all translated headings, paragraphs, and buttons.
+- Output strictly a JSON object:
+{
+  "title": "string (Compelling translated title)",
+  "slug": "string (url-slug-in-${otherLang})",
+  "metaDesc": "string (150-160 char meta description in ${otherLang})",
+  "html": "string (Complete translated HTML string)"
+}
+`;
+
+        const result = await aiModel.generateContent(translatePrompt);
+        const text = result.response.text();
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("Could not parse translation JSON");
+
+        const data = JSON.parse(jsonMatch[0]);
+        bilingualState[otherLang] = {
+          title: data.title || sourceState.title,
+          slug: data.slug || sourceState.slug,
+          metaDesc: data.metaDesc || sourceState.metaDesc,
+          content: data.html || ''
+        };
+
+        // Switch to the newly translated language
+        switchLanguage(otherLang);
+        // @ts-ignore
+        window.showToast(`Successfully translated to ${otherLang.toUpperCase()}!`, 'success');
+
+      } catch (err: any) {
+        console.error("AI Translation Error:", err);
+        // @ts-ignore
+        window.showToast('Translation error: ' + err.message, 'error');
+      }
+    });
+
+    // =========================================================================
+    // SAVE & PUBLISH BOTH LANGUAGES TO FIRESTORE
+    // =========================================================================
+    async function saveLandingPage(status: 'Draft' | 'Active') {
+      captureCurrentLangState();
+
+      const esState = bilingualState.es;
+      const enState = bilingualState.en;
+
+      if (!esState.title && !enState.title) {
+        // @ts-ignore
+        window.showToast('Page title is required', 'warning');
+        return;
+      }
+
+      try {
+        // Save Spanish version if it has content/title
+        if (esState.title || esState.content) {
+          const slugEs = (esState.slug || 'pagina').replace(/^-|-$/g, '');
+          await setDoc(doc(db, 'landingPages', `es_${slugEs}`), {
+            title: esState.title || 'Página de Lanzamiento',
+            slug: slugEs,
+            metaDesc: esState.metaDesc || '',
+            lang: 'es',
+            content: esState.content || '',
+            status,
+            updatedAt: new Date().toISOString(),
+            views: 0,
+            conversions: 0
+          });
+        }
+
+        // Save English version if it has content/title
+        if (enState.title || enState.content) {
+          const slugEn = (enState.slug || esState.slug || 'page').replace(/^-|-$/g, '');
+          await setDoc(doc(db, 'landingPages', `en_${slugEn}`), {
+            title: enState.title || 'Launch Page',
+            slug: slugEn,
+            metaDesc: enState.metaDesc || '',
+            lang: 'en',
+            content: enState.content || '',
+            status,
+            updatedAt: new Date().toISOString(),
+            views: 0,
+            conversions: 0
+          });
+        }
 
         // @ts-ignore
-        window.showToast(status === 'Active' ? 'Landing Page published live!' : 'Draft saved securely!', 'success');
+        window.showToast(status === 'Active' ? 'Landing pages published live!' : 'Draft saved securely!', 'success');
 
         setTimeout(() => {
           window.location.href = '/admin/landing-pages';
@@ -558,17 +741,47 @@ If the user asks to generate a complete landing page, output 4 to 6 connected <s
       getDoc(doc(db, 'landingPages', editId)).then(snap => {
         if (snap.exists()) {
           const data = snap.data();
+          const loadedLang = (data.lang || 'es') as 'es' | 'en';
+          currentLang = loadedLang;
+
+          bilingualState[loadedLang] = {
+            title: data.title || '',
+            slug: data.slug || '',
+            metaDesc: data.metaDesc || '',
+            content: data.content || ''
+          };
+
+          // Try to also fetch counterpart in other language
+          const counterpartId = loadedLang === 'es' ? `en_${data.slug}` : `es_${data.slug}`;
+          getDoc(doc(db, 'landingPages', counterpartId)).then(otherSnap => {
+            if (otherSnap.exists()) {
+              const otherData = otherSnap.data();
+              const otherLang = (otherData.lang || 'en') as 'es' | 'en';
+              bilingualState[otherLang] = {
+                title: otherData.title || '',
+                slug: otherData.slug || '',
+                metaDesc: otherData.metaDesc || '',
+                content: otherData.content || ''
+              };
+            }
+          }).catch(console.warn);
+
+          // Populate UI
           (document.getElementById('lp-title') as HTMLInputElement).value = data.title || '';
           (document.getElementById('lp-slug') as HTMLInputElement).value = data.slug || '';
           (document.getElementById('lp-meta-desc') as HTMLTextAreaElement).value = data.metaDesc || '';
-          (document.getElementById('lp-lang') as HTMLSelectElement).value = data.lang || 'es';
-          document.getElementById('page-subtitle')!.textContent = `Editing: ${data.title} (/${data.lang || 'es'}/lp/${data.slug})`;
+          document.getElementById('page-subtitle')!.textContent = `Editing: ${data.title} (/${loadedLang}/lp/${data.slug})`;
+
+          if (loadedLang === 'en') {
+            tabEn.className = 'px-3 py-1.5 bg-white text-slate-900 shadow-xs rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all';
+            tabEs.className = 'px-3 py-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all';
+            activeLangPill.textContent = '🇺🇸 EN';
+          }
 
           if (data.content && data.content.trim()) {
             if (emptyState) emptyState.style.display = 'none';
             canvas.innerHTML = data.content;
             canvas.querySelectorAll('.builder-block').forEach(b => {
-              // Re-enable contenteditable
               b.querySelectorAll('h1, h2, h3, h4, h5, p, span, a, button, li').forEach(el => {
                 if (!el.getAttribute('contenteditable')) el.setAttribute('contenteditable', 'true');
               });
