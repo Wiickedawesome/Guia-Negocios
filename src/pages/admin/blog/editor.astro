@@ -89,7 +89,30 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
             <span class="bg-brand-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">Gemini 3.5</span>
             <h3 class="font-bold text-slate-800 text-sm">Full-Document AI Copilot</h3>
           </div>
-          <span class="text-xs text-slate-500">Context-Aware Assistant</span>
+          <div class="flex items-center gap-2">
+            <button id="btn-copilot-undo" type="button" class="hidden text-xs text-slate-600 hover:text-brand-primary font-medium px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 transition-all flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2a5 5 0 01-5 5H6" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 6L3 10l4 4" /></svg>
+              <span>Undo Edit</span>
+            </button>
+            <span class="text-xs text-slate-500">Autonomous Editor</span>
+          </div>
+        </div>
+
+        <!-- Quick AI Strategy Prompts -->
+        <div class="px-3 py-2 bg-slate-50/80 border-b border-slate-100 flex items-center gap-1.5 overflow-x-auto text-[11px]">
+          <span class="text-slate-400 font-semibold uppercase tracking-wider shrink-0 mr-1">Quick:</span>
+          <button type="button" class="copilot-quick-chip whitespace-nowrap px-2.5 py-1 rounded-full bg-white hover:bg-brand-primary hover:text-white border border-slate-200 text-slate-700 transition-all font-medium shadow-2xs" data-prompt="Revisa exhaustivamente este artículo, amplía su profundidad técnica, agrega mejores consejos prácticos, estadísticas oficiales y optimiza la estructura para SEO y motores de IA (AEO/GEO).">
+            🚀 Deep SEO & AEO Rewrite
+          </button>
+          <button type="button" class="copilot-quick-chip whitespace-nowrap px-2.5 py-1 rounded-full bg-white hover:bg-brand-primary hover:text-white border border-slate-200 text-slate-700 transition-all font-medium shadow-2xs" data-prompt="Diseña e inserta un componente infográfico visual interactivo en HTML/CSS responsivo que resuma de forma gráfica los puntos clave o el proceso paso a paso de este artículo.">
+            📊 Insert Infographic
+          </button>
+          <button type="button" class="copilot-quick-chip whitespace-nowrap px-2.5 py-1 rounded-full bg-white hover:bg-brand-primary hover:text-white border border-slate-200 text-slate-700 transition-all font-medium shadow-2xs" data-prompt="Evalúa qué aspectos clave faltan en este artículo y explora 5 ideas o ángulos nuevos de alto valor que podamos integrar para enriquecerlo.">
+            💡 Brainstorm Angles
+          </button>
+          <button type="button" class="copilot-quick-chip whitespace-nowrap px-2.5 py-1 rounded-full bg-white hover:bg-brand-primary hover:text-white border border-slate-200 text-slate-700 transition-all font-medium shadow-2xs" data-prompt="Agrega una sección detallada sobre regulaciones federales (IRS/SBA/FinCEN), multas por incumplimiento y particularidades para emprendedores hispanos y dueños no residentes (NRA / ITIN).">
+            ⚖️ Legal & IRS Rules
+          </button>
         </div>
 
         <!-- Chat Feed -->
@@ -99,9 +122,9 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
               <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
             <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs text-sm text-slate-700 space-y-1.5 max-w-xl">
-              <p class="font-medium text-slate-900">AI Editorial Assistant</p>
+              <p class="font-medium text-slate-900">AI Editorial Co-Author</p>
               <p class="text-xs text-slate-600 leading-relaxed">
-                I have full awareness of this article in both Spanish & English. Ask me to rewrite sections, expand on regulations, translate, or refine any part of your post.
+                I evaluate your entire blog post, craft strategic enhancements, brainstorm new angles, insert infographics, and apply clean edits directly to your article.
               </p>
             </div>
           </div>
@@ -110,7 +133,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         <!-- Chat Input -->
         <div class="p-3 border-t border-slate-200 bg-white">
           <div class="relative flex items-center">
-            <input type="text" id="copilot-input" placeholder="e.g. 'Rewrite the introduction to emphasize Tennessee LLC tax perks'..." class="w-full pl-3 pr-24 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 font-normal focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-slate-50/50 focus:bg-white transition-colors" />
+            <input type="text" id="copilot-input" placeholder="e.g. 'Add 3 more strategies for building tier-2 credit vendor lines'..." class="w-full pl-3 pr-24 py-2.5 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder-slate-400 font-normal focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-slate-50/50 focus:bg-white transition-colors" />
             <button id="copilot-send" type="button" class="absolute right-2 px-3 py-1.5 bg-brand-primary text-white text-xs font-semibold rounded-md hover:bg-opacity-90 transition-colors shadow-xs flex items-center gap-1">
               <span>Send</span>
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -570,13 +593,131 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     tabEn?.addEventListener('click', () => switchTab('en'));
 
     // =========================================================================
-    // FULL-DOCUMENT AI COPILOT LOGIC
+    // FULL-DOCUMENT AI COPILOT LOGIC (SMART EDITORIAL CO-AUTHOR)
     // =========================================================================
     const copilotInput = document.getElementById('copilot-input') as HTMLInputElement;
     const copilotSend = document.getElementById('copilot-send') as HTMLButtonElement;
     const copilotChat = document.getElementById('copilot-chat') as HTMLElement;
+    const btnCopilotUndo = document.getElementById('btn-copilot-undo') as HTMLButtonElement;
 
-    function appendCopilotMessage(content: string, isUser = false, actions: any[] = []) {
+    let editorUndoStack: { es: string; en: string; titleEs: string; titleEn: string; metaDesc: string }[] = [];
+
+    function saveUndoSnapshot() {
+      editorUndoStack.push({
+        es: easyMdeEs ? easyMdeEs.value() : '',
+        en: easyMdeEn ? easyMdeEn.value() : '',
+        titleEs: (document.getElementById('title-es') as HTMLInputElement)?.value || '',
+        titleEn: (document.getElementById('title-en') as HTMLInputElement)?.value || '',
+        metaDesc: (document.getElementById('meta-desc') as HTMLTextAreaElement)?.value || ''
+      });
+      if (editorUndoStack.length > 10) editorUndoStack.shift();
+      btnCopilotUndo?.classList.remove('hidden');
+    }
+
+    function revertUndoSnapshot() {
+      const prev = editorUndoStack.pop();
+      if (!prev) {
+        // @ts-ignore
+        window.showToast('Nothing to undo.', 'info');
+        btnCopilotUndo?.classList.add('hidden');
+        return;
+      }
+      if (easyMdeEs) easyMdeEs.value(prev.es);
+      if (easyMdeEn) easyMdeEn.value(prev.en);
+      if (prev.titleEs) (document.getElementById('title-es') as HTMLInputElement).value = prev.titleEs;
+      if (prev.titleEn) (document.getElementById('title-en') as HTMLInputElement).value = prev.titleEn;
+      if (prev.metaDesc) (document.getElementById('meta-desc') as HTMLTextAreaElement).value = prev.metaDesc;
+      
+      updateWordCount('es');
+      updateWordCount('en');
+      if (editorUndoStack.length === 0) {
+        btnCopilotUndo?.classList.add('hidden');
+      }
+      // @ts-ignore
+      window.showToast('Reverted to previous article state!', 'success');
+    }
+
+    btnCopilotUndo?.addEventListener('click', revertUndoSnapshot);
+
+    function parseAiEditorialResponse(rawText: string, activeContent: string) {
+      let commentary = '';
+      let cleanMarkdown = '';
+      let actionType: 'REPLACE_FULL_DOCUMENT' | 'INSERT_SECTION' | 'REPLACE_SELECTION' | 'BRAINSTORM_IDEAS' = 'REPLACE_FULL_DOCUMENT';
+      let suggestedIdeas: string[] = [];
+      let suggestedTitle: string | null = null;
+      let suggestedMetaDesc: string | null = null;
+
+      try {
+        let cleanedJsonStr = rawText.trim();
+        if (cleanedJsonStr.startsWith('```json')) {
+          cleanedJsonStr = cleanedJsonStr.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        } else if (cleanedJsonStr.startsWith('```')) {
+          cleanedJsonStr = cleanedJsonStr.replace(/^```\s*/, '').replace(/\s*```$/, '');
+        }
+
+        const data = JSON.parse(cleanedJsonStr);
+        commentary = data.commentary || data.summary || data.explanation || '';
+        cleanMarkdown = data.cleanMarkdown || data.markdown || data.content || '';
+        actionType = data.actionType || 'REPLACE_FULL_DOCUMENT';
+        suggestedIdeas = Array.isArray(data.suggestedIdeas) ? data.suggestedIdeas : [];
+        suggestedTitle = data.suggestedTitle || null;
+        suggestedMetaDesc = data.suggestedMetaDesc || null;
+      } catch (e) {
+        const jsonMatch = rawText.match(/\{[\s\S]*"cleanMarkdown"[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            const data = JSON.parse(jsonMatch[0]);
+            commentary = data.commentary || data.summary || '';
+            cleanMarkdown = data.cleanMarkdown || data.markdown || '';
+            actionType = data.actionType || 'REPLACE_FULL_DOCUMENT';
+            suggestedIdeas = Array.isArray(data.suggestedIdeas) ? data.suggestedIdeas : [];
+            suggestedTitle = data.suggestedTitle || null;
+            suggestedMetaDesc = data.suggestedMetaDesc || null;
+          } catch (e2) {}
+        }
+      }
+
+      if (!cleanMarkdown) {
+        const lines = rawText.split('\n');
+        const filteredLines: string[] = [];
+        let skippingGreeting = true;
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (skippingGreeting) {
+            if (
+              trimmed.startsWith('Estimado') ||
+              trimmed.startsWith('Hola') ||
+              trimmed.startsWith('Como estratega') ||
+              trimmed.startsWith('Here are') ||
+              trimmed.startsWith('Sure,') ||
+              trimmed.startsWith('### Estrategia de Optimización') ||
+              trimmed.startsWith('Certainly')
+            ) {
+              continue;
+            }
+            if (trimmed.length > 0) {
+              skippingGreeting = false;
+              filteredLines.push(line);
+            }
+          } else {
+            filteredLines.push(line);
+          }
+        }
+        cleanMarkdown = filteredLines.join('\n').trim();
+        commentary = `Evaluated the document and prepared the enhanced publication content below.`;
+      }
+
+      return {
+        commentary: commentary || 'Formulated strategic optimizations and article content.',
+        cleanMarkdown: cleanMarkdown.trim(),
+        actionType,
+        suggestedIdeas,
+        suggestedTitle,
+        suggestedMetaDesc
+      };
+    }
+
+    function appendCopilotMessage(content: string, isUser = false, actions: any[] = [], ideas: string[] = []) {
       const div = document.createElement('div');
       div.className = isUser ? 'flex items-start gap-3 flex-row-reverse' : 'flex items-start gap-3';
       
@@ -586,30 +727,44 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       
       const bubbleClasses = isUser
         ? 'bg-brand-primary text-white p-3.5 rounded-2xl rounded-tr-none shadow-xs text-sm font-medium max-w-xl'
-        : 'bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs text-sm text-slate-800 space-y-2 max-w-xl';
+        : 'bg-white p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-xs text-sm text-slate-800 space-y-2.5 max-w-xl';
         
       let actionsHtml = '';
       if (actions.length > 0) {
-        actionsHtml = `<div class="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
-          ${actions.map((act, i) => `<button type="button" class="copilot-action-btn text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 hover:bg-brand-primary hover:text-white transition-all text-slate-700 flex items-center gap-1" data-action-index="${i}">${act.label}</button>`).join('')}
+        actionsHtml = `<div class="pt-2.5 border-t border-slate-100 flex flex-wrap gap-1.5">
+          ${actions.map((act, i) => `<button type="button" class="copilot-action-btn text-xs font-semibold px-3 py-1.5 rounded-lg ${act.primary ? 'bg-brand-primary text-white hover:bg-emerald-900 shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'} transition-all flex items-center gap-1" data-action-index="${i}">${act.label}</button>`).join('')}
         </div>`;
+      }
+
+      let ideasHtml = '';
+      if (ideas.length > 0) {
+        ideasHtml = `
+          <div class="pt-2 border-t border-slate-100">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+              <span>💡 Explore & Expand Next:</span>
+            </p>
+            <div class="flex flex-wrap gap-1.5">
+              ${ideas.map((idea) => `<button type="button" class="copilot-idea-pill text-xs bg-emerald-50/80 hover:bg-brand-primary hover:text-white text-brand-dark px-2.5 py-1 rounded-md transition-all font-medium border border-emerald-200/60 shadow-2xs flex items-center gap-1 text-left" data-idea-text="${idea.replace(/"/g, '&quot;')}"><span>✨ ${idea}</span></button>`).join('')}
+            </div>
+          </div>
+        `;
       }
 
       const escapedContent = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const innerContent = isUser
         ? `<div class="text-white text-sm font-medium leading-relaxed whitespace-pre-wrap">${escapedContent}</div>`
-        : `<div class="prose prose-xs max-w-none text-slate-700 prose-headings:text-slate-900">${// @ts-ignore
+        : `<div class="prose prose-xs max-w-none text-slate-700 prose-headings:text-slate-900 leading-relaxed">${// @ts-ignore
             window.marked ? window.marked.parse(content) : content}</div>`;
 
       div.innerHTML = `
         ${avatar}
         <div class="${bubbleClasses}">
           ${innerContent}
+          ${ideasHtml}
           ${actionsHtml}
         </div>
       `;
 
-      // Bind action buttons
       if (actions.length > 0) {
         div.querySelectorAll('.copilot-action-btn').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -620,6 +775,15 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           });
         });
       }
+
+      div.querySelectorAll('.copilot-idea-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ideaText = btn.getAttribute('data-idea-text') || '';
+          if (ideaText) {
+            handleCopilotPrompt(`Por favor investiga, amplía y redacta la siguiente sección/idea para este artículo: "${ideaText}"`);
+          }
+        });
+      });
 
       copilotChat.appendChild(div);
       copilotChat.scrollTop = copilotChat.scrollHeight;
@@ -647,89 +811,147 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 
       try {
         const fullSystemContext = `
-You are the lead bilingual SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and business consultancy strategist for GUIA DE NEGOCIOS.
-You help write in-depth, authoritative, well-structured articles, optimize for Google Search, Perplexity, and AI Overviews, and design responsive HTML/CSS/SVG infographics for blog posts.
+You are the Lead Executive Editor, bilingual SEO/AEO/GEO Strategist, and Business Consultancy Author for GUIA DE NEGOCIOS (guianegocios.net).
 
-GEOGRAPHIC SCOPE & AUDIENCE INTELLIGENCE:
-- Nationwide & International Reach: GUIA DE NEGOCIOS educates and assists Hispanic entrepreneurs country-wide across all 50 U.S. states and globally. General business strategy topics (Business Plans, EINs, LLC vs S-Corp, Marketing, Accounting) must be written for a general nationwide audience without locking them into Tennessee unless explicitly requested.
-- Local/State Expertise: When local regulations (like TN state filings or Knox County permits) are relevant, provide deep state/county level expertise.
-- Headquarter Branding: We are headquartered in Knoxville, Tennessee, offering nationwide remote and in-person consulting.
+CORE AUTONOMOUS EDITORIAL ROLE:
+You do NOT just passively echo or paste what the user said. You act as an expert, highly intelligent co-author who:
+1. Deeply evaluates the ENTIRE blog post, its clarity, SEO keyword depth, structural flow, AEO direct-answer definitions, and practical business value.
+2. Identifies where changes belong, expands technical depth (IRS regulations, SBA programs, ITIN nuances, Dun & Bradstreet Net-30 scoring), embeds interactive visual infographics, and constructs publication-grade Markdown.
+3. Decides the best editorial action (e.g. rewrite & enhance the full document, insert a new dedicated section, replace a highlighted excerpt, or brainstorm new angles).
+4. Explores creative, high-value ideas that elevate the article above generic advice and make it the definitive authority on the web.
 
 ${getInfographicSystemPrompt()}
 
 RESEARCH CITATIONS & OPEN WEB POLICY:
-You are NOT restricted to a fixed list of sites. You are authorized and encouraged to research, reference, and cite ANY verified official source across the open web relevant to the topic:
-- Federal Agencies (.gov): IRS (irs.gov), SBA (sba.gov), OSHA (osha.gov), USPTO (uspto.gov), FTC (ftc.gov), U.S. Dept of Labor (dol.gov), SCORE (score.org).
-- State & County Authorities: State Secretaries of State, State Departments of Revenue, Licensing Boards, County Clerk portals.
-- Academic & Economic Research (.edu/.org): Brookings Institution (brookings.edu), Stanford Latino Entrepreneurship Initiative (gsb.stanford.edu/slei), Michigan State University JSRI (jsri.msu.edu), U.S. Census Bureau (census.gov).
+- Weave verified Markdown hyperlinks (.gov, .edu, State SOS, IRS forms, SBA, SCORE, Brookings).
 - Internal Guia Negocios Links: [/es/services/paquete-lanzamiento-completo](/es/services/paquete-lanzamiento-completo), [/es/services/operaciones-crecimiento](/es/services/operaciones-crecimiento), [/es/services/apoyo-creedava](/es/services/apoyo-creedava), [/es/contact](/es/contact).
-When writing, editing, or adding citations, naturally weave relevant Markdown hyperlinks into factual sentences and compile a comprehensive "Official Sources & References" / "Fuentes y Referencias Oficiales" section at the end.
+
+STRICT JSON OUTPUT REQUIREMENT:
+You MUST respond ONLY with a valid, parseable JSON object matching this schema. DO NOT add conversational text or markdown code fences outside the JSON object:
+{
+  "commentary": "Markdown-formatted explanation for the chat: summarize what was evaluated, what strategic improvements and new sections were crafted, and why this enhances reader engagement and SEO.",
+  "actionType": "REPLACE_FULL_DOCUMENT",
+  "cleanMarkdown": "The full revised article markdown (or section markdown). MUST BE 100% PURE PUBLICATION-READY MARKDOWN ONLY. ZERO greetings, ZERO 'Estimado equipo', ZERO meta explanations inside this field.",
+  "suggestedIdeas": [
+    "Idea 1 to explore or add next",
+    "Idea 2 to explore or add next",
+    "Idea 3 to explore or add next"
+  ],
+  "suggestedTitle": "Optional improved high-CTR title or null",
+  "suggestedMetaDesc": "Optional improved SEO meta description under 155 chars or null",
+  "suggestedKeywords": ["keyword1", "keyword2"]
+}
 
 Current Document Context:
-- Active Tab Language: ${activeLang}
+- Active Language: ${activeLang}
 - Spanish Title: "${titleEs}"
 - English Title: "${titleEn}"
-- Spanish Body Content:
-"""${currentContentEs.slice(0, 4000)}"""
-- English Body Content:
-"""${currentContentEn.slice(0, 4000)}"""
 - Meta Description: "${metaDesc}"
 - Keywords: "${keywords}"
-${selectedText ? `- Editor Selected Text: """${selectedText}"""` : ''}
+${selectedText ? `- Highlighted Selected Text to Target: """${selectedText}"""` : ''}
+
+Current Full Spanish Content:
+"""
+${currentContentEs}
+"""
+
+Current Full English Content:
+"""
+${currentContentEn}
+"""
 
 User Request: "${userPrompt}"
-
-Instructions:
-1. Provide a direct, highly helpful, and actionable editorial response in ${activeLang}.
-2. Ensure explanations are detailed, comprehensive, and tailored to business owners.
-3. If outputting markdown or an infographic component, output clean markdown with the embedded HTML/CSS/SVG block so it can be inserted into the editor with 1 click.
 `;
 
         const result = await aiModel.generateContent(fullSystemContext);
-        const responseText = result.response.text();
+        const responseRaw = result.response.text();
+        const activeContent = isEnglish ? currentContentEn : currentContentEs;
 
-        // Action buttons without emojis
-        const actions: any[] = [
-          {
-            label: 'Apply to Editor',
+        const parsed = parseAiEditorialResponse(responseRaw, activeContent);
+
+        const actions: any[] = [];
+
+        // Primary Apply Action
+        if (selectedText) {
+          actions.push({
+            label: '🔄 Replace Highlighted Text',
+            primary: true,
             handler: () => {
               if (activeEditor) {
-                const cm = activeEditor.codemirror;
-                if (selectedText) {
-                  cm.replaceSelection(responseText);
-                } else {
-                  const cursor = cm.getCursor();
-                  const prefix = cursor.ch > 0 ? '\n\n' : '';
-                  cm.replaceSelection(prefix + responseText + '\n\n');
-                }
+                saveUndoSnapshot();
+                activeEditor.codemirror.replaceSelection(parsed.cleanMarkdown);
                 activeEditor.codemirror.focus();
                 // @ts-ignore
-                window.showToast('Content applied to editor!', 'success');
+                window.showToast('Selected text replaced successfully! Undo available.', 'success');
               }
             }
-          },
-          {
-            label: 'Fill Opposite Language Tab',
+          });
+        } else {
+          actions.push({
+            label: '✨ Apply Update to Blog Post',
+            primary: true,
             handler: () => {
-              if (otherEditor) {
-                otherEditor.value(responseText);
-                switchTab(isEnglish ? 'es' : 'en');
+              if (activeEditor) {
+                saveUndoSnapshot();
+                activeEditor.value(parsed.cleanMarkdown);
+                if (parsed.suggestedTitle) {
+                  const titleInput = document.getElementById(isEnglish ? 'title-en' : 'title-es') as HTMLInputElement;
+                  if (titleInput && !titleInput.value) titleInput.value = parsed.suggestedTitle;
+                }
+                if (parsed.suggestedMetaDesc) {
+                  const metaInput = document.getElementById('meta-desc') as HTMLTextAreaElement;
+                  if (metaInput) metaInput.value = parsed.suggestedMetaDesc;
+                }
+                updateWordCount(isEnglish ? 'en' : 'es');
                 // @ts-ignore
-                window.showToast('Updated translated tab content!', 'success');
+                window.showToast('Blog post updated and enhanced! Undo available.', 'success');
               }
             }
-          },
-          {
-            label: 'Copy Text',
+          });
+
+          actions.push({
+            label: '📥 Insert as Section at End',
+            primary: false,
             handler: () => {
-              navigator.clipboard.writeText(responseText);
+              if (activeEditor) {
+                saveUndoSnapshot();
+                const curVal = activeEditor.value().trim();
+                activeEditor.value(curVal + '\n\n' + parsed.cleanMarkdown);
+                updateWordCount(isEnglish ? 'en' : 'es');
+                // @ts-ignore
+                window.showToast('Section appended to post!', 'success');
+              }
+            }
+          });
+        }
+
+        // Fill opposite language
+        actions.push({
+          label: '🌐 Sync Opposite Language Tab',
+          primary: false,
+          handler: () => {
+            if (otherEditor) {
+              saveUndoSnapshot();
+              otherEditor.value(parsed.cleanMarkdown);
+              switchTab(isEnglish ? 'es' : 'en');
               // @ts-ignore
-              window.showToast('Copied to clipboard!', 'info');
+              window.showToast('Updated opposite language tab!', 'success');
             }
           }
-        ];
+        });
 
-        appendCopilotMessage(responseText, false, actions);
+        // Copy clean markdown
+        actions.push({
+          label: '📋 Copy Clean Markdown',
+          primary: false,
+          handler: () => {
+            navigator.clipboard.writeText(parsed.cleanMarkdown);
+            // @ts-ignore
+            window.showToast('Clean Markdown copied to clipboard!', 'info');
+          }
+        });
+
+        appendCopilotMessage(parsed.commentary, false, actions, parsed.suggestedIdeas);
       } catch (error: any) {
         console.error('Copilot AI Error:', error);
         appendCopilotMessage('Error communicating with AI: ' + (error?.message || 'Please verify API connection in Settings.'), false);
@@ -739,6 +961,13 @@ Instructions:
     copilotSend?.addEventListener('click', () => handleCopilotPrompt(copilotInput.value));
     copilotInput?.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleCopilotPrompt(copilotInput.value);
+    });
+
+    document.querySelectorAll('.copilot-quick-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const prompt = btn.getAttribute('data-prompt') || '';
+        if (prompt) handleCopilotPrompt(prompt);
+      });
     });
 
     function autoLinkContent(content: string): { newContent: string; count: number } {
