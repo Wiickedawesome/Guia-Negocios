@@ -207,17 +207,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       try {
         const prompt = `
           You are an expert web designer and copywriter for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
-          Create a high-converting landing page for the following service/offer: "${topic}".
+          Create a concise, high-converting landing page for the following service/offer: "${topic}".
           Target Audience: "${audience}".
           Primary Goal: "${goal}".
           
-          Generate a high-converting, modern landing page matching the Guia Negocios website design elements:
-          1. Hero Section: Light grey/mint background ('bg-slate-50/80 border border-slate-200 rounded-3xl p-10 sm:p-14 text-center') with dark headline ('text-slate-900 font-heading font-bold text-3xl sm:text-5xl'), dark paragraph ('text-slate-600'), and action button ('bg-brand-primary text-white py-3.5 px-8 rounded-full'). NEVER use white text on white/light backgrounds!
-          2. Features / Value Proposition: 3-column cards ('bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs') with SVG icons and dark text ('text-slate-900' and 'text-slate-500').
-          3. Process Flow / How We Work: 4-step cards ('bg-slate-50 p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm') with step numbers (01, 02, 03, 04).
-          4. Testimonials: Client review cards ('bg-slate-50/70 border border-slate-200/80 rounded-3xl p-8') with 5 amber stars and client initials avatar circle.
-          5. FAQ Section: Accordion style ('bg-slate-50/60 p-8 sm:p-12 rounded-3xl border border-slate-200/80 shadow-sm') with white Q&A cards.
-          6. Call To Action: Dark banner ('bg-brand-dark text-white p-8 sm:p-14 rounded-3xl text-center shadow-lg') with white headline, text, and action button ('bg-white text-brand-dark py-3.5 px-8 rounded-full').
+          STRUCTURE RULES (KEEP IT SHORT & PUNCHY - 3 TO 4 SECTIONS TOTAL):
+          1. Hero Section: Light card ('bg-slate-50/80 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center') with dark headline ('text-slate-900 font-heading font-bold text-3xl sm:text-5xl'), short description ('text-slate-600'), and action button ('bg-brand-primary text-white py-3.5 px-8 rounded-full'). NEVER use white text on white/light backgrounds!
+          2. Features / Value Cards: 3 concise benefit cards ('bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs') with SVG icons and dark text ('text-slate-900' and 'text-slate-500').
+          3. Goal-Specific Action Form (MATCH TO GOAL):
+             - If goal is 'discount': Include a 15% discount claim form ('bg-gradient-to-br from-brand-dark to-slate-900 text-white p-8 rounded-3xl') with Name, WhatsApp/Phone, Business Type, and Gold CTA button.
+             - If goal is 'call': Include a Quick Call Booking form ('bg-white p-8 rounded-3xl border border-slate-200') with Name, Phone, Preferred Time, and Green CTA button.
+             - If goal is 'lead' or other: Include a direct Lead Capture form ('bg-slate-50 border border-slate-200 p-8 rounded-3xl') with Name, Phone, Email, Message, and Green CTA button.
+          4. Standard Website FAQ (FaqAccordion style): 2-column layout:
+             - Left Column (lg:col-span-5): 'Preguntas Frecuentes' title in 'text-3xl sm:text-4xl font-heading font-semibold text-brand-dark' + contact link.
+             - Right Column (lg:col-span-7): 3 numbered questions ('01', '02', '03' in green font-bold) with '+' icon and 'border-b border-slate-200 pb-5'.
           
           STRICT CONTRAST & TYPOGRAPHY RULE:
           - Every heading on light/white backgrounds MUST be 'text-slate-900' or 'text-brand-dark'.
