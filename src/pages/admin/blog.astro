@@ -210,21 +210,32 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const citationsEn = getRelevantCitations(topic, 'en');
 
         const prompt = `
-          You are the lead bilingual business consultant, research director, and SEO strategist for GUIA DE NEGOCIOS (expert Hispanic business consultancy in Knoxville, TN).
+          You are the lead bilingual SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and business consultancy strategist for GUIA DE NEGOCIOS.
           Topic: "${topic}".
           ${customKeywords ? `Target Keywords: "${customKeywords}".` : ''}
           Primary Focus: ${primaryLang === 'es' ? 'Spanish (with full English translation)' : 'English (with full Spanish translation)'}.
           
           Generate a comprehensive, deeply informative, research-backed, long-form (1,500+ words) blog post in both Spanish and English versions.
           
-          GOLDEN STANDARD ARCHITECTURE (Must strictly mirror the design of our top posts):
+          GEOGRAPHIC SCOPE & AUDIENCE INTELLIGENCE (CRITICAL):
+          - Country-Wide & International Audience (Default): GUIA DE NEGOCIOS serves entrepreneurs nationwide across all 50 U.S. states and internationally (Latin America, Spain, and global founders).
+          - Educational Scope: For general business topics (e.g., Business Plans, EINs, LLC vs S-Corp, Marketing, Bookkeeping, SBA Loans, Building Credit), write for a GENERAL NATIONWIDE AUDIENCE. DO NOT force or restrict the title or body to Tennessee unless the user explicitly requested Tennessee or the topic is inherently state-specific.
+          - State & Local Expertise: If state-level nuances apply (e.g. filing fees, annual reports), explain how they operate generally across major states (such as Florida, Texas, Delaware, Wyoming, Tennessee, California). Only focus strictly on Tennessee/Knoxville if the prompt specifically asks for it.
+          - Headquarter Branding: In the closing section, highlight that GUIA DE NEGOCIOS is headquartered in Knoxville, Tennessee, offering bilingual consulting and remote services to entrepreneurs nationwide.
+          
+          SEO, AEO & GEO OPTIMIZATION ENGINE:
+          - AEO Direct-Answer Definitions: Immediately under each H2 heading, provide a clear, authoritative 1-2 sentence direct definition answering the search intent (optimized for Google AI Overviews, Perplexity, and ChatGPT).
+          - High-Intent Subheadings (H2/H3): Structured for Google search snippets and automatic Table of Contents extraction.
+          - Entity & Semantic Density: Weave verified citations, federal agencies (IRS, SBA, SCORE, Census Bureau, USPTO), and Hispanic economic statistics ($653B revenue contribution, 5M+ Latino businesses).
+          
+          GOLDEN STANDARD ARCHITECTURE:
           1. Hook Introduction:
              - 2-3 short, punchy paragraphs (maximum 2-3 sentences each).
-             - Bold core keywords (**negocio**, **empresa**, **LLC**, **impuestos**, **EIN**, **plan de negocios**).
+             - Bold core keywords (**negocio**, **empresa**, **LLC**, **impuestos**, **EIN**, **plan de negocios**, **estrategia**).
              - Use '---' horizontal divider after the intro.
           
           2. Core Educational Breakdown (H2 and H3 Headings):
-             - Section 1: "## ¿Qué es [Concepto] y Por Qué es Esencial?"
+             - Section 1: "## ¿Qué es [Concepto] y Por Qué es Esencial?" (Include immediate 1-2 sentence direct answer definition).
              - Follow with a structured numbered list with bold lead titles:
                1. **[Punto Clave 1]:** [Explicación clara y concisa en 2 oraciones].
                2. **[Punto Clave 2]:** [Explicación clara y concisa en 2 oraciones].
@@ -236,41 +247,34 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           
           4. Real-World Case Studies (Ejemplos Prácticos):
              - "## Ejemplos Prácticos y Casos de Estudio"
-             - "### Caso 1: [Nombre] ([Perfil del Emprendedor, ej. Mateo en Bogotá o Knoxville])"
+             - "### Caso 1: [Nombre] ([Perfil del Emprendedor, ej. Mateo en Bogotá o Carlos en Miami])"
                [2 oraciones de contexto sobre el problema o meta del negocio].
                * **Solución Aplicada:** [Acción tomada con Guia Negocios o registro legal].
                * **Resultado Clave:** [Beneficio medible, ahorro en impuestos o contrato conseguido].
-             - "### Caso 2: [Nombre] ([Perfil del Emprendedor])"
+             - "### Caso 2: [Nombre] ([Perfil del Emprendedor, ej. Elena en Texas o Knoxville])"
                [2 oraciones de contexto].
                * **Solución Aplicada:** [Acción tomada].
                * **Resultado Clave:** [Beneficio medible].
           
           5. Structured Comparison Table (Markdown Table):
              - "## [Comparativa / Diferencias Clave]"
-             - Markdown table with clean borders comparing entities, licenses, or strategies:
-               | Sigla / Concepto | Nombre Oficial | ¿Para quién aplica? | Uso / Beneficio Principal |
+             - Markdown table with clean borders:
+               | Concepto / Opción | Definición Oficial | ¿Para quién aplica? | Beneficio Principal |
                | :--- | :--- | :--- | :--- |
                | **Opción A** | ... | ... | ... |
                | **Opción B** | ... | ... | ... |
           
           6. Critical Pitfalls & Penalties:
              - "## Errores Críticos que Debe Evitar"
-             - Numbered list with bold leads and real financial/legal penalties:
-               1. **[Error y Multa Real]:** [Explicar multas reales del IRS como $25,000 o pérdida del velo corporativo].
-               2. **[Error de Cumplimiento Estatal]:** [Explicar consecuencias en Tennessee].
+             - Numbered list with bold leads and real financial/legal penalties (e.g. IRS $25,000 penalties for Form 5472, loss of corporate veil, state administrative dissolution).
           
           7. Closing Call to Action:
-             - "## ¿Necesita Ayuda para [Tema] o Formar su Empresa en EE.UU.?"
-             - In **GUIA NEGOCIOS**, somos especialistas en asesorar a emprendedores hispanos...
-             - "**¿Listo para dar el siguiente paso?** [Póngase en contacto con nuestro equipo de consultores bilingües](/es/contact) hoy mismo para una asesoría estratégica personalizada." (Use /en/contact for English version).
+             - "## ¿Necesita Asesoría Estratégica para su Empresa en EE.UU.?"
+             - "En **GUIA NEGOCIOS**, con sede en Knoxville, Tennessee, asesoramos a emprendedores hispanos en todo Estados Unidos y a nivel internacional..."
+             - "**¿Listo para dar el siguiente paso?** [Póngase en contacto con nuestro equipo de consultores bilingües](/es/contact) hoy mismo para una asesoría personalizada." (Use /en/contact for English version).
           
           8. Official Sources & References Section:
-             - "## Fuentes y Referencias Oficiales"
-             - Bulleted list with markdown links to official authorities:
-               * [IRS.gov](https://www.irs.gov) — Publicaciones y formularios fiscales federales.
-               * [Secretaría de Estado de Tennessee](https://sos.tn.gov/business-services) — Registro comercial.
-               * [Tennessee Department of Revenue](https://www.tn.gov/revenue) — Impuestos estatales.
-               * [SBA.gov](https://www.sba.gov) — Guía de pequeños negocios.
+             - Include the verified citations list provided below.
           
           // Infographic Rules
           ${getInfographicSystemPrompt()}

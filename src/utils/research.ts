@@ -114,16 +114,36 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     keywords: ['camara de comercio', 'knoxville chamber', 'networking', 'este de tennessee', 'mercado local']
   },
 
-  // 4. Small Business Administration (SBA) & Federal Support
+  // 4. Small Business Administration (SBA), SCORE & Federal Support
+  {
+    titleEs: 'Guía Oficial de Redacción de Plan de Negocios (SBA)',
+    titleEn: 'U.S. Small Business Administration (SBA) Business Plan Guide',
+    url: 'https://www.sba.gov/business-guide/plan-your-business/write-your-business-plan',
+    organization: 'U.S. Small Business Administration (SBA)',
+    category: 'sba',
+    descriptionEs: 'Plantillas oficiales de plan de negocios tradicional y lean startup para solicitar préstamos y atraer inversionistas.',
+    descriptionEn: 'Official traditional and lean startup business plan templates for bank loan applications and investors.',
+    keywords: ['plan de negocios', 'business plan', 'sba', 'plan', 'estrategia', 'proyecciones', 'ejecutivo', 'resumen']
+  },
+  {
+    titleEs: 'Plantillas y Mentoría de Negocios (SCORE - Aliado de la SBA)',
+    titleEn: 'SCORE Association Small Business Mentorship & Planning Resources',
+    url: 'https://www.score.org/resource/business-plan-template-startup-business',
+    organization: 'SCORE Association',
+    category: 'sba',
+    descriptionEs: 'Red nacional de mentores ejecutivos y modelos financieros de planificación estratégica.',
+    descriptionEn: 'Nationwide network of executive business mentors and financial planning models.',
+    keywords: ['score', 'mentor', 'mentoria', 'plan de negocios', 'financiero', 'presupuesto', 'startup']
+  },
   {
     titleEs: 'Guía de Inicio y Financiación de Pequeñas Empresas (SBA)',
     titleEn: 'U.S. Small Business Administration Guide to Starting a Business',
     url: 'https://www.sba.gov/business-guide/launch-your-business',
     organization: 'U.S. Small Business Administration (SBA)',
     category: 'sba',
-    descriptionEs: 'Recursos federales y programas de microcréditos 7(a) y 504 para emprendedores.',
-    descriptionEn: 'Federal resources, guidance, and 7(a)/504 microloan programs for small business owners.',
-    keywords: ['sba', 'credito', 'prestamo', 'loan', 'financiacion', 'funding', 'plan de negocios', 'business plan']
+    descriptionEs: 'Recursos federales y programas de microcréditos 7(a) y 504 para emprendedores en todo Estados Unidos.',
+    descriptionEn: 'Federal resources, guidance, and 7(a)/504 microloan programs for small business owners nationwide.',
+    keywords: ['sba', 'credito', 'prestamo', 'loan', 'financiacion', 'funding', 'iniciar negocio', 'emprender']
   },
   {
     titleEs: 'Administración de Seguridad y Salud Ocupacional (OSHA)',
@@ -190,8 +210,8 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
 
   // 6. Internal Guia Negocios Service & Landing Page Links
   {
-    titleEs: 'Paquete de Lanzamiento Completo de Negocio en Tennessee',
-    titleEn: 'Complete Business Launch Bundle in Tennessee',
+    titleEs: 'Paquete de Lanzamiento Completo de Negocio',
+    titleEn: 'Complete Business Launch Bundle',
     url: '/es/services/paquete-lanzamiento-completo',
     organization: 'GUIA NEGOCIOS',
     category: 'internal',
@@ -215,29 +235,34 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     url: '/es/services/apoyo-creedava',
     organization: 'GUIA NEGOCIOS',
     category: 'internal',
-    descriptionEs: 'Acompañamiento personalizado para emprendedores de habla hispana en Knoxville, TN.',
-    descriptionEn: 'Personalized business coaching and guidance for bilingual entrepreneurs in Knoxville, TN.',
-    keywords: ['creedava', 'capacitacion', 'comunidad', 'apoyo', 'talleres', 'knoxville']
+    descriptionEs: 'Acompañamiento personalizado para emprendedores de habla hispana en EE.UU.',
+    descriptionEn: 'Personalized business coaching and guidance for bilingual entrepreneurs nationwide.',
+    keywords: ['creedava', 'capacitacion', 'comunidad', 'apoyo', 'talleres', 'coaching']
   },
   {
-    titleEs: 'Consulta Inicial Gratuita con Guia Negocios',
-    titleEn: 'Free Initial Consultation with Guia Negocios',
+    titleEs: 'Consulta Inicial con Guia Negocios',
+    titleEn: 'Initial Consultation with Guia Negocios',
     url: '/es/contact',
     organization: 'GUIA NEGOCIOS',
     category: 'internal',
-    descriptionEs: 'Hable directamente con un asesor bilingüe en Knoxville, TN: (865) 202-7112.',
-    descriptionEn: 'Connect with a bilingual business consultant in Knoxville, TN: (865) 202-7112.',
+    descriptionEs: 'Hable directamente con un consultor empresarial bilingüe: (865) 202-7112.',
+    descriptionEn: 'Connect with a bilingual business consultant: (865) 202-7112.',
     keywords: ['contacto', 'contact', 'consulta', 'telefono', 'cita', 'hablar']
   }
 ];
 
 /**
- * Returns formatted Markdown research citations based on topic keywords and open web research instructions
+ * Returns formatted Markdown research citations based on topic keywords and context-aware scope
  */
 export function getRelevantCitations(topic: string, lang: 'es' | 'en' = 'es'): string {
   const queryWords = topic.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+  const isLocationSpecific = /tennessee|\btn\b|knoxville|knox|nashville|memphis|chattanooga/i.test(topic);
   
   const matched = AUTHORITATIVE_SOURCES.filter(source => {
+    // If not location-specific topic, do not force Tennessee-only portals unless specifically matched
+    if (!isLocationSpecific && (source.category === 'tn_state' || source.category === 'local_knox')) {
+      return false;
+    }
     return queryWords.some(qw => 
       source.keywords.some(k => k.includes(qw) || qw.includes(k)) ||
       source.titleEs.toLowerCase().includes(qw) ||
@@ -248,10 +273,17 @@ export function getRelevantCitations(topic: string, lang: 'es' | 'en' = 'es'): s
   const selected = new Map<string, CitationSource>();
   matched.forEach(s => selected.set(s.url, s));
   
-  // Guarantee state, federal, and internal essentials
-  AUTHORITATIVE_SOURCES.filter(s => s.category === 'tn_state' || s.category === 'irs' || s.category === 'local_knox' || s.category === 'internal')
-    .slice(0, 4)
-    .forEach(s => selected.set(s.url, s));
+  if (isLocationSpecific) {
+    // Guarantee state and local essentials
+    AUTHORITATIVE_SOURCES.filter(s => s.category === 'tn_state' || s.category === 'local_knox' || s.category === 'irs' || s.category === 'internal')
+      .slice(0, 5)
+      .forEach(s => selected.set(s.url, s));
+  } else {
+    // Guarantee federal, academic, and nationwide essentials
+    AUTHORITATIVE_SOURCES.filter(s => s.category === 'sba' || s.category === 'irs' || s.category === 'academic' || s.category === 'internal')
+      .slice(0, 5)
+      .forEach(s => selected.set(s.url, s));
+  }
 
   const list = Array.from(selected.values()).slice(0, 6);
 
@@ -264,8 +296,8 @@ export function getRelevantCitations(topic: string, lang: 'es' | 'en' = 'es'): s
   });
 
   const openGuideline = lang === 'es'
-    ? '> *Nota de investigación:* Este artículo también puede incluir citas directas y enlaces a portales municipales, leyes estatales de Tennessee, reglamentos de condados o estudios económicos adicionales según el tema específico tratado.'
-    : '> *Research Note:* This article may also include direct citations and links to municipal portals, Tennessee state statutes, county clerk regulations, or industry economic studies specific to the discussed topic.';
+    ? '> *Nota editorial:* Este artículo incluye citas directas y enlaces a entidades federales oficiales (SBA, IRS), estudios económicos académicos y recursos de consultoría de Guia Negocios.'
+    : '> *Editorial Note:* This article includes direct citations and links to official federal entities (SBA, IRS), academic economic research, and Guia Negocios consulting resources.';
 
   return `${header}\n\n${lines.join('\n')}\n\n${openGuideline}`;
 }
