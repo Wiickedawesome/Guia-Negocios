@@ -211,14 +211,19 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Target Audience: "${audience}".
           Primary Goal: "${goal}".
           
-          Generate a high-converting, modern landing page with 4 to 6 distinct sections:
-          1. Hero Section (headline, subtitle, action button)
-          2. Features / Value Proposition (2-4 key benefits with icons)
-          3. Call To Action (bold banner with action button)
-          4. Testimonials / Social proof
-          5. FAQ / Question answering
+          Generate a high-converting, modern landing page matching the Guia Negocios website design elements:
+          1. Hero Section: Light grey/mint background ('bg-slate-50/80 border border-slate-200 rounded-3xl p-10 sm:p-14 text-center') with dark headline ('text-slate-900 font-heading font-bold text-3xl sm:text-5xl'), dark paragraph ('text-slate-600'), and action button ('bg-brand-primary text-white py-3.5 px-8 rounded-full'). NEVER use white text on white/light backgrounds!
+          2. Features / Value Proposition: 3-column cards ('bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs') with SVG icons and dark text ('text-slate-900' and 'text-slate-500').
+          3. Process Flow / How We Work: 4-step cards ('bg-slate-50 p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm') with step numbers (01, 02, 03, 04).
+          4. Testimonials: Client review cards ('bg-slate-50/70 border border-slate-200/80 rounded-3xl p-8') with 5 amber stars and client initials avatar circle.
+          5. FAQ Section: Accordion style ('bg-slate-50/60 p-8 sm:p-12 rounded-3xl border border-slate-200/80 shadow-sm') with white Q&A cards.
+          6. Call To Action: Dark banner ('bg-brand-dark text-white p-8 sm:p-14 rounded-3xl text-center shadow-lg') with white headline, text, and action button ('bg-white text-brand-dark py-3.5 px-8 rounded-full').
           
-          Use Tailwind CSS classes with high-contrast text. Add contenteditable="true" to all editable headings and paragraphs.
+          STRICT CONTRAST & TYPOGRAPHY RULE:
+          - Every heading on light/white backgrounds MUST be 'text-slate-900' or 'text-brand-dark'.
+          - Every paragraph on light/white backgrounds MUST be 'text-slate-600' or 'text-slate-500'.
+          - Only use 'text-white' when the container has 'bg-brand-dark' or 'bg-slate-900'.
+          - Add contenteditable="true" to all editable headings, paragraphs, and buttons.
           
           Format your output strictly as a JSON object:
           {
