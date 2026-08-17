@@ -45,29 +45,24 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         </select>
       </div>
     </div>
-    <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2 font-semibold shadow-sm">
+    <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2 font-semibold shadow-sm cursor-pointer">
       <svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
       Generate Landing Page Structure
     </button>
   </div>
 
-  <!-- Filters -->
+  <!-- Filters (Identical 1:1 with Blog Manager) -->
   <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-6 overflow-hidden">
     <div class="flex items-center gap-1 p-2 border-b border-slate-200 bg-slate-50 overflow-x-auto">
       <button class="px-4 py-1.5 text-sm font-medium rounded-md bg-brand-primary text-white">All</button>
       <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Draft</button>
       <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Published</button>
-      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-1.5">
-        <span class="px-1.5 py-0.5 rounded bg-slate-200 text-[11px] font-bold text-slate-700">EN</span>
-        <span>English</span>
-      </button>
-      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-1.5">
-        <span class="px-1.5 py-0.5 rounded bg-slate-200 text-[11px] font-bold text-slate-700">ES</span>
-        <span>Español</span>
-      </button>
+      <div class="w-px h-6 bg-slate-200 mx-1"></div>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">EN</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">ES</button>
     </div>
 
-    <!-- Landing Pages Table -->
+    <!-- Landing Pages Table (Clean consistent design matching Blog Manager) -->
     <div class="overflow-x-auto">
       <table class="w-full text-left text-sm">
         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
@@ -76,15 +71,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             <th class="px-6 py-3 font-medium">URL</th>
             <th class="px-6 py-3 font-medium">Status</th>
             <th class="px-6 py-3 font-medium">Lang</th>
-            <th class="px-6 py-3 font-medium text-right">Views</th>
-            <th class="px-6 py-3 font-medium text-right">Conversions</th>
-            <th class="px-6 py-3 font-medium text-right">Conv. Rate</th>
+            <th class="px-6 py-3 font-medium">Views</th>
+            <th class="px-6 py-3 font-medium">Date</th>
             <th class="px-6 py-3 font-medium text-right">Actions</th>
           </tr>
         </thead>
         <tbody id="lp-table-body" class="divide-y divide-slate-100">
           <tr>
-            <td colspan="8" class="px-6 py-8 text-center text-slate-500">
+            <td colspan="7" class="px-6 py-8 text-center text-slate-500">
               <svg class="animate-spin h-5 w-5 text-brand-primary mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -98,7 +92,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   </div>
 
   <script>
-    import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+    import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
     import { db, aiModel } from '../../lib/firebase';
 
     // Filters tab logic
@@ -136,7 +130,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const snapshot = await getDocs(collection(db, 'landingPages'));
         
         if (snapshot.empty) {
-          tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-slate-500">No landing pages found. Create your first one!</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-slate-500">No landing pages found. Create your first one!</td></tr>`;
           return;
         }
 
@@ -150,24 +144,23 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             : 'bg-amber-100 text-amber-700';
 
           const views = lp.views || 0;
-          const conversions = lp.conversions || 0;
-          const rate = views > 0 ? ((conversions / views) * 100).toFixed(1) + '%' : '0%';
           const lang = (lp.lang || 'es').toUpperCase();
+          const title = lp.title || 'Untitled Page';
+          const date = lp.updatedAt ? new Date(lp.updatedAt).toISOString().split('T')[0] : 'N/A';
 
           html += `
             <tr class="hover:bg-slate-50/50">
-              <td class="px-6 py-4 font-semibold text-brand-dark">${lp.title || 'Untitled Page'}</td>
+              <td class="px-6 py-4 font-medium text-brand-dark">${title}</td>
               <td class="px-6 py-4 text-slate-500 font-mono text-xs">/${lp.lang || 'es'}/lp/${lp.slug || 'page'}</td>
-              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-semibold rounded-full">${lp.status || 'Draft'}</span></td>
-              <td class="px-6 py-4 text-slate-700 font-semibold">${lang}</td>
-              <td class="px-6 py-4 text-right text-slate-600 font-mono">${views}</td>
-              <td class="px-6 py-4 text-right text-slate-600 font-mono">${conversions}</td>
-              <td class="px-6 py-4 text-right"><span class="text-emerald-700 font-semibold font-mono">${rate}</span></td>
+              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${lp.status || 'Draft'}</span></td>
+              <td class="px-6 py-4 text-slate-600">${lang}</td>
+              <td class="px-6 py-4 text-slate-600">${views}</td>
+              <td class="px-6 py-4 text-slate-500">${date}</td>
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-3">
-                  <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-600 hover:text-brand-primary font-semibold transition-colors">Edit</a>
-                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-600 hover:text-brand-primary font-semibold transition-colors">View</a>
-                  <button data-delete-lp-id="${id}" data-delete-lp-title="${lp.title || 'Landing Page'}" class="text-xs text-rose-600 hover:text-rose-800 font-semibold transition-colors cursor-pointer">Delete</button>
+                  <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
+                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
+                  <button data-delete-lp-id="${id}" data-delete-lp-title="${title}" class="text-xs text-rose-500 hover:text-rose-700 font-medium cursor-pointer">Delete</button>
                 </div>
               </td>
             </tr>
@@ -186,7 +179,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             // @ts-ignore
             const ok = (typeof window.showConfirm === 'function')
               // @ts-ignore
-              ? await window.showConfirm('Delete Landing Page', `Are you sure you want to permanently delete "${title}"? This cannot be undone.`)
+              ? await window.showConfirm('Delete Landing Page', `Are you sure you want to permanently delete "${title}"?`)
               : confirm(`Are you sure you want to permanently delete "${title}"?`);
             
             if (ok) {
@@ -205,11 +198,76 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       } catch (error) {
         console.error("Error fetching landing pages:", error);
-        tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-8 text-center text-red-500">Error loading landing pages. Check console.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading landing pages. Check console.</td></tr>`;
       }
     }
 
     loadLandingPages();
+
+    // =========================================================================
+    // RESILIENT AI DRAFT PARSER (NEVER FAILS ON QUOTES / NEWLINES)
+    // =========================================================================
+    function parseAiLandingPageResponse(rawText: string, defaultTopic: string) {
+      let title = '';
+      let slug = '';
+      let metaDesc = '';
+      let lang = 'es';
+      let html = '';
+
+      if (rawText.includes('===TITLE===') && rawText.includes('===HTML===')) {
+        const extractSection = (tag: string, nextTag?: string) => {
+          const start = rawText.indexOf(`===${tag}===`);
+          if (start === -1) return '';
+          const contentStart = start + `===${tag}===`.length;
+          if (!nextTag) {
+            return rawText.slice(contentStart).trim();
+          }
+          const end = rawText.indexOf(`===${nextTag}===`, contentStart);
+          return end !== -1 ? rawText.slice(contentStart, end).trim() : rawText.slice(contentStart).trim();
+        };
+
+        title = extractSection('TITLE', 'SLUG') || defaultTopic;
+        slug = extractSection('SLUG', 'META_DESC') || defaultTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        metaDesc = extractSection('META_DESC', 'LANG') || '';
+        lang = extractSection('LANG', 'HTML') || 'es';
+        html = extractSection('HTML');
+      } else {
+        // Fallback parser if output is formatted differently
+        const clean = rawText.replace(/```json\s*/gi, '').replace(/```html\s*/gi, '').replace(/```\s*$/gi, '').trim();
+        try {
+          const parsed = JSON.parse(clean);
+          title = parsed.title || defaultTopic;
+          slug = parsed.slug || defaultTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          metaDesc = parsed.metaDesc || '';
+          lang = parsed.lang || 'es';
+          html = parsed.html || '';
+        } catch {
+          const titleMatch = rawText.match(/title["']?\s*:\s*["']([^"'\n]+)/i);
+          const slugMatch = rawText.match(/slug["']?\s*:\s*["']([^"'\n]+)/i);
+          const metaMatch = rawText.match(/metaDesc["']?\s*:\s*["']([^"'\n]+)/i);
+          
+          title = titleMatch ? titleMatch[1] : defaultTopic;
+          slug = slugMatch ? slugMatch[1] : defaultTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          metaDesc = metaMatch ? metaMatch[1] : '';
+
+          const htmlStart = rawText.indexOf('"html"');
+          if (htmlStart !== -1) {
+            const afterColon = rawText.indexOf(':', htmlStart);
+            html = rawText.slice(afterColon + 1).replace(/^\s*"/, '').replace(/"\s*\}\s*$/, '').trim();
+          } else {
+            html = clean;
+          }
+        }
+      }
+
+      return {
+        title: title.replace(/^["']|["']$/g, '').trim(),
+        slug: slug.replace(/^["']|["']$/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+        metaDesc: metaDesc.replace(/^["']|["']$/g, '').trim(),
+        lang: lang.toLowerCase().includes('en') ? 'en' : 'es',
+        html: html.trim()
+      };
+    }
 
     // AI Landing Page Generator
     document.getElementById('ai-lp-generate-btn')?.addEventListener('click', async function() {
@@ -239,7 +297,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Primary Goal: "${goal}".
           
           STRUCTURE RULES (KEEP IT SHORT & PUNCHY - 3 TO 4 SECTIONS TOTAL):
-          1. Hero Section: Light card ('bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center shadow-sm') with dark headline ('text-brand-dark font-heading font-bold text-3xl sm:text-5xl'), short description ('text-slate-600'), and dark green action button ('bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full shadow-md').
+          1. Hero Section: Light card ('bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center shadow-sm') with dark headline ('text-brand-dark font-heading font-bold text-3xl sm:text-5xl'), short description ('text-slate-600 text-base sm:text-lg'), and dark green action button ('bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full shadow-md').
           2. Features / Value Cards: 3 concise benefit cards ('bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs') with emerald SVG icons and dark text ('text-brand-dark font-bold' and 'text-slate-600').
           3. Goal-Specific Action Form (MATCH TO GOAL):
              - If goal is 'discount': Include a 15% discount claim form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl text-slate-900 shadow-md') with dark labels ('text-slate-800 font-semibold'), white inputs ('bg-white border border-slate-300 text-slate-900'), and Gold CTA button ('bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold py-4 rounded-full text-base').
@@ -255,30 +313,36 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           - Absolutely NO flag emojis.
           - Add contenteditable="true" to all editable headings, paragraphs, and buttons.
           
-          Format your output strictly as a JSON object:
-          {
-            "title": "string (Compelling page title)",
-            "slug": "string (url-friendly-slug-in-spanish-or-english)",
-            "metaDesc": "string (150-160 character description)",
-            "lang": "es",
-            "html": "string (Raw HTML string containing all sections wrapped in container divs with Tailwind styling)"
-          }
+          OUTPUT FORMAT (Output STRICTLY using these exact section headers so the content parses flawlessly):
+
+          ===TITLE===
+          [Compelling page title in Spanish]
+
+          ===SLUG===
+          [url-friendly-slug-in-spanish]
+
+          ===META_DESC===
+          [150-160 character description in Spanish]
+
+          ===LANG===
+          es
+
+          ===HTML===
+          [Full raw HTML string containing all 3-4 sections styled using our website classes wrapped in container divs]
         `;
 
         const result = await aiModel.generateContent(prompt);
-        const text = result.response.text();
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("Could not parse AI response JSON");
+        const rawText = result.response.text();
 
-        const data = JSON.parse(jsonMatch[0]);
-        const slug = (data.slug || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')).replace(/^-|-$/g, '');
-        const docId = `${data.lang || 'es'}_${slug}`;
+        const data = parseAiLandingPageResponse(rawText, topic);
+        const docId = `${data.lang || 'es'}_${data.slug}`;
 
         await setDoc(doc(db, 'landingPages', docId), {
           title: data.title || topic,
-          slug: slug,
+          slug: data.slug,
           metaDesc: data.metaDesc || '',
           lang: data.lang || 'es',
+          goal: goal,
           content: data.html || '',
           status: 'Draft',
           createdAt: new Date().toISOString(),
@@ -298,7 +362,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         console.error("AI Landing Page Generation Error:", err);
         alert('Failed to generate landing page: ' + (err.message || 'Unknown error'));
         btn.disabled = false;
-        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Generate Landing Page Structure';
+        btn.innerHTML = '<svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Generate Landing Page Structure';
       }
     });
   </script>
