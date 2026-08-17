@@ -20,44 +20,83 @@ export const BRAND_DESIGN_TOKENS = {
 };
 
 /**
- * Open Visual Archetypes (for Inspiration & Creative Freedom)
- */
-export const VISUAL_INSPIRATION_PATTERNS = [
-  "1. Visual Checklist & Compliance Audit Card: Grid of status items with green checkmark SVGs, 'Obligatorio' vs 'Opcional' badges, and penalty alerts.",
-  "2. Step-by-Step Flow / Snake Map: Numbered step badges (1, 2, 3), arrows, connector lines, milestone markers.",
-  "3. Problem vs. Solution Matrix: Red problem box (with warning icon) -> Arrow -> Green solution box (with checkmark).",
-  "4. Data & Metrics Highlight Card: #1A2E35 dark background with large bold stats in #F0C850 (e.g. 178%, $653B) + source badge.",
-  "5. Split Decision Card (Wrong Way vs. Right Way): Red warning side (mixed finances/DIY pitfalls) vs. Green Guia Negocios recommended method.",
-  "6. Timeline & Roadmap: 30/60/90 day business launch timeline with milestone dots and duration tags.",
-  "7. Cost & Fee Breakdown: Itemized card showing State Filing Fee ($300), County License ($15), EIN ($0), and annual report costs.",
-  "8. Decision Tree / Flowchart: Visual conditional branches ('Do you have employees? -> YES: EIN required -> NO: Sole Prop or LLC').",
-  "9. Multi-Entity Comparison Table: Side-by-side comparison of LLC vs S-Corp vs Sole Proprietorship with SVG check/cross indicators.",
-  "10. Hierarchy / Pyramid of Business Priorities: Foundation (LLC/EIN) -> Operations (Bank/Books) -> Growth (Marketing/Scaling).",
-  "11. Key Takeaway & Pro-Tip Callout: Elevated mint card with quote marks, highlighted emphasis, and advisor badge.",
-  "12. Social Media Ready Flyer / Infographic Banner: 1:1 or 4:5 visual summary ready for Instagram/Facebook flyers."
-];
-
-/**
- * Returns complete AI instructions for generating rich, open-ended infographics
+ * Returns complete AI instructions for generating rich, multi-component infographics
  */
 export function getInfographicSystemPrompt(): string {
   return `
-OPEN INFOGRAPHIC & VISUAL DESIGN ENGINE:
-You have complete creative freedom to design ANY responsive HTML, CSS, and SVG visual component, infographic, chart, timeline, checklist, fee table, matrix, or flyer tailored to the content.
+INFOGRAPHIC & DATA VISUALIZATION ENGINE (MANDATORY MULTI-VISUAL RULE):
+Every generated article MUST embed AT LEAST 2 to 3 DISTINCT custom HTML/CSS/SVG infographics, charts, bar graphs, or visual cards to break up continuous text and make the post visually compelling.
 
 CRITICAL HTML FORMATTING RULES (STRICT):
 1. NEVER indent HTML lines with 4 spaces or tabs! Markdown parsers treat 4-space indentation as a code block. Output all HTML tags starting flush to the left margin.
-2. Self-Contained Container: Always wrap HTML components in a responsive Tailwind container:
-<div class="my-8 p-5 md:p-6 bg-[#F2F7F4] border border-[#1B4E2B]/20 rounded-2xl shadow-sm max-w-3xl mx-auto font-sans">
-3. Break Up Text: NEVER produce long walls of continuous text. Every major section must be broken up by a Visual Checklist, Bullet Points with bold leads, Comparison Table, or Callout Card.
-4. Colors to Use:
-- Primary Brand: #1B4E2B (Forest Green)
-- Golden Accent: #F0C850 (Highlights, metrics)
-- Slate Charcoal: #1A2E35 (Headings, dark cards)
-- Mint Card Background: #F2F7F4
-- Warning / Penalty Red: #D92D3C
+2. Self-Contained Containers: Always wrap HTML components in a responsive Tailwind container.
+3. Colors: Primary (#1B4E2B), Accent Gold (#F0C850), Dark Slate (#1A2E35), Mint (#F2F7F4), Danger Red (#D92D3C).
 
-EXAMPLE VISUAL CHECKLIST COMPONENT (Flush left, no 4-space indent):
+VISUAL COMPONENT ARCHETYPES TO EMBED (Choose 2-3 that best fit the topic):
+
+1. RESPONSIVE BAR CHART / GROWTH GRAPH:
+<div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
+<div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+<h4 class="text-base font-bold text-[#1A2E35]">Comparativa de Crecimiento y Éxito Comercial</h4>
+<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">Datos SBA / Census</span>
+</div>
+<div class="space-y-3.5">
+<div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-slate-700"><span>Sin Planificación Formal (Improvisado)</span><span>30% Tasa de Supervivencia</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-slate-400 rounded-full" style="width: 30%;"></div></div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-[#1A2E35]"><span>Con Estructura Legal & Plan Estratégico</span><span>85% Tasa de Supervivencia</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 85%;"></div></div>
+</div>
+</div>
+</div>
+
+2. METRIC STATS HIGHLIGHT CARD:
+<div class="my-8 p-6 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700">
+<div class="flex items-center justify-between mb-5">
+<h4 class="text-base font-bold text-white">Impacto Económico y Métricas Clave</h4>
+<span class="text-xs px-2.5 py-0.5 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-semibold border border-[#F0C850]/30">Estudio Stanford / SBA</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+<div class="bg-white/5 p-4 rounded-xl border border-white/10">
+<div class="text-2xl sm:text-3xl font-extrabold text-[#F0C850] mb-1">178%</div>
+<div class="text-xs text-slate-300">Crecimiento de Nuevos Negocios Hispanos</div>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/10">
+<div class="text-2xl sm:text-3xl font-extrabold text-[#F0C850] mb-1">$653B</div>
+<div class="text-xs text-slate-300">Aporte Anual a la Economía de EE.UU.</div>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/10">
+<div class="text-2xl sm:text-3xl font-extrabold text-[#F0C850] mb-1">5M+</div>
+<div class="text-xs text-slate-300">Empresas Activas en los Estados Unidos</div>
+</div>
+</div>
+</div>
+
+3. STEP-BY-STEP FLOW MAP / TIMELINE:
+<div class="my-8 p-6 bg-[#F2F7F4] border border-[#1B4E2B]/20 rounded-2xl shadow-sm">
+<h4 class="text-base font-bold text-[#1A2E35] mb-4">Hoja de Ruta: Fases de Ejecución</h4>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<div class="bg-white p-4 rounded-xl border border-slate-200">
+<span class="w-6 h-6 rounded-full bg-[#1B4E2B] text-white text-xs font-bold flex items-center justify-center mb-2">1</span>
+<strong class="block text-sm text-[#1A2E35] mb-1">Fase 1: Planificación</strong>
+<p class="text-xs text-slate-600">Estudio de mercado, modelo financiero y propuesta de valor única.</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200">
+<span class="w-6 h-6 rounded-full bg-[#1B4E2B] text-white text-xs font-bold flex items-center justify-center mb-2">2</span>
+<strong class="block text-sm text-[#1A2E35] mb-1">Fase 2: Formalización</strong>
+<p class="text-xs text-slate-600">Registro de LLC, trámite de EIN y apertura de cuenta bancaria comercial.</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200">
+<span class="w-6 h-6 rounded-full bg-[#1B4E2B] text-white text-xs font-bold flex items-center justify-center mb-2">3</span>
+<strong class="block text-sm text-[#1A2E35] mb-1">Fase 3: Operación</strong>
+<p class="text-xs text-slate-600">Lanzamiento de marketing, facturación formal y atracción de clientes.</p>
+</div>
+</div>
+</div>
+
+4. VISUAL CHECKLIST & REQUIREMENTS CARD:
 <div class="my-8 p-6 bg-[#F2F7F4] border border-[#1B4E2B]/20 rounded-2xl shadow-sm">
 <div class="flex items-center gap-3 mb-4">
 <div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center font-bold text-sm">✓</div>
@@ -66,19 +105,42 @@ EXAMPLE VISUAL CHECKLIST COMPONENT (Flush left, no 4-space indent):
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
 <span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
-<div><strong class="text-[#1A2E35] block">Paso 1: Estructura Legal</strong><span class="text-slate-600 text-xs">Registro oficial de Artículos de Organización en TN SOS.</span></div>
+<div><strong class="text-[#1A2E35] block">Paso 1: Estructura Legal</strong><span class="text-slate-600 text-xs">Registro oficial de Artículos de Organización.</span></div>
 </div>
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
 <span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
-<div><strong class="text-[#1A2E35] block">Paso 2: Identificación Fiscal</strong><span class="text-slate-600 text-xs">Tramitación del número EIN ante el IRS sin SSN.</span></div>
+<div><strong class="text-[#1A2E35] block">Paso 2: Identificación Fiscal</strong><span class="text-slate-600 text-xs">Tramitación del número EIN ante el IRS.</span></div>
 </div>
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
 <span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
-<div><strong class="text-[#1A2E35] block">Paso 3: Cuentas Comerciales</strong><span class="text-slate-600 text-xs">Apertura de cuenta bancaria corporativa para blindar activos.</span></div>
+<div><strong class="text-[#1A2E35] block">Paso 3: Cuentas Comerciales</strong><span class="text-slate-600 text-xs">Apertura de cuenta bancaria para blindar activos.</span></div>
 </div>
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
 <span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
-<div><strong class="text-[#1A2E35] block">Paso 4: Licencias Locales</strong><span class="text-slate-600 text-xs">Registro de impuestos comerciales en el Condado de Knox.</span></div>
+<div><strong class="text-[#1A2E35] block">Paso 4: Licencias y Permisos</strong><span class="text-slate-600 text-xs">Cumplimiento comercial y tributario local.</span></div>
+</div>
+</div>
+</div>
+
+5. SPLIT DECISION (LO QUE FUNCIONA VS ERRORES COMUNES):
+<div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm">
+<h4 class="text-base font-bold text-[#1A2E35] mb-4">Decisión Estratégica: Errores Comunes vs Método Recomendado</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-[#fef2f2] p-4 rounded-xl border border-[#fecaca]">
+<div class="flex items-center gap-2 text-[#D92D3C] font-bold text-sm mb-2"><span>✕</span> Errores Frecuentes</div>
+<ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
+<li>Mezclar finanzas personales y comerciales en la misma cuenta.</li>
+<li>Operar sin contratos formales ni cotizaciones por escrito.</li>
+<li>Ignorar declaraciones y reportes informativos obligatorios.</li>
+</ul>
+</div>
+<div class="bg-[#F2F7F4] p-4 rounded-xl border border-[#1B4E2B]/20">
+<div class="flex items-center gap-2 text-[#1B4E2B] font-bold text-sm mb-2"><span>✓</span> Método Recomendado Guia Negocios</div>
+<ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
+<li>Separación bancaria total para proteger su patrimonio personal.</li>
+<li>Automatización de presupuestos y contratos de servicio.</li>
+<li>Asesoría continua en bookkeeping y optimización tributaria.</li>
+</ul>
 </div>
 </div>
 </div>
