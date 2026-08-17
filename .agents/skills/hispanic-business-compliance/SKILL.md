@@ -18,15 +18,15 @@ This skill provides authoritative guidelines on entity formation, IRS tax compli
 4. **Remote U.S. Banking & Payments:** Access to U.S. fintech banking (Mercury, Relay, Wise Business) and global payment processors (Stripe, PayPal, Authorize.net) using a valid passport and Articles of Organization.
 
 ### B. Strict Legal & Tax Limitations for Non-Resident Aliens (CRITICAL)
-1. ⚠️ **Strict S-Corporation Prohibition:**
+1. **[RESTRICCIÓN ESTATUTARIA] Prohibición Estricta de Corporaciones S (S-Corp):**
    - **Internal Revenue Code § 1361(b)(1)(C)** strictly prohibits Non-Resident Aliens from being shareholders in an S-Corporation. An LLC owned by an NRA **CANNOT elect S-Corp tax status**. Attempting to do so immediately invalidates the election.
-2. ⚠️ **No Physical Work on U.S. Soil Without a Visa:**
+2. **[REQUISITO MIGRATORIO] Prohibición de Trabajo Físico en Suelo Estadounidense sin Visa:**
    - An NRA can own, direct, and receive profits from a U.S. business from abroad. However, they **CANNOT perform physical labor or receive W-2 wages inside the United States** without an appropriate work visa (e.g. E-2 Investor Visa, L-1, O-1, or H-1B).
-3. 🚨 **The $25,000 IRS Form 5472 Trap (Mandatory Annual Reporting):**
+3. **[RIESGO FISCAL CRÍTICO] La Trampa del Formulario 5472 del IRS (Reporte Anual Obligatorio de $25,000):**
    - A U.S. Single-Member LLC owned 100% by a foreign non-resident is classified as a *"Disregarded Entity for income tax, but a Corporation for reporting purposes"* under IRS Section 6038A.
    - **Mandatory Filing:** Must file **Form 5472 attached to a pro-forma Form 1120** by **April 15th** of every year, detailing all reportable transactions (capital contributions, distributions, formation fees, loans), even if the company had **$0 in revenue**.
    - **Statutory Penalty:** The IRS imposes a mandatory minimum penalty of **$25,000 USD per year** for failure to file, late filing, or incomplete Form 5472.
-4. ⚠️ **Taxation Rules (ECI vs. FDAP):**
+4. **[NORMATIVA TRIBUTARIA] Tributación Federal (ECI vs. FDAP):**
    - **Effectively Connected Income (ECI):** If the foreign owner has a "U.S. Trade or Business" (ETBUS) with physical dependent agents or offices in the U.S., profits are subject to regular U.S. federal graduated tax rates, requiring an ITIN and personal Form 1040-NR.
    - **Passive / FDAP Income:** Royalties, dividends, or passive income from U.S. sources are subject to a **30% gross withholding tax**, unless reduced by a bilateral tax treaty (e.g., Spain, Mexico, Chile).
 

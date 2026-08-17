@@ -1,9 +1,13 @@
 /**
- * Infographic & Visual Graphic Design System for GUIA DE NEGOCIOS
+ * Executive Infographic & Vector Graphic Design System for GUIA DE NEGOCIOS
  * 
- * OPEN VISUAL & TYPOGRAPHY SYSTEM:
+ * OPEN VISUAL & VECTOR DESIGN SYSTEM:
  * The AI has complete freedom to craft ANY responsive HTML/CSS/SVG visual component,
- * diagram, chart, timeline, checklist, fee table, matrix, or flyer tailored to the content.
+ * chart, diagram, metric grid, timeline, checklist, fee matrix, or callout tailored to the content.
+ * 
+ * ZERO EMOJI POLICY:
+ * Emojis are strictly forbidden in body text, lists, and visual cards.
+ * All graphics must use clean inline SVG vector icons, sleek numeral badges, or modern geometric accents.
  */
 
 export const BRAND_DESIGN_TOKENS = {
@@ -22,25 +26,29 @@ export const BRAND_DESIGN_TOKENS = {
 };
 
 /**
- * Returns complete AI instructions for generating rich, multi-component infographics
+ * Returns complete AI instructions for generating rich, executive-grade SVG infographics
  */
 export function getInfographicSystemPrompt(): string {
   return `
-OPEN GRAPHIC DESIGN & VISUAL TYPOGRAPHY ENGINE (MANDATORY SKILL):
-You are an expert graphic designer and visual communicator. Your goal is to make every blog post look like a high-end digital publication, NOT a dense text wall or textbook.
+EXECUTIVE GRAPHIC DESIGN & VECTOR ENGINE (STRICT PROFESSIONAL STANDARDS):
+You are an elite corporate graphic designer for GUIA DE NEGOCIOS. Every blog post must look like a high-level publication (McKinsey/Harvard Business Review caliber), NOT an informal social feed or dense text wall.
 
-TYPOGRAPHY, SPACING & PACING RULES (STRICT):
+STRICT ZERO-EMOJI POLICY:
+- NEVER use informal unicode emojis in headings, lists, callouts, or visual cards.
+- ALWAYS use crisp inline SVG vector icons, sleek rounded numeral badges, or clean typography badges.
+
+TYPOGRAPHY, SPACING & PACING RULES:
 1. SHORT PARAGRAPHS: Maximum 2 to 3 sentences per paragraph. Never write a continuous text block exceeding 4 lines.
-2. VIBRANT COLOR PALETTE: Use rich, intentional colors to categorize concepts:
+2. VIBRANT COLOR PALETTE:
    - Forest Green (#1B4E2B) & Emerald (#059669) for verified methods, growth, and approval.
    - Golden Amber (#F0C850) for key metrics, ratings, and star highlights.
    - Slate Navy (#1A2E35) for high-contrast dark visual cards and strong authority.
    - Electric Blue (#2563EB) and Violet (#7C3AED) for business strategy, banking, and tech.
    - Crimson Red (#D92D3C) for critical warnings, IRS penalties, and common mistakes.
 3. BREATHING ROOM: Separate sections with generous margins ('my-8'), responsive padding ('p-6 sm:p-8'), and rounded corners ('rounded-2xl').
-4. ZERO INDENTATION RULE: NEVER indent HTML lines with 4 spaces or tabs! Markdown parsers treat 4-space indentation as code blocks (<pre><code>). All HTML tags MUST be flush to column 0.
+4. ZERO INDENTATION RULE: NEVER indent HTML lines with 4 spaces or tabs! All HTML tags MUST start flush to column 0.
 
-MANDATORY VISUAL QUOTA (Embed 2 to 3 distinct visuals per post):
+VISUAL COMPONENT ARCHETYPES (Embed 2 to 3 distinct visuals per post):
 
 1. RESPONSIVE MULTI-COLOR BAR CHART / GROWTH GRAPH:
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
@@ -71,7 +79,7 @@ MANDATORY VISUAL QUOTA (Embed 2 to 3 distinct visuals per post):
 <div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
 <div class="flex items-center justify-between mb-6">
 <h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-[#F0C850] animate-pulse"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
 Impacto Económico y Métricas Clave
 </h4>
 <span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">Estudio Stanford / SBA</span>
@@ -117,39 +125,41 @@ Impacto Económico y Métricas Clave
 </div>
 </div>
 
-4. VISUAL CHECKLIST & AUDIT CARD:
+4. VISUAL CHECKLIST WITH CLEAN SVG CHECKMARKS:
 <div class="my-8 p-6 bg-[#F2F7F4] border border-[#1B4E2B]/20 rounded-2xl shadow-sm font-sans">
 <div class="flex items-center gap-3 mb-4">
-<div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center font-bold text-sm">✓</div>
+<div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center">
+<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+</div>
 <h4 class="text-lg font-bold text-[#1A2E35]">Lista de Verificación y Requisitos Obligatorios</h4>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
-<span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 <div><strong class="text-[#1A2E35] block">Paso 1: Estructura Legal</strong><span class="text-slate-600 text-xs">Registro oficial de Artículos de Organización.</span></div>
 </div>
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
-<span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 <div><strong class="text-[#1A2E35] block">Paso 2: Identificación Fiscal</strong><span class="text-slate-600 text-xs">Tramitación del número EIN ante el IRS.</span></div>
 </div>
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
-<span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 <div><strong class="text-[#1A2E35] block">Paso 3: Cuentas Comerciales</strong><span class="text-slate-600 text-xs">Apertura de cuenta bancaria para blindar activos.</span></div>
 </div>
 <div class="flex items-start gap-2.5 bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
-<span class="text-[#1B4E2B] font-bold text-base leading-none mt-0.5">✓</span>
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 <div><strong class="text-[#1A2E35] block">Paso 4: Licencias y Permisos</strong><span class="text-slate-600 text-xs">Cumplimiento comercial y tributario local.</span></div>
 </div>
 </div>
 </div>
 
-5. DUAL-TONE DECISION MATRIX (DO'S VS DON'TS):
+5. DUAL-TONE DECISION MATRIX WITH CLEAN SVG INDICATORS:
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
 <h4 class="text-base font-bold text-[#1A2E35] mb-4">Decisión Estratégica: Errores Comunes vs Método Recomendado</h4>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="bg-[#fef2f2] p-4.5 rounded-xl border border-[#fecaca]">
 <div class="flex items-center gap-2 text-[#D92D3C] font-bold text-sm mb-2.5">
-<span class="w-5 h-5 rounded-full bg-[#D92D3C] text-white flex items-center justify-center text-xs">✕</span>
+<svg class="w-4 h-4 text-[#D92D3C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
 Errores Frecuentes
 </div>
 <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4 leading-relaxed">
@@ -160,7 +170,7 @@ Errores Frecuentes
 </div>
 <div class="bg-[#F2F7F4] p-4.5 rounded-xl border border-[#1B4E2B]/20">
 <div class="flex items-center gap-2 text-[#1B4E2B] font-bold text-sm mb-2.5">
-<span class="w-5 h-5 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center text-xs">✓</span>
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 Método Recomendado Guia Negocios
 </div>
 <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4 leading-relaxed">
@@ -172,10 +182,12 @@ Método Recomendado Guia Negocios
 </div>
 </div>
 
-6. PRO-ADVISOR STRATEGY CALLOUT BANNER:
+6. PRO-ADVISOR STRATEGY CALLOUT WITH SVG VECTOR ICON:
 <div class="my-8 p-5 sm:p-6 bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-[#1B4E2B] rounded-r-2xl shadow-xs font-sans">
 <div class="flex items-start gap-3.5">
-<div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">💡</div>
+<div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+</div>
 <div>
 <h5 class="text-sm font-bold text-[#1A2E35] mb-1">Consejo Clave de Nuestro Equipo Consultor</h5>
 <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">

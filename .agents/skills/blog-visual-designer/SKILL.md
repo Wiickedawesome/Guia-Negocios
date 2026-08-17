@@ -10,6 +10,7 @@ This skill empowers AI agents to craft state-of-the-art, colorful, and engaging 
 ## 1. Core Visual Philosophy: "Never Read Like a Dense Book"
 - **Pacing & Breathing Room:** No paragraph should ever exceed 2 to 3 sentences.
 - **Rhythm:** Alternate between bold lead-in lists, color-accented quote callouts, metric cards, comparison matrices, and visual charts.
+- **Strict Zero-Emoji Policy:** Never use informal unicode emojis. Always use clean inline SVG vector icons, sleek numeral badges, or modern geometric accents.
 - **Color Palette & Visual Warmth:**
   - **Brand Forest Green:** `#1B4E2B` (Authority, trust, positive action)
   - **Golden Amber:** `#F0C850` (Highlights, star metrics, awards)
@@ -62,7 +63,7 @@ This skill empowers AI agents to craft state-of-the-art, colorful, and engaging 
 <div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
 <div class="flex items-center justify-between mb-6">
 <h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-<span class="w-2.5 h-2.5 rounded-full bg-[#F0C850] animate-pulse"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
 Impacto Económico Nacional y Métricas Clave
 </h4>
 <span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">Stanford SLEI 2025</span>
@@ -111,14 +112,14 @@ Impacto Económico Nacional y Métricas Clave
 </div>
 ```
 
-### Archetype 4: Dual-Tone Decision Matrix (Do's vs Don'ts)
+### Archetype 4: Dual-Tone Decision Matrix (Do's vs Don'ts with Clean SVG Icons)
 ```html
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
 <h4 class="text-base font-bold text-[#1A2E35] mb-4">Decisión Estratégica: Lo que Funciona vs Errores Comunes</h4>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="bg-[#fef2f2] p-4.5 rounded-xl border border-[#fecaca]">
 <div class="flex items-center gap-2 text-[#D92D3C] font-bold text-sm mb-2.5">
-<span class="w-5 h-5 rounded-full bg-[#D92D3C] text-white flex items-center justify-center text-xs">✕</span>
+<svg class="w-4 h-4 text-[#D92D3C] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
 Errores Costosos a Evitar
 </div>
 <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4 leading-relaxed">
@@ -129,7 +130,7 @@ Errores Costosos a Evitar
 </div>
 <div class="bg-[#F2F7F4] p-4.5 rounded-xl border border-[#1B4E2B]/20">
 <div class="flex items-center gap-2 text-[#1B4E2B] font-bold text-sm mb-2.5">
-<span class="w-5 h-5 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center text-xs">✓</span>
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
 Método Recomendado Guia Negocios
 </div>
 <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4 leading-relaxed">
@@ -142,11 +143,13 @@ Método Recomendado Guia Negocios
 </div>
 ```
 
-### Archetype 5: Pro-Advisor Callout / Key Takeaway Card
+### Archetype 5: Pro-Advisor Callout with Inline Vector SVG
 ```html
 <div class="my-8 p-5 sm:p-6 bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-[#1B4E2B] rounded-r-2xl shadow-xs font-sans">
 <div class="flex items-start gap-3.5">
-<div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">💡</div>
+<div class="w-8 h-8 rounded-full bg-[#1B4E2B] text-white flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+</div>
 <div>
 <h5 class="text-sm font-bold text-[#1A2E35] mb-1">Consejo Clave de Nuestro Equipo Consultor</h5>
 <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
