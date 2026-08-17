@@ -16,13 +16,15 @@ export default defineConfig({
     react(),
     sitemap({
       filter: (page) => {
-        // Exclude admin pages
+        // Exclude root redirect URL since it 301s to /es/ (sitemap should only contain 200 OK indexable pages)
+        if (page === 'https://guianegocios.net/' || page === 'https://guianegocios.net') return false;
+        // Exclude admin dashboard
         if (page.includes('/admin')) return false;
-        // Exclude dummy empty fallback pages
-        if (page.includes('/lp/empty')) return false;
-        // Exclude 404 or 500 error pages if any
+        // Exclude dynamic client view shells and fallbacks
+        if (page.includes('/lp/empty') || page.includes('/lp/view') || page.includes('/blog/view')) return false;
+        // Exclude error pages
         if (page.includes('/404') || page.includes('/500')) return false;
-        // Exclude duplicate cross-language alias service pages to keep clean canonical URLs
+        // Exclude cross-language alias service redirects
         if (
           page.includes('/es/services/complete-launch-bundle') ||
           page.includes('/es/services/creedava-support') ||
@@ -36,20 +38,31 @@ export default defineConfig({
         return true;
       },
       serialize(item) {
+        // Normalize URL to have clean trailing slash matching canonical tags
+        if (!item.url.endsWith('/')) {
+          item.url = `${item.url}/`;
+        }
+
         // Assign clean SEO priorities and change frequencies
-        if (item.url === 'https://guianegocios.net/' || item.url === 'https://guianegocios.net/es/' || item.url === 'https://guianegocios.net/en/') {
+        if (item.url === 'https://guianegocios.net/es/' || item.url === 'https://guianegocios.net/en/') {
           item.priority = 1.0;
           item.changefreq = 'weekly';
-        } else if (item.url.includes('/services')) {
+        } else if (item.url.includes('/services/')) {
           item.priority = 0.9;
           item.changefreq = 'weekly';
-        } else if (item.url.endsWith('/blog/') || item.url.endsWith('/blog')) {
+        } else if (item.url === 'https://guianegocios.net/es/services/' || item.url === 'https://guianegocios.net/en/services/') {
+          item.priority = 0.9;
+          item.changefreq = 'weekly';
+        } else if (item.url.endsWith('/blog/')) {
           item.priority = 0.8;
           item.changefreq = 'daily';
         } else if (item.url.includes('/blog/')) {
           item.priority = 0.8;
           item.changefreq = 'monthly';
-        } else if (item.url.includes('/about') || item.url.includes('/contact')) {
+        } else if (item.url.includes('/about/') || item.url.includes('/contact/')) {
+          item.priority = 0.7;
+          item.changefreq = 'monthly';
+        } else if (item.url.includes('/faq/')) {
           item.priority = 0.7;
           item.changefreq = 'monthly';
         } else {

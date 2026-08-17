@@ -344,7 +344,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             const existingList = Array.from(trackedKeywords).join(', ');
 
             const aiPrompt = `
-              You are an expert SEO consultant for GUIA DE NEGOCIOS, a premier bilingual business consultancy in Knoxville, TN assisting entrepreneurs and small business owners with LLC formation, web design, and operational growth.
+              You are a senior bilingual SEO & Search Strategist for GUIA DE NEGOCIOS, a premier bilingual business consultancy in Tennessee serving Hispanic and multicultural entrepreneurs across:
+              1. Local East Tennessee & Knoxville
+              2. Statewide Tennessee (Nashville, Memphis, Chattanooga, Clarksville, Murfreesboro)
+              3. Southeastern United States & National/NRA Foreign Founders (LLC formation, IRS EIN setup, ITIN, bilingual bookkeeping, operations).
               
               Below is REAL Google Search Console data from the last 90 days showing queries that triggered our site in search results.
               
@@ -354,7 +357,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               IMPORTANT: We are ALREADY tracking these keywords — do NOT suggest any of them or close variations:
               [${existingList}]
               
-              Analyze this data and select the top 5 most valuable NEW keywords we should start tracking.
+              Analyze this data and select the top 5 most valuable NEW high-intent keywords across local, statewide TN, and regional search opportunities.
               Format your response as a JSON array:
               [
                 {
@@ -364,7 +367,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                   "position": number,
                   "trend": "↑ High Opportunity",
                   "priority": "High",
-                  "reason": "High intent search query for local business setup"
+                  "reason": "High intent search query for business setup in TN/Southeast"
                 }
               ]
               Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
@@ -476,7 +479,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const rawTrends = (rawDataResponse.data as any).trends;
 
           const prompt = `
-            You are an expert SEO consultant for a bilingual business consultancy assisting entrepreneurs and small businesses in the USA (Knoxville, TN and beyond).
+            You are a senior bilingual SEO & Growth Consultant for GUIA DE NEGOCIOS, assisting Latino and multicultural founders with business formation, bookkeeping, web design, and growth.
+            Our target geographic focus includes:
+            - Local: Knoxville & East Tennessee
+            - Statewide: Tennessee (Nashville, Memphis, Chattanooga, Tri-Cities, statewide compliance)
+            - Regional / National: Southeastern US (Georgia, North Carolina, Alabama, Florida) and Foreign/NRA business owners forming US entities.
+
             I just pulled the latest Google Autocomplete and Google Trends data for the topic: "${topic}".
             
             Here is the raw data from Google:
@@ -485,7 +493,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             IMPORTANT: We are ALREADY tracking these keywords — do NOT suggest any of them or close variations:
             [${existingList}]
             
-            Based on this real data, select the best 5 NEW keywords we are NOT already tracking. Some MUST be in English, and some MUST be in Spanish (translate them appropriately based on the context).
+            Based on this real data, generate the top 5 high-converting NEW keywords we are NOT already tracking (include a balanced mix of English and Spanish terms, covering local, statewide, or regional high-search volume variations).
             Format them exactly into this JSON array schema:
             [
               {

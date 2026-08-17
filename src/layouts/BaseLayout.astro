@@ -26,8 +26,18 @@ const toggleLang = isEnglish ? 'es' : 'en';
 // Use explicit altPath for pages with translated slugs (e.g. blog posts)
 const alternatePath = altPath || currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
 
-// Default path if they go to the root
-const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '/en') : currentPath;
+// Helper to format clean absolute URLs with trailing slash matching canonical indexing
+const toAbsoluteUrl = (path: string) => {
+  if (!path || path === '/') return 'https://guianegocios.net/es/';
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const withTrailingSlash = normalized.endsWith('/') ? normalized : `${normalized}/`;
+  return `https://guianegocios.net${withTrailingSlash}`;
+};
+
+const canonicalUrl = toAbsoluteUrl(currentPath);
+const enUrl = toAbsoluteUrl(isEnglish ? currentPath : alternatePath);
+const esUrl = toAbsoluteUrl(!isEnglish ? currentPath : alternatePath);
+const xDefaultUrl = esUrl; // Default primary language
 
 ---
 
@@ -57,15 +67,15 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
       gtag('config', 'G-4E8GG9X33H');
     </script>
     <!-- Canonical & SEO i18n -->
-    <link rel="canonical" href={`https://guianegocios.net${currentPath.endsWith('/') || currentPath === '' ? currentPath : currentPath + '/'}`} />
-    <link rel="alternate" hreflang="en" href={`https://guianegocios.net${isEnglish ? currentPath : alternatePath}`} />
-    <link rel="alternate" hreflang="es" href={`https://guianegocios.net${!isEnglish ? currentPath : alternatePath}`} />
-    <link rel="alternate" hreflang="x-default" href={`https://guianegocios.net${defaultPath}`} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="es" href={esUrl} />
+    <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="GUIA NEGOCIOS" />
-    <meta property="og:url" content={`https://guianegocios.net${currentPath}`} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={resolvedOgImage} />
@@ -74,7 +84,7 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={`https://guianegocios.net${currentPath}`} />
+    <meta property="twitter:url" content={canonicalUrl} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={resolvedOgImage} />
@@ -86,10 +96,10 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
         {
           "@type": "WebSite",
           "@id": "https://guianegocios.net/#website",
-          "url": "https://guianegocios.net",
+          "url": "https://guianegocios.net/",
           "name": "GUIA NEGOCIOS",
-          "alternateName": ["Guia Negocios Knoxville", "Guia de Negocios LLC", "Guia Negocios"],
-          "inLanguage": ["es", "en"],
+          "alternateName": ["Guia Negocios Knoxville", "Guia de Negocios LLC", "Guia Negocios", "Guia de Negocios"],
+          "inLanguage": ["es-US", "en-US"],
           "publisher": {
             "@id": "https://guianegocios.net/#business"
           }
@@ -103,7 +113,7 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
           "slogan": isEnglish ? "Bilingual Business Consulting in Knoxville, TN" : "Consultoría de Negocios Bilingüe en Knoxville, TN",
           "image": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
           "logo": "https://guianegocios.net/images/GuiaNegociosLOGO.png",
-          "url": "https://guianegocios.net",
+          "url": "https://guianegocios.net/",
           "telephone": "+1-865-202-7112",
           "email": "info@guianegocios.net",
           "priceRange": "$$",
@@ -136,6 +146,14 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
               "name": "Knoxville"
             },
             {
+              "@type": "City",
+              "name": "Nashville"
+            },
+            {
+              "@type": "City",
+              "name": "Chattanooga"
+            },
+            {
               "@type": "AdministrativeArea",
               "name": "Knox County"
             },
@@ -146,6 +164,14 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
             {
               "@type": "State",
               "name": "Tennessee"
+            },
+            {
+              "@type": "AdministrativeArea",
+              "name": "Southeastern United States"
+            },
+            {
+              "@type": "Country",
+              "name": "United States"
             }
           ],
           "openingHoursSpecification": {
@@ -215,42 +241,42 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
               "position": 1,
               "name": isEnglish ? "Services & Business Packages" : "Servicios y Paquetes de Negocios",
               "description": isEnglish ? "LLC formation, business licensing, web design, and bilingual virtual assistant services in Knoxville." : "Registro de LLC, licencias comerciales, diseño web y asistentes virtuales bilingües en Knoxville.",
-              "url": `https://guianegocios.net/${lang}/services`
+              "url": `https://guianegocios.net/${lang}/services/`
             },
             {
               "@type": "SiteNavigationElement",
               "position": 2,
               "name": isEnglish ? "About Us" : "Sobre Nosotros",
               "description": isEnglish ? "Learn about GUIA NEGOCIOS' mission, story, and business consulting process in East Tennessee." : "Conozca la misión, historia y metodología de consultoría empresarial de GUIA NEGOCIOS en el Este de Tennessee.",
-              "url": `https://guianegocios.net/${lang}/about`
+              "url": `https://guianegocios.net/${lang}/about/`
             },
             {
               "@type": "SiteNavigationElement",
               "position": 3,
               "name": isEnglish ? "Contact & Consultation" : "Contacto y Asesoría",
               "description": isEnglish ? "Schedule a consultation or contact our bilingual team in Knoxville, TN." : "Programe una consulta o comuníquese con nuestro equipo bilingüe en Knoxville, TN.",
-              "url": `https://guianegocios.net/${lang}/contact`
+              "url": `https://guianegocios.net/${lang}/contact/`
             },
             {
               "@type": "SiteNavigationElement",
               "position": 4,
               "name": isEnglish ? "Frequently Asked Questions (FAQ)" : "Preguntas Frecuentes (FAQ)",
               "description": isEnglish ? "Common questions about LLC registration, EIN, bookkeeping, and starting a business in Tennessee." : "Preguntas frecuentes sobre apertura de LLC, trámites de EIN, contabilidad y licencias en Tennessee.",
-              "url": `https://guianegocios.net/${lang}/faq`
+              "url": `https://guianegocios.net/${lang}/faq/`
             },
             {
               "@type": "SiteNavigationElement",
               "position": 5,
               "name": isEnglish ? "Blog & Resources" : "Blog y Recursos para Emprendedores",
               "description": isEnglish ? "Practical guides, small business tips, and legal insights for East Tennessee business owners." : "Guías prácticas, consejos para pequeños negocios y normativas comerciales en el Este de Tennessee.",
-              "url": `https://guianegocios.net/${lang}/blog`
+              "url": `https://guianegocios.net/${lang}/blog/`
             },
             {
               "@type": "SiteNavigationElement",
               "position": 6,
               "name": isEnglish ? "Complete Business Launch Bundle" : "Paquete Completo de Lanzamiento",
               "description": isEnglish ? "Turnkey end-to-end business setup from LLC formation to website, branding, and operations." : "Configuración integral de negocio desde LLC hasta sitio web, marca y sistemas operativos.",
-              "url": isEnglish ? "https://guianegocios.net/en/services/complete-launch-bundle" : "https://guianegocios.net/es/services/paquete-lanzamiento-completo"
+              "url": isEnglish ? "https://guianegocios.net/en/services/complete-launch-bundle/" : "https://guianegocios.net/es/services/paquete-lanzamiento-completo/"
             }
           ]
         },
@@ -263,13 +289,13 @@ const defaultPath = currentPath.startsWith('/es') ? currentPath.replace('/es', '
                 "@type": "ListItem",
                 "position": 1,
                 "name": isEnglish ? "Home" : "Inicio",
-                "item": `https://guianegocios.net/${lang}`
+                "item": `https://guianegocios.net/${lang}/`
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": title.split('|')[0].trim(),
-                "item": `https://guianegocios.net${currentPath}`
+                "item": canonicalUrl
               }
             ]
           }
