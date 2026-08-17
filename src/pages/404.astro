@@ -30,7 +30,7 @@ import Footer from '../components/Footer.astro';
   <Footer slot="footer" />
 
   <script>
-    // Client-side automatic route handler for dynamically created blog posts
+    // Client-side automatic route handler for dynamically created blog posts & landing pages
     document.addEventListener('DOMContentLoaded', () => {
       const path = window.location.pathname;
       if (path.startsWith('/es/blog/') && !path.includes('/view')) {
@@ -42,6 +42,16 @@ import Footer from '../components/Footer.astro';
         const slug = path.replace('/en/blog/', '').replace(/\/$/, '');
         if (slug) {
           window.location.replace(`/en/blog/view?slug=${encodeURIComponent(slug)}`);
+        }
+      } else if (path.startsWith('/es/lp/') && !path.includes('/view')) {
+        const slug = path.replace('/es/lp/', '').replace(/\/$/, '');
+        if (slug) {
+          window.location.replace(`/es/lp/view?slug=${encodeURIComponent(slug)}`);
+        }
+      } else if (path.startsWith('/en/lp/') && !path.includes('/view')) {
+        const slug = path.replace('/en/lp/', '').replace(/\/$/, '');
+        if (slug) {
+          window.location.replace(`/en/lp/view?slug=${encodeURIComponent(slug)}`);
         }
       }
     });

@@ -55,6 +55,14 @@
         "destination": "/en/blog/view/index.html"
       },
       {
+        "source": "/es/lp/**",
+        "destination": "/es/lp/view/index.html"
+      },
+      {
+        "source": "/en/lp/**",
+        "destination": "/en/lp/view/index.html"
+      },
+      {
         "source": "/sitemap.xml",
         "destination": "/sitemap-index.xml"
       }

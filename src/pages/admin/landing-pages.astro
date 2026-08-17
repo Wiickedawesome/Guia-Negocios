@@ -148,24 +148,28 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       try {
         const prompt = `
-          You are an expert web designer for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
-          Create a landing page for the following service/offer: "${topic}".
+          You are the lead UX designer and conversion copywriter for GUIA DE NEGOCIOS (a high-authority bilingual business consultancy).
+          Create a complete high-converting landing page for the following service/offer: "${topic}".
           
-          Generate a high-converting, modern landing page with 4 distinct sections:
-          1. Hero Section (headline, subtitle, action button)
-          2. Features / Value Proposition (2-4 key benefits with icons)
-          3. Call To Action (bold banner with action button)
-          4. Testimonial / Social proof
+          Generate a comprehensive, 6-section landing page using the Guia Negocios design system:
+          1. Hero Section: Dark navy (#1A2E35) background with golden amber (#F0C850) accents, high-contrast white bold headline, trust stats bar (5M+ Empresas, 100% en Español), and dual CTAs.
+          2. Value Proposition Grid: 3-column benefit cards with clean inline SVG icons, forest green (#1B4E2B) highlights, and clear outcomes.
+          3. 3-Step Process Flow: Numbered roadmap (1. Diagnóstico → 2. Registro & EIN → 3. Banca & Operación).
+          4. Pricing & Packages Matrix: 2-tier comparison card (Básico vs Completo) with SVG checkmarks.
+          5. FAQ Accordion Section: 3-4 top customer questions answered clearly.
+          6. Lead Form & Final CTA Section: Contact form (Nombre, Teléfono, Correo, Servicio) + Direct phone call CTA (865) 202-7112.
           
-          Use Tailwind CSS classes. Add contenteditable="true" to all editable headings and paragraphs.
-          
-          Format your output strictly as a JSON object:
+          STRICT RULES:
+          - Use Tailwind CSS classes with modern rounded styling (rounded-2xl, shadow-sm, p-8 sm:p-12).
+          - ZERO EMOJI POLICY: NEVER use unicode emojis. Always use inline SVG vector icons.
+          - Add contenteditable="true" to all editable headings, paragraphs, and buttons.
+          - Output strictly a JSON object:
           {
-            "title": "string (Compelling page title)",
-            "slug": "string (url-friendly-slug-in-spanish-or-english)",
+            "title": "string (Compelling page title in Spanish)",
+            "slug": "string (url-friendly-slug-in-spanish)",
             "metaDesc": "string (150-160 character description)",
             "lang": "es",
-            "html": "string (Raw HTML string containing all sections wrapped in container divs with Tailwind styling)"
+            "html": "string (Raw HTML string containing all 6 <section class=\\"builder-block ...\\">...</section> sections)"
           }
         `;
 
