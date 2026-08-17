@@ -3,91 +3,93 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
 
 <AdminLayout title="Landing Pages | Admin">
-  <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+  <div class="mb-8 flex justify-between items-end">
     <div>
       <h1 class="text-2xl font-bold text-slate-900 font-heading">Landing Pages</h1>
-      <p class="text-sm text-slate-500 mt-1">Manage and build high-converting bilingual landing pages.</p>
+      <p class="text-sm text-slate-500 mt-1">Manage and build high-converting landing pages.</p>
     </div>
-    <a href="/admin/landing-pages/builder" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-xl shadow-sm hover:bg-opacity-95 transition-all flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-      New Landing Page
+    <a href="/admin/landing-pages/builder" class="px-4 py-2 bg-brand-primary text-white text-sm font-medium rounded-lg shadow-sm hover:bg-opacity-90 transition-colors">
+      + New Page
     </a>
   </div>
 
   <!-- AI Landing Page Generator -->
-  <div class="bg-gradient-to-r from-[#1A2E35] via-[#1B4E2B]/80 to-[#1A2E35] rounded-2xl p-6 shadow-md text-white mb-8 border border-slate-700 font-sans">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-amber-400/20 flex items-center justify-center text-[#F0C850]">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-        </div>
-        <div>
-          <h3 class="text-base sm:text-lg font-bold">AI Landing Page Generator</h3>
-          <p class="text-xs text-slate-300">Creates magazine-grade, high-converting landing pages with Guia Negocios design components.</p>
-        </div>
-      </div>
-      <span class="px-2.5 py-0.5 bg-[#F0C850]/20 text-[#F0C850] text-xs font-bold rounded-full border border-[#F0C850]/30 uppercase tracking-wider">Gemini Pro</span>
+  <div class="bg-gradient-to-r from-brand-dark to-slate-800 rounded-xl p-6 shadow-sm text-white mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      <h3 class="text-lg font-bold">AI Landing Page Generator</h3>
+      <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini</span>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div>
-        <label class="block text-xs text-slate-200 mb-1.5 font-semibold">Service / Offer / Topic</label>
-        <input id="ai-lp-topic" type="text" placeholder="e.g., 15% OFF en Tu Página Web Profesional" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-xs focus:outline-none focus:border-[#F0C850] focus:bg-white/15 transition-all" />
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Service / Offer</label>
+        <input id="ai-lp-topic" type="text" placeholder="e.g., Summer Tax Prep Special" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
       </div>
       <div>
-        <label class="block text-xs text-slate-200 mb-1.5 font-semibold">Target Audience / Location</label>
-        <input id="ai-lp-audience" type="text" placeholder="e.g., Emprendedores hispanos en Knoxville y todo EE.UU." class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 text-xs focus:outline-none focus:border-[#F0C850] focus:bg-white/15 transition-all" />
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Target Audience</label>
+        <input id="ai-lp-audience" type="text" placeholder="e.g., Small business owners in TN" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
       </div>
       <div>
-        <label class="block text-xs text-slate-200 mb-1.5 font-semibold">Primary Goal</label>
-        <select id="ai-lp-goal" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/20 text-white text-xs focus:outline-none focus:border-[#F0C850] transition-all">
-          <option value="lead">Lead Generation (Form & WhatsApp)</option>
-          <option value="call">Book a Strategic Consultation Call</option>
-          <option value="discount">Special Discount / Limited-Time Offer (e.g. 15% OFF)</option>
-          <option value="sales">Direct Service / Package Purchase</option>
-          <option value="quote">Request a Free Quote / Price Estimate</option>
-          <option value="nra">Non-Resident Alien (NRA) Remote U.S. Business</option>
-          <option value="contractor">Construction / Contractor Licensing & Bonding</option>
-          <option value="bookkeeping">Bookkeeping & Separate Finances Setup</option>
-          <option value="tax">Tax Preparation & IRS Compliance Defense</option>
-          <option value="download">Download Free Starter Guide / Checklist</option>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Primary Goal</label>
+        <select id="ai-lp-goal" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:border-brand-primary">
+          <option value="lead" class="text-slate-900">Lead Generation (Form & WhatsApp)</option>
+          <option value="call" class="text-slate-900">Book a Consultation Call</option>
+          <option value="discount" class="text-slate-900">Special Discount / Limited-Time Offer (15% OFF)</option>
+          <option value="sales" class="text-slate-900">Direct Sales / Packages</option>
+          <option value="quote" class="text-slate-900">Request a Free Quote / Estimate</option>
+          <option value="nra" class="text-slate-900">Non-Resident Alien (NRA) Business Launch</option>
+          <option value="contractor" class="text-slate-900">Contractor / Construction Licensing</option>
+          <option value="bookkeeping" class="text-slate-900">Bookkeeping & Separate Finances</option>
+          <option value="tax" class="text-slate-900">Tax Preparation & IRS Compliance</option>
+          <option value="download" class="text-slate-900">Download Free Guide / Checklist</option>
         </select>
       </div>
     </div>
-
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-white/10">
-      <label class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-slate-200 select-none">
-        <input type="checkbox" id="ai-lp-dual-lang" checked class="w-4 h-4 text-brand-primary rounded accent-[#F0C850]" />
-        <span>Auto-Generate Dual Language (🇪🇸 Español + 🇺🇸 English)</span>
-      </label>
-
-      <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-[#F0C850] hover:bg-amber-400 text-slate-900 text-xs font-extrabold rounded-xl transition-all flex items-center gap-2 shadow-md">
-        <svg class="w-4 h-4 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-        Generate Landing Page
-      </button>
-    </div>
+    <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2 font-semibold shadow-sm">
+      <svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      Generate Landing Page Structure
+    </button>
   </div>
 
-  <!-- Landing Pages Table -->
-  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+  <!-- Filters -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-6 overflow-hidden">
+    <div class="flex items-center gap-1 p-2 border-b border-slate-200 bg-slate-50 overflow-x-auto">
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md bg-brand-primary text-white">All</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Draft</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Published</button>
+      <div class="w-px h-6 bg-slate-200 mx-1"></div>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"><path fill="#BD3D44" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"></path><path fill="#FFF" d="M0 12h36v4H0zm0 8h36v4H0z"></path><path fill="#192F5D" d="M0 5a4 4 0 0 1 4-4h14v18H0V5z"></path></svg>
+        EN
+      </button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <svg class="w-4 h-4" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"><path fill="#C60A1D" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"></path><path fill="#FFC400" d="M0 12h36v12H0z"></path></svg>
+        ES
+      </button>
+    </div>
+
+    <!-- Landing Pages Table -->
     <div class="overflow-x-auto">
       <table class="w-full text-left text-sm">
-        <thead class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs uppercase font-bold">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
           <tr>
-            <th class="px-6 py-3.5 font-bold">Title</th>
-            <th class="px-6 py-3.5 font-bold">URL</th>
-            <th class="px-6 py-3.5 font-bold">Lang</th>
-            <th class="px-6 py-3.5 font-bold">Status</th>
-            <th class="px-6 py-3.5 font-bold text-right">Views</th>
-            <th class="px-6 py-3.5 font-bold text-right">Conversions</th>
-            <th class="px-6 py-3.5 font-bold text-right">Conv. Rate</th>
-            <th class="px-6 py-3.5 font-bold text-right">Actions</th>
+            <th class="px-6 py-3 font-medium">Title</th>
+            <th class="px-6 py-3 font-medium">URL</th>
+            <th class="px-6 py-3 font-medium">Status</th>
+            <th class="px-6 py-3 font-medium">Lang</th>
+            <th class="px-6 py-3 font-medium text-right">Views</th>
+            <th class="px-6 py-3 font-medium text-right">Conversions</th>
+            <th class="px-6 py-3 font-medium text-right">Conv. Rate</th>
+            <th class="px-6 py-3 font-medium text-right">Actions</th>
           </tr>
         </thead>
-        <tbody id="lp-table-body" class="divide-y divide-slate-100 text-xs">
+        <tbody id="lp-table-body" class="divide-y divide-slate-100">
           <tr>
             <td colspan="8" class="px-6 py-8 text-center text-slate-500">
-              <div class="w-6 h-6 border-2 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mx-auto mb-2"></div>
+              <svg class="animate-spin h-5 w-5 text-brand-primary mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
               Loading landing pages...
             </td>
           </tr>
@@ -99,6 +101,32 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
     import { db, aiModel } from '../../lib/firebase';
+
+    // Filters tab logic
+    document.querySelectorAll('.flex.items-center.gap-1 button').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.flex.items-center.gap-1 button').forEach(t => {
+          t.classList.remove('bg-brand-primary', 'text-white');
+          t.classList.add('text-slate-600');
+        });
+        tab.classList.add('bg-brand-primary', 'text-white');
+        tab.classList.remove('text-slate-600');
+        
+        const filter = tab.textContent?.trim();
+        document.querySelectorAll('#lp-table-body tr').forEach(row => {
+          const rowEl = row as HTMLElement;
+          if (filter === 'All') {
+            rowEl.style.display = '';
+          } else if (filter === 'Draft' || filter === 'Published') {
+            const status = rowEl.querySelector('td:nth-child(3)')?.textContent?.trim();
+            rowEl.style.display = (status === filter || (filter === 'Published' && status === 'Active')) ? '' : 'none';
+          } else if (filter === 'EN' || filter === 'ES') {
+            const lang = rowEl.querySelector('td:nth-child(4)')?.textContent?.trim();
+            rowEl.style.display = (lang === filter) ? '' : 'none';
+          }
+        });
+      });
+    });
 
     // Load Landing Pages from Firestore
     async function loadLandingPages() {
@@ -118,32 +146,28 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const lp = docSnap.data();
           const id = docSnap.id;
           
-          const statusClass = lp.status === 'Active' 
+          const statusClass = (lp.status === 'Active' || lp.status === 'Published')
             ? 'bg-emerald-100 text-emerald-700' 
             : 'bg-amber-100 text-amber-700';
 
           const views = lp.views || 0;
           const conversions = lp.conversions || 0;
           const rate = views > 0 ? ((conversions / views) * 100).toFixed(1) + '%' : '0%';
-          const langFlag = lp.lang === 'en' ? '🇺🇸 EN' : '🇪🇸 ES';
+          const lang = (lp.lang || 'es').toUpperCase();
 
           html += `
-            <tr class="hover:bg-slate-50/70 transition-colors">
-              <td class="px-6 py-4 font-bold text-[#1A2E35]">
-                ${lp.title || 'Untitled Page'}
-              </td>
+            <tr class="hover:bg-slate-50/50">
+              <td class="px-6 py-4 font-medium text-brand-dark">${lp.title || 'Untitled Page'}</td>
               <td class="px-6 py-4 text-slate-500">/${lp.lang || 'es'}/lp/${lp.slug || 'page'}</td>
-              <td class="px-6 py-4">
-                <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md font-bold text-[10px]">${langFlag}</span>
-              </td>
-              <td class="px-6 py-4"><span class="px-2.5 py-0.5 ${statusClass} text-[11px] font-bold rounded-full">${lp.status || 'Draft'}</span></td>
-              <td class="px-6 py-4 text-right text-slate-600 font-medium">${views}</td>
-              <td class="px-6 py-4 text-right text-slate-600 font-medium">${conversions}</td>
-              <td class="px-6 py-4 text-right"><span class="text-emerald-600 font-bold">${rate}</span></td>
+              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${lp.status || 'Draft'}</span></td>
+              <td class="px-6 py-4 text-slate-600 font-medium">${lang}</td>
+              <td class="px-6 py-4 text-right text-slate-600">${views}</td>
+              <td class="px-6 py-4 text-right text-slate-600">${conversions}</td>
+              <td class="px-6 py-4 text-right"><span class="text-emerald-600 font-medium">${rate}</span></td>
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-2">
-                  <a href="/admin/landing-pages/builder?id=${id}" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors">Edit</a>
-                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="px-2.5 py-1 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white rounded-lg text-xs font-bold transition-colors">View Live</a>
+                  <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
+                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
                 </div>
               </td>
             </tr>
@@ -165,70 +189,46 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       const topicInput = document.getElementById('ai-lp-topic') as HTMLInputElement;
       const audienceInput = document.getElementById('ai-lp-audience') as HTMLInputElement;
       const goalSelect = document.getElementById('ai-lp-goal') as HTMLSelectElement;
-      const isDualLang = (document.getElementById('ai-lp-dual-lang') as HTMLInputElement)?.checked;
 
       const topic = topicInput?.value?.trim();
-      const audience = audienceInput?.value?.trim() || 'Emprendedores hispanos en EE.UU.';
+      const audience = audienceInput?.value?.trim() || 'Small business owners in TN';
       const goal = goalSelect?.value || 'lead';
 
       if (!topic) {
         // @ts-ignore
-        window.showToast('Please enter a Service / Offer topic first', 'warning');
+        window.showToast('Please enter a Service / Offer first', 'warning');
         return;
       }
 
       const btn = document.getElementById('ai-lp-generate-btn') as HTMLButtonElement;
       btn.disabled = true;
-      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is designing...';
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is designing landing page...';
 
       try {
         const prompt = `
-You are the lead UX designer and conversion copywriter for GUIA DE NEGOCIOS (a high-authority bilingual business consultancy).
-Create high-converting landing page(s) for the following offer:
-- Topic: "${topic}"
-- Target Audience: "${audience}"
-- Primary Goal: "${goal}"
-- Dual Language Required: ${isDualLang ? 'YES (Generate both Spanish AND English)' : 'NO (Spanish only)'}
-
-DESIGN & ARCHITECTURE GUIDELINES (GUIA DE NEGOCIOS DESIGN SYSTEM):
-1. Hero Section: Dark navy (#1A2E35) background with golden amber (#F0C850) accents, gold SVG underline under key phrase, high-contrast white bold headline, trust stats bar, and dual CTAs (Primary Gold + Secondary Glass with phone (865) 202-7112).
-2. 4-Stat Metric Bar: 4 metric cards with authoritative research source badges (MSU Research, Brookings 2025, Stanford SLEI, Census Bureau).
-3. Problem vs. Solution Row Matrix (or Split Mixed vs. Separated Card): Red problem boxes with danger SVG icon -> Green arrow -> Green solution boxes with checkmark SVG icon.
-4. Process Flow or 6-Step Snake Map Roadmap: Numbered milestone cards (1. Diagnóstico -> 2. Estructura -> 3. Registro & EIN -> 4. Banca & Operación).
-5. 2-Tier Pricing / Service Packages Matrix: Básico vs Completo with "Más Popular" gold badge and checklists.
-6. Real Testimonials & Social Proof: 5-star cards with Hispanic client reviews and avatar emblems.
-7. FAQ Accordion: 3-4 top customer objections answered cleanly.
-8. Lead Capture Form & Final Contact Band: Form fields (Nombre, Teléfono/WhatsApp, Correo, Tipo de Negocio) + Contact row band (Phone, Email, Web, Location).
-
-STRICT RULES:
-- Use Tailwind CSS classes with modern rounded styling (rounded-2xl, shadow-sm, p-8 sm:p-12).
-- ZERO EMOJI POLICY: NEVER output unicode emojis. Always use clean inline SVG vector icons.
-- Add contenteditable="true" to all editable headings, paragraphs, and buttons.
-- Output strictly a JSON object:
-${isDualLang ? `
-{
-  "es": {
-    "title": "string (Compelling Spanish title)",
-    "slug": "string (url-slug-in-spanish)",
-    "metaDesc": "string (150-160 char Spanish description)",
-    "html": "string (Complete HTML containing all <section class=\\"builder-block ...\\">...</section> sections in Spanish)"
-  },
-  "en": {
-    "title": "string (Compelling English title)",
-    "slug": "string (url-slug-in-english)",
-    "metaDesc": "string (150-160 char English description)",
-    "html": "string (Complete HTML containing all <section class=\\"builder-block ...\\">...</section> sections in English)"
-  }
-}
-` : `
-{
-  "title": "string (Compelling Spanish title)",
-  "slug": "string (url-slug-in-spanish)",
-  "metaDesc": "string (150-160 char Spanish description)",
-  "html": "string (Complete HTML containing all <section class=\\"builder-block ...\\">...</section> sections in Spanish)"
-}
-`}
-`;
+          You are an expert web designer and copywriter for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
+          Create a high-converting landing page for the following service/offer: "${topic}".
+          Target Audience: "${audience}".
+          Primary Goal: "${goal}".
+          
+          Generate a high-converting, modern landing page with 4 to 6 distinct sections:
+          1. Hero Section (headline, subtitle, action button)
+          2. Features / Value Proposition (2-4 key benefits with icons)
+          3. Call To Action (bold banner with action button)
+          4. Testimonials / Social proof
+          5. FAQ / Question answering
+          
+          Use Tailwind CSS classes with high-contrast text. Add contenteditable="true" to all editable headings and paragraphs.
+          
+          Format your output strictly as a JSON object:
+          {
+            "title": "string (Compelling page title)",
+            "slug": "string (url-friendly-slug-in-spanish-or-english)",
+            "metaDesc": "string (150-160 character description)",
+            "lang": "es",
+            "html": "string (Raw HTML string containing all sections wrapped in container divs with Tailwind styling)"
+          }
+        `;
 
         const result = await aiModel.generateContent(prompt);
         const text = result.response.text();
@@ -236,73 +236,34 @@ ${isDualLang ? `
         if (!jsonMatch) throw new Error("Could not parse AI response JSON");
 
         const data = JSON.parse(jsonMatch[0]);
-        let primaryDocId = '';
+        const slug = (data.slug || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')).replace(/^-|-$/g, '');
+        const docId = `${data.lang || 'es'}_${slug}`;
 
-        if (isDualLang && data.es && data.en) {
-          // Save Spanish
-          const slugEs = (data.es.slug || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')).replace(/^-|-$/g, '');
-          const docIdEs = `es_${slugEs}`;
-          await setDoc(doc(db, 'landingPages', docIdEs), {
-            title: data.es.title || topic,
-            slug: slugEs,
-            metaDesc: data.es.metaDesc || '',
-            lang: 'es',
-            content: data.es.html || '',
-            status: 'Draft',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            views: 0,
-            conversions: 0
-          });
-
-          // Save English
-          const slugEn = (data.en.slug || slugEs).replace(/^-|-$/g, '');
-          const docIdEn = `en_${slugEn}`;
-          await setDoc(doc(db, 'landingPages', docIdEn), {
-            title: data.en.title || topic,
-            slug: slugEn,
-            metaDesc: data.en.metaDesc || '',
-            lang: 'en',
-            content: data.en.html || '',
-            status: 'Draft',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            views: 0,
-            conversions: 0
-          });
-
-          primaryDocId = docIdEs;
-        } else {
-          const singleData = data.es || data;
-          const slug = (singleData.slug || topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')).replace(/^-|-$/g, '');
-          primaryDocId = `es_${slug}`;
-
-          await setDoc(doc(db, 'landingPages', primaryDocId), {
-            title: singleData.title || topic,
-            slug: slug,
-            metaDesc: singleData.metaDesc || '',
-            lang: 'es',
-            content: singleData.html || '',
-            status: 'Draft',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            views: 0,
-            conversions: 0
-          });
-        }
+        await setDoc(doc(db, 'landingPages', docId), {
+          title: data.title || topic,
+          slug: slug,
+          metaDesc: data.metaDesc || '',
+          lang: data.lang || 'es',
+          content: data.html || '',
+          status: 'Draft',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          views: 0,
+          conversions: 0
+        });
 
         // @ts-ignore
-        window.showToast(isDualLang ? 'Dual Language Landing Pages generated & saved!' : 'Landing Page generated successfully!', 'success');
+        window.showToast('Landing Page generated and saved to Firestore!', 'success');
 
         setTimeout(() => {
-          window.location.href = `/admin/landing-pages/builder?id=${primaryDocId}`;
+          window.location.href = `/admin/landing-pages/builder?id=${docId}`;
         }, 1200);
 
       } catch (err: any) {
         console.error("AI Landing Page Generation Error:", err);
         alert('Failed to generate landing page: ' + (err.message || 'Unknown error'));
         btn.disabled = false;
-        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Generate Landing Page';
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Generate Landing Page Structure';
       }
     });
   </script>
