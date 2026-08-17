@@ -263,33 +263,46 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       try {
         const prompt = `
-          You are an expert web designer and copywriter for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
-          Create a concise, high-converting landing page for the following service/offer: "${topic}".
+          You are the elite direct-response conversion copywriter and web designer for GUIA DE NEGOCIOS (guianegocios.net, bilingual business consultancy in Knoxville, TN).
+          Create a magnetic, high-converting landing page for: "${topic}".
           Target Audience: "${audience}".
           Primary Goal: "${goal}".
           
-          STRUCTURE RULES (4 SECTIONS TOTAL):
+          MANDATORY COPYWRITING & SECTION BLUEPRINT (RICH COLORS, EMOTIONAL HOOKS, DYNAMIC VISUALS):
           
-          1. Hero Section (CUSTOMIZABLE TO OFFER):
-             - Light card: 'bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center shadow-sm font-sans'
-             - Category Badge: 'inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold tracking-wide'
-             - Dynamic Headline: 'text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-brand-dark leading-tight tracking-tight' (highlight key phrase with 'text-brand-primary')
-             - Dynamic Subheading: 'text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed'
-             - Action Button: 'bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full transition-all text-base shadow-md'
+          1. Hero Section (DARK NAVY & EMERALD AMBIENT GLOW - NO BORING GENERIC HEADLINES):
+             - Badge: Highly relevant badge e.g., '📋 ASESORÍA BILINGÜE EN KNOXVILLE', '🔥 OFERTA EXCLUSIVA POR TIEMPO LIMITADO', '🚀 APERTURA 100% REMOTA', '⚡ RESPUESTA EN MENOS DE 24 HORAS'.
+             - Headline: MUST be punchy, emotional, and directly tailored to "${topic}" and "${goal}". Address their deepest fear or immediate goal! Highlight the key power phrase with:
+               <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">[Gold Accent Phrase]</span>
+               (NEVER write generic copy like "Impulsa tu negocio y registra tu LLC". Write specific copy like "Deje de Perder Clientes y Facture Legalmente con su LLC", "Obtenga su Licencia de Contratista en TN Sin Trabas", or "¿Dudas con sus Impuestos? Hable Hoy con un Especialista").
+             - Subtitle: 2 compelling sentences outlining the concrete benefit and relief.
+             - Buttons: Primary Action Button matching the goal (e.g. 'Agendar Mi Llamada de 15 Minutos', 'Reclamar Mi 15% de Descuento', 'Consultar Requisitos de Licencia') + Direct Call link '(865) 202-7112'.
+             - Trust metrics bar: 3 metric items ('100% Atención Bilingüe | 24 Horas Respuesta | Knoxville, TN').
+             - Wrapper: <div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-2xl relative overflow-hidden font-sans">...</div>
 
-          2. Benefits / Value Proposition (3 CARDS CUSTOMIZED TO OFFER):
-             - Container: 'bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans' with section title & subtitle
-             - Grid: 3 cards in 'grid grid-cols-1 md:grid-cols-3 gap-6'
-             - Each Card: 'bg-slate-50/70 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs flex flex-col space-y-4' with emerald icon badge ('w-12 h-12 rounded-2xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-brand-primary'), bold title ('text-lg font-heading text-brand-dark font-bold mb-2'), and description ('text-slate-600 text-sm leading-relaxed').
+          2. Tailored Visual / Marketing Component (SELECT & CRAFT THE BEST FIT - DO NOT DEFAULT TO 3 CARDS):
+             - IF GOAL IS 'contractor', 'nra', or step-based service:
+               Generate a 4-Step Process Roadmap (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with 4 sequential numbered milestone cards (01, 02, 03, 04) tailored to the exact procedure.
+             - IF GOAL IS 'bookkeeping', 'tax', or overcoming financial fear:
+               Generate a Problem vs. Solution Matrix (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with 3 pain point rows (red ✕ badge with real business nightmare) paired with Guía de Negocios solutions (emerald ✓ badge).
+             - IF GOAL IS 'call', 'sales', or 'quote':
+               Generate a Comparison Matrix Table (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) comparing Guía de Negocios (highlighted in emerald pill) vs Abogados Tradicionales vs Plataformas en Inglés.
+             - IF GOAL IS 'discount' or general promotion:
+               Generate 3-Card Value Bento (<div class="builder-block bg-slate-50/80 p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with gradient icon containers (Emerald, Gold, Dark Navy) and concrete deliverables.
 
-          3. Purpose-Tailored Action Form (CONSISTENT HIGH-CONTRAST STRUCTURE):
-             - If goal is 'discount': Include 15% discount claim form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-md font-sans') with Name, WhatsApp/Phone, Business Type, and Gold CTA button ('bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold rounded-full py-4 text-base shadow-md').
-             - If goal is 'download': Include Free Guide download form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans') with Name, Email, WhatsApp/Phone, and Dark Green CTA button ('bg-brand-primary hover:bg-emerald-900 text-white font-semibold rounded-full py-4 text-base shadow-md').
-             - If goal is 'call': Include Consultation Call booking form ('bg-white border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans') with Name, Phone, Preferred Time, and Dark Green CTA button.
-             - If goal is 'lead' or other: Include Lead Capture form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans') with Name, Phone, Email, Message, and Dark Green CTA button.
+          3. Purpose-Matched Action Form (CLEAN 2-COLUMN INPUT GRID WITH TRUST BADGES):
+             - Container: <div id="formulario" class="builder-block bg-gradient-to-b from-slate-50 to-white border-2 border-emerald-100 rounded-3xl p-8 sm:p-14 my-6 shadow-xl shadow-slate-200/50 font-sans">...</div>
+             - Fields MUST match the goal:
+               * If goal is 'call': Include Name, Phone, Preferred Call Time (Mañana / Tarde), and emerald button 'Confirmar Cita Telefónica'.
+               * If goal is 'discount': Include Name, Phone/WhatsApp, Business Type, and gold button 'Reclamar Mi Cupón del 15% OFF'.
+               * If goal is 'contractor': Include Name, Phone, Email, Trade/License needed, and emerald button 'Consultar Requisitos'.
+               * If goal is 'nra': Include Name, WhatsApp (with country code), Country of Residence, and emerald button 'Solicitar Asesoría Internacional'.
+               * If goal is 'bookkeeping' or 'tax': Include Name, Phone, Email, Current Accounting Status, and emerald button 'Solicitar Diagnóstico Fiscal'.
+               * If goal is 'lead' or 'download': Include Name, Phone, Email, Message, and emerald button.
+             - Below inputs: 3 trust items with SVG icons (🔒 100% Confidencial • Sin Compromiso • Respuesta en 24h).
 
           4. STANDARD WEBSITE FAQ (MANDATORY EXACT 2-COLUMN STRUCTURE MATCHING FaqAccordion.astro):
-             You MUST use this EXACT HTML structure with 3 relevant questions/answers for "${topic}":
+             Generate 3 realistic, specific questions and answers for "${topic}":
              \`\`\`
              <div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
@@ -302,31 +315,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                      <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
                        <div class="flex items-center gap-4 sm:gap-6">
                          <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">01</span>
-                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Topic Specific Question 1]</h3>
+                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Specific Question 1]</h3>
                        </div>
                        <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
                      </summary>
-                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Topic Specific Answer 1]</p></div>
+                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Specific Answer 1]</p></div>
                    </details>
                    <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
                      <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
                        <div class="flex items-center gap-4 sm:gap-6">
                          <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">02</span>
-                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Topic Specific Question 2]</h3>
+                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Specific Question 2]</h3>
                        </div>
                        <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
                      </summary>
-                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Topic Specific Answer 2]</p></div>
+                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Specific Answer 2]</p></div>
                    </details>
                    <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
                      <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
                        <div class="flex items-center gap-4 sm:gap-6">
                          <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">03</span>
-                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Topic Specific Question 3]</h3>
+                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Specific Question 3]</h3>
                        </div>
                        <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
                      </summary>
-                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Topic Specific Answer 3]</p></div>
+                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Specific Answer 3]</p></div>
                    </details>
                    <div class="pt-3"><a href="/es/faq" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-sm gap-2" contenteditable="true">Ver todas las preguntas y respuestas <span>→</span></a></div>
                  </div>
@@ -335,9 +348,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
              \`\`\`
           
           STRICT CONTRAST & TYPOGRAPHY RULE:
-          - Every heading on light/white backgrounds MUST be 'text-brand-dark' or 'text-slate-900'. NEVER use 'text-white' on light backgrounds.
-          - Every paragraph on light/white backgrounds MUST be 'text-slate-600'.
-          - Absolutely NO flag emojis.
+          - Headings on light/white backgrounds MUST be 'text-brand-dark' or 'text-slate-900'. NEVER use 'text-white' on light backgrounds.
+          - Paragraphs on light/white backgrounds MUST be 'text-slate-600'.
+          - NO flag emojis.
           - Add contenteditable="true" to all editable headings, paragraphs, and buttons.
           
           OUTPUT FORMAT (Output STRICTLY using these exact section headers so the content parses flawlessly):
@@ -355,7 +368,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           es
 
           ===HTML===
-          [Full raw HTML string containing all 3-4 sections styled using our website classes wrapped in container divs]
+          [Full raw HTML string containing all 4 sections styled using our website classes wrapped in container divs]
         `;
 
         const result = await aiModel.generateContent(prompt);
