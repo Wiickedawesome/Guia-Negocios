@@ -21,16 +21,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini Pro</span>
     </div>
 
-    <!-- Main Descriptive Prompt Input -->
-    <div class="mb-4">
-      <label class="block text-xs text-slate-300 mb-1.5 font-medium">Describe what you want (Topic, SEO Keywords, Offer, City/Location, Campaign Goal, Pain Points)</label>
-      <textarea id="ai-lp-topic" rows="2" placeholder="e.g., Landing page for Hispanic roofing and painting contractors in Knoxville needing TN state licensing, general liability insurance, and LLC protection..." class="w-full px-3.5 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary resize-none"></textarea>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Topic / Offer</label>
+        <input type="text" id="ai-lp-topic" placeholder="e.g., Contractor License & Insurance in Knoxville, TN" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+      </div>
       <div>
         <label class="block text-xs text-slate-300 mb-1.5 font-medium">Target Audience / Location</label>
-        <input id="ai-lp-audience" type="text" placeholder="e.g., Hispanic business owners in Knoxville & East TN" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+        <input type="text" id="ai-lp-audience" placeholder="e.g., Hispanic business owners in Knoxville & East TN" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
       </div>
       <div>
         <label class="block text-xs text-slate-300 mb-1.5 font-medium">Primary Goal & Form Archetype</label>
@@ -49,7 +47,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       </div>
     </div>
 
-    <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2 font-semibold shadow-sm cursor-pointer">
+    <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-emerald-900 transition-colors flex items-center gap-2 shadow-sm cursor-pointer">
       <svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
       Generate Landing Page Structure
     </button>
@@ -245,7 +243,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       };
     }
 
-    const topicInput = document.getElementById('ai-lp-topic') as HTMLTextAreaElement;
+    const topicInput = document.getElementById('ai-lp-topic') as HTMLInputElement;
     const audienceInput = document.getElementById('ai-lp-audience') as HTMLInputElement;
     const goalSelect = document.getElementById('ai-lp-goal') as HTMLSelectElement;
 
@@ -257,7 +255,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       if (!topic) {
         // @ts-ignore
-        window.showToast('Please describe what you want first', 'warning');
+        window.showToast('Please provide a topic or offer first', 'warning');
         return;
       }
 
