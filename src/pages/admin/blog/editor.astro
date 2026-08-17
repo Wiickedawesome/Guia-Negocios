@@ -904,9 +904,9 @@ User Request: "${userPrompt}"
         ? ((document.getElementById('slug-en') as HTMLInputElement)?.value || '') 
         : ((document.getElementById('slug-es') as HTMLInputElement)?.value || '');
       
-      const targetUrl = postId 
-        ? `/${lang}/blog/view?id=${postId}&slug=${slugVal}`
-        : `/${lang}/blog/view?slug=${slugVal}`;
+      const targetUrl = slugVal 
+        ? `/${lang}/blog/${slugVal}`
+        : (postId ? `/${lang}/blog/view?id=${postId}` : `/${lang}/blog`);
 
       const topTab = document.getElementById('btn-view-new-tab') as HTMLAnchorElement;
       if (topTab) topTab.href = targetUrl;
@@ -923,9 +923,9 @@ User Request: "${userPrompt}"
         ? ((document.getElementById('slug-en') as HTMLInputElement)?.value || '') 
         : ((document.getElementById('slug-es') as HTMLInputElement)?.value || '');
       
-      const targetUrl = postId 
-        ? `/${lang}/blog/view?id=${postId}&slug=${slugVal}`
-        : `/${lang}/blog/view?slug=${slugVal}`;
+      const targetUrl = slugVal 
+        ? `/${lang}/blog/${slugVal}`
+        : (postId ? `/${lang}/blog/view?id=${postId}` : `/${lang}/blog`);
 
       window.open(targetUrl, '_blank');
     }

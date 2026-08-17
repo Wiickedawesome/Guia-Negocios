@@ -190,7 +190,13 @@ const t = useTranslations('en');
         const date = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : '2026-08-10');
         const readTime = postData.readTime || 7;
         const tags = postData.keywords || [];
-        const altSlug = postData.slugEs || slug;
+        const finalSlug = postData.slugEn || postData.slug || slug;
+        const altSlug = postData.slugEs || postData.altSlug || finalSlug;
+
+        // Clean up URL bar to canonical slug route immediately
+        if (finalSlug && (window.location.search || window.location.pathname.includes('/view'))) {
+          window.history.replaceState({}, '', `/en/blog/${finalSlug}`);
+        }
 
         document.title = `${title} | Blog | Guia Negocios`;
 
