@@ -232,7 +232,11 @@ const t = useTranslations('en');
         }
 
         const altLink = document.getElementById('post-alt-link') as HTMLAnchorElement;
-        altLink.href = `/es/blog/${altSlug}`;
+        if (altLink) {
+          altLink.href = (docId || postData.id)
+            ? `/es/blog/view?id=${docId || postData.id}&slug=${altSlug}`
+            : `/es/blog/${altSlug}`;
+        }
 
         await loadRelatedArticles(docId || '', slug);
 

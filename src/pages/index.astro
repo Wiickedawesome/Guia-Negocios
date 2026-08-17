@@ -1,4 +1,30 @@
 ---
-// Redirect root URL to default locale (/es)
-return Astro.redirect('/es');
+// Primary root landing page: canonicalized to /es/
 ---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GUIA NEGOCIOS | Servicios y Asesoría para Emprendedores Hispanos</title>
+    <meta name="description" content="Asesoría experta, registro de LLC, EIN y contabilidad para emprendedores y dueños de negocios hispanos en Estados Unidos." />
+    <link rel="canonical" href="https://guianegocios.net/es/" />
+    <link rel="alternate" hreflang="es" href="https://guianegocios.net/es/" />
+    <link rel="alternate" hreflang="en" href="https://guianegocios.net/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://guianegocios.net/es/" />
+    <meta name="robots" content="index, follow" />
+    <meta http-equiv="refresh" content="0;url=/es/" />
+    <script is:inline>
+      window.location.replace('/es/');
+    </script>
+  </head>
+  <body style="font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #f8fafc; color: #1e293b;">
+    <div style="text-align: center; padding: 2rem;">
+      <h1 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem; color: #114B3F;">GUIA NEGOCIOS</h1>
+      <p style="margin-bottom: 1.5rem; color: #64748b;">Redirigiendo a la versión en español...</p>
+      <a href="/es/" style="display: inline-block; padding: 0.75rem 1.5rem; background-color: #114B3F; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
+        Ir a Guia Negocios &rarr;
+      </a>
+    </div>
+  </body>
+</html>

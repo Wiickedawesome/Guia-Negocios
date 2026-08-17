@@ -1,12 +1,48 @@
+# Robots.txt for Guia Negocios (guianegocios.net)
+# Optimized for Googlebot, Bingbot, and Generative AI Search Engines (AEO / GEO)
+
 User-agent: *
 Allow: /
-
-# Exclude internal admin dashboard from crawling
 Disallow: /admin/
 Disallow: /admin/*
 Disallow: /en/lp/empty
 Disallow: /es/lp/empty
+Disallow: /en/lp/view
+Disallow: /es/lp/view
+Disallow: /en/blog/view
+Disallow: /es/blog/view
 
-# Sitemaps
+# Google Search Crawlers
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Googlebot-News
+User-agent: Googlebot-Video
+Allow: /
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /en/lp/empty
+Disallow: /es/lp/empty
+Disallow: /en/lp/view
+Disallow: /es/lp/view
+Disallow: /en/blog/view
+Disallow: /es/blog/view
+
+# AI Search & Answer Engines (AEO / GEO)
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+User-agent: Google-Extended
+User-agent: Applebot
+User-agent: Bingbot
+User-agent: CCBot
+User-agent: cohere-ai
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/*
+
+# XML Sitemaps
 Sitemap: https://guianegocios.net/sitemap-index.xml
+Sitemap: https://guianegocios.net/sitemap.xml
 Sitemap: https://guianegocios.net/sitemap-0.xml

@@ -72,6 +72,36 @@
         "source": "/",
         "destination": "/es/",
         "type": 301
+      },
+      {
+        "source": "/en/services/paquete-lanzamiento-completo",
+        "destination": "/en/services/complete-launch-bundle/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/apoyo-creedava",
+        "destination": "/en/services/creedava-support/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/operaciones-crecimiento",
+        "destination": "/en/services/operations-growth/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/complete-launch-bundle",
+        "destination": "/es/services/paquete-lanzamiento-completo/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/operations-growth",
+        "destination": "/es/services/operaciones-crecimiento/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/creedava-support",
+        "destination": "/es/services/apoyo-creedava/",
+        "type": 301
       }
     ]
   }

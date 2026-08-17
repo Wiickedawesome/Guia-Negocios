@@ -188,6 +188,7 @@ const t = useTranslations('es');
         const title = postData.titleEs || postData.title || 'Guía de Negocios';
         const rawContent = postData.contentEs || postData.content || '';
         const author = postData.author || 'Guia Negocios Team';
+        const authorAvatar = postData.authorAvatar || '/images/team-avatar.webp';
         const dateStr = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : '2026-08-10');
         const readTime = postData.readTime || 7;
         const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80';
@@ -196,8 +197,36 @@ const t = useTranslations('es');
 
         document.title = `${title} | Blog | GUIA NEGOCIOS`;
         
+        // Hero Image
+        const heroImg = document.getElementById('post-hero-img') as HTMLImageElement;
+        if (heroImg) {
+          heroImg.src = optimizeImageUrl(featuredImage, { width: 1200, quality: 80 });
+          heroImg.alt = title;
+        }
+
+        // Title & Meta
+        const titleEl = document.getElementById('post-title');
+        if (titleEl) titleEl.textContent = title;
+
+        const authorAvatarEl = document.getElementById('post-author-avatar') as HTMLImageElement;
+        if (authorAvatarEl) {
+          authorAvatarEl.src = optimizeImageUrl(authorAvatar, { width: 80, height: 80, quality: 80 });
+        }
+        
+        const authorEl = document.getElementById('post-author-name');
+        if (authorEl) authorEl.textContent = author;
+
+        const dateEl = document.getElementById('post-date');
+        if (dateEl) {
+          dateEl.textContent = formatDate(dateStr, 'es');
+          dateEl.setAttribute('datetime', dateStr);
+        }
+
+        const readTimeEl = document.getElementById('post-readtime');
+        if (readTimeEl) readTimeEl.textContent = `${readTime} MIN LECTURA`;
+
         // Populate Tags
-        const tagsContainer = document.getElementById('blog-tags');
+        const tagsContainer = document.getElementById('post-tags-container');
         if (tagsContainer) {
           tagsContainer.innerHTML = tags.map((t: string) => `
             <span class="text-xs bg-brand-primary text-white px-3 py-1 rounded-full font-bold tracking-wide uppercase">
@@ -206,61 +235,49 @@ const t = useTranslations('es');
           `).join('');
         }
 
-        // Title & Meta
-        const titleEl = document.getElementById('blog-title');
-        if (titleEl) titleEl.textContent = title;
-        
-        const authorEl = document.getElementById('blog-author');
-        if (authorEl) authorEl.textContent = author;
-
-        const dateEl = document.getElementById('blog-date');
-        if (dateEl) {
-          dateEl.textContent = formatDate(dateStr, 'es');
-          dateEl.setAttribute('datetime', dateStr);
-        }
-
-        const readTimeEl = document.getElementById('blog-read-time');
-        if (readTimeEl) readTimeEl.textContent = `${readTime} MIN LECTURA`;
-
-        const heroImg = document.getElementById('blog-hero-image') as HTMLImageElement;
-        if (heroImg) {
-          heroImg.src = optimizeImageUrl(featuredImage, { width: 1200, quality: 80 });
-          heroImg.alt = title;
-        }
-
-        // Alt language link
-        const altLangLink = document.getElementById('alt-language-link') as HTMLAnchorElement;
-        if (altLangLink) {
-          altLangLink.href = `/en/blog/view?id=${postId}&slug=${altSlug}`;
-        }
-
         // Process markdown and build TOC
         const htmlContent = markdownToHtml(rawContent);
         const { html: contentWithIds, toc } = processHtmlForBlog(htmlContent);
 
-        const contentEl = document.getElementById('blog-body-content');
+        const contentEl = document.getElementById('post-html-body');
         if (contentEl) contentEl.innerHTML = contentWithIds;
 
         // Populate Table of Contents
-        const tocList = document.getElementById('toc-list');
-        if (tocList) {
+        const tocSidebar = document.getElementById('post-toc-sidebar');
+        const tocList = document.getElementById('post-toc-list');
+        if (tocList && tocSidebar) {
+          tocList.innerHTML = '';
           if (toc.length > 0) {
-            tocList.innerHTML = toc.map(item => `
-              <li>
-                <a href="#${item.id}" class="block text-sm text-slate-600 hover:text-brand-primary transition-colors ${item.level === 3 ? 'ml-4' : ''}">
+            tocSidebar.classList.remove('hidden');
+            toc.forEach(item => {
+              const li = document.createElement('li');
+              li.innerHTML = `
+                <a href="#${item.id}" class="block text-sm text-slate-600 hover:text-brand-primary transition-colors ${item.level === 3 ? 'ml-4 text-xs' : ''}">
                   ${item.text}
                 </a>
-              </li>
-            `).join('');
+              `;
+              tocList.appendChild(li);
+            });
           } else {
-            tocList.innerHTML = '<li class="text-sm text-slate-500 italic">No hay encabezados</li>';
+            tocSidebar.classList.add('hidden');
           }
+        }
+
+        // Alt language link
+        const altLangLink = document.getElementById('post-alt-link') as HTMLAnchorElement;
+        if (altLangLink) {
+          altLangLink.href = postId 
+            ? `/en/blog/view?id=${postId}&slug=${altSlug}`
+            : `/en/blog/${altSlug}`;
         }
 
         // Hide loading skeleton, show real content
         document.getElementById('blog-loading-state')?.classList.add('hidden');
-        document.getElementById('blog-content-state')?.classList.remove('hidden');
-        setTimeout(() => document.getElementById('blog-content-state')?.classList.remove('opacity-0'), 20);
+        const liveContent = document.getElementById('blog-live-content');
+        if (liveContent) {
+          liveContent.classList.remove('hidden');
+          setTimeout(() => liveContent.classList.remove('opacity-0'), 20);
+        }
 
         // Load Related Articles
         loadRelatedArticles(postId, slug);
