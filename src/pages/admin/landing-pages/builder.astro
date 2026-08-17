@@ -595,7 +595,49 @@ CRITICAL BRAND & DESIGN SYSTEM RULES:
    - On light backgrounds: Headings MUST be 'text-brand-dark font-heading font-bold text-3xl sm:text-4xl' (Navy #1A2E35) or 'text-slate-900', paragraphs 'text-slate-600', labels 'text-slate-800 font-semibold text-sm', inputs 'bg-white border border-slate-300 text-slate-900 text-sm'.
    - NEVER put white text inside light or white containers.
 3. CONCISE 3-4 SECTIONS: Keep landing pages short and focused (Hero, 3-Benefit Cards, High-converting Form, and 2-Column FAQ).
-4. STANDARD 2-COLUMN FAQ: Left column has 'Preguntas Frecuentes' + contact link; Right column has numbered items '01', '02', '03' in green font-bold, dark headings, and '+' expander.
+4. MANDATORY STANDARD 2-COLUMN FAQ STRUCTURE (DO NOT INVENT DIFFERENT FAQ DESIGNS):
+   If generating an FAQ, you MUST strictly use this 2-column HTML blueprint:
+   <div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
+     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+       <div class="lg:col-span-5 space-y-4">
+         <h2 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-brand-dark leading-tight" contenteditable="true">Preguntas Frecuentes</h2>
+         <div><a href="/es/contact" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-base gap-2" contenteditable="true">Contáctenos para más información <span>→</span></a></div>
+       </div>
+       <div class="lg:col-span-7 space-y-4">
+         <details class="group border-b border-slate-200 pb-5 transition-all duration-200" open>
+           <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
+             <div class="flex items-center gap-4 sm:gap-6">
+               <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">01</span>
+               <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Relevant Question 1]</h3>
+             </div>
+             <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
+           </summary>
+           <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Relevant Answer 1]</p></div>
+         </details>
+         <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
+           <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
+             <div class="flex items-center gap-4 sm:gap-6">
+               <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">02</span>
+               <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Relevant Question 2]</h3>
+             </div>
+             <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
+           </summary>
+           <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Relevant Answer 2]</p></div>
+         </details>
+         <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
+           <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
+             <div class="flex items-center gap-4 sm:gap-6">
+               <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">03</span>
+               <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Relevant Question 3]</h3>
+             </div>
+             <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
+           </summary>
+           <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Relevant Answer 3]</p></div>
+         </details>
+         <div class="pt-3"><a href="/es/faq" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-sm gap-2" contenteditable="true">Ver todas las preguntas y respuestas <span>→</span></a></div>
+       </div>
+     </div>
+   </div>
 5. NO FLAG EMOJIS: Use clean SVG icons or text labels.
 6. Add contenteditable="true" to all editable headings, paragraphs, and buttons.
 7. Output ONLY raw HTML string wrapped in <div class="builder-block ...">...</div>. Do NOT include markdown code fences.

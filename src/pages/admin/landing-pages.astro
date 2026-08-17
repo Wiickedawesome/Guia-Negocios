@@ -296,16 +296,71 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Target Audience: "${audience}".
           Primary Goal: "${goal}".
           
-          STRUCTURE RULES (KEEP IT SHORT & PUNCHY - 3 TO 4 SECTIONS TOTAL):
-          1. Hero Section: Light card ('bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center shadow-sm') with dark headline ('text-brand-dark font-heading font-bold text-3xl sm:text-5xl'), short description ('text-slate-600 text-base sm:text-lg'), and dark green action button ('bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full shadow-md').
-          2. Features / Value Cards: 3 concise benefit cards ('bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs') with emerald SVG icons and dark text ('text-brand-dark font-bold' and 'text-slate-600').
-          3. Goal-Specific Action Form (MATCH TO GOAL):
-             - If goal is 'discount': Include a 15% discount claim form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl text-slate-900 shadow-md') with dark labels ('text-slate-800 font-semibold'), white inputs ('bg-white border border-slate-300 text-slate-900'), and Gold CTA button ('bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold py-4 rounded-full text-base').
-             - If goal is 'call': Include a Quick Call Booking form ('bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 text-slate-900 shadow-sm') with Name, Phone, Preferred Time, and Green CTA button ('bg-brand-primary text-white font-semibold py-4 rounded-full').
-             - If goal is 'lead' or other: Include a direct Lead Capture form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl text-slate-900 shadow-sm') with Name, Phone, Email, Message, and Green CTA button ('bg-brand-primary text-white font-semibold py-4 rounded-full').
-          4. Standard Website FAQ (FaqAccordion style): 2-column layout:
-             - Left Column (lg:col-span-5): 'Preguntas Frecuentes' title in 'text-3xl sm:text-4xl font-heading font-bold text-brand-dark' + contact link.
-             - Right Column (lg:col-span-7): 3 numbered questions ('01', '02', '03' in green font-bold) with '+' icon and 'border-b border-slate-200 pb-5'.
+          STRUCTURE RULES (4 SECTIONS TOTAL):
+          
+          1. Hero Section (CUSTOMIZABLE TO OFFER):
+             - Light card: 'bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center shadow-sm font-sans'
+             - Category Badge: 'inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold tracking-wide'
+             - Dynamic Headline: 'text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-brand-dark leading-tight tracking-tight' (highlight key phrase with 'text-brand-primary')
+             - Dynamic Subheading: 'text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed'
+             - Action Button: 'bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full transition-all text-base shadow-md'
+
+          2. Benefits / Value Proposition (3 CARDS CUSTOMIZED TO OFFER):
+             - Container: 'bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans' with section title & subtitle
+             - Grid: 3 cards in 'grid grid-cols-1 md:grid-cols-3 gap-6'
+             - Each Card: 'bg-slate-50/70 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs flex flex-col space-y-4' with emerald icon badge ('w-12 h-12 rounded-2xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-brand-primary'), bold title ('text-lg font-heading text-brand-dark font-bold mb-2'), and description ('text-slate-600 text-sm leading-relaxed').
+
+          3. Purpose-Tailored Action Form (CONSISTENT HIGH-CONTRAST STRUCTURE):
+             - If goal is 'discount': Include 15% discount claim form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-md font-sans') with Name, WhatsApp/Phone, Business Type, and Gold CTA button ('bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold rounded-full py-4 text-base shadow-md').
+             - If goal is 'download': Include Free Guide download form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans') with Name, Email, WhatsApp/Phone, and Dark Green CTA button ('bg-brand-primary hover:bg-emerald-900 text-white font-semibold rounded-full py-4 text-base shadow-md').
+             - If goal is 'call': Include Consultation Call booking form ('bg-white border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans') with Name, Phone, Preferred Time, and Dark Green CTA button.
+             - If goal is 'lead' or other: Include Lead Capture form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans') with Name, Phone, Email, Message, and Dark Green CTA button.
+
+          4. STANDARD WEBSITE FAQ (MANDATORY EXACT 2-COLUMN STRUCTURE MATCHING FaqAccordion.astro):
+             You MUST use this EXACT HTML structure with 3 relevant questions/answers for "${topic}":
+             \`\`\`
+             <div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
+               <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+                 <div class="lg:col-span-5 space-y-4">
+                   <h2 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-brand-dark leading-tight" contenteditable="true">Preguntas Frecuentes</h2>
+                   <div><a href="/es/contact" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-base gap-2" contenteditable="true">Contáctenos para más información <span>→</span></a></div>
+                 </div>
+                 <div class="lg:col-span-7 space-y-4">
+                   <details class="group border-b border-slate-200 pb-5 transition-all duration-200" open>
+                     <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
+                       <div class="flex items-center gap-4 sm:gap-6">
+                         <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">01</span>
+                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Topic Specific Question 1]</h3>
+                       </div>
+                       <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
+                     </summary>
+                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Topic Specific Answer 1]</p></div>
+                   </details>
+                   <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
+                     <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
+                       <div class="flex items-center gap-4 sm:gap-6">
+                         <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">02</span>
+                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Topic Specific Question 2]</h3>
+                       </div>
+                       <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
+                     </summary>
+                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Topic Specific Answer 2]</p></div>
+                   </details>
+                   <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
+                     <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
+                       <div class="flex items-center gap-4 sm:gap-6">
+                         <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">03</span>
+                         <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">[Topic Specific Question 3]</h3>
+                       </div>
+                       <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">+</span>
+                     </summary>
+                     <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true"><p>[Topic Specific Answer 3]</p></div>
+                   </details>
+                   <div class="pt-3"><a href="/es/faq" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-sm gap-2" contenteditable="true">Ver todas las preguntas y respuestas <span>→</span></a></div>
+                 </div>
+               </div>
+             </div>
+             \`\`\`
           
           STRICT CONTRAST & TYPOGRAPHY RULE:
           - Every heading on light/white backgrounds MUST be 'text-brand-dark' or 'text-slate-900'. NEVER use 'text-white' on light backgrounds.
