@@ -44,11 +44,13 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         <div class="border-b border-slate-200 mb-6 flex justify-between items-center">
           <nav class="-mb-px flex space-x-8" aria-label="Tabs">
             <button id="tab-es" type="button" class="border-brand-primary text-brand-primary whitespace-nowrap py-3 px-1 border-b-2 font-semibold text-sm flex items-center gap-2">
-              <span>🇪🇸</span> Español (Primary)
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#C60A1D" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"/><path fill="#FFC400" d="M0 12h36v12H0z"/></svg>
+              <span>Español (Primary)</span>
               <span id="wordcount-es-badge" class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-normal">0 words</span>
             </button>
             <button id="tab-en" type="button" class="border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
-              <span>🇺🇸</span> English
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#BD3D44" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"/><path fill="#FFF" d="M0 12h36v4H0zm0 8h36v4H0z"/><path fill="#192F5D" d="M0 5a4 4 0 0 1 4-4h14v18H0V5z"/></svg>
+              <span>English</span>
               <span id="wordcount-en-badge" class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-normal">0 words</span>
             </button>
           </nav>
@@ -228,8 +230,14 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         <div class="flex items-center gap-3">
           <!-- Language Toggle in Preview -->
           <div class="bg-slate-200/80 p-0.5 rounded-lg flex items-center text-xs font-semibold">
-            <button id="preview-lang-es" type="button" class="px-3 py-1.5 rounded-md bg-white text-brand-primary shadow-xs transition-all">🇪🇸 Español</button>
-            <button id="preview-lang-en" type="button" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all">🇺🇸 English</button>
+            <button id="preview-lang-es" type="button" class="px-3 py-1.5 rounded-md bg-white text-brand-primary shadow-xs transition-all flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#C60A1D" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"/><path fill="#FFC400" d="M0 12h36v12H0z"/></svg>
+              <span>Español</span>
+            </button>
+            <button id="preview-lang-en" type="button" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#BD3D44" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"/><path fill="#FFF" d="M0 12h36v4H0zm0 8h36v4H0z"/><path fill="#192F5D" d="M0 5a4 4 0 0 1 4-4h14v18H0V5z"/></svg>
+              <span>English</span>
+            </button>
           </div>
 
           <!-- Viewport Switcher -->
