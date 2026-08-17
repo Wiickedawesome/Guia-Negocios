@@ -15,32 +15,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <!-- AI Landing Page Generator -->
   <div class="bg-gradient-to-r from-brand-dark to-slate-800 rounded-xl p-6 shadow-sm text-white mb-6">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-3">
-        <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-        <h3 class="text-lg font-bold">AI Landing Page Generator</h3>
-        <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini Pro</span>
-      </div>
-      <div class="hidden sm:flex items-center gap-2 text-xs text-slate-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        SEO / AEO / GEO Engine Active
-      </div>
+    <div class="flex items-center gap-3 mb-4">
+      <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      <h3 class="text-lg font-bold">AI Landing Page Generator</h3>
+      <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini Pro</span>
     </div>
 
     <!-- Main Descriptive Prompt Input -->
     <div class="mb-4">
       <label class="block text-xs text-slate-300 mb-1.5 font-medium">Describe what you want (Topic, SEO Keywords, Offer, City/Location, Campaign Goal, Pain Points)</label>
-      <textarea id="ai-lp-topic" rows="2" placeholder="e.g., SEO landing page for Hispanic roofing and painting contractors in Knoxville needing TN state licensing, general liability insurance, and LLC protection..." class="w-full px-3.5 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary resize-none"></textarea>
-      
-      <!-- Quick Inspiration Pills -->
-      <div class="flex flex-wrap items-center gap-2 mt-2">
-        <span class="text-[11px] text-slate-400 font-medium">Quick Ideas:</span>
-        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Licencia de Contratista General y Seguros en Knoxville, TN" data-audience="Contratistas y trabajadores de construcción hispanos en Knoxville y East Tennessee" data-goal="contractor">+ Contratistas Knoxville</button>
-        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Apertura y Registro de LLC en Tennessee con Número EIN y Cuenta Bancaria" data-audience="Emprendedores hispanos iniciando su primer negocio en Tennessee" data-goal="lead">+ Creación LLC en TN</button>
-        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Configuración de Bookkeeping en QuickBooks y Separación de Finanzas" data-audience="Dueños de pequeñas empresas con desorden contable" data-goal="bookkeeping">+ Bookkeeping QuickBooks</button>
-        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Preparación de Impuestos con ITIN y Maximización de Deducciones" data-audience="Trabajadores independientes y dueños de negocio con ITIN en Tennessee" data-goal="tax">+ Impuestos con ITIN</button>
-        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Creación de Empresa LLC en EE.UU. para Extranjeros No Residentes (NRA) con Cuenta Bancaria Mercury" data-audience="Emprendedores en Latinoamérica y España que desean operar en EE.UU." data-goal="nra">+ Extranjeros NRA</button>
-      </div>
+      <textarea id="ai-lp-topic" rows="2" placeholder="e.g., Landing page for Hispanic roofing and painting contractors in Knoxville needing TN state licensing, general liability insurance, and LLC protection..." class="w-full px-3.5 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary resize-none"></textarea>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -261,20 +245,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       };
     }
 
-    // SEO Idea Pills click listeners
     const topicInput = document.getElementById('ai-lp-topic') as HTMLTextAreaElement;
     const audienceInput = document.getElementById('ai-lp-audience') as HTMLInputElement;
     const goalSelect = document.getElementById('ai-lp-goal') as HTMLSelectElement;
-
-    document.querySelectorAll('.seo-pill').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const target = e.currentTarget as HTMLElement;
-        if (topicInput) topicInput.value = target.dataset.topic || '';
-        if (audienceInput) audienceInput.value = target.dataset.audience || '';
-        if (goalSelect && target.dataset.goal) goalSelect.value = target.dataset.goal;
-        topicInput?.focus();
-      });
-    });
 
     // AI Landing Page Generator
     document.getElementById('ai-lp-generate-btn')?.addEventListener('click', async function() {
