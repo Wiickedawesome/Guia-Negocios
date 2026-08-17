@@ -160,7 +160,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                 <div class="flex items-center justify-end gap-3">
                   <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
                   <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
-                  <button data-delete-lp-id="${id}" data-delete-lp-title="${title}" class="text-xs text-rose-500 hover:text-rose-700 font-medium cursor-pointer">Delete</button>
                 </div>
               </td>
             </tr>
@@ -168,33 +167,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         });
 
         tbody.innerHTML = html;
-
-        // Attach delete handlers
-        document.querySelectorAll('[data-delete-lp-id]').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const id = (btn as HTMLElement).dataset.deleteLpId;
-            const title = (btn as HTMLElement).dataset.deleteLpTitle || 'this landing page';
-            if (!id) return;
-            // @ts-ignore
-            const ok = (typeof window.showConfirm === 'function')
-              // @ts-ignore
-              ? await window.showConfirm('Delete Landing Page', `Are you sure you want to permanently delete "${title}"?`)
-              : confirm(`Are you sure you want to permanently delete "${title}"?`);
-            
-            if (ok) {
-              try {
-                await deleteDoc(doc(db, 'landingPages', id));
-                // @ts-ignore
-                window.showToast('Landing page deleted!', 'success');
-                loadLandingPages();
-              } catch (err: any) {
-                console.error("Delete error:", err);
-                alert("Failed to delete: " + (err?.message || err));
-              }
-            }
-          });
-        });
 
       } catch (error) {
         console.error("Error fetching landing pages:", error);
