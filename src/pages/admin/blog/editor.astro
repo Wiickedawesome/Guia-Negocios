@@ -234,6 +234,43 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
   </div>
 
   <!-- ========================================================================= -->
+  <!-- 1. POST PUBLISHED LIVE CONFIRMATION MODAL -->
+  <!-- ========================================================================= -->
+  <div id="publish-success-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-200 text-center animate-in zoom-in-95">
+      <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900 font-heading mb-2">🎉 Your Post is Live & Published!</h3>
+      <p class="text-xs sm:text-sm text-slate-600 mb-6 leading-relaxed">
+        Your article has been saved to Firebase Firestore with verified SEO URL slugs, OG metadata, and is instantly accessible on the public site.
+      </p>
+      
+      <!-- Canonical Link Box -->
+      <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-6 text-left space-y-1.5">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Canonical Live Link:</span>
+        <div class="flex items-center justify-between gap-2">
+          <input id="live-post-url-display" type="text" readonly class="w-full text-xs text-slate-800 font-mono bg-transparent outline-none select-all" />
+          <button id="btn-copy-live-link" type="button" class="shrink-0 px-3 py-1.5 bg-white hover:bg-slate-100 text-brand-dark font-semibold text-xs rounded-lg border border-slate-200 transition-colors shadow-2xs">
+            Copy
+          </button>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a id="btn-open-live-article" href="#" target="_blank" class="w-full sm:w-auto px-6 py-2.5 bg-brand-primary hover:bg-emerald-900 text-white text-sm font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs">
+          <span>🚀 View Live Post</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        </a>
+        <button id="btn-close-publish-modal" type="button" class="w-full sm:w-auto px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition-all">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- 2. UNSPLASH PHOTO PICKER & ALBUM MODAL -->
   <!-- ========================================================================= -->
   <div id="unsplash-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
@@ -1071,6 +1108,35 @@ User Request: "${userPrompt}"
       return card;
     }
 
+    function slugify(text: string): string {
+      return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+    }
+
+    const publishSuccessModal = document.getElementById('publish-success-modal') as HTMLElement;
+    const livePostUrlDisplay = document.getElementById('live-post-url-display') as HTMLInputElement;
+    const btnCopyLiveLink = document.getElementById('btn-copy-live-link') as HTMLButtonElement;
+    const btnOpenLiveArticle = document.getElementById('btn-open-live-article') as HTMLAnchorElement;
+    const btnClosePublishModal = document.getElementById('btn-close-publish-modal') as HTMLButtonElement;
+
+    btnClosePublishModal?.addEventListener('click', () => {
+      publishSuccessModal.classList.add('hidden');
+      publishSuccessModal.classList.remove('flex');
+    });
+
+    btnCopyLiveLink?.addEventListener('click', () => {
+      if (livePostUrlDisplay?.value) {
+        navigator.clipboard.writeText(livePostUrlDisplay.value);
+        // @ts-ignore
+        window.showToast('Live link copied to clipboard!', 'info');
+      }
+    });
+
     // =========================================================================
     // 5. FIRESTORE SAVING LOGIC
     // =========================================================================
@@ -1078,14 +1144,14 @@ User Request: "${userPrompt}"
       const titleEs = (document.getElementById('title-es') as HTMLInputElement).value;
       const titleEn = (document.getElementById('title-en') as HTMLInputElement).value;
       const publishDate = (document.getElementById('publish-date') as HTMLInputElement).value || new Date().toISOString().split('T')[0];
-      const slugEn = (document.getElementById('slug-en') as HTMLInputElement).value;
-      const slugEs = (document.getElementById('slug-es') as HTMLInputElement).value;
-      const metaDesc = (document.getElementById('meta-desc') as HTMLTextAreaElement).value;
+      let slugEn = (document.getElementById('slug-en') as HTMLInputElement).value;
+      let slugEs = (document.getElementById('slug-es') as HTMLInputElement).value;
+      let metaDesc = (document.getElementById('meta-desc') as HTMLTextAreaElement).value;
       const keywords = (document.getElementById('keywords') as HTMLInputElement).value;
-      const featuredImage = (document.getElementById('featured-image') as HTMLInputElement).value;
-      const author = (document.getElementById('author') as HTMLInputElement).value;
-      const authorAvatar = (document.getElementById('author-avatar') as HTMLInputElement).value;
-      const readTime = parseInt((document.getElementById('read-time') as HTMLInputElement).value, 10) || 5;
+      let featuredImage = (document.getElementById('featured-image') as HTMLInputElement).value;
+      const author = (document.getElementById('author') as HTMLInputElement).value || 'Guia Negocios Team';
+      const authorAvatar = (document.getElementById('author-avatar') as HTMLInputElement).value || '/images/team-avatar.webp';
+      const readTime = parseInt((document.getElementById('read-time') as HTMLInputElement).value, 10) || 7;
       
       const contentEs = easyMdeEs ? easyMdeEs.value() : '';
       const contentEn = easyMdeEn ? easyMdeEn.value() : '';
@@ -1094,6 +1160,31 @@ User Request: "${userPrompt}"
         // @ts-ignore
         window.showToast('Please provide a title', 'warning');
         return;
+      }
+
+      // Auto slug generation if empty
+      if (!slugEs.trim() && titleEs.trim()) {
+        slugEs = slugify(titleEs);
+        (document.getElementById('slug-es') as HTMLInputElement).value = slugEs;
+      }
+      if (!slugEn.trim() && titleEn.trim()) {
+        slugEn = slugify(titleEn);
+        (document.getElementById('slug-en') as HTMLInputElement).value = slugEn;
+      }
+      if (!slugEs.trim() && slugEn.trim()) slugEs = slugEn;
+      if (!slugEn.trim() && slugEs.trim()) slugEn = slugEs;
+
+      // Auto featured image fallback if empty
+      if (!featuredImage.trim()) {
+        featuredImage = 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80';
+        (document.getElementById('featured-image') as HTMLInputElement).value = featuredImage;
+      }
+
+      // Auto meta description fallback if empty
+      if (!metaDesc.trim()) {
+        const bodySample = (contentEs || contentEn).replace(/[#*`_\[\]()!]/g, '').trim();
+        metaDesc = bodySample.slice(0, 155) + '...';
+        (document.getElementById('meta-desc') as HTMLTextAreaElement).value = metaDesc;
       }
 
       const status = statusOverride || (document.getElementById('status-select') as HTMLSelectElement).value;
@@ -1125,7 +1216,6 @@ User Request: "${userPrompt}"
           const newDoc = await addDoc(collection(db, 'blogs'), data);
           postId = newDoc.id;
           document.getElementById('btn-delete')?.classList.remove('hidden');
-          // If we just created a new post, update URL quietly
           window.history.replaceState({}, '', `/admin/blog/editor?id=${newDoc.id}`);
         }
         updatePreviewLinks();
@@ -1143,11 +1233,24 @@ User Request: "${userPrompt}"
           } catch (ne) {
             console.warn('Failed to add blog notification:', ne);
           }
+
+          const isEnglish = document.getElementById('editor-en-container')?.classList.contains('block');
+          const activeLang = isEnglish ? 'en' : 'es';
+          const activeSlug = isEnglish ? slugEn : slugEs;
+          const liveUrl = `${window.location.origin}/${activeLang}/blog/view?id=${postId}&slug=${activeSlug}`;
+
+          if (livePostUrlDisplay) livePostUrlDisplay.value = liveUrl;
+          if (btnOpenLiveArticle) btnOpenLiveArticle.href = liveUrl;
+
+          if (publishSuccessModal) {
+            publishSuccessModal.classList.remove('hidden');
+            publishSuccessModal.classList.add('flex');
+          }
         }
 
         updateStatusBadge(status);
         // @ts-ignore
-        window.showToast(status === 'Published' ? 'Post published successfully!' : 'Draft saved securely!', 'success');
+        window.showToast(status === 'Published' ? 'Post published and live!' : 'Draft saved securely!', 'success');
       } catch (error) {
         console.error('Error saving blog: ', error);
         // @ts-ignore
