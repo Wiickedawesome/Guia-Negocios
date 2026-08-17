@@ -92,6 +92,14 @@ const t = useTranslations('es');
                 </div>
               </footer>
             </div>
+
+            <!-- Related Articles (Bottom) -->
+            <div id="related-articles-section" class="mt-20 pt-12 border-t border-slate-200">
+              <h3 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Artículos Relacionados</h3>
+              <div id="related-articles-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
           </main>
         </div>
       </div>
@@ -104,6 +112,27 @@ const t = useTranslations('es');
     import { db } from '../../../lib/firebase';
     import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
     import { markdownToHtml, processHtmlForBlog, formatDate } from '../../../utils/blog';
+
+    const FALLBACK_RELATED_POSTS_ES = [
+      {
+        slug: 'importancia-de-numero-ein',
+        title: 'Guía de EIN: Cómo Obtener un Número de Identificación Patronal Sin SSN',
+        featuredImage: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=2070&auto=format&fit=crop',
+        tags: ['Impuestos', 'EIN', 'IRS']
+      },
+      {
+        slug: 'como-iniciar-una-llc-en-knoxville-tn',
+        title: 'Cómo Iniciar una LLC en Knoxville, TN: Guía Paso a Paso',
+        featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+        tags: ['LLC', 'Tennessee', 'Knoxville']
+      },
+      {
+        slug: 'como-hacer-un-plan-de-negocios-exitoso-en-ee-uu',
+        title: 'Cómo Hacer un Plan de Negocios Exitoso en EE.UU.: Guía Estratégica',
+        featuredImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop',
+        tags: ['Estrategia', 'Negocios', 'Plan']
+      }
+    ];
 
     async function loadDynamicPost() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -218,6 +247,9 @@ const t = useTranslations('es');
         const altLink = document.getElementById('post-alt-link') as HTMLAnchorElement;
         altLink.href = `/en/blog/${altSlug}`;
 
+        // Load Related Articles
+        await loadRelatedArticles(docId || '', slug);
+
         // Reveal content
         document.getElementById('blog-loading-state')?.classList.add('hidden');
         const liveContent = document.getElementById('blog-live-content')!;
@@ -228,6 +260,56 @@ const t = useTranslations('es');
         console.error("Error loading dynamic post:", err);
         showNotFound();
       }
+    }
+
+    async function loadRelatedArticles(currentId?: string, currentSlug?: string) {
+      const grid = document.getElementById('related-articles-grid');
+      if (!grid) return;
+
+      let relatedList: any[] = [];
+      try {
+        const blogsSnap = await getDocs(collection(db, 'blogs'));
+        blogsSnap.forEach(d => {
+          if (d.id === currentId) return;
+          const data = d.data();
+          const slugEs = data.slugEs || data.slug || d.id;
+          if (slugEs === currentSlug) return;
+          if (!data.titleEs && !data.title) return;
+          
+          relatedList.push({
+            id: d.id,
+            slug: slugEs,
+            title: data.titleEs || data.title || 'Artículo de Negocios',
+            featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop',
+            tags: data.keywords || ['Negocios']
+          });
+        });
+      } catch (e) {
+        console.warn('Could not load related articles from Firestore:', e);
+      }
+
+      // If fewer than 3 found, fill with fallback curated list
+      if (relatedList.length < 3) {
+        for (const fb of FALLBACK_RELATED_POSTS_ES) {
+          if (fb.slug !== currentSlug && !relatedList.some(r => r.slug === fb.slug)) {
+            relatedList.push(fb);
+            if (relatedList.length >= 3) break;
+          }
+        }
+      }
+
+      const displayPosts = relatedList.slice(0, 3);
+      grid.innerHTML = displayPosts.map(rp => `
+        <a href="/es/blog/view?id=${rp.id || ''}&slug=${rp.slug}" class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div class="aspect-video w-full overflow-hidden bg-slate-100">
+            <img src="${rp.featuredImage}" alt="${rp.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          </div>
+          <div class="p-6">
+            <div class="text-xs font-semibold text-brand-primary mb-2 uppercase tracking-wider">${rp.tags?.[0] || 'Negocios'}</div>
+            <h4 class="font-bold text-slate-900 group-hover:text-brand-primary transition-colors line-clamp-2">${rp.title}</h4>
+          </div>
+        </a>
+      `).join('');
     }
 
     function showNotFound() {

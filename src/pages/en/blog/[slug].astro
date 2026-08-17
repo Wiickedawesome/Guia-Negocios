@@ -18,10 +18,42 @@ const allPosts = await getBlogPosts('en');
 const relatedPosts = allPosts
   .filter(p => p.slug !== post.slug && p.tags.some(t => post.tags.includes(t)))
   .slice(0, 3);
+
 // If not enough related by tag, fill with recent
 if (relatedPosts.length < 3) {
   const fill = allPosts.filter(p => p.slug !== post.slug && !relatedPosts.find(rp => rp.slug === p.slug));
   relatedPosts.push(...fill.slice(0, 3 - relatedPosts.length));
+}
+
+// Guaranteed fallback pool if database has fewer items
+const FALLBACK_RELATED_EN: any[] = [
+  {
+    slug: 'importance-of-ein-number',
+    title: 'EIN Guide: How to Get an Employer Identification Number Without an SSN',
+    featuredImage: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=2070&auto=format&fit=crop',
+    tags: ['Taxes', 'EIN', 'IRS']
+  },
+  {
+    slug: 'how-to-start-an-llc-in-knoxville-tn',
+    title: 'How to Start an LLC in Knoxville, TN: Step-by-Step Guide',
+    featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+    tags: ['LLC', 'Tennessee', 'Knoxville']
+  },
+  {
+    slug: 'how-to-create-a-winning-business-plan',
+    title: 'How to Create a Winning Business Plan in the U.S.: Strategic Guide',
+    featuredImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop',
+    tags: ['Strategy', 'Business', 'Plan']
+  }
+];
+
+if (relatedPosts.length < 3) {
+  for (const fb of FALLBACK_RELATED_EN) {
+    if (fb.slug !== post.slug && !relatedPosts.some(rp => rp.slug === fb.slug)) {
+      relatedPosts.push(fb);
+      if (relatedPosts.length >= 3) break;
+    }
+  }
 }
 
 const t = useTranslations('en');
