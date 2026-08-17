@@ -1,27 +1,31 @@
 /**
- * Guia Negocios Website Design Elements for Landing Pages
- * Matches src/components/FaqAccordion.astro, services.astro, and index.astro exactly.
+ * Guia Negocios Official Website Design Elements for Landing Pages
+ * Matches guianegocios.net brand tokens:
+ * - brand-primary: #1B4E2B (Dark Forest Green)
+ * - brand-dark: #1A2E35 (Deep Navy Slate)
+ * - brand-accent: #F0C850 (Warm Gold for Sales / Promos)
+ * - brand-light: #F2F7F4 (Mint Slate)
  */
 
 export const LANDING_PAGE_TEMPLATES = {
   hero: `
-<div class="builder-block bg-slate-50/80 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center my-6 shadow-xs font-sans relative">
-  <div class="max-w-3xl mx-auto space-y-5">
-    <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-200/60 border border-slate-300/60 text-slate-700 text-xs font-semibold tracking-wide">
+<div class="builder-block bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center my-6 shadow-sm font-sans relative">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold tracking-wide">
       <span class="w-2 h-2 rounded-full bg-brand-primary"></span>
-      <span contenteditable="true">Servicios Empresariales Bilingües</span>
+      <span contenteditable="true">OFERTA EXCLUSIVA PARA NEGOCIOS</span>
     </span>
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-slate-900 leading-tight tracking-tight" contenteditable="true">
-      Lleve su Negocio al Siguiente Nivel con Asesoría Profesional
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-brand-dark leading-tight tracking-tight" contenteditable="true">
+      Obtén tu Página Web Profesional con un <span class="text-brand-primary">15% de Descuento</span>
     </h1>
-    <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed" contenteditable="true">
-      Acompañamos a emprendedores y empresas a formalizar su estructura, cumplir con las normativas y acelerar su crecimiento en Estados Unidos.
+    <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed" contenteditable="true">
+      Diseño web moderno, rápido y adaptado para celulares para que vendas más y proyectes una imagen confiable ante tus clientes.
     </p>
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-      <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-primary text-white font-medium py-3.5 px-8 rounded-full hover:bg-opacity-90 transition-all text-sm shadow-sm" contenteditable="true">
-        Solicitar Consulta Gratuita
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-3">
+      <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full transition-all text-base shadow-md" contenteditable="true">
+        Reclamar Mi Descuento del 15%
       </a>
-      <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-white border border-slate-200 text-slate-700 font-medium py-3.5 px-6 rounded-full hover:bg-slate-50 transition-all text-sm gap-2">
+      <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-white border border-slate-300 text-brand-dark font-semibold py-3.5 px-6 rounded-full hover:bg-slate-50 transition-all text-base gap-2">
         <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
         <span contenteditable="true">(865) 202-7112</span>
       </a>
@@ -31,44 +35,44 @@ export const LANDING_PAGE_TEMPLATES = {
   `,
 
   features: `
-<div class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-xs my-6 font-sans">
-  <div class="max-w-3xl mx-auto text-center mb-8 space-y-2">
-    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-medium tracking-wide">
+<div class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
+  <div class="max-w-3xl mx-auto text-center mb-10 space-y-3">
+    <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold tracking-wide">
       Nuestros Beneficios
     </span>
-    <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-slate-900 leading-tight" contenteditable="true">
-      ¿Por qué elegir a Guia de Negocios?
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-brand-dark leading-tight" contenteditable="true">
+      Todo lo que incluye tu nueva presencia digital
     </h2>
-    <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto leading-relaxed" contenteditable="true">
-      Soluciones integrales diseñadas específicamente para respaldar y hacer crecer a las empresas hispanas.
+    <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed" contenteditable="true">
+      Construido con tecnología de última generación para posicionar tu negocio en Google.
     </p>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col space-y-3">
-      <div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-xs">
-        <svg class="w-6 h-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+    <div class="bg-slate-50/70 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col space-y-4">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-brand-primary shadow-xs">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
       </div>
       <div>
-        <h3 class="text-base font-heading text-slate-900 font-semibold mb-1.5" contenteditable="true">Blindaje y Registro Formal</h3>
-        <p class="text-slate-500 text-xs sm:text-sm leading-relaxed" contenteditable="true">Registro formal de LLC, obtención de EIN oficial ante el IRS y protección integral de patrimonio.</p>
+        <h3 class="text-lg font-heading text-brand-dark font-bold mb-2" contenteditable="true">Diseño 100% Móvil</h3>
+        <p class="text-slate-600 text-sm leading-relaxed" contenteditable="true">Tu página se verá espectacular en teléfonos, tabletas y computadoras con carga ultra rápida.</p>
       </div>
     </div>
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col space-y-3">
-      <div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-xs">
-        <svg class="w-6 h-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" /></svg>
+    <div class="bg-slate-50/70 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col space-y-4">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-brand-primary shadow-xs">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
       </div>
       <div>
-        <h3 class="text-base font-heading text-slate-900 font-semibold mb-1.5" contenteditable="true">Estrategia y Crecimiento</h3>
-        <p class="text-slate-500 text-xs sm:text-sm leading-relaxed" contenteditable="true">Estructura comercial y contable clara para calificar ante bancos y préstamos empresariales.</p>
+        <h3 class="text-lg font-heading text-brand-dark font-bold mb-2" contenteditable="true">Optimizado para Google</h3>
+        <p class="text-slate-600 text-sm leading-relaxed" contenteditable="true">Configuramos SEO local para que aparezcas cuando busquen tus servicios en tu ciudad.</p>
       </div>
     </div>
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col space-y-3">
-      <div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-xs">
-        <svg class="w-6 h-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+    <div class="bg-slate-50/70 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col space-y-4">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-brand-primary shadow-xs">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
       </div>
       <div>
-        <h3 class="text-base font-heading text-slate-900 font-semibold mb-1.5" contenteditable="true">Atención 100% Bilingüe</h3>
-        <p class="text-slate-500 text-xs sm:text-sm leading-relaxed" contenteditable="true">Asesoría cercana en español que le explica cada trámite y contrato con total transparencia.</p>
+        <h3 class="text-lg font-heading text-brand-dark font-bold mb-2" contenteditable="true">Soporte 100% en Español</h3>
+        <p class="text-slate-600 text-sm leading-relaxed" contenteditable="true">Sin barreras de idioma. Te atendemos y asesoramos con la cercanía y confianza que mereces.</p>
       </div>
     </div>
   </div>
@@ -76,17 +80,17 @@ export const LANDING_PAGE_TEMPLATES = {
   `,
 
   faq: `
-<!-- Standard Website FAQ (FaqAccordion.astro layout) -->
-<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-xs my-6 font-sans">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+<!-- Standard Website FAQ (FaqAccordion.astro layout matching guianegocios.net/es/services) -->
+<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
     
     <!-- Left Column: Heading & Contact Link -->
     <div class="lg:col-span-5 space-y-4">
-      <h2 class="text-3xl sm:text-4xl font-heading font-semibold text-brand-dark leading-tight" contenteditable="true">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-brand-dark leading-tight" contenteditable="true">
         Preguntas Frecuentes
       </h2>
       <div>
-        <a href="/es/contact" class="inline-flex items-center text-brand-primary font-medium hover:underline text-sm sm:text-base gap-2" contenteditable="true">
+        <a href="/es/contact" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-base gap-2" contenteditable="true">
           Contáctenos para más información <span>→</span>
         </a>
       </div>
@@ -97,62 +101,62 @@ export const LANDING_PAGE_TEMPLATES = {
       <details class="group border-b border-slate-200 pb-5 transition-all duration-200" open>
         <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
           <div class="flex items-center gap-4 sm:gap-6">
-            <span class="text-brand-primary font-heading font-semibold text-lg sm:text-xl min-w-[28px]">
+            <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">
               01
             </span>
-            <h3 class="text-sm sm:text-base font-heading text-brand-dark font-medium leading-snug" contenteditable="true">
-              ¿Qué incluye la asistencia para la configuración de LLC y EIN?
+            <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">
+              ¿Qué incluye la oferta con 15% de descuento?
             </h3>
           </div>
           <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">
             +
           </span>
         </summary>
-        <div class="pl-11 sm:pl-13 pt-3 pr-4 text-slate-600 text-xs sm:text-sm leading-relaxed" contenteditable="true">
-          <p>Incluye registro formal ante la Secretaría de Estado, obtención de EIN del IRS, acuerdo operativo estándar y guía completa para abrir su cuenta bancaria comercial.</p>
+        <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true">
+          <p>Incluye diseño completo de su sitio web responsivo, optimización SEO en Google, conexión de dominio, integración con WhatsApp Business y 15% de descuento directo en la cotización.</p>
         </div>
       </details>
 
       <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
         <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
           <div class="flex items-center gap-4 sm:gap-6">
-            <span class="text-brand-primary font-heading font-semibold text-lg sm:text-xl min-w-[28px]">
+            <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">
               02
             </span>
-            <h3 class="text-sm sm:text-base font-heading text-brand-dark font-medium leading-snug" contenteditable="true">
-              ¿Cuánto tiempo toma el proceso de configuración del negocio?
+            <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">
+              ¿Cuánto tiempo toma tener mi página web lista?
             </h3>
           </div>
           <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">
             +
           </span>
         </summary>
-        <div class="pl-11 sm:pl-13 pt-3 pr-4 text-slate-600 text-xs sm:text-sm leading-relaxed" contenteditable="true">
-          <p>El registro estatal toma entre 24 y 48 horas hábiles. Para solicitantes con SSN o ITIN el EIN se procesa de inmediato; con pasaporte extranjero toma entre 4 y 7 días hábiles vía fax oficial.</p>
+        <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true">
+          <p>Un sitio web estándar está listo y publicado entre 2 y 3 semanas desde la recepción de los textos y fotos.</p>
         </div>
       </details>
 
       <details class="group border-b border-slate-200 pb-5 transition-all duration-200">
         <summary class="flex items-center justify-between cursor-pointer list-none select-none py-2 gap-4">
           <div class="flex items-center gap-4 sm:gap-6">
-            <span class="text-brand-primary font-heading font-semibold text-lg sm:text-xl min-w-[28px]">
+            <span class="text-brand-primary font-heading font-bold text-xl min-w-[32px]">
               03
             </span>
-            <h3 class="text-sm sm:text-base font-heading text-brand-dark font-medium leading-snug" contenteditable="true">
-              ¿Ofrecen soporte bilingüe completo en español e inglés?
+            <h3 class="text-base sm:text-lg font-heading text-brand-dark font-semibold leading-snug" contenteditable="true">
+              ¿Ofrecen soporte y atención 100% en español?
             </h3>
           </div>
           <span class="text-brand-dark transition-transform duration-200 group-open:rotate-45 text-2xl font-light shrink-0">
             +
           </span>
         </summary>
-        <div class="pl-11 sm:pl-13 pt-3 pr-4 text-slate-600 text-xs sm:text-sm leading-relaxed" contenteditable="true">
-          <p>Sí. Toda nuestra asesoría, documentación, llamadas y acompañamiento se ofrecen de forma nativa en español y en inglés.</p>
+        <div class="pl-12 sm:pl-14 pt-3 pr-4 text-slate-600 text-sm leading-relaxed" contenteditable="true">
+          <p>Sí. Todo nuestro equipo es bilingüe y le asistimos en español en cada consulta, cambio y soporte post-lanzamiento.</p>
         </div>
       </details>
 
-      <div class="pt-2">
-        <a href="/es/faq" class="inline-flex items-center text-brand-primary font-medium hover:underline text-xs sm:text-sm gap-2" contenteditable="true">
+      <div class="pt-3">
+        <a href="/es/faq" class="inline-flex items-center text-brand-primary font-semibold hover:underline text-sm gap-2" contenteditable="true">
           Ver todas las preguntas y respuestas <span>→</span>
         </a>
       </div>
@@ -161,40 +165,77 @@ export const LANDING_PAGE_TEMPLATES = {
 </div>
   `,
 
-  form_lead: `
-<!-- Form 1: General Lead Capture Form -->
-<div id="formulario" class="builder-block bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-xs font-sans">
+  form_promo: `
+<!-- High-Contrast 15% OFF Promo Claim Form with Official Gold Button -->
+<div id="formulario" class="builder-block bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-md font-sans">
   <div class="max-w-xl mx-auto space-y-6">
     <div class="text-center space-y-2">
-      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200/70 text-slate-700 text-xs font-semibold">
+      <span class="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider">
+        Oferta por Tiempo Limitado
+      </span>
+      <h2 class="text-2xl sm:text-3xl font-heading font-bold text-brand-dark" contenteditable="true">
+        ¡Asegura tu Descuento del 15% Hoy!
+      </h2>
+      <p class="text-sm text-slate-600" contenteditable="true">
+        Completa el formulario a continuación para congelar tu precio especial. Un asesor de Guía de Negocios te contactará en menos de 24 horas.
+      </p>
+    </div>
+
+    <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Descuento activado! Le enviaremos su confirmación por WhatsApp.');">
+      <div>
+        <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Nombre Completo</label>
+        <input type="text" required placeholder="Ej. Juan Pérez" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary shadow-xs" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">WhatsApp / Teléfono</label>
+        <input type="tel" required placeholder="Ej. (865) 123-4567" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary shadow-xs" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Tipo de Negocio o Servicio</label>
+        <input type="text" placeholder="Ej. Construcción, Limpieza, Restaurante" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary shadow-xs" />
+      </div>
+      <button type="submit" class="w-full py-4 bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold rounded-full text-base transition-all shadow-md mt-2" contenteditable="true">
+        Reclamar Mi Cupón del 15% OFF
+      </button>
+    </form>
+  </div>
+</div>
+  `,
+
+  form_lead: `
+<!-- Standard Lead Capture Form with Dark Green Button -->
+<div id="formulario" class="builder-block bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl my-6 shadow-sm font-sans">
+  <div class="max-w-xl mx-auto space-y-6">
+    <div class="text-center space-y-2">
+      <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-200 text-slate-800 text-xs font-bold">
         Contacto Directo
       </span>
-      <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-slate-900" contenteditable="true">
+      <h2 class="text-2xl sm:text-3xl font-heading font-bold text-brand-dark" contenteditable="true">
         Solicite su Asesoría Gratuita
       </h2>
-      <p class="text-xs sm:text-sm text-slate-500" contenteditable="true">Complete sus datos y un consultor bilingüe se comunicará hoy mismo.</p>
+      <p class="text-sm text-slate-600" contenteditable="true">Complete sus datos y un consultor bilingüe se comunicará hoy mismo.</p>
     </div>
 
     <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Gracias! Nos comunicaremos con usted a la brevedad.');">
       <div>
-        <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">Nombre y Apellido</label>
-        <input type="text" required placeholder="Ej. Carlos Mendoza" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary" />
+        <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Nombre y Apellido</label>
+        <input type="text" required placeholder="Ej. Carlos Mendoza" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary shadow-xs" />
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">Teléfono / WhatsApp</label>
-          <input type="tel" required placeholder="(865) 000-0000" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary" />
+          <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Teléfono / WhatsApp</label>
+          <input type="tel" required placeholder="(865) 000-0000" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary shadow-xs" />
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">Correo Electrónico</label>
-          <input type="email" required placeholder="carlos@correo.com" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary" />
+          <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Correo Electrónico</label>
+          <input type="email" required placeholder="carlos@correo.com" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary shadow-xs" />
         </div>
       </div>
       <div>
-        <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">¿En qué podemos ayudarle?</label>
-        <textarea rows="3" placeholder="Describa brevemente su proyecto o consulta..." class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary resize-none"></textarea>
+        <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">¿En qué podemos ayudarle?</label>
+        <textarea rows="3" placeholder="Describa brevemente su proyecto o consulta..." class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-primary resize-none shadow-xs"></textarea>
       </div>
-      <button type="submit" class="w-full py-3.5 bg-brand-primary hover:bg-opacity-95 text-white font-medium rounded-full text-xs sm:text-sm transition-all shadow-sm" contenteditable="true">
+      <button type="submit" class="w-full py-4 bg-brand-primary hover:bg-emerald-900 text-white font-semibold rounded-full text-base transition-all shadow-md" contenteditable="true">
         Enviar Solicitud
       </button>
     </form>
@@ -202,76 +243,39 @@ export const LANDING_PAGE_TEMPLATES = {
 </div>
   `,
 
-  form_promo: `
-<!-- Form 2: Special Discount / Promo Claim Form -->
-<div id="formulario" class="builder-block bg-gradient-to-br from-brand-dark to-slate-900 text-white p-8 sm:p-12 rounded-3xl my-6 shadow-md font-sans">
-  <div class="max-w-xl mx-auto space-y-6">
-    <div class="text-center space-y-2">
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
-        Oferta por Tiempo Limitado
-      </span>
-      <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white" contenteditable="true">
-        Reclame su 15% de Descuento
-      </h2>
-      <p class="text-xs sm:text-sm text-slate-300" contenteditable="true">Válido exclusivamente para nuevos proyectos este mes.</p>
-    </div>
-
-    <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Descuento activado! Le enviaremos su cupón por WhatsApp y correo.');">
-      <div>
-        <label class="block text-xs font-medium text-slate-200 mb-1" contenteditable="true">Nombre Completo</label>
-        <input type="text" required placeholder="Su nombre" class="w-full px-3.5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400" />
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-200 mb-1" contenteditable="true">WhatsApp / Teléfono</label>
-          <input type="tel" required placeholder="(865) 000-0000" class="w-full px-3.5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400" />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-200 mb-1" contenteditable="true">Tipo de Negocio</label>
-          <input type="text" placeholder="Ej. Construcción, Limpieza, Restaurante" class="w-full px-3.5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400" />
-        </div>
-      </div>
-      <button type="submit" class="w-full py-3.5 bg-brand-accent hover:bg-yellow-300 text-brand-dark font-bold rounded-full text-xs sm:text-sm transition-all shadow-md" contenteditable="true">
-        Reclamar Mi 15% de Descuento Ahora
-      </button>
-    </form>
-  </div>
-</div>
-  `,
-
   form_call: `
-<!-- Form 3: Book a Strategic Call Form -->
-<div id="formulario" class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-xs my-6 font-sans">
+<!-- Call Booking Form with Dark Green Button -->
+<div id="formulario" class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
   <div class="max-w-xl mx-auto space-y-6">
     <div class="text-center space-y-2">
-      <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">
+      <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
         Agenda Directa
       </span>
-      <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-slate-900" contenteditable="true">
+      <h2 class="text-2xl sm:text-3xl font-heading font-bold text-brand-dark" contenteditable="true">
         Agende su Consulta Telefónica
       </h2>
-      <p class="text-xs sm:text-sm text-slate-500" contenteditable="true">Sesión de 15 minutos con un consultor empresarial bilingüe sin compromiso.</p>
+      <p class="text-sm text-slate-600" contenteditable="true">Sesión de 15 minutos con un consultor empresarial bilingüe sin costo.</p>
     </div>
 
     <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Cita solicitada! Le confirmaremos la hora exacta por mensaje.');">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">Nombre</label>
-          <input type="text" required placeholder="Su nombre" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary" />
+          <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Nombre</label>
+          <input type="text" required placeholder="Su nombre" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-brand-primary shadow-xs" />
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">Teléfono</label>
-          <input type="tel" required placeholder="(865) 000-0000" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary" />
+          <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Teléfono</label>
+          <input type="tel" required placeholder="(865) 000-0000" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-brand-primary shadow-xs" />
         </div>
       </div>
       <div>
-        <label class="block text-xs font-medium text-slate-700 mb-1" contenteditable="true">Horario Preferido</label>
-        <select class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-brand-primary">
+        <label class="block text-sm font-semibold text-slate-800 mb-1" contenteditable="true">Horario Preferido</label>
+        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-brand-primary font-medium shadow-xs">
           <option>Mañana (9:00 AM - 12:00 PM)</option>
           <option>Tarde (1:00 PM - 5:00 PM)</option>
         </select>
       </div>
-      <button type="submit" class="w-full py-3.5 bg-brand-primary hover:bg-opacity-95 text-white font-medium rounded-full text-xs sm:text-sm transition-all shadow-sm" contenteditable="true">
+      <button type="submit" class="w-full py-4 bg-brand-primary hover:bg-emerald-900 text-white font-semibold rounded-full text-base transition-all shadow-md" contenteditable="true">
         Confirmar Solicitud de Llamada
       </button>
     </form>
@@ -279,78 +283,21 @@ export const LANDING_PAGE_TEMPLATES = {
 </div>
   `,
 
-  testimonials: `
-<div class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-xs my-6 font-sans">
-  <div class="max-w-3xl mx-auto text-center mb-8 space-y-2">
-    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-medium tracking-wide">
-      Testimonios de Clientes
-    </span>
-    <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-slate-900 leading-tight" contenteditable="true">
-      Lo que dicen nuestros clientes
-    </h2>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-    <div class="bg-slate-50/70 border border-slate-200/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-4 shadow-xs">
-      <div class="space-y-3">
-        <div class="flex items-center gap-1 text-amber-400">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-        </div>
-        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed italic" contenteditable="true">
-          "Guía Negocios nos ayudó con cada detalle de la apertura de nuestro negocio. Su atención bilingüe hizo todo el proceso claro y sin estrés."
-        </p>
-      </div>
-      <div class="flex items-center gap-3 pt-3 border-t border-slate-200/60">
-        <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-800 font-bold text-xs">SM</div>
-        <div>
-          <h4 class="text-xs sm:text-sm font-heading font-semibold text-slate-900" contenteditable="true">Sylvia M.</h4>
-          <p class="text-[11px] text-slate-500" contenteditable="true">Rocs Construction — Knoxville TN</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-slate-50/70 border border-slate-200/80 rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-4 shadow-xs">
-      <div class="space-y-3">
-        <div class="flex items-center gap-1 text-amber-400">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-        </div>
-        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed italic" contenteditable="true">
-          "Excelente servicio y claridad en cada paso. Nos ayudaron a configurar todo en menos de una semana. Totalmente recomendados."
-        </p>
-      </div>
-      <div class="flex items-center gap-3 pt-3 border-t border-slate-200/60">
-        <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-800 font-bold text-xs">CR</div>
-        <div>
-          <h4 class="text-xs sm:text-sm font-heading font-semibold text-slate-900" contenteditable="true">Carlos R.</h4>
-          <p class="text-[11px] text-slate-500" contenteditable="true">CleanPro Services — Maryville TN</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-  `,
-
   cta: `
-<div class="builder-block bg-brand-dark text-white p-8 sm:p-12 rounded-3xl text-center shadow-lg my-6 font-sans relative">
-  <div class="max-w-2xl mx-auto space-y-4">
-    <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-white leading-tight" contenteditable="true">
-      ¿Listo para dar el siguiente paso?
+<!-- Official Dark Navy CTA with Gold / White Buttons -->
+<div class="builder-block bg-brand-dark text-white p-8 sm:p-14 rounded-3xl text-center shadow-xl my-6 font-sans relative">
+  <div class="max-w-2xl mx-auto space-y-5">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-white leading-tight" contenteditable="true">
+      ¿Listo para hacer crecer su negocio?
     </h2>
-    <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed" contenteditable="true">
-      Hable hoy con uno de nuestros consultores bilingües y reciba orientación clara y personalizada.
+    <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed" contenteditable="true">
+      Hable hoy con uno de nuestros consultores bilingües y reciba orientación clara, confiable y personalizada.
     </p>
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-      <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-white text-brand-dark font-semibold py-3 px-6 rounded-full hover:bg-slate-100 transition-colors text-xs sm:text-sm shadow-sm" contenteditable="true">
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+      <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold py-3.5 px-8 rounded-full transition-colors text-base shadow-md" contenteditable="true">
         Llamar al (865) 202-7112
       </a>
-      <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-6 rounded-full border border-white/20 transition-colors text-xs sm:text-sm" contenteditable="true">
+      <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white font-semibold py-3.5 px-8 rounded-full border border-white/20 transition-colors text-base" contenteditable="true">
         Completar Formulario
       </a>
     </div>

@@ -57,14 +57,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <button class="px-4 py-1.5 text-sm font-medium rounded-md bg-brand-primary text-white">All</button>
       <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Draft</button>
       <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100">Published</button>
-      <div class="w-px h-6 bg-slate-200 mx-1"></div>
-      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-2">
-        <svg class="w-4 h-4" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"><path fill="#BD3D44" d="M36 27a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v18z"></path><path fill="#FFF" d="M0 12h36v4H0zm0 8h36v4H0z"></path><path fill="#192F5D" d="M0 5a4 4 0 0 1 4-4h14v18H0V5z"></path></svg>
-        EN
+      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-1.5">
+        <span class="px-1.5 py-0.5 rounded bg-slate-200 text-[11px] font-bold text-slate-700">EN</span>
+        <span>English</span>
       </button>
-      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-2">
-        <svg class="w-4 h-4" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"><path fill="#C60A1D" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"></path><path fill="#FFC400" d="M0 12h36v12H0z"></path></svg>
-        ES
+      <button class="px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-100 flex items-center gap-1.5">
+        <span class="px-1.5 py-0.5 rounded bg-slate-200 text-[11px] font-bold text-slate-700">ES</span>
+        <span>Español</span>
       </button>
     </div>
 
@@ -157,17 +156,18 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           html += `
             <tr class="hover:bg-slate-50/50">
-              <td class="px-6 py-4 font-medium text-brand-dark">${lp.title || 'Untitled Page'}</td>
-              <td class="px-6 py-4 text-slate-500">/${lp.lang || 'es'}/lp/${lp.slug || 'page'}</td>
-              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${lp.status || 'Draft'}</span></td>
-              <td class="px-6 py-4 text-slate-600 font-medium">${lang}</td>
-              <td class="px-6 py-4 text-right text-slate-600">${views}</td>
-              <td class="px-6 py-4 text-right text-slate-600">${conversions}</td>
-              <td class="px-6 py-4 text-right"><span class="text-emerald-600 font-medium">${rate}</span></td>
+              <td class="px-6 py-4 font-semibold text-brand-dark">${lp.title || 'Untitled Page'}</td>
+              <td class="px-6 py-4 text-slate-500 font-mono text-xs">/${lp.lang || 'es'}/lp/${lp.slug || 'page'}</td>
+              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-semibold rounded-full">${lp.status || 'Draft'}</span></td>
+              <td class="px-6 py-4 text-slate-700 font-semibold">${lang}</td>
+              <td class="px-6 py-4 text-right text-slate-600 font-mono">${views}</td>
+              <td class="px-6 py-4 text-right text-slate-600 font-mono">${conversions}</td>
+              <td class="px-6 py-4 text-right"><span class="text-emerald-700 font-semibold font-mono">${rate}</span></td>
               <td class="px-6 py-4 text-right">
-                <div class="flex items-center justify-end gap-2">
-                  <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
-                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
+                <div class="flex items-center justify-end gap-3">
+                  <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-600 hover:text-brand-primary font-semibold transition-colors">Edit</a>
+                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-600 hover:text-brand-primary font-semibold transition-colors">View</a>
+                  <button data-delete-lp-id="${id}" data-delete-lp-title="${lp.title || 'Landing Page'}" class="text-xs text-rose-600 hover:text-rose-800 font-semibold transition-colors cursor-pointer">Delete</button>
                 </div>
               </td>
             </tr>
@@ -175,6 +175,33 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         });
 
         tbody.innerHTML = html;
+
+        // Attach delete handlers
+        document.querySelectorAll('[data-delete-lp-id]').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = (btn as HTMLElement).dataset.deleteLpId;
+            const title = (btn as HTMLElement).dataset.deleteLpTitle || 'this landing page';
+            if (!id) return;
+            // @ts-ignore
+            const ok = (typeof window.showConfirm === 'function')
+              // @ts-ignore
+              ? await window.showConfirm('Delete Landing Page', `Are you sure you want to permanently delete "${title}"? This cannot be undone.`)
+              : confirm(`Are you sure you want to permanently delete "${title}"?`);
+            
+            if (ok) {
+              try {
+                await deleteDoc(doc(db, 'landingPages', id));
+                // @ts-ignore
+                window.showToast('Landing page deleted!', 'success');
+                loadLandingPages();
+              } catch (err: any) {
+                console.error("Delete error:", err);
+                alert("Failed to delete: " + (err?.message || err));
+              }
+            }
+          });
+        });
 
       } catch (error) {
         console.error("Error fetching landing pages:", error);
@@ -212,20 +239,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Primary Goal: "${goal}".
           
           STRUCTURE RULES (KEEP IT SHORT & PUNCHY - 3 TO 4 SECTIONS TOTAL):
-          1. Hero Section: Light card ('bg-slate-50/80 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center') with dark headline ('text-slate-900 font-heading font-bold text-3xl sm:text-5xl'), short description ('text-slate-600'), and action button ('bg-brand-primary text-white py-3.5 px-8 rounded-full'). NEVER use white text on white/light backgrounds!
-          2. Features / Value Cards: 3 concise benefit cards ('bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs') with SVG icons and dark text ('text-slate-900' and 'text-slate-500').
+          1. Hero Section: Light card ('bg-slate-50 border border-slate-200 rounded-3xl p-8 sm:p-14 text-center shadow-sm') with dark headline ('text-brand-dark font-heading font-bold text-3xl sm:text-5xl'), short description ('text-slate-600'), and dark green action button ('bg-brand-primary hover:bg-emerald-900 text-white font-semibold py-3.5 px-8 rounded-full shadow-md').
+          2. Features / Value Cards: 3 concise benefit cards ('bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs') with emerald SVG icons and dark text ('text-brand-dark font-bold' and 'text-slate-600').
           3. Goal-Specific Action Form (MATCH TO GOAL):
-             - If goal is 'discount': Include a 15% discount claim form ('bg-gradient-to-br from-brand-dark to-slate-900 text-white p-8 rounded-3xl') with Name, WhatsApp/Phone, Business Type, and Gold CTA button.
-             - If goal is 'call': Include a Quick Call Booking form ('bg-white p-8 rounded-3xl border border-slate-200') with Name, Phone, Preferred Time, and Green CTA button.
-             - If goal is 'lead' or other: Include a direct Lead Capture form ('bg-slate-50 border border-slate-200 p-8 rounded-3xl') with Name, Phone, Email, Message, and Green CTA button.
+             - If goal is 'discount': Include a 15% discount claim form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl text-slate-900 shadow-md') with dark labels ('text-slate-800 font-semibold'), white inputs ('bg-white border border-slate-300 text-slate-900'), and Gold CTA button ('bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold py-4 rounded-full text-base').
+             - If goal is 'call': Include a Quick Call Booking form ('bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 text-slate-900 shadow-sm') with Name, Phone, Preferred Time, and Green CTA button ('bg-brand-primary text-white font-semibold py-4 rounded-full').
+             - If goal is 'lead' or other: Include a direct Lead Capture form ('bg-slate-50 border border-slate-200 p-8 sm:p-12 rounded-3xl text-slate-900 shadow-sm') with Name, Phone, Email, Message, and Green CTA button ('bg-brand-primary text-white font-semibold py-4 rounded-full').
           4. Standard Website FAQ (FaqAccordion style): 2-column layout:
-             - Left Column (lg:col-span-5): 'Preguntas Frecuentes' title in 'text-3xl sm:text-4xl font-heading font-semibold text-brand-dark' + contact link.
+             - Left Column (lg:col-span-5): 'Preguntas Frecuentes' title in 'text-3xl sm:text-4xl font-heading font-bold text-brand-dark' + contact link.
              - Right Column (lg:col-span-7): 3 numbered questions ('01', '02', '03' in green font-bold) with '+' icon and 'border-b border-slate-200 pb-5'.
           
           STRICT CONTRAST & TYPOGRAPHY RULE:
-          - Every heading on light/white backgrounds MUST be 'text-slate-900' or 'text-brand-dark'.
-          - Every paragraph on light/white backgrounds MUST be 'text-slate-600' or 'text-slate-500'.
-          - Only use 'text-white' when the container has 'bg-brand-dark' or 'bg-slate-900'.
+          - Every heading on light/white backgrounds MUST be 'text-brand-dark' or 'text-slate-900'. NEVER use 'text-white' on light backgrounds.
+          - Every paragraph on light/white backgrounds MUST be 'text-slate-600'.
+          - Absolutely NO flag emojis.
           - Add contenteditable="true" to all editable headings, paragraphs, and buttons.
           
           Format your output strictly as a JSON object:
