@@ -279,37 +279,54 @@ export async function getBlogSlugs(lang: 'en' | 'es'): Promise<string[]> {
  * Handles headings, paragraphs, bold, italic, links, code, lists, tables, and horizontal rules.
  */
 export function markdownToHtml(md: string): string {
+  if (!md) return '';
   const lines = md.split('\n');
   const html: string[] = [];
   let inList = false;
   let listType: 'ul' | 'ol' = 'ul';
   let inTable = false;
   let tableRowIndex = 0;
+  let htmlDepth = 0;
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const trimmed = line.trim();
+
+    // Check opening and closing HTML block elements
+    const openTags = (trimmed.match(/<(div|svg|table|section|article|header|footer|figure|blockquote|details|style)\b[^>]*>/gi) || []).length;
+    const closeTags = (trimmed.match(/<\/(div|svg|table|section|article|header|footer|figure|blockquote|details|style)>/gi) || []).length;
+
+    // Check if we are in an active HTML block or starting one
+    if (htmlDepth > 0 || openTags > 0 || trimmed.startsWith('<') || trimmed.startsWith('<!--')) {
+      if (inList) { html.push(`</${listType}>`); inList = false; }
+      if (inTable) { html.push('</tbody></table></div>'); inTable = false; }
+      
+      html.push(line);
+      htmlDepth += openTags - closeTags;
+      if (htmlDepth < 0) htmlDepth = 0;
+      continue;
+    }
     
     // Table detection
     if (line.startsWith('|') && line.endsWith('|')) {
       if (!inTable) {
-        // Close any open list
         if (inList) { html.push(`</${listType}>`); inList = false; }
         inTable = true;
         tableRowIndex = 0;
         html.push('<div class="overflow-x-auto my-6"><table class="w-full text-left border-collapse">');
       }
       
-      // Check if this is a separator row (|---|---|)
-      const trimmed = line.replace(/\|/g, '').replace(/-/g, '').replace(/:/g, '').trim();
-      if (trimmed === '') {
+      // Check if separator row (|---|---|)
+      const isSep = line.replace(/\|/g, '').replace(/-/g, '').replace(/:/g, '').trim() === '';
+      if (isSep) {
         tableRowIndex++;
-        continue; // Skip separator rows
+        continue;
       }
       
-      const cells = line.split('|').filter(c => c.trim() !== '').map(c => c.trim());
+      const cells = line.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(c => c.trim());
       const isHeader = tableRowIndex === 0;
       const tag = isHeader ? 'th' : 'td';
-      const headerClass = isHeader ? ' class="font-semibold text-brand-dark border-b-2 border-slate-300 pb-2 px-4 py-2"' : ' class="border-b border-slate-200 px-4 py-2"';
+      const headerClass = isHeader ? ' class="font-semibold text-brand-dark border-b-2 border-slate-300 pb-2 px-4 py-2 bg-slate-50"' : ' class="border-b border-slate-200 px-4 py-2"';
       
       if (isHeader) html.push('<thead>');
       html.push('<tr>');
@@ -328,7 +345,7 @@ export function markdownToHtml(md: string): string {
     }
     
     // Horizontal rule
-    if (line.match(/^---+$/)) {
+    if (trimmed.match(/^---+$/)) {
       if (inList) { html.push(`</${listType}>`); inList = false; }
       html.push('<hr class="my-8 border-slate-200" />');
       continue;
@@ -341,8 +358,8 @@ export function markdownToHtml(md: string): string {
       const level = headingMatch[1].length;
       const text = inlineMarkdown(headingMatch[2]);
       const classes: Record<number, string> = {
-        2: 'text-2xl font-heading text-brand-dark mt-10 mb-4',
-        3: 'text-xl font-heading text-brand-dark mt-8 mb-3',
+        2: 'text-2xl font-heading text-brand-dark mt-10 mb-4 font-bold',
+        3: 'text-xl font-heading text-brand-dark mt-8 mb-3 font-semibold',
         4: 'text-lg font-semibold text-brand-dark mt-6 mb-2',
       };
       html.push(`<h${level} class="${classes[level] || 'font-heading text-brand-dark mt-6 mb-2'}">${text}</h${level}>`);
@@ -384,44 +401,15 @@ export function markdownToHtml(md: string): string {
       continue;
     }
 
-    // Raw HTML / SVG / Style blocks (do not wrap in <p>)
-    const trimmedLine = line.trim();
-    if (
-      trimmedLine.startsWith('<div') || 
-      trimmedLine.startsWith('</div') || 
-      trimmedLine.startsWith('<svg') || 
-      trimmedLine.startsWith('</svg') || 
-      trimmedLine.startsWith('<style') || 
-      trimmedLine.startsWith('</style') || 
-      trimmedLine.startsWith('<section') || 
-      trimmedLine.startsWith('</section') || 
-      trimmedLine.startsWith('<header') || 
-      trimmedLine.startsWith('</header') || 
-      trimmedLine.startsWith('<footer') || 
-      trimmedLine.startsWith('</footer') || 
-      trimmedLine.startsWith('<figure') || 
-      trimmedLine.startsWith('</figure') || 
-      trimmedLine.startsWith('<table') || 
-      trimmedLine.startsWith('</table') || 
-      trimmedLine.startsWith('<path') || 
-      trimmedLine.startsWith('<span') || 
-      trimmedLine.startsWith('</span') || 
-      trimmedLine.startsWith('<!--')
-    ) {
-      if (inList) { html.push(`</${listType}>`); inList = false; }
-      html.push(line);
-      continue;
-    }
-    
     // Close list if we hit a non-list line
-    if (inList && line.trim() === '') {
+    if (inList && trimmed === '') {
       html.push(`</${listType}>`);
       inList = false;
       continue;
     }
     
     // Empty line
-    if (line.trim() === '') {
+    if (trimmed === '') {
       continue;
     }
     

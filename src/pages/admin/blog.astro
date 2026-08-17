@@ -150,23 +150,63 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           
           Generate a comprehensive, deeply informative, research-backed, long-form (1,500+ words) blog post in both Spanish and English versions.
           
-          Requirements for Content:
-          1. Structure & Layout (Must strictly follow Guia Negocios standard format):
-             - Strong intro hook highlighting the core business challenge with bolded key terms (**negocio**, **empresa**, **LLC**, **impuestos**).
-             - Clear H2 (##) and H3 (###) headings structured for automatic Table of Contents extraction.
-             - Real-world practical case studies: "## Ejemplos Prácticos y Casos de Estudio" with "### Caso 1: [Name/Scenario]" and "### Caso 2: [Name/Scenario]".
-             - Structured Comparison Table in Markdown (e.g. | Sigla | Nombre Oficial | ¿Para quién es? | Uso Principal |).
-             - Critical Pitfalls & Penalties section: "## Errores Críticos que Debe Evitar" with real dollar penalties/risks.
-             - Closing Call to Action: "## ¿Necesita Ayuda para [Tema]?" with direct links to Guia Negocios consultation.
-          2. Tone: Authoritative, supportive, clear, and professional. Back claims with facts, statistics, and official requirements.
-          3. Research Links & In-Text Citations: Naturally weave relevant Markdown hyperlinks throughout the body text referencing verified government, legal, and academic authorities (e.g., [IRS.gov](https://www.irs.gov), [Tennessee Secretary of State](https://sos.tn.gov/business-services), [Tennessee Department of Revenue](https://www.tn.gov/revenue/taxes/business-tax.html), [SBA.gov](https://www.sba.gov), [Brookings Institution](https://www.brookings.edu), and internal Guia Negocios services like [Paquete de Lanzamiento](/es/services/paquete-lanzamiento-completo)).
-          4. References Section: Conclude both articles with a formatted "Fuentes y Referencias Oficiales" / "Official Sources & References" section.
-          // Infographic Guidelines
-          ${getInfographicSystemPrompt()}
+          GOLDEN STANDARD ARCHITECTURE (Must strictly mirror the design of our top posts):
+          1. Hook Introduction:
+             - 2-3 short, punchy paragraphs (maximum 2-3 sentences each).
+             - Bold core keywords (**negocio**, **empresa**, **LLC**, **impuestos**, **EIN**, **plan de negocios**).
+             - Use '---' horizontal divider after the intro.
           
-          Requirements for Visuals & Infographics:
-          - Embed this exact unique image: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url}).
-          - Embed at least 1 or 2 high-impact, custom-designed HTML/CSS/SVG infographics directly within the markdown. Choose or invent whichever format best fits this specific topic (e.g. Timelines, Compliance Checklists, Fee Calculators, Decision Trees, Step Maps, or Comparison Matrices).
+          2. Core Educational Breakdown (H2 and H3 Headings):
+             - Section 1: "## ¿Qué es [Concepto] y Por Qué es Esencial?"
+             - Follow with a structured numbered list with bold lead titles:
+               1. **[Punto Clave 1]:** [Explicación clara y concisa en 2 oraciones].
+               2. **[Punto Clave 2]:** [Explicación clara y concisa en 2 oraciones].
+               3. **[Punto Clave 3]:** [Explicación clara y concisa en 2 oraciones].
+             - Embed body image: ![${uniqueBodyImage.alt}](${uniqueBodyImage.url})
+          
+          3. Mandatory Embedded Visual Checklist / Infographic Card:
+             - Embed at least ONE responsive HTML/CSS Visual Checklist Card (flush to column 0, NO 4-space indent) breaking down the exact requirements, steps, and compliance milestones.
+          
+          4. Real-World Case Studies (Ejemplos Prácticos):
+             - "## Ejemplos Prácticos y Casos de Estudio"
+             - "### Caso 1: [Nombre] ([Perfil del Emprendedor, ej. Mateo en Bogotá o Knoxville])"
+               [2 oraciones de contexto sobre el problema o meta del negocio].
+               * **Solución Aplicada:** [Acción tomada con Guia Negocios o registro legal].
+               * **Resultado Clave:** [Beneficio medible, ahorro en impuestos o contrato conseguido].
+             - "### Caso 2: [Nombre] ([Perfil del Emprendedor])"
+               [2 oraciones de contexto].
+               * **Solución Aplicada:** [Acción tomada].
+               * **Resultado Clave:** [Beneficio medible].
+          
+          5. Structured Comparison Table (Markdown Table):
+             - "## [Comparativa / Diferencias Clave]"
+             - Markdown table with clean borders comparing entities, licenses, or strategies:
+               | Sigla / Concepto | Nombre Oficial | ¿Para quién aplica? | Uso / Beneficio Principal |
+               | :--- | :--- | :--- | :--- |
+               | **Opción A** | ... | ... | ... |
+               | **Opción B** | ... | ... | ... |
+          
+          6. Critical Pitfalls & Penalties:
+             - "## Errores Críticos que Debe Evitar"
+             - Numbered list with bold leads and real financial/legal penalties:
+               1. **[Error y Multa Real]:** [Explicar multas reales del IRS como $25,000 o pérdida del velo corporativo].
+               2. **[Error de Cumplimiento Estatal]:** [Explicar consecuencias en Tennessee].
+          
+          7. Closing Call to Action:
+             - "## ¿Necesita Ayuda para [Tema] o Formar su Empresa en EE.UU.?"
+             - In **GUIA NEGOCIOS**, somos especialistas en asesorar a emprendedores hispanos...
+             - "**¿Listo para dar el siguiente paso?** [Póngase en contacto con nuestro equipo de consultores bilingües](/es/contact) hoy mismo para una asesoría estratégica personalizada." (Use /en/contact for English version).
+          
+          8. Official Sources & References Section:
+             - "## Fuentes y Referencias Oficiales"
+             - Bulleted list with markdown links to official authorities:
+               * [IRS.gov](https://www.irs.gov) — Publicaciones y formularios fiscales federales.
+               * [Secretaría de Estado de Tennessee](https://sos.tn.gov/business-services) — Registro comercial.
+               * [Tennessee Department of Revenue](https://www.tn.gov/revenue) — Impuestos estatales.
+               * [SBA.gov](https://www.sba.gov) — Guía de pequeños negocios.
+          
+          // Infographic Rules
+          ${getInfographicSystemPrompt()}
           
           Verified Research Reference Library to use:
           [SPANISH CITATIONS]:
@@ -174,6 +214,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           [ENGLISH CITATIONS]:
           ${citationsEn}
+          
+          CRITICAL WRITING RULE:
+          - NEVER produce long continuous blocks of unformatted text. Keep all paragraphs short (2-3 sentences). Use bullet lists, tables, bold leads, and visual checklist cards to make the article highly scannable and visually premium.
           
           Format your output strictly as a JSON object (do not wrap in commentary):
           {

@@ -387,6 +387,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     } from '../../../utils/unsplash';
     import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../../utils/research';
     import { getInfographicSystemPrompt } from '../../../utils/infographics';
+    import { markdownToHtml } from '../../../utils/blog';
 
     let easyMdeEs: any, easyMdeEn: any;
     let currentPreviewLang: 'es' | 'en' = 'es';
@@ -794,9 +795,8 @@ Instructions:
         featuredContainer.classList.add('hidden');
       }
 
-      // Parse Markdown to HTML
-      // @ts-ignore
-      const html = window.marked ? window.marked.parse(markdown) : markdown;
+      // Parse Markdown to HTML using exact live blog renderer
+      const html = markdownToHtml(markdown);
       const contentEl = document.getElementById('preview-content-html')!;
       contentEl.innerHTML = html;
 
