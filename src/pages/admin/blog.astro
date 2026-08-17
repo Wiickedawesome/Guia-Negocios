@@ -16,9 +16,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <!-- AI Draft Generator -->
   <div class="bg-gradient-to-r from-brand-dark to-slate-800 rounded-xl p-6 shadow-sm text-white mb-6">
     <div class="flex items-center gap-3 mb-4">
-      <svg class="w-6 h-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
       <h3 class="text-lg font-bold">AI Blog Draft Generator</h3>
-      <span class="px-2 py-0.5 bg-brand-primary/20 text-brand-primary text-xs font-bold rounded-full border border-brand-primary/30">Gemini</span>
+      <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div>
@@ -37,8 +37,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         </select>
       </div>
     </div>
-    <button id="ai-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+    <button id="ai-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2 font-semibold shadow-sm">
+      <svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
       Generate Draft with Gemini
     </button>
   </div>
@@ -120,6 +120,73 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         });
       });
     });
+
+    // Helper: Parse AI response with support for delimited blocks, clean JSON, and fallback extraction
+    function parseAiDraftResponse(rawText: string, topic: string) {
+      // 1. Check for Delimited Section Headers (Crash-proof format)
+      if (rawText.includes('===CONTENT_ES===') || rawText.includes('===TITLE_ES===')) {
+        const extractBlock = (marker: string, nextMarker: string): string => {
+          const parts = rawText.split(marker);
+          if (parts.length < 2) return '';
+          const content = parts[1].split(nextMarker)[0];
+          return content.trim();
+        };
+
+        const titleEs = extractBlock('===TITLE_ES===', '===TITLE_EN===') || topic;
+        const titleEn = extractBlock('===TITLE_EN===', '===SLUG_ES===') || topic;
+        const slugEs = extractBlock('===SLUG_ES===', '===SLUG_EN===') || topic.toLowerCase().replace(/\s+/g, '-');
+        const slugEn = extractBlock('===SLUG_EN===', '===META_DESC===') || topic.toLowerCase().replace(/\s+/g, '-');
+        const metaDesc = extractBlock('===META_DESC===', '===KEYWORDS===');
+        const keywordsStr = extractBlock('===KEYWORDS===', '===CONTENT_ES===');
+        const contentEs = extractBlock('===CONTENT_ES===', '===CONTENT_EN===');
+        
+        const enParts = rawText.split('===CONTENT_EN===');
+        const contentEn = enParts.length > 1 ? enParts[1].trim() : '';
+
+        const keywords = keywordsStr ? keywordsStr.split(',').map(k => k.trim()).filter(Boolean) : [topic];
+
+        return { titleEs, titleEn, slugEs, slugEn, metaDesc, keywords, contentEs, contentEn };
+      }
+
+      // 2. Fallback to JSON parsing if model output JSON
+      const cleanedText = rawText.replace(/```json\s*/gi, '').replace(/```\s*$/gi, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const data = JSON.parse(jsonMatch[0]);
+          return {
+            titleEs: data.titleEs || topic,
+            titleEn: data.titleEn || topic,
+            slugEs: data.slugEs || topic.toLowerCase().replace(/\s+/g, '-'),
+            slugEn: data.slugEn || topic.toLowerCase().replace(/\s+/g, '-'),
+            metaDesc: data.metaDesc || '',
+            keywords: Array.isArray(data.keywords) ? data.keywords : [topic],
+            contentEs: data.contentEs || '',
+            contentEn: data.contentEn || ''
+          };
+        } catch (jsonErr) {
+          console.warn("JSON parse error, attempting regex extraction...", jsonErr);
+          const extractJsonField = (field: string) => {
+            const regex = new RegExp(`"${field}"\\s*:\\s*"([\\s\\S]*?)(?="\\s*,\\s*"[a-zA-Z]+"|"$|}\\s*$)`, 'i');
+            const match = jsonMatch[0].match(regex);
+            return match ? match[1].replace(/\\"/g, '"').replace(/\\n/g, '\n') : '';
+          };
+
+          return {
+            titleEs: extractJsonField('titleEs') || topic,
+            titleEn: extractJsonField('titleEn') || topic,
+            slugEs: extractJsonField('slugEs') || topic.toLowerCase().replace(/\s+/g, '-'),
+            slugEn: extractJsonField('slugEn') || topic.toLowerCase().replace(/\s+/g, '-'),
+            metaDesc: extractJsonField('metaDesc') || '',
+            keywords: [topic],
+            contentEs: extractJsonField('contentEs') || '',
+            contentEn: extractJsonField('contentEn') || ''
+          };
+        }
+      }
+
+      throw new Error("Could not parse AI generated draft. Please try again.");
+    }
 
     // AI Generate Blog Draft
     document.getElementById('ai-generate-btn')?.addEventListener('click', async () => {
@@ -218,44 +285,55 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           CRITICAL WRITING RULE:
           - NEVER produce long continuous blocks of unformatted text. Keep all paragraphs short (2-3 sentences). Use bullet lists, tables, bold leads, and visual checklist cards to make the article highly scannable and visually premium.
           
-          Format your output strictly as a JSON object (do not wrap in commentary):
-          {
-            "titleEs": "string (Compelling Spanish Title)",
-            "titleEn": "string (Compelling English Title)",
-            "slugEs": "string (spanish-slug)",
-            "slugEn": "string (english-slug)",
-            "contentEs": "string (Full in-depth Spanish article with ## headings, in-text research links, embedded CSS/SVG infographic, image markdown, and official references section)",
-            "contentEn": "string (Full in-depth English article with ## headings, in-text research links, embedded CSS/SVG infographic, image markdown, and official references section)",
-            "metaDesc": "string (150-160 char high-CTR SEO summary)",
-            "keywords": ["string", "string", "string"],
-            "featuredImage": "${uniqueCover.url}"
-          }
+          OUTPUT FORMAT (Output STRICTLY using these exact section headers so the content renders flawlessly without JSON syntax errors):
+
+          ===TITLE_ES===
+          [Compelling Spanish Title]
+
+          ===TITLE_EN===
+          [Compelling English Title]
+
+          ===SLUG_ES===
+          [spanish-url-slug]
+
+          ===SLUG_EN===
+          [english-url-slug]
+
+          ===META_DESC===
+          [150-160 char high-CTR SEO summary]
+
+          ===KEYWORDS===
+          [keyword 1, keyword 2, keyword 3, keyword 4]
+
+          ===CONTENT_ES===
+          [Full in-depth Spanish article with ## headings, in-text research links, embedded HTML checklist/infographic, image markdown, and official references section]
+
+          ===CONTENT_EN===
+          [Full in-depth English article with ## headings, in-text research links, embedded HTML checklist/infographic, image markdown, and official references section]
         `;
 
         const result = await aiModel.generateContent(prompt);
-        const text = result.response.text();
-        const cleanedText = text.replace(/```json\s*/gi, '').replace(/```\s*$/gi, '').trim();
-        const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error("Could not parse AI response JSON");
+        const rawText = result.response.text();
 
-        const data = JSON.parse(jsonMatch[0]);
+        // Resilient Parser that supports delimited blocks, clean JSON, and corrupted JSON
+        const parsedData = parseAiDraftResponse(rawText, topic);
+
         const publishDate = new Date().toISOString().split('T')[0];
-
-        const rawKeywords = data.keywords && Array.isArray(data.keywords) 
-          ? data.keywords 
+        const rawKeywords = parsedData.keywords && parsedData.keywords.length > 0 
+          ? parsedData.keywords 
           : (customKeywords ? customKeywords.split(',').map((k: string) => k.trim()) : [topic]);
 
         // Save to Firestore
         const docRef = await addDoc(collection(db, 'blogs'), {
-          titleEs: data.titleEs || topic,
-          titleEn: data.titleEn || topic,
-          slugEs: data.slugEs || topic.toLowerCase().replace(/\s+/g, '-'),
-          slugEn: data.slugEn || topic.toLowerCase().replace(/\s+/g, '-'),
-          contentEs: data.contentEs || '',
-          contentEn: data.contentEn || '',
-          metaDesc: data.metaDesc || '',
+          titleEs: parsedData.titleEs || topic,
+          titleEn: parsedData.titleEn || topic,
+          slugEs: parsedData.slugEs || topic.toLowerCase().replace(/\s+/g, '-'),
+          slugEn: parsedData.slugEn || topic.toLowerCase().replace(/\s+/g, '-'),
+          contentEs: parsedData.contentEs || '',
+          contentEn: parsedData.contentEn || '',
+          metaDesc: parsedData.metaDesc || '',
           keywords: rawKeywords,
-          featuredImage: data.featuredImage || uniqueCover.url,
+          featuredImage: uniqueCover.url,
           author: 'Guia Negocios Team',
           authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
           readTime: 7,
@@ -324,7 +402,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                 <div class="flex items-center justify-end gap-3">
                   <a href="/admin/blog/editor?id=${id}" class="text-xs text-slate-600 hover:text-brand-primary font-medium">Edit</a>
                   ${statusAction}
-                  <button data-delete-id="${id}" class="text-xs text-rose-600 hover:text-rose-700 font-medium cursor-pointer">Delete</button>
                 </div>
               </td>
             </tr>
@@ -350,28 +427,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               } catch (err: any) {
                 console.error("Publish error:", err);
                 alert("Failed to publish: " + err.message);
-              }
-            }
-          });
-        });
-
-        // Attach delete handlers
-        document.querySelectorAll('[data-delete-id]').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const id = (btn as HTMLElement).dataset.deleteId;
-            if (!id) return;
-            // @ts-ignore
-            const ok = await window.showConfirm('Delete Post', 'Are you sure you want to permanently delete this blog post from Firestore? This action cannot be undone.');
-            if (ok) {
-              try {
-                await deleteDoc(doc(db, 'blogs', id));
-                // @ts-ignore
-                window.showToast('Post deleted successfully!', 'success');
-                loadBlogs();
-              } catch (err: any) {
-                console.error("Delete error:", err);
-                alert("Failed to delete post: " + err.message);
               }
             }
           });
