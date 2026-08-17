@@ -116,21 +116,15 @@ const t = useTranslations('es');
     const FALLBACK_RELATED_POSTS_ES = [
       {
         slug: 'importancia-de-numero-ein',
-        title: 'Guía de EIN: Cómo Obtener un Número de Identificación Patronal Sin SSN',
-        featuredImage: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=2070&auto=format&fit=crop',
-        tags: ['Impuestos', 'EIN', 'IRS']
+        title: 'Guía de EIN: Cómo Obtener un EIN Sin SSN',
+        featuredImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop',
+        tags: ['EIN', 'IRS', 'Negocios']
       },
       {
-        slug: 'como-iniciar-una-llc-en-knoxville-tn',
+        slug: 'como-iniciar-llc-knoxville',
         title: 'Cómo Iniciar una LLC en Knoxville, TN: Guía Paso a Paso',
         featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
         tags: ['LLC', 'Tennessee', 'Knoxville']
-      },
-      {
-        slug: 'como-hacer-un-plan-de-negocios-exitoso-en-ee-uu',
-        title: 'Cómo Hacer un Plan de Negocios Exitoso en EE.UU.: Guía Estratégica',
-        featuredImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop',
-        tags: ['Estrategia', 'Negocios', 'Plan']
       }
     ];
 
@@ -154,34 +148,34 @@ const t = useTranslations('es');
 
       try {
         let postData: any = null;
+        let postId: string = '';
 
-        // Try direct ID match if provided (works for draft and published posts)
         if (docId) {
           const docSnap = await getDoc(doc(db, 'blogs', docId));
           if (docSnap.exists()) {
             postData = docSnap.data();
+            postId = docSnap.id;
           }
         }
 
-        // Query Firestore for this post by slug if not found by ID
         if (!postData && slug) {
           const blogsRef = collection(db, 'blogs');
           const qEs = query(blogsRef, where('slugEs', '==', slug));
-          const snapEs = await getDocs(qEs);
-          if (!snapEs.empty) {
-            postData = snapEs.docs[0].data();
-          } else {
+          let snap = await getDocs(qEs);
+          
+          if (snap.empty) {
             const qEn = query(blogsRef, where('slugEn', '==', slug));
-            const snapEn = await getDocs(qEn);
-            if (!snapEn.empty) {
-              postData = snapEn.docs[0].data();
-            } else {
-              const qGeneric = query(blogsRef, where('slug', '==', slug));
-              const snapGeneric = await getDocs(qGeneric);
-              if (!snapGeneric.empty) {
-                postData = snapGeneric.docs[0].data();
-              }
-            }
+            snap = await getDocs(qEn);
+          }
+          
+          if (snap.empty) {
+            const qGeneric = query(blogsRef, where('slug', '==', slug));
+            snap = await getDocs(qGeneric);
+          }
+
+          if (!snap.empty) {
+            postData = snap.docs[0].data();
+            postId = snap.docs[0].id;
           }
         }
 
@@ -190,71 +184,86 @@ const t = useTranslations('es');
           return;
         }
 
-        // Populate Article UI
-        const title = postData.titleEs || postData.titleEn || 'Artículo';
-        const content = postData.contentEs || postData.contentEn || '';
+        // Render Dynamic Post Details
+        const title = postData.titleEs || postData.title || 'Guía de Negocios';
+        const rawContent = postData.contentEs || postData.content || '';
         const author = postData.author || 'Guia Negocios Team';
-        const authorAvatar = postData.authorAvatar || '/images/team-avatar.webp';
-        const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop';
-        const date = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]);
+        const dateStr = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : '2026-08-10');
         const readTime = postData.readTime || 7;
-        const tags = postData.keywords || [];
-        const altSlug = postData.slugEn || slug;
+        const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop';
+        const tags = postData.keywords || postData.tags || ['Negocios'];
+        const altSlug = postData.slugEn || postData.altSlug || slug;
 
-        document.title = `${title} | Blog | Guia Negocios`;
+        document.title = `${title} | Blog | GUIA NEGOCIOS`;
+        
+        // Populate Tags
+        const tagsContainer = document.getElementById('blog-tags');
+        if (tagsContainer) {
+          tagsContainer.innerHTML = tags.map((t: string) => `
+            <span class="text-xs bg-brand-primary text-white px-3 py-1 rounded-full font-bold tracking-wide uppercase">
+              ${t}
+            </span>
+          `).join('');
+        }
 
-        (document.getElementById('post-hero-img') as HTMLImageElement).src = featuredImage;
-        (document.getElementById('post-hero-img') as HTMLImageElement).alt = title;
-        document.getElementById('post-title')!.textContent = title;
-        (document.getElementById('post-author-avatar') as HTMLImageElement).src = authorAvatar;
-        document.getElementById('post-author-name')!.textContent = author;
-        document.getElementById('post-date')!.textContent = formatDate(date, 'es');
-        document.getElementById('post-readtime')!.textContent = `${readTime} MIN LECTURA`;
+        // Title & Meta
+        const titleEl = document.getElementById('blog-title');
+        if (titleEl) titleEl.textContent = title;
+        
+        const authorEl = document.getElementById('blog-author');
+        if (authorEl) authorEl.textContent = author;
 
-        // Tags
-        const tagsContainer = document.getElementById('post-tags-container')!;
-        tagsContainer.innerHTML = tags.map((t: string) => `
-          <span class="text-xs bg-brand-primary text-white px-3 py-1 rounded-full font-bold tracking-wide uppercase">
-            ${t}
-          </span>
-        `).join('');
+        const dateEl = document.getElementById('blog-date');
+        if (dateEl) {
+          dateEl.textContent = formatDate(dateStr, 'es');
+          dateEl.setAttribute('datetime', dateStr);
+        }
 
-        // Process markdown and TOC
-        const rawHtml = markdownToHtml(content);
-        const { html: contentHtml, toc } = processHtmlForBlog(rawHtml);
-        document.getElementById('post-html-body')!.innerHTML = contentHtml;
+        const readTimeEl = document.getElementById('blog-read-time');
+        if (readTimeEl) readTimeEl.textContent = `${readTime} MIN LECTURA`;
 
-        // TOC
-        const tocSidebar = document.getElementById('post-toc-sidebar')!;
-        const tocList = document.getElementById('post-toc-list')!;
-        tocList.innerHTML = '';
-        if (toc.length > 0) {
-          tocSidebar.classList.remove('hidden');
-          toc.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-              <a href="#${item.id}" class="block text-sm text-slate-600 hover:text-brand-primary transition-colors ${item.level === 3 ? 'ml-4 text-xs' : ''}">
-                ${item.text}
-              </a>
-            `;
-            tocList.appendChild(li);
-          });
-        } else {
-          tocSidebar.classList.add('hidden');
+        const heroImg = document.getElementById('blog-hero-image') as HTMLImageElement;
+        if (heroImg) {
+          heroImg.src = featuredImage;
+          heroImg.alt = title;
         }
 
         // Alt language link
-        const altLink = document.getElementById('post-alt-link') as HTMLAnchorElement;
-        altLink.href = `/en/blog/${altSlug}`;
+        const altLangLink = document.getElementById('alt-language-link') as HTMLAnchorElement;
+        if (altLangLink) {
+          altLangLink.href = `/en/blog/view?id=${postId}&slug=${altSlug}`;
+        }
+
+        // Process markdown and build TOC
+        const htmlContent = markdownToHtml(rawContent);
+        const { html: contentWithIds, toc } = processHtmlForBlog(htmlContent);
+
+        const contentEl = document.getElementById('blog-body-content');
+        if (contentEl) contentEl.innerHTML = contentWithIds;
+
+        // Populate Table of Contents
+        const tocList = document.getElementById('toc-list');
+        if (tocList) {
+          if (toc.length > 0) {
+            tocList.innerHTML = toc.map(item => `
+              <li>
+                <a href="#${item.id}" class="block text-sm text-slate-600 hover:text-brand-primary transition-colors ${item.level === 3 ? 'ml-4' : ''}">
+                  ${item.text}
+                </a>
+              </li>
+            `).join('');
+          } else {
+            tocList.innerHTML = '<li class="text-sm text-slate-500 italic">No hay encabezados</li>';
+          }
+        }
+
+        // Hide loading skeleton, show real content
+        document.getElementById('blog-loading-state')?.classList.add('hidden');
+        document.getElementById('blog-content-state')?.classList.remove('hidden');
+        setTimeout(() => document.getElementById('blog-content-state')?.classList.remove('opacity-0'), 20);
 
         // Load Related Articles
-        await loadRelatedArticles(docId || '', slug);
-
-        // Reveal content
-        document.getElementById('blog-loading-state')?.classList.add('hidden');
-        const liveContent = document.getElementById('blog-live-content')!;
-        liveContent.classList.remove('hidden');
-        setTimeout(() => liveContent.classList.remove('opacity-0'), 20);
+        loadRelatedArticles(postId, slug);
 
       } catch (err) {
         console.error("Error loading dynamic post:", err);
@@ -268,10 +277,11 @@ const t = useTranslations('es');
 
       let relatedList: any[] = [];
       try {
-        const blogsSnap = await getDocs(collection(db, 'blogs'));
+        const blogsSnap = await getDocs(query(collection(db, 'blogs'), where('status', '==', 'Published')));
         blogsSnap.forEach(d => {
           if (d.id === currentId) return;
           const data = d.data();
+          if (data.status !== 'Published') return;
           const slugEs = data.slugEs || data.slug || d.id;
           if (slugEs === currentSlug) return;
           if (!data.titleEs && !data.title) return;
@@ -280,7 +290,7 @@ const t = useTranslations('es');
             id: d.id,
             slug: slugEs,
             title: data.titleEs || data.title || 'Artículo de Negocios',
-            featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop',
+            featuredImage: data.featuredImage || (slugEs.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop'),
             tags: data.keywords || ['Negocios']
           });
         });
@@ -288,12 +298,11 @@ const t = useTranslations('es');
         console.warn('Could not load related articles from Firestore:', e);
       }
 
-      // If fewer than 3 found, fill with fallback curated list
-      if (relatedList.length < 3) {
+      if (relatedList.length < 2) {
         for (const fb of FALLBACK_RELATED_POSTS_ES) {
           if (fb.slug !== currentSlug && !relatedList.some(r => r.slug === fb.slug)) {
             relatedList.push(fb);
-            if (relatedList.length >= 3) break;
+            if (relatedList.length >= 2) break;
           }
         }
       }

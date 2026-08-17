@@ -19,41 +19,10 @@ const relatedPosts = allPosts
   .filter(p => p.slug !== post.slug && p.tags.some(t => post.tags.includes(t)))
   .slice(0, 3);
 
-// If not enough related by tag, fill with recent
+// If not enough related by tag, fill with other published posts
 if (relatedPosts.length < 3) {
   const fill = allPosts.filter(p => p.slug !== post.slug && !relatedPosts.find(rp => rp.slug === p.slug));
   relatedPosts.push(...fill.slice(0, 3 - relatedPosts.length));
-}
-
-// Guaranteed fallback pool if database has fewer items
-const FALLBACK_RELATED_EN: any[] = [
-  {
-    slug: 'importance-of-ein-number',
-    title: 'EIN Guide: How to Get an Employer Identification Number Without an SSN',
-    featuredImage: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=2070&auto=format&fit=crop',
-    tags: ['Taxes', 'EIN', 'IRS']
-  },
-  {
-    slug: 'how-to-start-an-llc-in-knoxville-tn',
-    title: 'How to Start an LLC in Knoxville, TN: Step-by-Step Guide',
-    featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
-    tags: ['LLC', 'Tennessee', 'Knoxville']
-  },
-  {
-    slug: 'how-to-create-a-winning-business-plan',
-    title: 'How to Create a Winning Business Plan in the U.S.: Strategic Guide',
-    featuredImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop',
-    tags: ['Strategy', 'Business', 'Plan']
-  }
-];
-
-if (relatedPosts.length < 3) {
-  for (const fb of FALLBACK_RELATED_EN) {
-    if (fb.slug !== post.slug && !relatedPosts.some(rp => rp.slug === fb.slug)) {
-      relatedPosts.push(fb);
-      if (relatedPosts.length >= 3) break;
-    }
-  }
 }
 
 const t = useTranslations('en');
@@ -175,26 +144,28 @@ const altUrl = `/es/blog/${post.altSlug}`;
       </div>
 
       <!-- Related Articles (Bottom) -->
-      <div class="mt-20 pt-12 border-t border-slate-200">
-        <h3 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Related Articles</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {relatedPosts.map(rp => (
-            <a href={`/en/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div class="overflow-hidden h-40 relative">
-                <img src={rp.featuredImage} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
-              </div>
-              <div class="p-5">
-                <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>
-                <p class="text-sm text-slate-500 flex items-center gap-2">
-                  <time>{formatDate(rp.date, 'en')}</time>
-                  <span>•</span>
-                  <span>{rp.readTime} min</span>
-                </p>
-              </div>
-            </a>
-          ))}
+      {relatedPosts.length > 0 && (
+        <div class="mt-20 pt-12 border-t border-slate-200">
+          <h3 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Related Articles</h3>
+          <div class={`grid grid-cols-1 ${relatedPosts.length === 1 ? 'max-w-md mx-auto' : relatedPosts.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
+            {relatedPosts.map(rp => (
+              <a href={`/en/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div class="overflow-hidden h-48 relative">
+                  <img src={rp.featuredImage} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                </div>
+                <div class="p-5">
+                  <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>
+                  <p class="text-sm text-slate-500 flex items-center gap-2">
+                    <time>{formatDate(rp.date, 'en')}</time>
+                    <span>•</span>
+                    <span>{rp.readTime || 7} min</span>
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   </article>
 

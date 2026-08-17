@@ -116,21 +116,15 @@ const t = useTranslations('en');
     const FALLBACK_RELATED_POSTS_EN = [
       {
         slug: 'importance-of-ein-number',
-        title: 'EIN Guide: How to Get an Employer Identification Number Without an SSN',
-        featuredImage: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=2070&auto=format&fit=crop',
-        tags: ['Taxes', 'EIN', 'IRS']
+        title: 'EIN Guide: How to Get an EIN Without an SSN',
+        featuredImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop',
+        tags: ['EIN', 'IRS', 'Business']
       },
       {
-        slug: 'how-to-start-an-llc-in-knoxville-tn',
+        slug: 'how-to-start-llc-knoxville',
         title: 'How to Start an LLC in Knoxville, TN: Step-by-Step Guide',
         featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
         tags: ['LLC', 'Tennessee', 'Knoxville']
-      },
-      {
-        slug: 'how-to-create-a-winning-business-plan',
-        title: 'How to Create a Winning Business Plan in the U.S.: Strategic Guide',
-        featuredImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop',
-        tags: ['Strategy', 'Business', 'Plan']
       }
     ];
 
@@ -155,7 +149,6 @@ const t = useTranslations('en');
       try {
         let postData: any = null;
 
-        // Try direct ID match if provided
         if (docId) {
           const docSnap = await getDoc(doc(db, 'blogs', docId));
           if (docSnap.exists()) {
@@ -163,7 +156,6 @@ const t = useTranslations('en');
           }
         }
 
-        // Query Firestore for this post by slug if not found by ID
         if (!postData && slug) {
           const blogsRef = collection(db, 'blogs');
           const qEn = query(blogsRef, where('slugEn', '==', slug));
@@ -195,7 +187,7 @@ const t = useTranslations('en');
         const author = postData.author || 'Guia Negocios Team';
         const authorAvatar = postData.authorAvatar || '/images/team-avatar.webp';
         const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop';
-        const date = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]);
+        const date = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : '2026-08-10');
         const readTime = postData.readTime || 7;
         const tags = postData.keywords || [];
         const altSlug = postData.slugEs || slug;
@@ -242,7 +234,6 @@ const t = useTranslations('en');
         const altLink = document.getElementById('post-alt-link') as HTMLAnchorElement;
         altLink.href = `/es/blog/${altSlug}`;
 
-        // Load Related Articles
         await loadRelatedArticles(docId || '', slug);
 
         document.getElementById('blog-loading-state')?.classList.add('hidden');
@@ -262,10 +253,11 @@ const t = useTranslations('en');
 
       let relatedList: any[] = [];
       try {
-        const blogsSnap = await getDocs(collection(db, 'blogs'));
+        const blogsSnap = await getDocs(query(collection(db, 'blogs'), where('status', '==', 'Published')));
         blogsSnap.forEach(d => {
           if (d.id === currentId) return;
           const data = d.data();
+          if (data.status !== 'Published') return;
           const slugEn = data.slugEn || data.slug || d.id;
           if (slugEn === currentSlug) return;
           if (!data.titleEn && !data.title) return;
@@ -274,7 +266,7 @@ const t = useTranslations('en');
             id: d.id,
             slug: slugEn,
             title: data.titleEn || data.title || 'Business Article',
-            featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop',
+            featuredImage: data.featuredImage || (slugEn.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop'),
             tags: data.keywords || ['Business']
           });
         });
@@ -282,12 +274,11 @@ const t = useTranslations('en');
         console.warn('Could not load related articles from Firestore:', e);
       }
 
-      // If fewer than 3 found, fill with fallback curated list
-      if (relatedList.length < 3) {
+      if (relatedList.length < 2) {
         for (const fb of FALLBACK_RELATED_POSTS_EN) {
           if (fb.slug !== currentSlug && !relatedList.some(r => r.slug === fb.slug)) {
             relatedList.push(fb);
-            if (relatedList.length >= 3) break;
+            if (relatedList.length >= 2) break;
           }
         }
       }

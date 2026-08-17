@@ -29,47 +29,56 @@ const posts = await getBlogPosts('es');
     </div>
   </section>
 
-  <!-- Topical Pillar Highlights -->
-  <section class="py-12 bg-slate-50 border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-brand-primary flex items-center justify-center mb-3">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-          </div>
-          <h3 class="font-bold text-slate-900 text-base mb-1">Registro de LLC</h3>
-          <p class="text-xs text-slate-600 leading-relaxed">Trámites ante la Secretaría de Estado de TN, obtención de EIN y redacción de acuerdos operativos.</p>
-        </div>
+  <!-- Floating Search Bar -->
+  <div class="relative z-30 -mt-7 max-w-3xl mx-auto px-4 sm:px-6">
+    <div class="bg-white rounded-2xl md:rounded-full shadow-lg shadow-slate-200/80 border border-slate-200/90 p-2 sm:p-2.5 flex flex-col sm:flex-row items-center gap-3 transition-all hover:shadow-xl">
+      <div class="flex items-center gap-3 w-full flex-1 px-3 py-1">
+        <svg class="w-5 h-5 text-brand-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input 
+          id="blog-search-input" 
+          type="text" 
+          placeholder="Buscar artículos (ej. EIN, LLC, Impuestos, Tennessee)..." 
+          class="w-full bg-transparent border-0 focus:outline-none focus:ring-0 text-slate-800 placeholder:text-slate-400 text-sm md:text-base font-medium" 
+          autocomplete="off"
+        />
+        <button id="search-clear-btn" type="button" class="hidden text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors" title="Limpiar búsqueda">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
 
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center mb-3">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-          </div>
-          <h3 class="font-bold text-slate-900 text-base mb-1">Impuestos y Contabilidad</h3>
-          <p class="text-xs text-slate-600 leading-relaxed">Declaraciones fiscales ante el IRS, contabilidad mensual, uso de ITIN y deducciones legales.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-3">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
-          </div>
-          <h3 class="font-bold text-slate-900 text-base mb-1">Licencias y Permisos</h3>
-          <p class="text-xs text-slate-600 leading-relaxed">Licencias de contratista general, registros del condado de Knox y pólizas de seguro comercial.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-3">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-          </div>
-          <h3 class="font-bold text-slate-900 text-base mb-1">Crecimiento y Operaciones</h3>
-          <p class="text-xs text-slate-600 leading-relaxed">Contratos en inglés/español, facturación formal y estrategias de captación de clientes.</p>
-        </div>
+      <!-- Quick Tag Filter Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto px-2 sm:px-0 pb-1 sm:pb-0 scrollbar-none shrink-0" id="tag-filter-pills">
+        <button type="button" data-tag="all" class="blog-tag-pill active px-3.5 py-1.5 rounded-full text-xs font-bold bg-brand-primary text-white transition-all shadow-xs shrink-0 cursor-pointer">
+          Todos
+        </button>
+        <button type="button" data-tag="ein" class="blog-tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all shrink-0 cursor-pointer">
+          EIN
+        </button>
+        <button type="button" data-tag="llc" class="blog-tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all shrink-0 cursor-pointer">
+          LLC
+        </button>
+        <button type="button" data-tag="tennessee" class="blog-tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all shrink-0 cursor-pointer">
+          Tennessee
+        </button>
+        <button type="button" data-tag="irs" class="blog-tag-pill px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all shrink-0 cursor-pointer">
+          IRS
+        </button>
       </div>
     </div>
-  </section>
+
+    <!-- Search Status Counter -->
+    <div id="search-status-bar" class="hidden mt-3 text-center">
+      <span id="search-status-text" class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full inline-flex items-center gap-2">
+        <span>Mostrando resultados</span>
+        <button type="button" id="reset-search-link" class="text-brand-primary hover:underline font-bold cursor-pointer">Ver todos</button>
+      </span>
+    </div>
+  </div>
 
   <!-- Published Articles Grid -->
-  <section class="py-16 bg-white">
+  <section class="py-14 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
         <div>
@@ -78,10 +87,16 @@ const posts = await getBlogPosts('es');
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div id="blog-articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
-          <a href={`/${lang}/blog/${post.slug}`} class="group flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-            <div class="w-full h-48 relative overflow-hidden">
+          <article 
+            class="blog-card group flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+            data-slug={post.slug}
+            data-title={post.title.toLowerCase()}
+            data-excerpt={post.excerpt.toLowerCase()}
+            data-tags={post.tags.join(',').toLowerCase()}
+          >
+            <a href={`/${lang}/blog/${post.slug}`} class="block w-full h-48 relative overflow-hidden">
               <img src={post.featuredImage} alt={post.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
               {post.tags.length > 0 && (
                 <div class="absolute top-4 left-4">
@@ -90,7 +105,7 @@ const posts = await getBlogPosts('es');
                   </span>
                 </div>
               )}
-            </div>
+            </a>
             
             <div class="p-6 flex flex-col flex-1">
               <div class="flex items-center gap-3 text-xs text-slate-500 mb-3 font-medium">
@@ -100,7 +115,9 @@ const posts = await getBlogPosts('es');
               </div>
               
               <h3 class="text-xl font-heading text-brand-dark mb-3 group-hover:text-brand-primary transition-colors leading-snug font-bold">
-                {post.title}
+                <a href={`/${lang}/blog/${post.slug}`}>
+                  {post.title}
+                </a>
               </h3>
               
               <p class="text-slate-600 mb-6 leading-relaxed flex-1 text-sm line-clamp-3">
@@ -112,16 +129,235 @@ const posts = await getBlogPosts('es');
                   <img src={post.authorAvatar} alt={post.author} class="w-6 h-6 rounded-full object-cover" loading="lazy" decoding="async" />
                   <span class="text-xs font-bold text-slate-700">{post.author}</span>
                 </div>
-                <span class="text-brand-primary font-bold text-sm flex items-center gap-1 group-hover:underline">
+                <a href={`/${lang}/blog/${post.slug}`} class="text-brand-primary font-bold text-sm flex items-center gap-1 group-hover:underline">
                   {t('blog.readMore')} <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                </span>
+                </a>
               </div>
             </div>
-          </a>
+          </article>
         ))}
+      </div>
+
+      <!-- No Results State -->
+      <div id="no-articles-found" class="hidden py-16 text-center max-w-md mx-auto">
+        <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-2">No se encontraron artículos</h3>
+        <p class="text-sm text-slate-500 mb-6">No encontramos guías que coincidan con su búsqueda. Intente con otros términos o explore todas las guías.</p>
+        <button type="button" id="clear-search-empty-btn" class="px-5 py-2.5 bg-brand-primary hover:bg-emerald-900 text-white text-sm font-bold rounded-xl transition-colors cursor-pointer">
+          Ver todos los artículos
+        </button>
       </div>
     </div>
   </section>
+
+  <!-- Client-side Interactive Search & Dynamic New Post Sync -->
+  <script>
+    import { db } from '../../lib/firebase';
+    import { collection, query, where, getDocs } from 'firebase/firestore';
+    import { formatDate } from '../../utils/blog';
+
+    let activeTag = 'all';
+    let searchQuery = '';
+
+    const searchInput = document.getElementById('blog-search-input') as HTMLInputElement;
+    const clearBtn = document.getElementById('search-clear-btn') as HTMLButtonElement;
+    const statusBar = document.getElementById('search-status-bar');
+    const statusText = document.getElementById('search-status-text');
+    const resetLink = document.getElementById('reset-search-link');
+    const noResults = document.getElementById('no-articles-found');
+    const emptyClearBtn = document.getElementById('clear-search-empty-btn');
+    const pills = document.querySelectorAll('.blog-tag-pill');
+    const grid = document.getElementById('blog-articles-grid');
+
+    function applyFilter() {
+      const cards = document.querySelectorAll('.blog-card') as NodeListOf<HTMLElement>;
+      let visibleCount = 0;
+      const q = searchQuery.toLowerCase().trim();
+
+      cards.forEach(card => {
+        const title = card.getAttribute('data-title') || '';
+        const excerpt = card.getAttribute('data-excerpt') || '';
+        const tags = card.getAttribute('data-tags') || '';
+        const fullText = `${title} ${excerpt} ${tags}`;
+
+        const matchesQuery = !q || fullText.includes(q);
+        const matchesTag = activeTag === 'all' || tags.includes(activeTag) || fullText.includes(activeTag);
+
+        if (matchesQuery && matchesTag) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Update Search Counter & Empty State
+      if (statusBar && statusText) {
+        if (q || activeTag !== 'all') {
+          statusBar.classList.remove('hidden');
+          const filterLabel = q ? `"${q}"` : `categoría: ${activeTag.toUpperCase()}`;
+          statusText.querySelector('span')!.textContent = `Mostrando ${visibleCount} artículo${visibleCount === 1 ? '' : 's'} para ${filterLabel}`;
+        } else {
+          statusBar.classList.add('hidden');
+        }
+      }
+
+      if (noResults && grid) {
+        if (visibleCount === 0) {
+          grid.classList.add('hidden');
+          noResults.classList.remove('hidden');
+        } else {
+          grid.classList.remove('hidden');
+          noResults.classList.remove('hidden');
+          noResults.classList.add('hidden');
+        }
+      }
+
+      if (clearBtn) {
+        if (q) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    // Input Search Listener
+    searchInput?.addEventListener('input', (e) => {
+      searchQuery = (e.target as HTMLInputElement).value;
+      applyFilter();
+    });
+
+    // Clear Button Listener
+    function resetAll() {
+      if (searchInput) searchInput.value = '';
+      searchQuery = '';
+      activeTag = 'all';
+      pills.forEach(p => {
+        p.classList.remove('active', 'bg-brand-primary', 'text-white');
+        p.classList.add('bg-slate-100', 'text-slate-600');
+        if (p.getAttribute('data-tag') === 'all') {
+          p.classList.add('active', 'bg-brand-primary', 'text-white');
+          p.classList.remove('bg-slate-100', 'text-slate-600');
+        }
+      });
+      applyFilter();
+    }
+
+    clearBtn?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      searchQuery = '';
+      applyFilter();
+      searchInput?.focus();
+    });
+
+    resetLink?.addEventListener('click', resetAll);
+    emptyClearBtn?.addEventListener('click', resetAll);
+
+    // Tag Filter Pills
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const tag = pill.getAttribute('data-tag') || 'all';
+        activeTag = tag;
+
+        pills.forEach(p => {
+          p.classList.remove('active', 'bg-brand-primary', 'text-white');
+          p.classList.add('bg-slate-100', 'text-slate-600');
+        });
+
+        pill.classList.add('active', 'bg-brand-primary', 'text-white');
+        pill.classList.remove('bg-slate-100', 'text-slate-600');
+
+        applyFilter();
+      });
+    });
+
+    // Real-time Firestore Sync for Any New Published Posts
+    async function syncFirestoreNewPosts() {
+      try {
+        const qSnap = await getDocs(query(collection(db, 'blogs'), where('status', '==', 'Published')));
+        if (qSnap.empty || !grid) return;
+
+        const existingSlugs = new Set<string>();
+        document.querySelectorAll('.blog-card').forEach(c => {
+          const s = c.getAttribute('data-slug');
+          if (s) existingSlugs.add(s);
+        });
+
+        qSnap.forEach(d => {
+          const data = d.data();
+          const slug = data.slugEs || data.slug || d.id;
+          if (existingSlugs.has(slug)) return; // already rendered
+          if (!data.titleEs && !data.title) return;
+
+          const title = data.titleEs || data.title;
+          const excerpt = data.metaDesc || data.excerpt || '';
+          const featuredImage = data.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop';
+          const dateStr = data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-10');
+          const readTime = data.readTime || 7;
+          const author = data.author || 'Guia Negocios Team';
+          const authorAvatar = data.authorAvatar || '/images/team-avatar.webp';
+          const tags = data.keywords || data.tags || ['Negocios'];
+
+          const card = document.createElement('article');
+          card.className = 'blog-card group flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden';
+          card.setAttribute('data-slug', slug);
+          card.setAttribute('data-title', title.toLowerCase());
+          card.setAttribute('data-excerpt', excerpt.toLowerCase());
+          card.setAttribute('data-tags', tags.join(',').toLowerCase());
+
+          card.innerHTML = `
+            <a href="/es/blog/${slug}" class="block w-full h-48 relative overflow-hidden">
+              <img src="${featuredImage}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              <div class="absolute top-4 left-4">
+                <span class="text-xs bg-white text-brand-primary px-3 py-1 rounded-full font-bold shadow-sm uppercase tracking-wider">
+                  ${tags[0] || 'Negocios'}
+                </span>
+              </div>
+            </a>
+            <div class="p-6 flex flex-col flex-1">
+              <div class="flex items-center gap-3 text-xs text-slate-500 mb-3 font-medium">
+                <time>${formatDate(dateStr, 'es')}</time>
+                <span>•</span>
+                <span>${readTime} MIN LECTURA</span>
+              </div>
+              <h3 class="text-xl font-heading text-brand-dark mb-3 group-hover:text-brand-primary transition-colors leading-snug font-bold">
+                <a href="/es/blog/${slug}">${title}</a>
+              </h3>
+              <p class="text-slate-600 mb-6 leading-relaxed flex-1 text-sm line-clamp-3">
+                ${excerpt}
+              </p>
+              <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                <div class="flex items-center gap-2">
+                  <img src="${authorAvatar}" alt="${author}" class="w-6 h-6 rounded-full object-cover" loading="lazy" />
+                  <span class="text-xs font-bold text-slate-700">${author}</span>
+                </div>
+                <a href="/es/blog/${slug}" class="text-brand-primary font-bold text-sm flex items-center gap-1 group-hover:underline">
+                  Leer Más <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </a>
+              </div>
+            </div>
+          `;
+
+          grid.prepend(card);
+          existingSlugs.add(slug);
+        });
+
+        applyFilter();
+      } catch (e) {
+        console.warn('Firestore live sync notice:', e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyFilter();
+      syncFirestoreNewPosts();
+    });
+  </script>
 
   <!-- Editorial Advisory Callout -->
   <section class="py-14 bg-brand-dark text-white">

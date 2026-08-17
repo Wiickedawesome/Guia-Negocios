@@ -24,6 +24,10 @@ import { db } from '../lib/firebase';
 const POST_OVERRIDES: Record<string, Partial<BlogPost>> = {
   'importancia-de-numero-ein': {
     title: "Guía de EIN: Cómo Obtener un EIN Sin SSN",
+    slug: "importancia-de-numero-ein",
+    altSlug: "importance-of-ein-number",
+    lang: "es",
+    date: "2026-08-10",
     excerpt: "Guía completa para no residentes y emprendedores hispanos: cómo tramitar el número EIN ante el IRS sin Seguro Social (SSN), abrir cuentas bancarias en EE.UU. y evitar multas.",
     featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
     tags: ["EIN", "No Residentes", "IRS", "LLC EE.UU.", "Empresarios Hispanos"],
@@ -113,6 +117,10 @@ En **GUIA NEGOCIOS**, somos especialistas en ayudar a emprendedores hispanos —
   },
   'importance-of-ein-number': {
     title: "EIN Guide: How to Get an EIN Without an SSN",
+    slug: "importance-of-ein-number",
+    altSlug: "importancia-de-numero-ein",
+    lang: "en",
+    date: "2026-08-10",
     excerpt: "Complete guide for non-residents and Hispanic entrepreneurs: how to file for an IRS EIN without a Social Security Number (SSN), open U.S. business bank accounts, and prevent penalties.",
     featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
     tags: ["EIN", "Non-Residents", "IRS", "U.S. LLC", "Hispanic Business"],
@@ -199,6 +207,240 @@ At **GUIA NEGOCIOS**, we specialize in assisting Hispanic entrepreneurs — both
 
 **Ready to launch your U.S. business with confidence?** [Contact our bilingual business advisory team](/en/contact) today for a personalized consultation.
 `
+  },
+  'como-iniciar-llc-knoxville': {
+    title: "Cómo Iniciar una LLC en Knoxville, TN: Guía Paso a Paso",
+    slug: "como-iniciar-llc-knoxville",
+    altSlug: "how-to-start-llc-knoxville",
+    lang: "es",
+    date: "2026-08-04",
+    excerpt: "Guía paso a paso para emprendedores hispanos: cómo registrar una LLC en Tennessee, costos, licencias locales en Knox County y cumplimiento fiscal.",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    tags: ["LLC", "Tennessee", "Knoxville", "Registro Empresarial"],
+    readTime: 8,
+    content: `
+Iniciar un negocio es un paso emocionante — y en Tennessee, formar una LLC (Compañía de Responsabilidad Limitada) es una de las formas más inteligentes de protegerse mientras construye algo de lo que puede estar orgulloso. Ya sea que usted sea jardinero, dueño de un servicio de limpieza, vendedor de comida, o esté lanzando cualquier tipo de negocio pequeño en Knoxville, esta guía lo lleva por todo el proceso en un lenguaje claro.
+
+![Business Planning](https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop)
+
+## ¿Por Qué Elegir una LLC?
+
+Una LLC le da lo mejor de ambos mundos:
+
+- **Protección de bienes personales** — Su cuenta bancaria personal, automóvil y casa están separados de las deudas del negocio.
+- **Flexibilidad fiscal** — Las LLCs pueden tributar como empresa individual, sociedad, o incluso como S-Corp.
+- **Credibilidad** — Los clientes y proveedores confían más en negocios registrados que en operaciones informales.
+- **Simplicidad** — Las LLCs de Tennessee tienen un papeleo mínimo comparado con las corporaciones.
+
+## Sección Especial: ¿Pueden los Extranjeros No Residentes Iniciar una LLC?
+
+Una de las preguntas más comunes que recibimos es si un no residente de EE. UU. o un extranjero que vive en otro país puede iniciar una LLC en Tennessee. ¡La respuesta es **SÍ**! No necesita ser ciudadano o residente de EE. UU. para formar una LLC en Tennessee.
+
+> **Importante:** Aunque Delaware y Wyoming son famosos para las LLC de propiedad extranjera, Tennessee es una excelente y sencilla opción si planea hacer negocios físicos aquí o prefiere un estado sin impuestos sobre la renta.
+
+Esto es lo que necesita saber como extranjero no residente:
+
+1. **No se requiere SSN:** No necesita un Número de Seguro Social (SSN) para obtener un Número de Identificación del Empleador (EIN). Puede solicitar un EIN utilizando el Formulario SS-4.
+2. **ITIN:** Si planea presentar impuestos en EE. UU., eventualmente podría necesitar un Número de Identificación Personal del Contribuyente (ITIN).
+3. **El Agente Registrado es Obligatorio:** Debido a que no tiene una dirección física en Tennessee, *debe* contratar a un Agente Registrado comercial para manejar sus documentos legales en el estado.
+4. **Banca:** Abrir una cuenta bancaria tradicional en EE. UU. a menudo requiere ir a una sucursal en persona. Sin embargo, las soluciones modernas de tecnología financiera (como Mercury o Wise) son alternativas fantásticas que atienden a fundadores extranjeros.
+
+![Global Business](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop)
+
+## Paso 1: Elija el Nombre de Su Negocio
+
+El nombre de su LLC debe ser único en Tennessee. Puede buscar en la [base de datos de nombres comerciales del Secretario de Estado de Tennessee](https://tnbear.tn.gov/ECommerce/FilingSearch.aspx) para verificar la disponibilidad.
+
+**Requisitos:**
+- Debe incluir "LLC" o "Limited Liability Company"
+- No puede ser igual a un negocio registrado existente en TN
+- No puede incluir palabras restringidas como "Bank" o "Insurance" sin aprobación especial
+
+> **Consejo:** Elija un nombre que funcione tanto en inglés como en español si atiende a una comunidad bilingüe.
+
+## Paso 2: Elija un Agente Registrado
+
+Toda LLC de Tennessee debe tener un **agente registrado** — una persona o empresa autorizada para recibir documentos legales en nombre de su negocio. Puede ser:
+
+- Usted mismo (debe tener una dirección física en TN)
+- Un amigo o familiar de confianza
+- Un servicio profesional de agente registrado ($50–$150/año)
+
+## Paso 3: Presente Sus Artículos de Organización
+
+Este es el documento oficial que crea su LLC. Preséntelo ante el Secretario de Estado de Tennessee:
+
+- **En línea:** A través del [sitio web del Secretario de Estado de TN](https://tnbear.tn.gov/ECommerce/Filing.aspx)
+- **Costo de presentación:** $300 por miembro (mínimo $300)
+- **Tiempo de procesamiento:** Generalmente 3–5 días hábiles en línea
+
+## Paso 4: Obtenga Su EIN
+
+Su **Employer Identification Number (EIN)** es como un número de Seguro Social para su negocio. Lo necesita para:
+- Abrir una cuenta bancaria comercial
+- Contratar empleados
+- Presentar impuestos comerciales
+
+**¿La mejor parte?** Es completamente gratis obtenerlo a través del [sitio web del IRS](https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online). Se genera al instante para residentes con SSN o en pocos días por fax para extranjeros.
+
+## Paso 5: Regístrese para los Impuestos de Tennessee
+
+A través del portal **TNTAP** (Tennessee Taxpayer Access Point), regístrese para:
+- **Impuesto sobre las Ventas** (Sales Tax): Si vende bienes o servicios gravables
+- **Impuesto de Franquicia e Impuestos Especiales** (Franchise & Excise Tax): Obligatorio para todas las LLCs de Tennessee
+- **Impuesto Comercial Local** (Business Tax): Para negocios con ingresos brutos superiores a $10,000 en Knox County
+
+## Paso 6: Obtenga Licencias y Permisos Locales
+
+Dependiendo de su tipo de negocio, es posible que necesite:
+- **Licencia Comercial del Condado de Knox** (a través de la oficina del Knox County Clerk)
+- **Licencia Comercial de la Ciudad de Knoxville** (si está dentro de los límites de la ciudad)
+- **Permisos de Salud** (para negocios de comida)
+- **Licencias Profesionales** (para contratistas, cosmetología, etc.)
+
+---
+
+## ¿Necesita Ayuda?
+
+Iniciar un negocio es un gran paso, pero no tiene que hacerlo solo. En **Guia Negocios**, ayudamos a emprendedores hispanos en Knoxville y todo Tennessee con cada paso del proceso:
+
+- Selección de nombre y verificación de disponibilidad
+- Presentación de Artículos de Organización
+- Registro de EIN
+- Registro fiscal en TNTAP
+- Licencias locales del Condado de Knox
+
+[Contáctenos hoy](/es/contact) para una consulta gratuita y comencemos a construir su negocio.
+`
+  },
+  'how-to-start-llc-knoxville': {
+    title: "How to Start an LLC in Knoxville, TN: Step-by-Step Guide",
+    slug: "how-to-start-llc-knoxville",
+    altSlug: "como-iniciar-llc-knoxville",
+    lang: "en",
+    date: "2026-08-04",
+    excerpt: "Step-by-step guide for Latino entrepreneurs and business owners: how to register an LLC in Tennessee, costs, Knox County licenses, and tax compliance.",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    tags: ["LLC", "Tennessee", "Knoxville", "Business Registration"],
+    readTime: 8,
+    content: `
+Starting a business is an exciting step — and in Tennessee, forming an LLC (Limited Liability Company) is one of the smartest ways to protect yourself while building something you can be proud of. Whether you’re a landscaper, a cleaning service owner, a food vendor, or launching any type of small business in Knoxville, this guide walks you through every step in plain, simple English.
+
+![Business Planning](https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop)
+
+## Why Choose an LLC?
+
+An LLC gives you the best of both worlds:
+
+- **Personal asset protection** — Your personal bank account, car, and home are separated from business debts.
+- **Tax flexibility** — LLCs can be taxed as a sole proprietorship, partnership, or even an S-Corp.
+- **Credibility** — Customers and vendors take registered businesses more seriously than informal operations.
+- **Simplicity** — Tennessee LLCs have minimal ongoing paperwork compared to corporations.
+
+## Special Section: Can Non-Resident Foreigners Start an LLC?
+
+One of the most common questions we receive is whether a non-US resident or an alien living in another country can start an LLC in Tennessee. The answer is a resounding **YES**! You do not need to be a US citizen or US resident to form a Tennessee LLC.
+
+> **Key Takeaway:** While Delaware and Wyoming are famous for foreign-owned LLCs, Tennessee is a great and straightforward choice if you plan on doing physical business here or prefer a state with no individual state income tax.
+
+Here is what you need to know as a non-resident alien:
+
+1. **No SSN Required:** You do not need a Social Security Number (SSN) to get an Employer Identification Number (EIN). You can apply for an EIN using Form SS-4.
+2. **ITIN:** If you plan on filing US taxes, you may eventually need an Individual Taxpayer Identification Number (ITIN).
+3. **Registered Agent is Mandatory:** Because you don't have a physical address in Tennessee, you *must* hire a commercial Registered Agent to handle your state legal docs.
+4. **Banking:** Opening a traditional US bank account often requires visiting a branch in person. However, modern fintech solutions (like Mercury or Wise) are fantastic alternatives that cater to foreign founders.
+
+![Global Business](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop)
+
+## Step 1: Choose Your Business Name
+
+Your LLC name must be unique in Tennessee. You can search the [Tennessee Secretary of State business name database](https://tnbear.tn.gov/ECommerce/FilingSearch.aspx) to check availability.
+
+**Requirements:**
+- Must include "LLC" or "Limited Liability Company"
+- Cannot match an existing registered business in TN
+- Cannot include restricted words like "Bank" or "Insurance" without special approval
+
+> **Tip:** Choose a name that works well in both English and Spanish if you serve a bilingual community.
+
+## Step 2: Choose a Registered Agent
+
+Every Tennessee LLC must have a **registered agent** — a person or business authorized to receive legal documents on behalf of your business. This can be:
+
+- Yourself (must have a physical address in TN)
+- A trusted friend or family member
+- A professional registered agent service ($50–$150/year)
+
+## Step 3: File Your Articles of Organization
+
+This is the official document that creates your LLC. File it with the Tennessee Secretary of State:
+
+- **Online:** Through the [TN Secretary of State website](https://tnbear.tn.gov/ECommerce/Filing.aspx)
+- **Filing fee:** $300 minimum ($50 per member, min $300)
+- **Processing time:** Usually 3–5 business days online
+
+## Step 4: Get Your EIN
+
+Your **Employer Identification Number (EIN)** is like a Social Security number for your business. You need it to:
+- Open a business bank account
+- Hire employees
+- File business taxes
+
+**Best part?** It's completely free through the [IRS website](https://www.irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online).
+
+## Step 5: Register for Tennessee State Taxes
+
+Through the **TNTAP** (Tennessee Taxpayer Access Point) portal, register for:
+- **Sales Tax** (if selling taxable goods or services)
+- **Franchise & Excise Tax** (required for all Tennessee LLCs)
+- **Business Tax** (if gross receipts exceed $10,000 in Knox County)
+
+## Step 6: Get Local Licenses and Permits
+
+Depending on your business type, you may need:
+- **Knox County Business License** (via Knox County Clerk)
+- **City of Knoxville Business License** (if inside city limits)
+- **Health Department Permits** (for food operations)
+- **Professional Licenses** (contractors, cosmetology, etc.)
+
+---
+
+## Need Help?
+
+Starting a business is a big step, but you don't have to do it alone. At **Guia Negocios**, we help entrepreneurs in Knoxville and throughout Tennessee with every step of the process:
+
+- Name search and reservation
+- Articles of Organization filing
+- EIN registration
+- TNTAP tax setup
+- Knox County local licensing
+
+[Contact us today](/en/contact) for a free consultation and let's get your business up and running!
+`
+  },
+  'como-iniciar-una-llc-en-knoxville-tn': {
+    title: "Cómo Iniciar una LLC en Knoxville, TN: Guía Paso a Paso",
+    slug: "como-iniciar-llc-knoxville",
+    altSlug: "how-to-start-llc-knoxville",
+    lang: "es",
+    date: "2026-08-04",
+    excerpt: "Guía paso a paso para emprendedores hispanos: cómo registrar una LLC en Tennessee, costos, licencias locales en Knox County y cumplimiento fiscal.",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    tags: ["LLC", "Tennessee", "Knoxville", "Registro Empresarial"],
+    readTime: 8,
+    content: ``
+  },
+  'how-to-start-an-llc-in-knoxville-tn': {
+    title: "How to Start an LLC in Knoxville, TN: Step-by-Step Guide",
+    slug: "how-to-start-llc-knoxville",
+    altSlug: "como-iniciar-llc-knoxville",
+    lang: "en",
+    date: "2026-08-04",
+    excerpt: "Step-by-step guide for Latino entrepreneurs and business owners: how to register an LLC in Tennessee, costs, Knox County licenses, and tax compliance.",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    tags: ["LLC", "Tennessee", "Knoxville", "Business Registration"],
+    readTime: 8,
+    content: ``
   }
 };
 
@@ -211,49 +453,62 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
     const snapshot = await getDocs(postsQuery);
     const posts: BlogPost[] = [];
   
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const hasLang = lang === 'en' ? !!data.titleEn : !!data.titleEs;
-    if (hasLang) {
-      let post: BlogPost = {
-        title: lang === 'en' ? data.titleEn : data.titleEs,
-        slug: lang === 'en' ? data.slugEn : data.slugEs,
-        date: data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]),
-        author: data.author || 'Guia Negocios Team',
-        excerpt: data.metaDesc || '',
-        lang: lang,
-        altSlug: lang === 'en' ? data.slugEs : data.slugEn,
-        tags: data.keywords || [],
-        content: lang === 'en' ? data.contentEn : data.contentEs,
-        featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
-        authorAvatar: data.authorAvatar || '/images/team-avatar.webp',
-        readTime: data.readTime || 5,
-      };
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.status !== 'Published') return;
+      const hasLang = lang === 'en' ? !!data.titleEn : !!data.titleEs;
+      if (hasLang) {
+        let postDate = data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-10');
+        if (postDate > '2026-08-16') {
+          postDate = '2026-08-10';
+        }
 
-      posts.push(post);
+        const fallbackImg = (data.slugEs?.includes('knoxville') || data.slugEn?.includes('knoxville'))
+          ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop'
+          : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop';
+
+        let post: BlogPost = {
+          title: lang === 'en' ? (data.titleEn || data.title) : (data.titleEs || data.title),
+          slug: lang === 'en' ? (data.slugEn || data.slug) : (data.slugEs || data.slug),
+          date: postDate,
+          author: data.author || 'Guia Negocios Team',
+          excerpt: data.metaDesc || '',
+          lang: lang,
+          altSlug: lang === 'en' ? (data.slugEs || data.slug) : (data.slugEn || data.slug),
+          tags: data.keywords || [],
+          content: lang === 'en' ? (data.contentEn || data.content) : (data.contentEs || data.content),
+          featuredImage: data.featuredImage || fallbackImg,
+          authorAvatar: data.authorAvatar || '/images/team-avatar.webp',
+          readTime: data.readTime || 7,
+        };
+
+        posts.push(post);
+      }
+    });
+    
+    if (posts.length > 0) {
+      posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      return posts;
     }
-  });
-  
-  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  return posts;
+    throw new Error('No published posts in Firestore, using static overrides');
   } catch (error) {
-    console.warn("Warning in getBlogPosts (falling back to static overrides):", error);
     const fallbackPosts: BlogPost[] = Object.entries(POST_OVERRIDES)
-      .filter(([slug, p]) => (lang === 'en' && p.lang === 'en') || (lang === 'es' && (!p.lang || p.lang === 'es')))
+      .filter(([slug, p]) => p.lang === lang && p.content && p.content.length > 0)
       .map(([slug, p]) => ({
         title: p.title || slug,
-        slug: slug,
-        date: p.date || new Date().toISOString().split('T')[0],
+        slug: p.slug || slug,
+        date: p.date || '2026-08-10',
         author: p.author || 'Guia Negocios Team',
         excerpt: p.excerpt || '',
         lang: lang,
         altSlug: p.altSlug || slug,
         tags: p.tags || [],
         content: p.content || '',
-        featuredImage: p.featuredImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+        featuredImage: p.featuredImage || (slug.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop'),
         authorAvatar: p.authorAvatar || '/images/team-avatar.webp',
-        readTime: p.readTime || 5,
+        readTime: p.readTime || 7,
       }));
+    fallbackPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     return fallbackPosts;
   }
 }

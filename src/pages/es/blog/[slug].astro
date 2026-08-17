@@ -19,41 +19,10 @@ const relatedPosts = allPosts
   .filter(p => p.slug !== post.slug && p.tags.some(t => post.tags.includes(t)))
   .slice(0, 3);
 
-// If not enough related by tag, fill with recent
+// If not enough related by tag, fill with other published posts
 if (relatedPosts.length < 3) {
   const fill = allPosts.filter(p => p.slug !== post.slug && !relatedPosts.find(rp => rp.slug === p.slug));
   relatedPosts.push(...fill.slice(0, 3 - relatedPosts.length));
-}
-
-// Guaranteed fallback pool if database has fewer items
-const FALLBACK_RELATED_ES: any[] = [
-  {
-    slug: 'importancia-de-numero-ein',
-    title: 'Guía de EIN: Cómo Obtener un Número de Identificación Patronal Sin SSN',
-    featuredImage: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=2070&auto=format&fit=crop',
-    tags: ['Impuestos', 'EIN', 'IRS']
-  },
-  {
-    slug: 'como-iniciar-una-llc-en-knoxville-tn',
-    title: 'Cómo Iniciar una LLC en Knoxville, TN: Guía Paso a Paso',
-    featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
-    tags: ['LLC', 'Tennessee', 'Knoxville']
-  },
-  {
-    slug: 'como-hacer-un-plan-de-negocios-exitoso-en-ee-uu',
-    title: 'Cómo Hacer un Plan de Negocios Exitoso en EE.UU.: Guía Estratégica',
-    featuredImage: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop',
-    tags: ['Estrategia', 'Negocios', 'Plan']
-  }
-];
-
-if (relatedPosts.length < 3) {
-  for (const fb of FALLBACK_RELATED_ES) {
-    if (fb.slug !== post.slug && !relatedPosts.some(rp => rp.slug === fb.slug)) {
-      relatedPosts.push(fb);
-      if (relatedPosts.length >= 3) break;
-    }
-  }
 }
 
 const t = useTranslations('es');
@@ -175,26 +144,28 @@ const altUrl = `/en/blog/${post.altSlug}`;
       </div>
 
       <!-- Related Articles (Bottom) -->
-      <div class="mt-20 pt-12 border-t border-slate-200">
-        <h3 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Artículos Relacionados</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {relatedPosts.map(rp => (
-            <a href={`/es/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <div class="overflow-hidden h-40 relative">
-                <img src={rp.featuredImage} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
-              </div>
-              <div class="p-5">
-                <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>
-                <p class="text-sm text-slate-500 flex items-center gap-2">
-                  <time>{formatDate(rp.date, 'es')}</time>
-                  <span>•</span>
-                  <span>{rp.readTime} min</span>
-                </p>
-              </div>
-            </a>
-          ))}
+      {relatedPosts.length > 0 && (
+        <div class="mt-20 pt-12 border-t border-slate-200">
+          <h3 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Artículos Relacionados</h3>
+          <div class={`grid grid-cols-1 ${relatedPosts.length === 1 ? 'max-w-md mx-auto' : relatedPosts.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
+            {relatedPosts.map(rp => (
+              <a href={`/es/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div class="overflow-hidden h-48 relative">
+                  <img src={rp.featuredImage} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                </div>
+                <div class="p-5">
+                  <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>
+                  <p class="text-sm text-slate-500 flex items-center gap-2">
+                    <time>{formatDate(rp.date, 'es')}</time>
+                    <span>•</span>
+                    <span>{rp.readTime || 7} min</span>
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   </article>
 
