@@ -1,15 +1,7 @@
 ---
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getActiveAeoSchemas } from '../utils/seo-schemas';
 
-let aeoSchemas: any[] = [];
-try {
-  const q = query(collection(db, 'seoSchemas'), where('status', '==', 'Active'));
-  const schemaSnap = await getDocs(q);
-  aeoSchemas = schemaSnap.docs.map(d => d.data());
-} catch(e) {
-  console.error("Error fetching AEO schemas:", e);
-}
+const aeoSchemas = await getActiveAeoSchemas();
 ---
 {aeoSchemas.map((schema) => (
   <script type="application/ld+json" set:html={schema.schemaStr} />

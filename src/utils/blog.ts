@@ -21,6 +21,35 @@ export interface BlogPost {
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
+/**
+ * Optimizes Unsplash and external image URLs to specific dimensions and format
+ * e.g., converts w=2070&q=80 to w=600&q=75&auto=format&fit=crop
+ */
+export function optimizeImageUrl(url: string, options: { width?: number; height?: number; quality?: number; fit?: string } = {}): string {
+  if (!url) return '';
+  const { width = 600, quality = 75, fit = 'crop' } = options;
+
+  if (url.includes('images.unsplash.com')) {
+    try {
+      const parsed = new URL(url);
+      parsed.searchParams.set('auto', 'format');
+      parsed.searchParams.set('fit', fit);
+      parsed.searchParams.set('w', width.toString());
+      if (options.height) {
+        parsed.searchParams.set('h', options.height.toString());
+      } else {
+        parsed.searchParams.delete('h');
+      }
+      parsed.searchParams.set('q', quality.toString());
+      return parsed.toString();
+    } catch {
+      return url.replace(/w=\d+/, `w=${width}`).replace(/q=\d+/, `q=${quality}`);
+    }
+  }
+
+  return url;
+}
+
 const POST_OVERRIDES: Record<string, Partial<BlogPost>> = {
   'importancia-de-numero-ein': {
     title: "Guía de EIN: Cómo Obtener un EIN Sin SSN",
@@ -29,7 +58,7 @@ const POST_OVERRIDES: Record<string, Partial<BlogPost>> = {
     lang: "es",
     date: "2026-08-10",
     excerpt: "Guía completa para no residentes y emprendedores hispanos: cómo tramitar el número EIN ante el IRS sin Seguro Social (SSN), abrir cuentas bancarias en EE.UU. y evitar multas.",
-    featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
     tags: ["EIN", "No Residentes", "IRS", "LLC EE.UU.", "Empresarios Hispanos"],
     readTime: 7,
     content: `
@@ -45,7 +74,7 @@ En esta guía exhaustiva le explicamos cómo funciona el EIN para **no residente
 
 El **Employer Identification Number (EIN)** es un número único de 9 dígitos (con formato \`XX-XXXXXXX\`) asignado por el **IRS (Internal Revenue Service)** a las entidades comerciales en Estados Unidos. Funciona como el documento de identidad fiscal de su empresa (equivalente al RUC, RFC, CUIT o NIF en países hispanohablantes).
 
-![Documentación de Negocios en EE.UU.](https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=1200&auto=format&fit=crop)
+![Documentación de Negocios en EE.UU.](https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1000&q=80)
 
 ### ¿Por qué lo necesita un emprendedor hispano o no residente?
 
@@ -215,13 +244,13 @@ At **GUIA NEGOCIOS**, we specialize in assisting Hispanic entrepreneurs — both
     lang: "es",
     date: "2026-08-04",
     excerpt: "Guía paso a paso para emprendedores hispanos: cómo registrar una LLC en Tennessee, costos, licencias locales en Knox County y cumplimiento fiscal.",
-    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
     tags: ["LLC", "Tennessee", "Knoxville", "Registro Empresarial"],
     readTime: 8,
     content: `
 Iniciar un negocio es un paso emocionante — y en Tennessee, formar una LLC (Compañía de Responsabilidad Limitada) es una de las formas más inteligentes de protegerse mientras construye algo de lo que puede estar orgulloso. Ya sea que usted sea jardinero, dueño de un servicio de limpieza, vendedor de comida, o esté lanzando cualquier tipo de negocio pequeño en Knoxville, esta guía lo lleva por todo el proceso en un lenguaje claro.
 
-![Business Planning](https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop)
+![Business Planning](https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1000&q=80)
 
 ## ¿Por Qué Elegir una LLC?
 
@@ -245,7 +274,7 @@ Esto es lo que necesita saber como extranjero no residente:
 3. **El Agente Registrado es Obligatorio:** Debido a que no tiene una dirección física en Tennessee, *debe* contratar a un Agente Registrado comercial para manejar sus documentos legales en el estado.
 4. **Banca:** Abrir una cuenta bancaria tradicional en EE. UU. a menudo requiere ir a una sucursal en persona. Sin embargo, las soluciones modernas de tecnología financiera (como Mercury o Wise) son alternativas fantásticas que atienden a fundadores extranjeros.
 
-![Global Business](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop)
+![Global Business](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1000&q=80)
 
 ## Paso 1: Elija el Nombre de Su Negocio
 
@@ -320,13 +349,13 @@ Iniciar un negocio es un gran paso, pero no tiene que hacerlo solo. En **Guia Ne
     lang: "en",
     date: "2026-08-04",
     excerpt: "Step-by-step guide for Latino entrepreneurs and business owners: how to register an LLC in Tennessee, costs, Knox County licenses, and tax compliance.",
-    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
     tags: ["LLC", "Tennessee", "Knoxville", "Business Registration"],
     readTime: 8,
     content: `
 Starting a business is an exciting step — and in Tennessee, forming an LLC (Limited Liability Company) is one of the smartest ways to protect yourself while building something you can be proud of. Whether you’re a landscaper, a cleaning service owner, a food vendor, or launching any type of small business in Knoxville, this guide walks you through every step in plain, simple English.
 
-![Business Planning](https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop)
+![Business Planning](https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1000&q=80)
 
 ## Why Choose an LLC?
 
@@ -350,7 +379,7 @@ Here is what you need to know as a non-resident alien:
 3. **Registered Agent is Mandatory:** Because you don't have a physical address in Tennessee, you *must* hire a commercial Registered Agent to handle your state legal docs.
 4. **Banking:** Opening a traditional US bank account often requires visiting a branch in person. However, modern fintech solutions (like Mercury or Wise) are fantastic alternatives that cater to foreign founders.
 
-![Global Business](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop)
+![Global Business](https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1000&q=80)
 
 ## Step 1: Choose Your Business Name
 
@@ -425,7 +454,7 @@ Starting a business is a big step, but you don't have to do it alone. At **Guia 
     lang: "es",
     date: "2026-08-04",
     excerpt: "Guía paso a paso para emprendedores hispanos: cómo registrar una LLC en Tennessee, costos, licencias locales en Knox County y cumplimiento fiscal.",
-    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
     tags: ["LLC", "Tennessee", "Knoxville", "Registro Empresarial"],
     readTime: 8,
     content: ``
@@ -437,17 +466,26 @@ Starting a business is a big step, but you don't have to do it alone. At **Guia 
     lang: "en",
     date: "2026-08-04",
     excerpt: "Step-by-step guide for Latino entrepreneurs and business owners: how to register an LLC in Tennessee, costs, Knox County licenses, and tax compliance.",
-    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop",
+    featuredImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
     tags: ["LLC", "Tennessee", "Knoxville", "Business Registration"],
     readTime: 8,
     content: ``
   }
 };
 
+// In-memory caching for blog posts to prevent repeated Firestore fetches during build and renders
+let cachedPosts: { [lang: string]: { posts: BlogPost[]; timestamp: number } } = {};
+const CACHE_TTL_MS = 60 * 1000; // 60 seconds TTL
+
 /**
  * Get all blog posts for a given language, sorted by date (newest first).
  */
-export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
+export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Promise<BlogPost[]> {
+  const now = Date.now();
+  if (!forceRefresh && cachedPosts[lang] && (now - cachedPosts[lang].timestamp < CACHE_TTL_MS)) {
+    return cachedPosts[lang].posts;
+  }
+
   try {
     const postsQuery = query(collection(db, 'blogs'), where('status', '==', 'Published'));
     const snapshot = await getDocs(postsQuery);
@@ -464,8 +502,8 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
         }
 
         const fallbackImg = (data.slugEs?.includes('knoxville') || data.slugEn?.includes('knoxville'))
-          ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop'
-          : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop';
+          ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80'
+          : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80';
 
         let post: BlogPost = {
           title: lang === 'en' ? (data.titleEn || data.title) : (data.titleEs || data.title),
@@ -488,6 +526,7 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
     
     if (posts.length > 0) {
       posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      cachedPosts[lang] = { posts, timestamp: now };
       return posts;
     }
     throw new Error('No published posts in Firestore, using static overrides');
@@ -504,11 +543,12 @@ export async function getBlogPosts(lang: 'en' | 'es'): Promise<BlogPost[]> {
         altSlug: p.altSlug || slug,
         tags: p.tags || [],
         content: p.content || '',
-        featuredImage: p.featuredImage || (slug.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop'),
+        featuredImage: p.featuredImage || (slug.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80'),
         authorAvatar: p.authorAvatar || '/images/team-avatar.webp',
         readTime: p.readTime || 7,
       }));
     fallbackPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    cachedPosts[lang] = { posts: fallbackPosts, timestamp: now };
     return fallbackPosts;
   }
 }
@@ -689,7 +729,8 @@ function inlineMarkdown(text: string): string {
     const cleanAlt = (altText && altText.trim()) 
       ? altText.trim().replace(/"/g, '&quot;')
       : 'GUIA NEGOCIOS - Hispanic Business Consulting and LLC Setup Graphic';
-    return `<img src="${url}" alt="${cleanAlt}" loading="lazy" decoding="async" class="rounded-xl shadow-sm my-6 w-full object-cover max-h-[500px]" />`;
+    const optimizedUrl = optimizeImageUrl(url, { width: 1000, quality: 75 });
+    return `<img src="${optimizedUrl}" alt="${cleanAlt}" loading="lazy" decoding="async" class="rounded-xl shadow-sm my-6 w-full object-cover max-h-[500px]" />`;
   });
 
   // Code (backticks)

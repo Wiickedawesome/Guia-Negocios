@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import { useTranslations } from '../../../i18n/utils';
-import { getBlogPosts, getBlogPost, markdownToHtml, formatDate, processHtmlForBlog } from '../../../utils/blog';
+import { getBlogPosts, getBlogPost, markdownToHtml, formatDate, processHtmlForBlog, optimizeImageUrl } from '../../../utils/blog';
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts('es');
@@ -13,39 +13,39 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const post = (await getBlogPost(slug, 'es'))!;
 const allPosts = await getBlogPosts('es');
+const post = allPosts.find(p => p.slug === slug)!;
 const relatedPosts = allPosts
-  .filter(p => p.slug !== post.slug && p.tags.some(t => post.tags.includes(t)))
+  .filter(p => p.slug !== post?.slug && p.tags.some(t => post?.tags?.includes(t)))
   .slice(0, 3);
 
 // If not enough related by tag, fill with other published posts
 if (relatedPosts.length < 3) {
-  const fill = allPosts.filter(p => p.slug !== post.slug && !relatedPosts.find(rp => rp.slug === p.slug));
+  const fill = allPosts.filter(p => p.slug !== post?.slug && !relatedPosts.find(rp => rp.slug === p.slug));
   relatedPosts.push(...fill.slice(0, 3 - relatedPosts.length));
 }
 
 const t = useTranslations('es');
-const rawHtml = markdownToHtml(post.content);
+const rawHtml = markdownToHtml(post?.content || '');
 const { html: contentHtml, toc } = processHtmlForBlog(rawHtml);
-const altUrl = `/en/blog/${post.altSlug}`;
+const altUrl = `/en/blog/${post?.altSlug || ''}`;
 ---
 
-<BaseLayout title={`${post.title} | Blog | ${t('site.title')}`} description={post.excerpt} altPath={altUrl} ogImage={post.featuredImage}>
+<BaseLayout title={`${post?.title || 'Artículo'} | Blog | ${t('site.title')}`} description={post?.excerpt || ''} altPath={altUrl} ogImage={post?.featuredImage}>
   <Header slot="header" altPath={altUrl} />
   
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": post.title,
-    "description": post.excerpt,
-    "image": post.featuredImage.startsWith('http') ? post.featuredImage : `https://guianegocios.net${post.featuredImage}`,
-    "datePublished": post.date,
-    "dateModified": post.date,
+    "headline": post?.title || '',
+    "description": post?.excerpt || '',
+    "image": post?.featuredImage?.startsWith('http') ? post.featuredImage : `https://guianegocios.net${post?.featuredImage || ''}`,
+    "datePublished": post?.date,
+    "dateModified": post?.date,
     "inLanguage": "es",
     "author": {
       "@type": "Person",
-      "name": post.author
+      "name": post?.author || 'Equipo Guia Negocios'
     },
     "publisher": {
       "@type": "Organization",
@@ -57,40 +57,40 @@ const altUrl = `/en/blog/${post.altSlug}`;
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://guianegocios.net/es/blog/${post.slug}`
+      "@id": `https://guianegocios.net/es/blog/${post?.slug || ''}`
     }
   })} />
 
   <article class="bg-slate-50">
     <!-- Hero Image Section -->
-    <div class="relative w-full h-[400px] md:h-[500px]">
-      <img src={post.featuredImage} alt={post.title} class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" decoding="async" />
+    <div class="relative w-full h-[400px] md:h-[500px] bg-slate-900 overflow-hidden">
+      <img src={optimizeImageUrl(post?.featuredImage || '', { width: 1200, quality: 80 })} alt={post?.title || ''} class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" decoding="async" />
       <div class="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
       
       <div class="absolute inset-0 flex items-center justify-center pt-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
-            {post.tags.map((tag) => (
+            {post?.tags?.map((tag) => (
               <span class="text-xs bg-brand-primary text-white px-3 py-1 rounded-full font-bold tracking-wide uppercase">
                 {tag}
               </span>
             ))}
           </div>
           <h1 class="text-3xl md:text-5xl lg:text-6xl font-heading text-white mb-6 leading-tight drop-shadow-md">
-            {post.title}
+            {post?.title}
           </h1>
           <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-200">
             <div class="flex items-center gap-3">
-              <img src={post.authorAvatar} alt={post.author} class="w-10 h-10 rounded-full border-2 border-white/20 object-cover" loading="lazy" decoding="async" />
-              <span class="font-medium text-white">{post.author}</span>
+              <img src={optimizeImageUrl(post?.authorAvatar || '', { width: 80, height: 80, quality: 80 })} alt={post?.author || ''} class="w-10 h-10 rounded-full border-2 border-white/20 object-cover" width="40" height="40" loading="lazy" decoding="async" />
+              <span class="font-medium text-white">{post?.author}</span>
             </div>
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-              <time datetime={post.date}>{formatDate(post.date, 'es')}</time>
+              <time datetime={post?.date}>{formatDate(post?.date || '2026-08-10', 'es')}</time>
             </div>
             <div class="flex items-center gap-2">
               <span class="px-2 py-1 bg-white/20 rounded-md text-white font-medium backdrop-blur-sm border border-white/10">
-                {post.readTime} MIN LECTURA
+                {post?.readTime || 7} MIN LECTURA
               </span>
             </div>
           </div>
@@ -150,8 +150,8 @@ const altUrl = `/en/blog/${post.altSlug}`;
           <div class={`grid grid-cols-1 ${relatedPosts.length === 1 ? 'max-w-md mx-auto' : relatedPosts.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
             {relatedPosts.map(rp => (
               <a href={`/es/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <div class="overflow-hidden h-48 relative">
-                  <img src={rp.featuredImage} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                <div class="overflow-hidden h-48 relative bg-slate-100">
+                  <img src={optimizeImageUrl(rp.featuredImage, { width: 600, quality: 75 })} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" width="384" height="192" loading="lazy" decoding="async" />
                 </div>
                 <div class="p-5">
                   <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>

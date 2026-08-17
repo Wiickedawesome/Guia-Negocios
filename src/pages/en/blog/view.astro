@@ -111,19 +111,19 @@ const t = useTranslations('en');
   <script>
     import { db } from '../../../lib/firebase';
     import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-    import { markdownToHtml, processHtmlForBlog, formatDate } from '../../../utils/blog';
+    import { markdownToHtml, processHtmlForBlog, formatDate, optimizeImageUrl } from '../../../utils/blog';
 
     const FALLBACK_RELATED_POSTS_EN = [
       {
         slug: 'importance-of-ein-number',
         title: 'EIN Guide: How to Get an EIN Without an SSN',
-        featuredImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop',
+        featuredImage: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80',
         tags: ['EIN', 'IRS', 'Business']
       },
       {
         slug: 'how-to-start-llc-knoxville',
         title: 'How to Start an LLC in Knoxville, TN: Step-by-Step Guide',
-        featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+        featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
         tags: ['LLC', 'Tennessee', 'Knoxville']
       }
     ];
@@ -186,7 +186,7 @@ const t = useTranslations('en');
         const content = postData.contentEn || postData.contentEs || '';
         const author = postData.author || 'Guia Negocios Team';
         const authorAvatar = postData.authorAvatar || '/images/team-avatar.webp';
-        const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop';
+        const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80';
         const date = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : '2026-08-10');
         const readTime = postData.readTime || 7;
         const tags = postData.keywords || [];
@@ -194,10 +194,10 @@ const t = useTranslations('en');
 
         document.title = `${title} | Blog | Guia Negocios`;
 
-        (document.getElementById('post-hero-img') as HTMLImageElement).src = featuredImage;
+        (document.getElementById('post-hero-img') as HTMLImageElement).src = optimizeImageUrl(featuredImage, { width: 1200, quality: 80 });
         (document.getElementById('post-hero-img') as HTMLImageElement).alt = title;
         document.getElementById('post-title')!.textContent = title;
-        (document.getElementById('post-author-avatar') as HTMLImageElement).src = authorAvatar;
+        (document.getElementById('post-author-avatar') as HTMLImageElement).src = optimizeImageUrl(authorAvatar, { width: 80, height: 80, quality: 80 });
         document.getElementById('post-author-name')!.textContent = author;
         document.getElementById('post-date')!.textContent = formatDate(date, 'en');
         document.getElementById('post-readtime')!.textContent = `${readTime} MIN READ`;
@@ -266,7 +266,7 @@ const t = useTranslations('en');
             id: d.id,
             slug: slugEn,
             title: data.titleEn || data.title || 'Business Article',
-            featuredImage: data.featuredImage || (slugEn.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop'),
+            featuredImage: data.featuredImage || (slugEn.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80'),
             tags: data.keywords || ['Business']
           });
         });
@@ -287,7 +287,7 @@ const t = useTranslations('en');
       grid.innerHTML = displayPosts.map(rp => `
         <a href="/en/blog/view?id=${rp.id || ''}&slug=${rp.slug}" class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
           <div class="aspect-video w-full overflow-hidden bg-slate-100">
-            <img src="${rp.featuredImage}" alt="${rp.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+            <img src="${optimizeImageUrl(rp.featuredImage, { width: 600, quality: 75 })}" alt="${rp.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" width="384" height="216" loading="lazy" decoding="async" />
           </div>
           <div class="p-6">
             <div class="text-xs font-semibold text-brand-primary mb-2 uppercase tracking-wider">${rp.tags?.[0] || 'Business'}</div>

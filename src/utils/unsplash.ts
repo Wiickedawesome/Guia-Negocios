@@ -168,8 +168,8 @@ export async function searchUnsplashPhotos(query: string, page = 1, perPage = 12
     const data = await res.json();
     return (data.results || []).map((item: any) => ({
       id: item.id,
-      url: item.urls?.regular || item.urls?.full,
-      thumbUrl: item.urls?.small || item.urls?.thumb,
+      url: item.urls?.regular ? `${item.urls.regular}&w=1200&q=80&auto=format&fit=crop` : (item.urls?.full || ''),
+      thumbUrl: item.urls?.small ? `${item.urls.small}&w=600&q=75&auto=format&fit=crop` : (item.urls?.thumb || ''),
       alt: item.alt_description || item.description || `High quality photo for ${query}`,
       photographer: item.user?.name || 'Unsplash Contributor',
       photographerUrl: item.user?.links?.html || 'https://unsplash.com'
@@ -179,7 +179,7 @@ export async function searchUnsplashPhotos(query: string, page = 1, perPage = 12
     return CURATED_UNSPLASH_POOL.slice(0, perPage).map(p => ({
       id: p.id,
       url: p.url,
-      thumbUrl: p.url.replace('&w=1200', '&w=400'),
+      thumbUrl: p.url.replace('&w=1200', '&w=600').replace('&q=80', '&q=75'),
       alt: p.alt,
       photographer: 'Unsplash Artist',
       photographerUrl: 'https://unsplash.com'
