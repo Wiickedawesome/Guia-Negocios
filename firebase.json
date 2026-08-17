@@ -47,6 +47,14 @@
     "cleanUrls": true,
     "rewrites": [
       {
+        "source": "/es/blog/**",
+        "destination": "/es/blog/view/index.html"
+      },
+      {
+        "source": "/en/blog/**",
+        "destination": "/en/blog/view/index.html"
+      },
+      {
         "source": "/sitemap.xml",
         "destination": "/sitemap-index.xml"
       }

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="Página no encontrada | Guia Negocios" description="La página que está buscando no existe.">
+  <Header slot="header" />
+
+  <main class="min-h-[70vh] flex items-center justify-center bg-slate-50 px-4 py-20">
+    <div class="max-w-md w-full text-center">
+      <div class="w-20 h-20 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center font-extrabold text-3xl mx-auto mb-6">
+        404
+      </div>
+      <h1 class="text-3xl font-bold font-heading text-slate-900 mb-3">Página No Encontrada</h1>
+      <p class="text-slate-600 mb-8 leading-relaxed">
+        Lo sentimos, la página que intenta acceder no existe, ha sido movida o está en proceso de publicación.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/es/" class="px-6 py-3 bg-brand-primary text-white font-medium rounded-xl hover:bg-opacity-95 transition-all shadow-sm">
+          Ir al Inicio
+        </a>
+        <a href="/es/blog" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-all shadow-xs">
+          Ver Nuestro Blog
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+
+  <script>
+    // Client-side automatic route handler for dynamically created blog posts
+    document.addEventListener('DOMContentLoaded', () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/es/blog/') && !path.includes('/view')) {
+        const slug = path.replace('/es/blog/', '').replace(/\/$/, '');
+        if (slug) {
+          window.location.replace(`/es/blog/view?slug=${encodeURIComponent(slug)}`);
+        }
+      } else if (path.startsWith('/en/blog/') && !path.includes('/view')) {
+        const slug = path.replace('/en/blog/', '').replace(/\/$/, '');
+        if (slug) {
+          window.location.replace(`/en/blog/view?slug=${encodeURIComponent(slug)}`);
+        }
+      }
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,222 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+const t = useTranslations('en');
+---
+
+<BaseLayout title="Blog | Guia Negocios" description="Articles and guides for Hispanic entrepreneurs and business owners in the USA.">
+  <Header slot="header" />
+
+  <!-- Dynamic Post Container (Loaded via Client-side JS from Firestore) -->
+  <article class="bg-slate-50 min-h-screen">
+    <!-- Loading State -->
+    <div id="blog-loading-state" class="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center">
+      <div class="w-12 h-12 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin mb-4"></div>
+      <p class="text-slate-600 font-medium text-lg">Loading article...</p>
+    </div>
+
+    <!-- Error / Not Found State -->
+    <div id="blog-not-found-state" class="hidden min-h-[60vh] flex flex-col items-center justify-center p-8 text-center max-w-lg mx-auto">
+      <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4 text-2xl font-bold">404</div>
+      <h2 class="text-2xl font-bold text-slate-900 font-heading mb-2">Article Not Found</h2>
+      <p class="text-slate-600 mb-6">The article you are looking for does not exist or has not been published yet.</p>
+      <a href="/en/blog" class="px-6 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-opacity-95 transition-colors">
+        ← Back to Blog
+      </a>
+    </div>
+
+    <!-- Live Post Content -->
+    <div id="blog-live-content" class="hidden opacity-0 transition-opacity duration-300">
+      
+      <!-- 1. Hero Image Section -->
+      <div class="relative w-full h-[400px] md:h-[500px] bg-slate-900 overflow-hidden">
+        <img id="post-hero-img" src="" alt="" class="absolute inset-0 w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
+        
+        <div class="absolute inset-0 flex items-center justify-center pt-20">
+          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div id="post-tags-container" class="flex flex-wrap items-center justify-center gap-2 mb-6"></div>
+            <h1 id="post-title" class="text-3xl md:text-5xl lg:text-6xl font-heading text-white mb-6 leading-tight drop-shadow-md"></h1>
+            
+            <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-200">
+              <div class="flex items-center gap-3">
+                <img id="post-author-avatar" src="/images/team-avatar.webp" alt="Author" class="w-10 h-10 rounded-full border-2 border-white/20 object-cover" />
+                <span id="post-author-name" class="font-medium text-white">Guia Negocios Team</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <time id="post-date"></time>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="post-readtime" class="px-2 py-1 bg-white/20 rounded-md text-white font-medium backdrop-blur-sm border border-white/10 uppercase text-xs">
+                  7 MIN READ
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Main Content Area -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex flex-col lg:flex-row gap-8 xl:gap-12 relative">
+          
+          <!-- Left Sidebar: TOC -->
+          <aside id="post-toc-sidebar" class="hidden lg:block lg:w-[220px] xl:w-[260px] shrink-0">
+            <div class="sticky top-28 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">Table of Contents</h3>
+              <ul id="post-toc-list" class="space-y-3"></ul>
+            </div>
+          </aside>
+
+          <!-- Center: Article Body -->
+          <main class="w-full lg:flex-1 min-w-0">
+            <div class="bg-white p-6 md:p-10 lg:p-12 rounded-2xl border border-slate-200 shadow-sm">
+              <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
+                <div id="post-html-body" class="blog-content"></div>
+              </div>
+
+              <!-- Footer: Share & Toggle -->
+              <footer class="mt-12 pt-8 border-t border-slate-200">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <a id="post-alt-link" href="#" class="inline-flex items-center gap-2 text-brand-primary font-medium hover:bg-brand-light px-4 py-2 rounded-lg transition-colors border border-brand-primary/20">
+                    🇪🇸 Leer en Español
+                  </a>
+                  <a href="/en/blog" class="text-slate-500 hover:text-brand-dark font-medium transition-colors">
+                    ← Back to Blog
+                  </a>
+                </div>
+              </footer>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <Footer slot="footer" />
+
+  <script>
+    import { db } from '../../../lib/firebase';
+    import { collection, query, where, getDocs } from 'firebase/firestore';
+    import { markdownToHtml, processHtmlForBlog, formatDate } from '../../../utils/blog';
+
+    async function loadDynamicPost() {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      let slug = pathParts[pathParts.length - 1];
+      if (slug === 'view' && pathParts.length > 2) {
+        slug = pathParts[pathParts.length - 2];
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('slug')) {
+        slug = urlParams.get('slug')!;
+      }
+
+      if (!slug) {
+        showNotFound();
+        return;
+      }
+
+      try {
+        const blogsRef = collection(db, 'blogs');
+        let postData: any = null;
+
+        // Try slugEn match
+        const qEn = query(blogsRef, where('slugEn', '==', slug));
+        const snapEn = await getDocs(qEn);
+        if (!snapEn.empty) {
+          postData = snapEn.docs[0].data();
+        } else {
+          // Fallback to slugEs or slug
+          const qEs = query(blogsRef, where('slugEs', '==', slug));
+          const snapEs = await getDocs(qEs);
+          if (!snapEs.empty) {
+            postData = snapEs.docs[0].data();
+          } else {
+            const qGeneric = query(blogsRef, where('slug', '==', slug));
+            const snapGeneric = await getDocs(qGeneric);
+            if (!snapGeneric.empty) {
+              postData = snapGeneric.docs[0].data();
+            }
+          }
+        }
+
+        if (!postData) {
+          showNotFound();
+          return;
+        }
+
+        const title = postData.titleEn || postData.titleEs || 'Article';
+        const content = postData.contentEn || postData.contentEs || '';
+        const author = postData.author || 'Guia Negocios Team';
+        const authorAvatar = postData.authorAvatar || '/images/team-avatar.webp';
+        const featuredImage = postData.featuredImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop';
+        const date = postData.publishDate || (postData.createdAt ? postData.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]);
+        const readTime = postData.readTime || 7;
+        const tags = postData.keywords || [];
+        const altSlug = postData.slugEs || slug;
+
+        document.title = `${title} | Blog | Guia Negocios`;
+
+        (document.getElementById('post-hero-img') as HTMLImageElement).src = featuredImage;
+        (document.getElementById('post-hero-img') as HTMLImageElement).alt = title;
+        document.getElementById('post-title')!.textContent = title;
+        (document.getElementById('post-author-avatar') as HTMLImageElement).src = authorAvatar;
+        document.getElementById('post-author-name')!.textContent = author;
+        document.getElementById('post-date')!.textContent = formatDate(date, 'en');
+        document.getElementById('post-readtime')!.textContent = `${readTime} MIN READ`;
+
+        const tagsContainer = document.getElementById('post-tags-container')!;
+        tagsContainer.innerHTML = tags.map((t: string) => `
+          <span class="text-xs bg-brand-primary text-white px-3 py-1 rounded-full font-bold tracking-wide uppercase">
+            ${t}
+          </span>
+        `).join('');
+
+        const rawHtml = markdownToHtml(content);
+        const { html: contentHtml, toc } = processHtmlForBlog(rawHtml);
+        document.getElementById('post-html-body')!.innerHTML = contentHtml;
+
+        const tocSidebar = document.getElementById('post-toc-sidebar')!;
+        const tocList = document.getElementById('post-toc-list')!;
+        tocList.innerHTML = '';
+        if (toc.length > 0) {
+          tocSidebar.classList.remove('hidden');
+          toc.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <a href="#${item.id}" class="block text-sm text-slate-600 hover:text-brand-primary transition-colors ${item.level === 3 ? 'ml-4 text-xs' : ''}">
+                ${item.text}
+              </a>
+            `;
+            tocList.appendChild(li);
+          });
+        } else {
+          tocSidebar.classList.add('hidden');
+        }
+
+        const altLink = document.getElementById('post-alt-link') as HTMLAnchorElement;
+        altLink.href = `/es/blog/${altSlug}`;
+
+        document.getElementById('blog-loading-state')?.classList.add('hidden');
+        const liveContent = document.getElementById('blog-live-content')!;
+        liveContent.classList.remove('hidden');
+        setTimeout(() => liveContent.classList.remove('opacity-0'), 20);
+
+      } catch (err) {
+        console.error("Error loading dynamic post:", err);
+        showNotFound();
+      }
+    }
+
+    function showNotFound() {
+      document.getElementById('blog-loading-state')?.classList.add('hidden');
+      document.getElementById('blog-not-found-state')?.classList.remove('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDynamicPost);
+  </script>
+</BaseLayout>
