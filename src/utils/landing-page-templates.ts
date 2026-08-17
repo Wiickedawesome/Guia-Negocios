@@ -9,14 +9,12 @@
 
 export const LANDING_PAGE_TEMPLATES = {
   hero: `
-<!-- Rich Dark Navy & Emerald Ambient Glow Hero -->
+<!-- Hero Style A: Rich Dark Navy & Emerald Ambient Glow Hero -->
 <div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-2xl relative overflow-hidden font-sans">
-  <!-- Ambient Radial Glow -->
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/25 via-brand-primary/20 to-transparent pointer-events-none"></div>
   <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
   
   <div class="relative z-10 max-w-3xl mx-auto text-center space-y-6">
-    <!-- Vibrant Category Badge -->
     <div>
       <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs sm:text-sm font-bold tracking-wider uppercase">
         <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
@@ -24,17 +22,14 @@ export const LANDING_PAGE_TEMPLATES = {
       </span>
     </div>
 
-    <!-- High-Impact Title with Gold Accent -->
     <h1 class="text-3xl sm:text-5xl lg:text-6xl font-heading font-bold leading-tight tracking-tight text-white" contenteditable="true">
       Tome el Control de su Empresa con un <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">15% de Descuento</span>
     </h1>
 
-    <!-- Compelling Subtitle -->
     <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed" contenteditable="true">
-      Soluciones empresariales y digitales 100% bilingües diseñadas para maximizar sus ventas y asegurar el cumplimiento de su negocio en Tennessee.
+      Soluciones empresariales y fiscales 100% bilingües diseñadas para maximizar sus ventas y asegurar el cumplimiento de su negocio en Tennessee.
     </p>
 
-    <!-- Action Buttons -->
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
       <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-full transition-all text-base shadow-lg shadow-yellow-500/20 transform hover:-translate-y-0.5" contenteditable="true">
         Reclamar Mi Descuento del 15%
@@ -45,7 +40,6 @@ export const LANDING_PAGE_TEMPLATES = {
       </a>
     </div>
 
-    <!-- Trust Metrics Bar -->
     <div class="pt-6 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-4 text-center">
       <div>
         <div class="text-emerald-400 font-bold text-base sm:text-xl font-heading" contenteditable="true">100%</div>
@@ -59,6 +53,99 @@ export const LANDING_PAGE_TEMPLATES = {
         <div class="text-emerald-400 font-bold text-base sm:text-xl font-heading" contenteditable="true">Knoxville, TN</div>
         <div class="text-slate-400 text-xs sm:text-sm" contenteditable="true">Presencia Local</div>
       </div>
+    </div>
+  </div>
+</div>
+  `,
+
+  hero_light: `
+<!-- Hero Style B: Modern Crisp Brand Light Hero (Matches Main Website) -->
+<div class="builder-block bg-gradient-to-b from-[#F2F7F4] via-white to-slate-50 text-slate-900 rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-sm border border-slate-200 relative overflow-hidden font-sans">
+  <div class="max-w-3xl mx-auto text-center space-y-6">
+    <div>
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-200 text-brand-primary text-xs sm:text-sm font-bold tracking-wider uppercase">
+        <span class="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
+        <span contenteditable="true">ASESORÍA EMPRESARIAL EN TENNESSEE</span>
+      </span>
+    </div>
+
+    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-brand-dark leading-tight tracking-tight" contenteditable="true">
+      Haga Crecer su Empresa con <span class="text-brand-primary">Estructura Legal y Fiscal Sólida</span>
+    </h1>
+
+    <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed" contenteditable="true">
+      Desde la apertura de su LLC hasta licencias comerciales y contabilidad en Knoxville. Orientación 100% bilingüe y personalizada.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+      <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-primary hover:bg-emerald-900 text-white font-bold py-4 px-8 rounded-full transition-all text-base shadow-lg shadow-emerald-900/20 transform hover:-translate-y-0.5" contenteditable="true">
+        Solicitar Consulta Gratuita
+      </a>
+      <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-white hover:bg-slate-100 text-brand-dark font-semibold py-4 px-6 rounded-full border border-slate-300 transition-all text-base gap-2 shadow-xs">
+        <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span contenteditable="true">(865) 202-7112</span>
+      </a>
+    </div>
+
+    <div class="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-2 sm:gap-4 text-center">
+      <div>
+        <div class="text-brand-primary font-bold text-base sm:text-xl font-heading" contenteditable="true">100%</div>
+        <div class="text-slate-500 text-xs sm:text-sm" contenteditable="true">Atención Bilingüe</div>
+      </div>
+      <div class="border-x border-slate-200/80">
+        <div class="text-amber-500 font-bold text-base sm:text-xl font-heading" contenteditable="true">24 Horas</div>
+        <div class="text-slate-500 text-xs sm:text-sm" contenteditable="true">Respuesta Rápida</div>
+      </div>
+      <div>
+        <div class="text-brand-primary font-bold text-base sm:text-xl font-heading" contenteditable="true">Knoxville, TN</div>
+        <div class="text-slate-500 text-xs sm:text-sm" contenteditable="true">Presencia Local</div>
+      </div>
+    </div>
+  </div>
+</div>
+  `,
+
+  hero_split: `
+<!-- Hero Style C: 2-Column Split Hero (Left: Value Proposition + Right: Action Card) -->
+<div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-12 lg:p-14 my-6 shadow-2xl relative overflow-hidden font-sans">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-emerald-500/20 via-transparent to-transparent pointer-events-none"></div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+    <div class="lg:col-span-7 space-y-6">
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs sm:text-sm font-bold tracking-wider uppercase">
+        <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+        <span contenteditable="true">CONSULTORÍA ESPECIALIZADA</span>
+      </span>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight" contenteditable="true">
+        Soluciones Estratégicas para <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">Emprendedores Hispanos</span>
+      </h1>
+      <p class="text-slate-300 text-base leading-relaxed" contenteditable="true">
+        Blindaje legal, licencias comerciales y control tributario con asesores que entienden sus necesidades reales en Tennessee.
+      </p>
+      <div class="space-y-2.5 pt-2">
+        <div class="flex items-center gap-3 text-sm text-slate-200 font-medium">
+          <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span contenteditable="true">Registro rápido de LLC y número EIN sin intermediarios costosos</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-200 font-medium">
+          <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span contenteditable="true">Asesoría contable y fiscal para evitar auditorías y multas del IRS</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-200 font-medium">
+          <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span contenteditable="true">Atención personalizada en español por llamada directa o WhatsApp</span>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-span-5 bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-xl space-y-4">
+      <h3 class="text-xl font-heading font-bold text-brand-dark text-center" contenteditable="true">Solicite su Asesoría Hoy</h3>
+      <p class="text-xs text-slate-500 text-center" contenteditable="true">Un consultor bilingüe se comunicará en menos de 24h</p>
+      <a href="#formulario" class="w-full inline-flex items-center justify-center bg-brand-primary hover:bg-emerald-900 text-white font-bold py-3.5 px-6 rounded-xl transition-all text-sm shadow-md" contenteditable="true">
+        Comenzar Ahora →
+      </a>
+      <a href="tel:8652027112" class="w-full inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-3 px-6 rounded-xl transition-all text-sm gap-2">
+        <svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span contenteditable="true">Llamar: (865) 202-7112</span>
+      </a>
     </div>
   </div>
 </div>

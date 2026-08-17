@@ -63,14 +63,36 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         </div>
         
         <div class="space-y-2.5">
-          <!-- Hero Section -->
+          <!-- Hero (Dark Navy Glow) -->
           <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="hero">
-            <div class="p-2.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <div class="p-2.5 bg-slate-900 text-amber-400 rounded-lg shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg>
             </div>
             <div>
-              <div class="font-semibold text-sm text-slate-900">Hero Section</div>
-              <div class="text-xs text-slate-500">Headline & action button</div>
+              <div class="font-semibold text-sm text-slate-900">Hero (Dark Glow)</div>
+              <div class="text-xs text-slate-500">Executive navy & gold aura</div>
+            </div>
+          </button>
+
+          <!-- Hero (Modern Crisp Light) -->
+          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 hover:shadow-xs transition-all flex items-center gap-3" data-type="hero_light">
+            <div class="p-2.5 bg-emerald-50 text-emerald-700 rounded-lg shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-sm text-slate-900">Hero (Modern Light)</div>
+              <div class="text-xs text-slate-500">Mint #F2F7F4 & navy text</div>
+            </div>
+          </button>
+
+          <!-- Hero (Split 2-Column) -->
+          <button class="add-block-btn w-full text-left p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-primary hover:shadow-xs transition-all flex items-center gap-3" data-type="hero_split">
+            <div class="p-2.5 bg-teal-50 text-teal-700 rounded-lg shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" /></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-sm text-slate-900">Hero (Split 2-Col)</div>
+              <div class="text-xs text-slate-500">Headline + Action card</div>
             </div>
           </button>
 
@@ -537,25 +559,19 @@ The user wants to generate or modify sections for this landing page:
 USER REQUEST: "${userPrompt}"
 
 CRITICAL BRAND & DESIGN SYSTEM RULES (RICH COLORS, MAGNETIC COPY, DYNAMIC LAYOUTS):
-1. COLOR-RICH HERO DESIGN (PUNCHY, SPECIFIC & EMOTIONAL - NO GENERIC TEXT):
-   - Badge: e.g., '📋 ASESORÍA BILINGÜE EN KNOXVILLE', '🔥 OFERTA EXCLUSIVA POR TIEMPO LIMITADO', '🚀 APERTURA 100% REMOTA', '⚡ RESPUESTA EN MENOS DE 24 HORAS'.
-   - Headline: MUST be punchy, emotional, and directly tailored to the topic and goal. Highlight the key power phrase with:
-     <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">[Gold Accent Phrase]</span>
-     (NEVER write generic copy like "Impulsa tu negocio y registra tu LLC". Write specific copy like "Deje de Perder Clientes y Facture Legalmente con su LLC", "Obtenga su Licencia de Contratista en TN Sin Trabas", or "¿Dudas con sus Impuestos? Hable Hoy con un Especialista").
-   - Subtitle: 2 compelling sentences outlining the concrete benefit and relief.
-   - Buttons: Action button matching the goal + Direct Call link '(865) 202-7112'.
-   - Trust metrics: 3 metric items ('100% Atención Bilingüe | 24 Horas Respuesta | Knoxville, TN').
-   - Container: <div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-2xl relative overflow-hidden font-sans">...</div>
+1. HERO SECTION VARIETY (CHOOSE OR ADAPT THE BEST BRAND-ALIGNED HERO):
+   - OPTION A: Dark Navy & Emerald Radial Glow Hero (<div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-2xl relative overflow-hidden font-sans">...)
+   - OPTION B: Modern Crisp Brand Light Hero (<div class="builder-block bg-gradient-to-b from-[#F2F7F4] via-white to-slate-50 text-slate-900 rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-sm border border-slate-200 relative overflow-hidden font-sans">...) with dark navy typography (#1A2E35) and emerald accent.
+   - OPTION C: High-Converting 2-Column Split Hero (<div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-12 lg:p-14 my-6 shadow-2xl relative overflow-hidden font-sans">...) with left value bullets + right floating action card.
+   - Headlines MUST be specific, emotional, and SEO/GEO optimized (e.g. Knoxville, TN, local trade terms). Highlight key power words with:
+     <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">[Gold Accent Phrase]</span> or <span class="text-brand-primary">[Green Accent]</span>.
 
 2. DYNAMIC VISUAL COMPONENTS (SELECT & CRAFT THE BEST FIT - DO NOT DEFAULT TO 3 CARDS):
-   - IF GOAL IS 'contractor', 'nra', or step-based service:
-     Generate a 4-Step Process Roadmap (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with 4 sequential numbered milestone cards (01, 02, 03, 04) tailored to the exact procedure.
-   - IF GOAL IS 'bookkeeping', 'tax', or overcoming financial fear:
-     Generate a Problem vs. Solution Matrix (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with 3 pain point rows (red ✕ badge with real business nightmare) paired with Guía de Negocios solutions (emerald ✓ badge).
-   - IF GOAL IS 'call', 'sales', or 'quote':
-     Generate a Comparison Matrix Table (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) comparing Guía de Negocios (highlighted in emerald pill) vs Abogados Tradicionales vs Plataformas en Inglés.
-   - IF GOAL IS 'discount' or general promotion:
-     Generate 3-Card Value Bento (<div class="builder-block bg-slate-50/80 p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with gradient icon containers (Emerald, Gold, Dark Navy) and concrete deliverables.
+   - 4-Step Process Roadmap (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+   - Problem vs. Solution Matrix (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+   - Comparison Matrix Table (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+   - 4-Stat Metrics Bar (<div class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+   - Value Bento Cards (<div class="builder-block bg-slate-50/80 p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
 
 3. PURPOSE-MATCHED ACTION FORM (CLEAN 2-COLUMN INPUT GRID WITH TRUST BADGES):
    - Container: <div id="formulario" class="builder-block bg-gradient-to-b from-slate-50 to-white border-2 border-emerald-100 rounded-3xl p-8 sm:p-14 my-6 shadow-xl shadow-slate-200/50 font-sans">...</div>

@@ -15,22 +15,41 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <!-- AI Landing Page Generator -->
   <div class="bg-gradient-to-r from-brand-dark to-slate-800 rounded-xl p-6 shadow-sm text-white mb-6">
-    <div class="flex items-center gap-3 mb-4">
-      <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-      <h3 class="text-lg font-bold">AI Landing Page Generator</h3>
-      <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini</span>
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        <h3 class="text-lg font-bold">AI Landing Page Generator</h3>
+        <span class="px-2.5 py-0.5 bg-amber-400/20 text-amber-300 text-xs font-bold rounded-full border border-amber-400/30">Gemini Pro</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 text-xs text-slate-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        SEO / AEO / GEO Engine Active
+      </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+
+    <!-- Main Descriptive Prompt Input -->
+    <div class="mb-4">
+      <label class="block text-xs text-slate-300 mb-1.5 font-medium">Describe what you want (Topic, SEO Keywords, Offer, City/Location, Campaign Goal, Pain Points)</label>
+      <textarea id="ai-lp-topic" rows="2" placeholder="e.g., SEO landing page for Hispanic roofing and painting contractors in Knoxville needing TN state licensing, general liability insurance, and LLC protection..." class="w-full px-3.5 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary resize-none"></textarea>
+      
+      <!-- Quick Inspiration Pills -->
+      <div class="flex flex-wrap items-center gap-2 mt-2">
+        <span class="text-[11px] text-slate-400 font-medium">Quick Ideas:</span>
+        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Licencia de Contratista General y Seguros en Knoxville, TN" data-audience="Contratistas y trabajadores de construcción hispanos en Knoxville y East Tennessee" data-goal="contractor">+ Contratistas Knoxville</button>
+        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Apertura y Registro de LLC en Tennessee con Número EIN y Cuenta Bancaria" data-audience="Emprendedores hispanos iniciando su primer negocio en Tennessee" data-goal="lead">+ Creación LLC en TN</button>
+        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Configuración de Bookkeeping en QuickBooks y Separación de Finanzas" data-audience="Dueños de pequeñas empresas con desorden contable" data-goal="bookkeeping">+ Bookkeeping QuickBooks</button>
+        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Preparación de Impuestos con ITIN y Maximización de Deducciones" data-audience="Trabajadores independientes y dueños de negocio con ITIN en Tennessee" data-goal="tax">+ Impuestos con ITIN</button>
+        <button type="button" class="seo-pill px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-[11px] font-medium border border-white/10 transition-colors" data-topic="Creación de Empresa LLC en EE.UU. para Extranjeros No Residentes (NRA) con Cuenta Bancaria Mercury" data-audience="Emprendedores en Latinoamérica y España que desean operar en EE.UU." data-goal="nra">+ Extranjeros NRA</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
-        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Service / Offer</label>
-        <input id="ai-lp-topic" type="text" placeholder="e.g., Summer Tax Prep Special" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Target Audience / Location</label>
+        <input id="ai-lp-audience" type="text" placeholder="e.g., Hispanic business owners in Knoxville & East TN" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
       </div>
       <div>
-        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Target Audience</label>
-        <input id="ai-lp-audience" type="text" placeholder="e.g., Small business owners in TN" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-brand-primary" />
-      </div>
-      <div>
-        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Primary Goal</label>
+        <label class="block text-xs text-slate-300 mb-1.5 font-medium">Primary Goal & Form Archetype</label>
         <select id="ai-lp-goal" class="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm focus:outline-none focus:border-brand-primary">
           <option value="lead" class="text-slate-900">Lead Generation (Form & WhatsApp)</option>
           <option value="call" class="text-slate-900">Book a Consultation Call</option>
@@ -45,6 +64,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         </select>
       </div>
     </div>
+
     <button id="ai-lp-generate-btn" class="px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2 font-semibold shadow-sm cursor-pointer">
       <svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
       Generate Landing Page Structure
@@ -241,54 +261,121 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       };
     }
 
+    // SEO Idea Pills click listeners
+    const topicInput = document.getElementById('ai-lp-topic') as HTMLTextAreaElement;
+    const audienceInput = document.getElementById('ai-lp-audience') as HTMLInputElement;
+    const goalSelect = document.getElementById('ai-lp-goal') as HTMLSelectElement;
+
+    document.querySelectorAll('.seo-pill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        if (topicInput) topicInput.value = target.dataset.topic || '';
+        if (audienceInput) audienceInput.value = target.dataset.audience || '';
+        if (goalSelect && target.dataset.goal) goalSelect.value = target.dataset.goal;
+        topicInput?.focus();
+      });
+    });
+
     // AI Landing Page Generator
     document.getElementById('ai-lp-generate-btn')?.addEventListener('click', async function() {
-      const topicInput = document.getElementById('ai-lp-topic') as HTMLInputElement;
-      const audienceInput = document.getElementById('ai-lp-audience') as HTMLInputElement;
-      const goalSelect = document.getElementById('ai-lp-goal') as HTMLSelectElement;
-
       const topic = topicInput?.value?.trim();
-      const audience = audienceInput?.value?.trim() || 'Small business owners in TN';
+      const audience = audienceInput?.value?.trim() || 'Small business owners in Tennessee';
       const goal = goalSelect?.value || 'lead';
 
       if (!topic) {
         // @ts-ignore
-        window.showToast('Please enter a Service / Offer first', 'warning');
+        window.showToast('Please describe what you want first', 'warning');
         return;
       }
 
       const btn = document.getElementById('ai-lp-generate-btn') as HTMLButtonElement;
       btn.disabled = true;
-      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is designing landing page...';
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Gemini is crafting SEO landing page...';
 
       try {
         const prompt = `
-          You are the elite direct-response conversion copywriter and web designer for GUIA DE NEGOCIOS (guianegocios.net, bilingual business consultancy in Knoxville, TN).
-          Create a magnetic, high-converting landing page for: "${topic}".
-          Target Audience: "${audience}".
-          Primary Goal: "${goal}".
+          You are the elite direct-response conversion copywriter, SEO/AEO/GEO strategist, and web designer for GUIA DE NEGOCIOS (guianegocios.net, bilingual business consultancy in Knoxville, TN).
           
-          MANDATORY COPYWRITING & SECTION BLUEPRINT (RICH COLORS, EMOTIONAL HOOKS, DYNAMIC VISUALS):
+          USER PROMPT / TOPIC / KEYWORDS: "${topic}"
+          TARGET AUDIENCE / GEO: "${audience}"
+          PRIMARY GOAL / OFFER: "${goal}"
           
-          1. Hero Section (DARK NAVY & EMERALD AMBIENT GLOW - NO BORING GENERIC HEADLINES):
-             - Badge: Highly relevant badge e.g., '📋 ASESORÍA BILINGÜE EN KNOXVILLE', '🔥 OFERTA EXCLUSIVA POR TIEMPO LIMITADO', '🚀 APERTURA 100% REMOTA', '⚡ RESPUESTA EN MENOS DE 24 HORAS'.
-             - Headline: MUST be punchy, emotional, and directly tailored to "${topic}" and "${goal}". Address their deepest fear or immediate goal! Highlight the key power phrase with:
-               <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">[Gold Accent Phrase]</span>
-               (NEVER write generic copy like "Impulsa tu negocio y registra tu LLC". Write specific copy like "Deje de Perder Clientes y Facture Legalmente con su LLC", "Obtenga su Licencia de Contratista en TN Sin Trabas", or "¿Dudas con sus Impuestos? Hable Hoy con un Especialista").
-             - Subtitle: 2 compelling sentences outlining the concrete benefit and relief.
-             - Buttons: Primary Action Button matching the goal (e.g. 'Agendar Mi Llamada de 15 Minutos', 'Reclamar Mi 15% de Descuento', 'Consultar Requisitos de Licencia') + Direct Call link '(865) 202-7112'.
-             - Trust metrics bar: 3 metric items ('100% Atención Bilingüe | 24 Horas Respuesta | Knoxville, TN').
-             - Wrapper: <div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-2xl relative overflow-hidden font-sans">...</div>
+          SEO / AEO / GEO OPTIMIZATION REQUIREMENTS:
+          - Automatically identify and weave target keywords and geographic terms (e.g. Knoxville, TN, East Tennessee, local trade terms) into H1, H2s, and Meta Description.
+          - Incorporate AEO (Answer Engine Optimization) direct-answer hooks and GEO entity grounding (e.g., IRS, Tennessee Secretary of State, local licensing boards).
+          - Craft an irresistible, emotionally resonant value proposition addressing real pains (IRS fines, legal confusion, English language barrier).
 
-          2. Tailored Visual / Marketing Component (SELECT & CRAFT THE BEST FIT - DO NOT DEFAULT TO 3 CARDS):
-             - IF GOAL IS 'contractor', 'nra', or step-based service:
-               Generate a 4-Step Process Roadmap (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with 4 sequential numbered milestone cards (01, 02, 03, 04) tailored to the exact procedure.
-             - IF GOAL IS 'bookkeeping', 'tax', or overcoming financial fear:
-               Generate a Problem vs. Solution Matrix (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with 3 pain point rows (red ✕ badge with real business nightmare) paired with Guía de Negocios solutions (emerald ✓ badge).
-             - IF GOAL IS 'call', 'sales', or 'quote':
-               Generate a Comparison Matrix Table (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) comparing Guía de Negocios (highlighted in emerald pill) vs Abogados Tradicionales vs Plataformas en Inglés.
-             - IF GOAL IS 'discount' or general promotion:
-               Generate 3-Card Value Bento (<div class="builder-block bg-slate-50/80 p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...) with gradient icon containers (Emerald, Gold, Dark Navy) and concrete deliverables.
+          MANDATORY SECTION BLUEPRINT (BRAND DESIGN SYSTEM WITH HERO & LAYOUT VARIETY):
+          
+          1. Hero Section (CHOOSE THE BEST FIT FOR THIS CAMPAIGN - ALWAYS RICH & BRAND-ALIGNED):
+             
+             OPTION 1 - EXECUTIVE DARK GLOW HERO (Navy #1A2E35 + Emerald & Gold aura):
+             <div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-2xl relative overflow-hidden font-sans">
+               <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/25 via-brand-primary/20 to-transparent pointer-events-none"></div>
+               <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+               <div class="relative z-10 max-w-3xl mx-auto text-center space-y-6">
+                 <div><span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs sm:text-sm font-bold tracking-wider uppercase"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span><span contenteditable="true">[Badge]</span></span></div>
+                 <h1 class="text-3xl sm:text-5xl lg:text-6xl font-heading font-bold leading-tight text-white" contenteditable="true">[Punchy Headline with <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">Gold Accent</span>]</h1>
+                 <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed" contenteditable="true">[2 compelling sentences]</p>
+                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                   <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-accent hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-full transition-all text-base shadow-lg shadow-yellow-500/20 transform hover:-translate-y-0.5" contenteditable="true">[CTA]</a>
+                   <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white font-semibold py-4 px-6 rounded-full border border-white/20 transition-all text-base gap-2 backdrop-blur-sm"><svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg><span contenteditable="true">(865) 202-7112</span></a>
+                 </div>
+                 <div class="pt-6 border-t border-white/10 grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                   <div><div class="text-emerald-400 font-bold text-base sm:text-xl font-heading" contenteditable="true">100%</div><div class="text-slate-400 text-xs sm:text-sm" contenteditable="true">Atención Bilingüe</div></div>
+                   <div class="border-x border-white/10"><div class="text-amber-400 font-bold text-base sm:text-xl font-heading" contenteditable="true">24 Horas</div><div class="text-slate-400 text-xs sm:text-sm" contenteditable="true">Respuesta Rápida</div></div>
+                   <div><div class="text-emerald-400 font-bold text-base sm:text-xl font-heading" contenteditable="true">Knoxville, TN</div><div class="text-slate-400 text-xs sm:text-sm" contenteditable="true">Presencia Local</div></div>
+                 </div>
+               </div>
+             </div>
+
+             OPTION 2 - MODERN CRISP LIGHT HERO (Matches Main Website - Mint #F2F7F4 & Dark Navy #1A2E35):
+             <div class="builder-block bg-gradient-to-b from-[#F2F7F4] via-white to-slate-50 text-slate-900 rounded-3xl p-8 sm:p-14 lg:p-16 my-6 shadow-sm border border-slate-200 relative overflow-hidden font-sans">
+               <div class="max-w-3xl mx-auto text-center space-y-6">
+                 <div><span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-200 text-brand-primary text-xs sm:text-sm font-bold tracking-wider uppercase"><span class="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span><span contenteditable="true">[Badge]</span></span></div>
+                 <h1 class="text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-brand-dark leading-tight" contenteditable="true">[Punchy Headline with <span class="text-brand-primary">[Green Accent]</span>]</h1>
+                 <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed" contenteditable="true">[2 compelling sentences]</p>
+                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                   <a href="#formulario" class="w-full sm:w-auto inline-flex items-center justify-center bg-brand-primary hover:bg-emerald-900 text-white font-bold py-4 px-8 rounded-full transition-all text-base shadow-lg shadow-emerald-900/20 transform hover:-translate-y-0.5" contenteditable="true">[CTA]</a>
+                   <a href="tel:8652027112" class="w-full sm:w-auto inline-flex items-center justify-center bg-white hover:bg-slate-100 text-brand-dark font-semibold py-4 px-6 rounded-full border border-slate-300 transition-all text-base gap-2 shadow-xs"><svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg><span contenteditable="true">(865) 202-7112</span></a>
+                 </div>
+                 <div class="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                   <div><div class="text-brand-primary font-bold text-base sm:text-xl font-heading" contenteditable="true">100%</div><div class="text-slate-500 text-xs sm:text-sm" contenteditable="true">Atención Bilingüe</div></div>
+                   <div class="border-x border-slate-200/80"><div class="text-amber-500 font-bold text-base sm:text-xl font-heading" contenteditable="true">24 Horas</div><div class="text-slate-500 text-xs sm:text-sm" contenteditable="true">Respuesta Rápida</div></div>
+                   <div><div class="text-brand-primary font-bold text-base sm:text-xl font-heading" contenteditable="true">Knoxville, TN</div><div class="text-slate-500 text-xs sm:text-sm" contenteditable="true">Presencia Local</div></div>
+                 </div>
+               </div>
+             </div>
+
+             OPTION 3 - HIGH-CONVERTING 2-COLUMN SPLIT HERO (Value Bullets + Action Card):
+             <div class="builder-block bg-brand-dark text-white rounded-3xl p-8 sm:p-12 lg:p-14 my-6 shadow-2xl relative overflow-hidden font-sans">
+               <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-emerald-500/20 via-transparent to-transparent pointer-events-none"></div>
+               <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+                 <div class="lg:col-span-7 space-y-6">
+                   <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs sm:text-sm font-bold tracking-wider uppercase"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span><span contenteditable="true">[Badge]</span></span>
+                   <h1 class="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight" contenteditable="true">[Headline with <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-400">Gold Accent</span>]</h1>
+                   <p class="text-slate-300 text-base leading-relaxed" contenteditable="true">[Description]</p>
+                   <div class="space-y-2.5 pt-2">
+                     <div class="flex items-center gap-3 text-sm text-slate-200 font-medium"><svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span contenteditable="true">[Feature 1]</span></div>
+                     <div class="flex items-center gap-3 text-sm text-slate-200 font-medium"><svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span contenteditable="true">[Feature 2]</span></div>
+                     <div class="flex items-center gap-3 text-sm text-slate-200 font-medium"><svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span contenteditable="true">[Feature 3]</span></div>
+                   </div>
+                 </div>
+                 <div class="lg:col-span-5 bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-xl space-y-4">
+                   <h3 class="text-xl font-heading font-bold text-brand-dark text-center" contenteditable="true">[Quick Card Title]</h3>
+                   <p class="text-xs text-slate-500 text-center" contenteditable="true">[Subtext]</p>
+                   <a href="#formulario" class="w-full inline-flex items-center justify-center bg-brand-primary hover:bg-emerald-900 text-white font-bold py-3.5 px-6 rounded-xl transition-all text-sm shadow-md" contenteditable="true">[Button Text] →</a>
+                   <a href="tel:8652027112" class="w-full inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-3 px-6 rounded-xl transition-all text-sm gap-2"><svg class="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg><span contenteditable="true">Llamar: (865) 202-7112</span></a>
+                 </div>
+               </div>
+             </div>
+
+          2. Tailored Visual Component (DYNAMICALLY CHOOSE & CUSTOMIZE):
+             - 4-Step Process Roadmap (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+             - Problem vs. Solution Matrix (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+             - Comparison Matrix Table (<div class="builder-block bg-white p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+             - 4-Stat Metrics Bar (<div class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
+             - Value Bento Cards (<div class="builder-block bg-slate-50/80 p-8 sm:p-14 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">...)
 
           3. Purpose-Matched Action Form (CLEAN 2-COLUMN INPUT GRID WITH TRUST BADGES):
              - Container: <div id="formulario" class="builder-block bg-gradient-to-b from-slate-50 to-white border-2 border-emerald-100 rounded-3xl p-8 sm:p-14 my-6 shadow-xl shadow-slate-200/50 font-sans">...</div>
@@ -347,7 +434,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
              </div>
              \`\`\`
           
-          STRICT CONTRAST & TYPOGRAPHY RULE:
+          STRICT BRAND RULES:
+          - Colors: Brand Dark (#1A2E35), Brand Primary (#1B4E2B), Brand Accent (#F0C850), Brand Light (#F2F7F4).
           - Headings on light/white backgrounds MUST be 'text-brand-dark' or 'text-slate-900'. NEVER use 'text-white' on light backgrounds.
           - Paragraphs on light/white backgrounds MUST be 'text-slate-600'.
           - NO flag emojis.
@@ -356,13 +444,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           OUTPUT FORMAT (Output STRICTLY using these exact section headers so the content parses flawlessly):
 
           ===TITLE===
-          [Compelling page title in Spanish]
+          [SEO & GEO Optimized page title in Spanish with target keyword & location]
 
           ===SLUG===
           [url-friendly-slug-in-spanish]
 
           ===META_DESC===
-          [150-160 character description in Spanish]
+          [150-160 character description with action verb and local keyword]
 
           ===LANG===
           es
