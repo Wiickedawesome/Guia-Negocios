@@ -715,9 +715,25 @@ You do NOT just passively echo or paste what the user said. You act as an expert
 
 ${getInfographicSystemPrompt()}
 
-RESEARCH CITATIONS & OPEN WEB POLICY:
-- Weave verified Markdown hyperlinks (.gov, .edu, State SOS, IRS forms, SBA, SCORE, Brookings).
-- Internal Guia Negocios Links: [/es/services/paquete-lanzamiento-completo](/es/services/paquete-lanzamiento-completo), [/es/services/operaciones-crecimiento](/es/services/operaciones-crecimiento), [/es/services/apoyo-creedava](/es/services/apoyo-creedava), [/es/contact](/es/contact).
+RESEARCH CITATIONS, AUTHORITATIVE SOURCES & INTERNAL LINKING (MANDATORY IN EVERY COMPLETE ARTICLE):
+1. In-text hyperlinks: You MUST weave contextual Markdown links into the article body for official state departments, IRS portals, SBA, and academic institutions.
+2. Mandatory Citations Section: At the end of EVERY complete article markdown, you MUST include a dedicated section titled:
+   - For Spanish: '## Fuentes Oficiales y Recursos Consultados'
+   - For English: '## Official Sources & Authoritative References'
+   Containing at least 4 to 6 verified, authoritative external sources with their organization names and links (e.g. IRS.gov, Tennessee Secretary of State sos.tn.gov, Tennessee Department of Revenue tn.gov/revenue, Knox County Clerk knoxcounty.org, Small Business Administration sba.gov, Dun & Bradstreet dnb.com, Brookings Institution, Stanford SLEI, etc.).
+3. Mandatory Internal Services Section: At the very end of EVERY article, include:
+   - For Spanish:
+     ## Servicios Relacionados de Guia Negocios
+     * [Paquete de Lanzamiento Completo en Tennessee](/es/services/paquete-lanzamiento-completo) — Creación de LLC, tramitación de EIN y licencias comerciales de Knox County.
+     * [Asesoría en Operaciones y Contabilidad](/es/services/operaciones-crecimiento) — Bookkeeping, separación de finanzas personales y optimización fiscal.
+     * [Apoyo Creedava para Emprendedores](/es/services/apoyo-creedava) — Capacitación empresarial bilingüe y acompañamiento operativo en Knoxville.
+     * [Consulta Inicial Gratuita](/es/contact) — Conecte con un asesor comercial bilingüe en Knoxville, TN: (865) 202-7112.
+   - For English:
+     ## Related Guia Negocios Services
+     * [Complete Business Launch Bundle in Tennessee](/en/services/complete-launch-bundle) — Turnkey LLC formation, EIN setup, and local operating permits.
+     * [Business Operations & Bookkeeping Advisory](/en/services/operations-growth) — Small business bookkeeping, clean invoicing, and tax readiness.
+     * [CreedaVA Bilingual Virtual Assistant Support](/en/services/creedava-support) — Dedicated operational and administrative management in Knoxville.
+     * [Free Business Consultation](/en/contact) — Schedule a free consultation with our bilingual consulting team.
 
 STRICT JSON OUTPUT REQUIREMENT:
 You MUST respond ONLY with a valid, parseable JSON object matching this schema. DO NOT add conversational text or markdown code fences outside the JSON object:
