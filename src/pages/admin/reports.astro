@@ -138,12 +138,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       }
 
       tbody.innerHTML = allReports.map(report => {
-        let dateStr = 'Pending...';
+        let dateStr = 'Just now';
         if (report.createdAt) {
-          if (report.createdAt.toMillis) {
+          if (typeof report.createdAt.toDate === 'function') {
+            dateStr = report.createdAt.toDate().toLocaleString();
+          } else if (typeof report.createdAt.toMillis === 'function') {
             dateStr = new Date(report.createdAt.toMillis()).toLocaleString();
+          } else if (report.createdAt instanceof Date) {
+            dateStr = report.createdAt.toLocaleString();
           } else if (typeof report.createdAt === 'string') {
-            dateStr = new Date(report.createdAt).toLocaleString();
+            const parsed = new Date(report.createdAt);
+            dateStr = isNaN(parsed.getTime()) ? 'Just now' : parsed.toLocaleString();
           }
         }
 
