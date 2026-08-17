@@ -1237,7 +1237,7 @@ User Request: "${userPrompt}"
           const isEnglish = document.getElementById('editor-en-container')?.classList.contains('block');
           const activeLang = isEnglish ? 'en' : 'es';
           const activeSlug = isEnglish ? slugEn : slugEs;
-          const liveUrl = `${window.location.origin}/${activeLang}/blog/view?id=${postId}&slug=${activeSlug}`;
+          const liveUrl = `${window.location.origin}/${activeLang}/blog/${activeSlug}`;
 
           if (livePostUrlDisplay) livePostUrlDisplay.value = liveUrl;
           if (btnOpenLiveArticle) btnOpenLiveArticle.href = liveUrl;

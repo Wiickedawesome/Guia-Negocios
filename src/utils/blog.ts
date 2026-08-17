@@ -470,6 +470,172 @@ Starting a business is a big step, but you don't have to do it alone. At **Guia 
     tags: ["LLC", "Tennessee", "Knoxville", "Business Registration"],
     readTime: 8,
     content: ``
+  },
+  'como-hacer-credito-para-negocio': {
+    title: "Cómo Hacer Crédito para Negocio en EE.UU.: Guía de Financiamiento Empresarial",
+    slug: "como-hacer-credito-para-negocio",
+    altSlug: "how-to-build-business-credit-united-states",
+    lang: "es",
+    date: "2026-08-17",
+    excerpt: "Descubra cómo hacer crédito para su negocio en EE.UU. paso a paso. Guía completa para estructurar su empresa, obtener EIN, D-U-N-S y calificar a financiamiento corporativo sin arriesgar su patrimonio personal.",
+    featuredImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Crédito Comercial", "Financiamiento", "LLC", "D-U-N-S", "Negocios EE.UU."],
+    readTime: 9,
+    content: `
+Construir un perfil crediticio corporativo sólido en los Estados Unidos es uno de los pasos más estratégicos que puede dar un emprendedor o dueño de negocio hispano. El **crédito de negocio (Business Credit)** le permite a su empresa obtener líneas de crédito, tarjetas corporativas, financiamiento de vehículos comerciales y préstamos bancarios respaldados exclusivamente por la reputación financiera de su empresa, **sin poner en riesgo su patrimonio ni su puntaje de crédito personal**.
+
+Muchos empresarios cometen el error de financiar sus operaciones con tarjetas personales o avales familiares. Esto limita su capacidad de crecimiento y los expone a riesgos innecesarios. En esta guía detallada le explicamos la ruta probada para construir crédito comercial desde cero en EE.UU.
+
+![Planificación Financiera Empresarial](https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1000&q=80)
+
+---
+
+## 1. ¿Por Qué es Crucial Separar el Crédito Personal del Corporativo?
+
+Cuando opera como propietario único o usa su Seguro Social (SSN) o ITIN personal para pedir préstamos comerciales, cualquier retraso o saldo elevado afecta directamente su puntaje crediticio personal (FICO Score). Al construir crédito bajo el EIN de su LLC:
+
+1. **Protección de Bienes Personales:** Las obligaciones financieras recaen sobre la entidad jurídica, protegiendo su vivienda, ahorros y activos personales.
+2. **Mayor Capacidad de Endeudamiento:** Las líneas de crédito comercial suelen ser de **10 a 100 veces mayores** que las líneas de crédito personales.
+3. **Calificación para Contratos Institucionales:** Grandes proveedores y agencias gubernamentales verifican el historial crediticio corporativo antes de aprobar órdenes de compra a 30 o 60 días (Net-30 / Net-60).
+4. **Tasas de Interés Preferenciales:** Un puntaje Paydex alto en Dun & Bradstreet reduce drásticamente las tasas de interés en préstamos de capital de trabajo.
+
+---
+
+## 2. Requisitos Previos: Estructuración Legal de la Empresa
+
+Para que los burós de crédito comercial reconozcan a su negocio como una entidad legítima y financiable, debe cumplir con los siguientes fundamentos de credibilidad:
+
+- **Registro Formal de la Entidad:** Contar con una LLC o Corporación registrada ante la Secretaría de Estado (por ejemplo, en Tennessee).
+- **Número EIN del IRS:** Número de Identificación del Empleador activo.
+- **Cuenta Bancaria Comercial:** Una cuenta corriente empresarial exclusiva a nombre de la LLC con fondos operativos.
+- **Dirección Comercial y Teléfono Fijo:** Una dirección física o servicio de oficina virtual reconocido (evitar apartados postales P.O. Box básicos) y listado en el directorio 411.
+- **Presencia Digital Profesional:** Sitio web corporativo y correo electrónico con dominio propio (ejemplo: \`info@suempresa.com\`).
+
+![Oficina y Negocios en EE.UU.](https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1000&q=80)
+
+---
+
+## 3. Los 3 Burós Principales de Crédito Comercial en EE.UU.
+
+A diferencia del crédito personal (Equifax, Experian, TransUnion), el crédito comercial es monitoreado por:
+
+1. **Dun & Bradstreet (D&B):** Es el buró más importante. Emite el **D-U-N-S Number** (un identificador de 9 dígitos) y calcula el **Paydex Score** (de 1 a 100). Un Paydex de 80 o superior indica que la empresa paga sus facturas a tiempo o por adelantado.
+2. **Experian Commercial:** Evalúa el riesgo crediticio corporativo con el **Intelliscore Plus** (escala de 1 a 100).
+3. **Equifax Small Business:** Monitorea el historial de pago y emite el puntaje de riesgo de fallas comerciales (**Credit Risk Score**).
+
+---
+
+## 4. La Estrategia por Niveles (Tier 1 a Tier 4)
+
+El crédito comercial no se construye de la noche a la mañana; se escala a través de niveles de proveedores (**Vendor Tiers**):
+
+### Nivel 1: Cuentas Comerciales Net-30 (Tier 1)
+Comience abriendo de 3 a 5 cuentas con proveedores que otorguen términos de pago a 30 días y que reporten directamente a Dun & Bradstreet, Experian y Equifax. Ejemplos reconocidos incluyen:
+- **Uline** (Materiales de empaque y suministros)
+- **Grainger** (Herramientas y suministros industriales)
+- **Quill** (Artículos de oficina y papelería)
+- **The CEO Creative / Crown Office Supplies** (Diseño y suministros)
+
+> **Regla de Oro:** Realice compras pequeñas mensuales ($50 - $100) y pague las facturas **antes de la fecha de vencimiento** (en el día 15 o 20) para generar un Paydex perfecto de 80+.
+
+### Nivel 2: Tarjetas de Tiendas Minoristas (Tier 2)
+Una vez que tenga 5 reportes de pago registrados en su perfil de D&B, califique para tarjetas comerciales de grandes cadenas:
+- The Home Depot Commercial
+- Lowe's Pro
+- Best Buy Business
+- Amazon Business Revolving Line
+
+### Nivel 3: Tarjetas de Flotas y Tarjetas de Crédito Corporativas (Tier 3)
+- Tarjetas de combustible para vehículos de la empresa (WEX Fleet, Shell Business).
+- Tarjetas corporativas Visa / Mastercard sin garantía personal estricta (Divvy, Brex, Ramp, Chase Ink Business).
+
+### Nivel 4: Líneas de Crédito Bancarias y Préstamos SBA (Tier 4)
+Con 2 o más años de operación y un perfil Paydex consolidado, su LLC puede acceder a líneas de crédito rotativas de $50,000 a $250,000+ y préstamos SBA 7(a) para expansión, adquisición de maquinaria o compra de bienes raíces comerciales.
+
+---
+
+## 5. ¿Necesita Asesoría para Financiar su Empresa?
+
+En **Guia Negocios**, orientamos a emprendedores hispanos en Knoxville y todo Tennessee para registrar su LLC, tramitar el EIN, obtener su D-U-N-S Number y estructurar su perfil de crédito corporativo desde el primer día.
+
+[Solicite una consulta gratuita hoy](/es/contact) con nuestros especialistas bilingües y construya el futuro financiero de su empresa.
+`
+  },
+  'how-to-build-business-credit-united-states': {
+    title: "How to Build Business Credit in the U.S.: Step-by-Step Guide",
+    slug: "how-to-build-business-credit-united-states",
+    altSlug: "como-hacer-credito-para-negocio",
+    lang: "en",
+    date: "2026-08-17",
+    excerpt: "Learn how to build business credit in the United States step by step. Complete guide to structuring your LLC, obtaining an EIN and D-U-N-S number, and qualifying for corporate financing without personal guarantees.",
+    featuredImage: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    tags: ["Business Credit", "Financing", "LLC", "D-U-N-S", "US Business"],
+    readTime: 9,
+    content: `
+Building a strong corporate credit profile in the United States is one of the most powerful financial strategies for any entrepreneur or business owner. **Business Credit** allows your enterprise to secure financing, commercial credit cards, fleet vehicle leases, and bank loans backed entirely by your company's creditworthiness — **without risking your personal credit score or personal assets**.
+
+Many small business owners make the mistake of co-mingling funds and using personal credit cards to fund company operations. This limits growth potential and exposes your family finances to business liabilities. This guide outlines the proven roadmap to establish and scale business credit from scratch.
+
+![Business Financial Planning](https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1000&q=80)
+
+---
+
+## 1. Why Separate Personal and Business Credit?
+
+1. **Personal Asset Protection:** Commercial obligations belong solely to the legal entity, safeguarding your home, personal savings, and family assets.
+2. **Massive Borrowing Power:** Business credit limits are typically **10 to 100 times higher** than personal consumer credit limits.
+3. **Institutional Contracting:** Corporate clients, distributors, and government procurement offices review business credit ratings before issuing Net-30 purchase orders.
+4. **Lower Interest Rates:** A strong Dun & Bradstreet Paydex rating unlocks favorable terms on equipment loans and working capital lines of credit.
+
+---
+
+## 2. Foundation: Proper Corporate Structuring
+
+Before applying for vendor lines, ensure your business meets lender credibility criteria:
+
+- **Formal Entity Formation:** Form an LLC or Corporation in your state (such as Tennessee).
+- **IRS EIN:** Active Employer Identification Number.
+- **Dedicated Business Bank Account:** Commercial checking account in the exact legal name of the LLC.
+- **Commercial Address & Listed Phone:** A real commercial address or virtual office (avoid standard P.O. Boxes) and directory listing on 411.
+- **Digital Footprint:** Dedicated corporate website and custom email domain.
+
+---
+
+## 3. Major Business Credit Bureaus
+
+Unlike consumer credit bureaus, business credit is tracked by:
+
+1. **Dun & Bradstreet (D&B):** Generates the **D-U-N-S Number** and the **Paydex Score** (1-100). A score of 80+ indicates prompt payment.
+2. **Experian Commercial:** Computes the **Intelliscore Plus** risk rating.
+3. **Equifax Small Business:** Tracks financial risk and commercial payment delinquency scores.
+
+---
+
+## 4. The Tiered Credit Strategy (Tier 1 to Tier 4)
+
+### Tier 1: Net-30 Vendor Accounts
+Open 3 to 5 starter accounts that report trade lines to D&B and Experian:
+- Uline (Packaging & shipping supplies)
+- Grainger (Industrial equipment)
+- Quill (Office supplies)
+
+### Tier 2: Retail Store Cards
+Home Depot Commercial, Lowe's Pro, Amazon Business.
+
+### Tier 3: Fleet & Corporate Credit Cards
+WEX Fuel Cards, Brex, Ramp, Divvy, and Chase Ink Business.
+
+### Tier 4: Bank Lines of Credit & SBA Financing
+Revolving lines of credit ($50,000 to $250,000+) and SBA 7(a) loans for long-term expansion.
+
+---
+
+## 5. Need Professional Guidance?
+
+At **Guia Negocios**, we guide Latino entrepreneurs and small business owners through every step of forming an LLC, securing EINs, registering D-U-N-S numbers, and establishing corporate credit lines.
+
+[Schedule your free consultation today](/en/contact) to begin scaling your business with confidence.
+`
   }
 };
 
