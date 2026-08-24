@@ -14,13 +14,23 @@ const t = useTranslations(lang);
 const currentPath = Astro.url.pathname;
 const isEnglish = currentPath.startsWith('/en');
 const toggleLang = isEnglish ? 'es' : 'en';
+
+const defaultTogglePath = isEnglish
+  ? (currentPath === '/en' || currentPath === '/en/' ? '/' : currentPath.replace('/en', '/es'))
+  : (currentPath === '/' || currentPath === '/es' || currentPath === '/es/' ? '/en/' : currentPath.replace('/es', '/en'));
+
 // Use explicit altPath for pages with translated slugs (e.g. blog posts), 
 // otherwise fall back to simple lang prefix swap
-const togglePath = altPath || currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
+const togglePath = altPath || defaultTogglePath;
+
+const homePath = isEnglish ? '/en' : '/';
 
 const isActive = (path: string) => {
-  if (path === `/${lang}` || path === `/${lang}/`) {
-    return currentPath === `/${lang}` || currentPath === `/${lang}/`;
+  if (path === '/' || path === '/en' || path === '/en/') {
+    if (path === '/') {
+      return currentPath === '/' || currentPath === '' || currentPath === '/es' || currentPath === '/es/';
+    }
+    return currentPath === '/en' || currentPath === '/en/';
   }
   return currentPath.startsWith(path);
 };
@@ -43,14 +53,14 @@ const mobileNavClass = (path: string) => {
     <div class="flex justify-between items-center h-20">
       <!-- Logo -->
       <div class="flex-shrink-0 flex items-center">
-        <a href={`/${lang}`} class="flex items-center">
+        <a href={homePath} class="flex items-center">
           <Image src={logoImage} alt="Guia Negocios" class="h-16 w-auto" loading="eager" fetchpriority="high" />
         </a>
       </div>
 
       <!-- Desktop Nav -->
       <nav class="hidden md:flex space-x-8">
-        <a href={`/${lang}`} class={navClass(`/${lang}`)}>{t('nav.home')}</a>
+        <a href={homePath} class={navClass(homePath)}>{t('nav.home')}</a>
         <a href={`/${lang}/services`} class={navClass(`/${lang}/services`)}>{t('nav.services')}</a>
         <a href={`/${lang}/about`} class={navClass(`/${lang}/about`)}>{t('nav.about')}</a>
         <a href={`/${lang}/contact`} class={navClass(`/${lang}/contact`)}>{t('nav.contact')}</a>
@@ -90,7 +100,7 @@ const mobileNavClass = (path: string) => {
   <!-- Mobile Menu Panel -->
   <div id="mobile-menu" class="hidden md:hidden absolute w-full left-0 top-full shadow-lg border-t border-slate-200 bg-white z-40">
     <div class="px-4 py-4 space-y-1">
-      <a href={`/${lang}`} class={mobileNavClass(`/${lang}`)}>{t('nav.home')}</a>
+      <a href={homePath} class={mobileNavClass(homePath)}>{t('nav.home')}</a>
       <a href={`/${lang}/services`} class={mobileNavClass(`/${lang}/services`)}>{t('nav.services')}</a>
       <a href={`/${lang}/about`} class={mobileNavClass(`/${lang}/about`)}>{t('nav.about')}</a>
       <a href={`/${lang}/contact`} class={mobileNavClass(`/${lang}/contact`)}>{t('nav.contact')}</a>

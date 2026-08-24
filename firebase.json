@@ -69,8 +69,8 @@
     ],
     "redirects": [
       {
-        "source": "/",
-        "destination": "/es/",
+        "source": "/es",
+        "destination": "/",
         "type": 301
       },
       {

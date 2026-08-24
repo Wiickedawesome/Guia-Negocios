@@ -24,11 +24,15 @@ const currentPath = Astro.url.pathname;
 const isEnglish = currentPath.startsWith('/en');
 const toggleLang = isEnglish ? 'es' : 'en';
 // Use explicit altPath for pages with translated slugs (e.g. blog posts)
-const alternatePath = altPath || currentPath.replace(`/${isEnglish ? 'en' : 'es'}`, `/${toggleLang}`);
+const alternatePath = altPath || (
+  isEnglish
+    ? (currentPath === '/en' || currentPath === '/en/' ? '/' : currentPath.replace('/en', '/es'))
+    : (currentPath === '/' || currentPath === '/es' || currentPath === '/es/' ? '/en/' : currentPath.replace('/es', '/en'))
+);
 
 // Helper to format clean absolute URLs with trailing slash matching canonical indexing
 const toAbsoluteUrl = (path: string) => {
-  if (!path || path === '/') return 'https://guianegocios.net/es/';
+  if (!path || path === '/' || path === '/es' || path === '/es/') return 'https://guianegocios.net/';
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const withTrailingSlash = normalized.endsWith('/') ? normalized : `${normalized}/`;
   return `https://guianegocios.net${withTrailingSlash}`;
@@ -37,7 +41,7 @@ const toAbsoluteUrl = (path: string) => {
 const canonicalUrl = toAbsoluteUrl(currentPath);
 const enUrl = toAbsoluteUrl(isEnglish ? currentPath : alternatePath);
 const esUrl = toAbsoluteUrl(!isEnglish ? currentPath : alternatePath);
-const xDefaultUrl = esUrl; // Default primary language
+const xDefaultUrl = 'https://guianegocios.net/'; // Default primary language (Spanish)
 
 ---
 
@@ -305,7 +309,7 @@ const xDefaultUrl = esUrl; // Default primary language
                 "@type": "ListItem",
                 "position": 1,
                 "name": isEnglish ? "Home" : "Inicio",
-                "item": `https://guianegocios.net/${lang}/`
+                "item": isEnglish ? "https://guianegocios.net/en/" : "https://guianegocios.net/"
               },
               {
                 "@type": "ListItem",

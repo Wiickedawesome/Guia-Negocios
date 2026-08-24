@@ -16,8 +16,8 @@ export default defineConfig({
     react(),
     sitemap({
       filter: (page) => {
-        // Exclude root redirect URL since it 301s to /es/ (sitemap should only contain 200 OK indexable pages)
-        if (page === 'https://guianegocios.net/' || page === 'https://guianegocios.net') return false;
+        // Exclude /es/ redirect URL since it 301s to root / (sitemap should only contain 200 OK indexable pages)
+        if (page === 'https://guianegocios.net/es/' || page === 'https://guianegocios.net/es') return false;
         // Exclude admin dashboard
         if (page.includes('/admin')) return false;
         // Exclude dynamic client view shells and fallbacks
@@ -38,13 +38,13 @@ export default defineConfig({
         return true;
       },
       serialize(item) {
-        // Normalize URL to have clean trailing slash matching canonical tags
+        // Normalize URL to have clean trailing slash matching canonical tags (except root if normalized)
         if (!item.url.endsWith('/')) {
           item.url = `${item.url}/`;
         }
 
         // Assign clean SEO priorities and change frequencies
-        if (item.url === 'https://guianegocios.net/es/' || item.url === 'https://guianegocios.net/en/') {
+        if (item.url === 'https://guianegocios.net/' || item.url === 'https://guianegocios.net/en/') {
           item.priority = 1.0;
           item.changefreq = 'weekly';
         } else if (item.url.includes('/services/')) {

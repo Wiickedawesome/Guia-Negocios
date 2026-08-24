@@ -31,7 +31,7 @@ const t = useTranslations(lang);
       <div>
         <h4 class="text-lg font-semibold mb-4">Links</h4>
         <ul class="space-y-2">
-          <li><a href={`/${lang}`} class="text-slate-400 hover:text-white transition-colors">{t('nav.home')}</a></li>
+          <li><a href={lang === 'es' ? '/' : '/en'} class="text-slate-400 hover:text-white transition-colors">{t('nav.home')}</a></li>
           <li><a href={`/${lang}/services`} class="text-slate-400 hover:text-white transition-colors">{t('nav.services')}</a></li>
           <li><a href={`/${lang}/about`} class="text-slate-400 hover:text-white transition-colors">{t('nav.about')}</a></li>
           <li><a href={`/${lang}/blog`} class="text-slate-400 hover:text-white transition-colors">{t('nav.blog')}</a></li>

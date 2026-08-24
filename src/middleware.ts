@@ -13,9 +13,14 @@ export const onRequest = defineMiddleware((context, next) => {
     return next();
   }
 
-  // Root URL -> redirect to /es
+  // Root URL -> handled directly by src/pages/index.astro (Spanish Home)
   if (pathname === '/' || pathname === '') {
-    return context.redirect('/es', 302);
+    return next();
+  }
+
+  // Redirect /es or /es/ to /
+  if (pathname === '/es' || pathname === '/es/') {
+    return context.redirect('/', 301);
   }
 
   // Fallback redirect for non-prefixed routes (e.g. /services -> /es/services)
