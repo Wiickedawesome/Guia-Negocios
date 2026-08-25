@@ -7,7 +7,7 @@ Welcome to the Guia de Negocios repository. Please adhere to the following archi
 - **Styling:** Tailwind CSS (Vanilla CSS is heavily supplemented by Tailwind utility classes here)
 - **Backend/Database:** Firebase Firestore
 - **AI Integration:** Google Gemini (via `firebase/ai`)
-- **Icons/Images:** Unsplash placeholders, inline SVG icons.
+- **Icons/Images:** Pexels & Unsplash stock photography, inline SVG icons.
 
 ## 2. Project Architecture
 - **Bilingual Structure:** The site is fully bilingual. Page routes are split strictly into `/src/pages/en/` and `/src/pages/es/`. Do not mix English and Spanish content within a single page component.
@@ -23,7 +23,7 @@ Welcome to the Guia de Negocios repository. Please adhere to the following archi
 ## 4. Blog & Content System
 - **Database:** Blog posts are stored in **Firebase Firestore** (`blogs` collection), NOT as local markdown files in `src/content/`.
 - **Editor:** The admin blog editor (`/admin/blog/editor.astro`) uses **EasyMDE** (Markdown). 
-- **AI Copilot:** The blog editor includes a Gemini Copilot that injects Markdown format (with `##` headings and Unsplash images) directly into the EasyMDE instance. 
+- **AI Copilot:** The blog editor includes a Gemini Copilot that injects Markdown format (with `##` headings and unique Pexels/Unsplash images) directly into the EasyMDE instance. 
 - **Frontend Rendering:** Blog frontend pages (`en/blog/[slug].astro`) fetch from Firestore and process the markdown using `markdownToHtml` and `processHtmlForBlog` (which auto-generates the Table of Contents) located in `src/utils/blog.ts`.
 
 ## 5. Development 

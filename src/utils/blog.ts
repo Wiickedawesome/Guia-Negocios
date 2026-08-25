@@ -47,6 +47,22 @@ export function optimizeImageUrl(url: string, options: { width?: number; height?
     }
   }
 
+  if (url.includes('images.pexels.com')) {
+    try {
+      const parsed = new URL(url);
+      parsed.searchParams.set('auto', 'compress');
+      parsed.searchParams.set('cs', 'tinysrgb');
+      parsed.searchParams.set('fit', fit);
+      parsed.searchParams.set('w', width.toString());
+      if (options.height) {
+        parsed.searchParams.set('h', options.height.toString());
+      }
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  }
+
   return url;
 }
 

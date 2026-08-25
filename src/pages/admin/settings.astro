@@ -59,6 +59,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         </div>
         <div>
           <div class="flex items-center justify-between mb-1">
+            <label class="block text-sm font-medium text-slate-700">Pexels API Key</label>
+            <span id="pexels-badge" class="text-xs text-slate-400">Untested</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="api-pexels" type="password" placeholder="Enter Pexels API Key..." class="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
+            <button id="btn-show-pexels" type="button" class="px-3 py-2 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex-shrink-0">Show</button>
+            <button id="btn-test-pexels" type="button" class="px-3 py-2 text-sm bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-slate-700 font-medium flex-shrink-0 flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              Test Key
+            </button>
+          </div>
+          <div id="pexels-key-status" class="mt-2 text-xs hidden"></div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
             <label class="block text-sm font-medium text-slate-700">Unsplash Access Key</label>
             <span id="unsplash-badge" class="text-xs text-slate-400">Untested</span>
           </div>
@@ -117,7 +132,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { app, getGeminiApiKey, testGeminiApiKey, DEFAULT_GEMINI_KEY } from '../../lib/firebase';
-    import { getUnsplashAccessKey, testUnsplashKey } from '../../utils/unsplash';
+    import { getUnsplashAccessKey, testUnsplashKey, getPexelsApiKey, testPexelsApiKey, DEFAULT_PEXELS_KEY } from '../../utils/unsplash';
     import { getAuth, updateProfile } from 'firebase/auth';
     import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -135,12 +150,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         // Load Settings
         let currentGeminiKey = '';
         let currentUnsplashKey = '';
+        let currentPexelsKey = '';
         try {
           const settingsDoc = await getDoc(doc(db, 'settings', 'admin'));
           if (settingsDoc.exists()) {
             const data = settingsDoc.data();
             currentGeminiKey = data.geminiKey || '';
             currentUnsplashKey = data.unsplashKey || '';
+            currentPexelsKey = data.pexelsKey || '';
             (document.getElementById('api-ga4') as HTMLInputElement).value = data.ga4Id || '';
             (document.getElementById('api-gsc') as HTMLInputElement).value = data.gscUrl || '';
           }
@@ -154,12 +171,23 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (!currentUnsplashKey) {
           currentUnsplashKey = await getUnsplashAccessKey();
         }
+        if (!currentPexelsKey) {
+          currentPexelsKey = await getPexelsApiKey();
+        }
 
         const geminiInput = document.getElementById('api-gemini') as HTMLInputElement;
         if (geminiInput) {
           geminiInput.value = currentGeminiKey;
           if (currentGeminiKey) {
             runKeyTest(currentGeminiKey, false);
+          }
+        }
+
+        const pexelsInput = document.getElementById('api-pexels') as HTMLInputElement;
+        if (pexelsInput) {
+          pexelsInput.value = currentPexelsKey;
+          if (currentPexelsKey) {
+            runPexelsTest(currentPexelsKey, false);
           }
         }
 
@@ -219,6 +247,52 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       runKeyTest(keyVal, true);
     });
 
+    // Test Pexels Key Function
+    async function runPexelsTest(keyToTest: string, showAlert = true) {
+      const statusEl = document.getElementById('pexels-key-status');
+      const badgeEl = document.getElementById('pexels-badge');
+      const testBtn = document.getElementById('btn-test-pexels') as HTMLButtonElement;
+
+      if (!keyToTest) {
+        if (badgeEl) { badgeEl.textContent = 'Optional'; badgeEl.className = 'text-xs text-slate-400 font-medium'; }
+        if (statusEl) { statusEl.className = 'mt-2 text-xs text-slate-500'; statusEl.textContent = 'Pexels API key not configured.'; statusEl.classList.remove('hidden'); }
+        return;
+      }
+
+      if (testBtn) { testBtn.disabled = true; testBtn.innerText = 'Testing...'; }
+      if (badgeEl) { badgeEl.textContent = 'Verifying...'; badgeEl.className = 'text-xs text-slate-400'; }
+
+      const result = await testPexelsApiKey(keyToTest);
+
+      if (testBtn) {
+        testBtn.disabled = false;
+        testBtn.innerHTML = '<svg class="w-3.5 h-3.5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> Test Key';
+      }
+
+      if (result.valid) {
+        if (badgeEl) { badgeEl.textContent = '✓ Active & Verified'; badgeEl.className = 'text-xs text-emerald-600 font-semibold'; }
+        if (statusEl) {
+          statusEl.className = 'mt-2 text-xs text-emerald-600 font-medium';
+          statusEl.textContent = '✓ Connected to Pexels API. Live stock photo search and unique image selection are active!';
+          statusEl.classList.remove('hidden');
+        }
+        if (showAlert) showToast('Pexels API Key verified successfully!', 'success');
+      } else {
+        if (badgeEl) { badgeEl.textContent = '✕ Error'; badgeEl.className = 'text-xs text-red-500 font-semibold'; }
+        if (statusEl) {
+          statusEl.className = 'mt-2 text-xs text-red-600 font-medium';
+          statusEl.textContent = `Pexels issue: ${result.error}`;
+          statusEl.classList.remove('hidden');
+        }
+        if (showAlert) showToast(`Pexels error: ${result.error}`, 'error');
+      }
+    }
+
+    document.getElementById('btn-test-pexels')?.addEventListener('click', () => {
+      const keyVal = (document.getElementById('api-pexels') as HTMLInputElement)?.value?.trim();
+      runPexelsTest(keyVal, true);
+    });
+
     // Test Unsplash Key Function
     async function runUnsplashTest(keyToTest: string, showAlert = true) {
       const statusEl = document.getElementById('unsplash-key-status');
@@ -227,7 +301,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       if (!keyToTest) {
         if (badgeEl) { badgeEl.textContent = 'Curated Pool Active'; badgeEl.className = 'text-xs text-brand-primary font-medium'; }
-        if (statusEl) { statusEl.className = 'mt-2 text-xs text-slate-500'; statusEl.textContent = 'Using curated pool of 65+ unique business photos.'; statusEl.classList.remove('hidden'); }
+        if (statusEl) { statusEl.className = 'mt-2 text-xs text-slate-500'; statusEl.textContent = 'Using Pexels or curated pool of 65+ unique business photos.'; statusEl.classList.remove('hidden'); }
         return;
       }
 
@@ -299,6 +373,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           localStorage.removeItem('gemini_api_key');
         }
 
+        const pexelsVal = (document.getElementById('api-pexels') as HTMLInputElement)?.value?.trim() || '';
+        if (pexelsVal) {
+          localStorage.setItem('pexels_api_key', pexelsVal);
+        } else {
+          localStorage.removeItem('pexels_api_key');
+        }
+
         const unsplashVal = (document.getElementById('api-unsplash') as HTMLInputElement)?.value?.trim() || '';
         if (unsplashVal) {
           localStorage.setItem('unsplash_access_key', unsplashVal);
@@ -308,12 +389,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         await setDoc(doc(db, 'settings', 'admin'), {
           geminiKey: geminiVal,
+          pexelsKey: pexelsVal,
           unsplashKey: unsplashVal,
           ga4Id: (document.getElementById('api-ga4') as HTMLInputElement).value,
           gscUrl: (document.getElementById('api-gsc') as HTMLInputElement).value
         }, { merge: true });
 
         if (geminiVal) await runKeyTest(geminiVal, false);
+        if (pexelsVal) await runPexelsTest(pexelsVal, false);
         if (unsplashVal) await runUnsplashTest(unsplashVal, false);
 
         showToast('Settings saved successfully!', 'success');
@@ -337,6 +420,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     // Show/hide API keys
     document.getElementById('btn-show-key')?.addEventListener('click', function() {
       const input = document.getElementById('api-gemini') as HTMLInputElement;
+      if (input?.type === 'password') {
+        input.type = 'text';
+        this.textContent = 'Hide';
+      } else if (input) {
+        input.type = 'password';
+        this.textContent = 'Show';
+      }
+    });
+
+    document.getElementById('btn-show-pexels')?.addEventListener('click', function() {
+      const input = document.getElementById('api-pexels') as HTMLInputElement;
       if (input?.type === 'password') {
         input.type = 'text';
         this.textContent = 'Hide';

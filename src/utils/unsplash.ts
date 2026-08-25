@@ -1,10 +1,13 @@
 import { collection, getDocs, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
+export const DEFAULT_PEXELS_KEY = 'UjOzqPlMtaqk5zfkV0difSV4EeBwcxKp1lkX7BHfIKRlartKAGabyWYa';
+
 let cachedUnsplashKey: string | null = null;
+let cachedPexelsKey: string | null = null;
 
 // Curated pool of 65+ unique high-quality Unsplash business & legal photos
-// Used when Unsplash API key is not yet provided or when offline/rate-limited
+// Used when API keys are not yet provided or when offline/rate-limited
 export const CURATED_UNSPLASH_POOL = [
   { id: '1486406146926-c627a92ad1ab', url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80', alt: 'Modern corporate skyscraper symbolizing business growth and structure', topic: 'business' },
   { id: '1454165804606-c3d57bc86b40', url: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80', alt: 'Financial planning, spreadsheets, and tax documents on desk', topic: 'tax' },
@@ -71,6 +74,48 @@ export async function getUnsplashAccessKey(): Promise<string> {
   return '';
 }
 
+export async function getPexelsApiKey(): Promise<string> {
+  if (cachedPexelsKey) return cachedPexelsKey;
+
+  if (typeof window !== 'undefined') {
+    const localKey = localStorage.getItem('pexels_api_key');
+    if (localKey && localKey.trim()) {
+      cachedPexelsKey = localKey.trim();
+      return cachedPexelsKey;
+    }
+  }
+
+  const envKey = (import.meta as any).env?.PUBLIC_PEXELS_API_KEY || (typeof window !== 'undefined' && (window as any).PEXELS_API_KEY);
+  if (envKey && envKey.trim()) {
+    cachedPexelsKey = envKey.trim();
+    return cachedPexelsKey;
+  }
+
+  try {
+    const settingsSnap = await getDoc(doc(db, 'settings', 'admin'));
+    if (settingsSnap.exists()) {
+      const data = settingsSnap.data();
+      if (data?.pexelsKey && data.pexelsKey.trim()) {
+        cachedPexelsKey = data.pexelsKey.trim();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pexels_api_key', cachedPexelsKey);
+        }
+        return cachedPexelsKey;
+      }
+    }
+  } catch (e) {
+    console.warn("Could not fetch pexelsKey from settings:", e);
+  }
+
+  // Fallback to default configured Pexels Key
+  if (DEFAULT_PEXELS_KEY) {
+    cachedPexelsKey = DEFAULT_PEXELS_KEY;
+    return cachedPexelsKey;
+  }
+
+  return '';
+}
+
 export async function testUnsplashKey(accessKey: string): Promise<{ valid: boolean; error?: string }> {
   try {
     const res = await fetch(`https://api.unsplash.com/photos/random?client_id=${accessKey.trim()}`);
@@ -79,6 +124,23 @@ export async function testUnsplashKey(accessKey: string): Promise<{ valid: boole
     }
     const data = await res.json().catch(() => ({}));
     return { valid: false, error: data?.errors?.[0] || `HTTP ${res.status}: Unauthorized` };
+  } catch (e: any) {
+    return { valid: false, error: e?.message || 'Network error' };
+  }
+}
+
+export async function testPexelsApiKey(apiKey: string): Promise<{ valid: boolean; error?: string }> {
+  try {
+    const res = await fetch(`https://api.pexels.com/v1/curated?per_page=1`, {
+      headers: {
+        Authorization: apiKey.trim()
+      }
+    });
+    if (res.ok) {
+      return { valid: true };
+    }
+    const data = await res.json().catch(() => ({}));
+    return { valid: false, error: data?.error || `HTTP ${res.status}: Invalid Pexels Key` };
   } catch (e: any) {
     return { valid: false, error: e?.message || 'Network error' };
   }
@@ -95,7 +157,7 @@ export async function getUsedPhotoSet(): Promise<Set<string>> {
     const usedSnap = await getDocs(collection(db, 'usedImages'));
     usedSnap.forEach(docSnap => {
       const d = docSnap.data();
-      if (d.photoId) used.add(d.photoId);
+      if (d.photoId) used.add(String(d.photoId));
       if (d.url) used.add(cleanPhotoUrl(d.url));
     });
 
@@ -104,11 +166,15 @@ export async function getUsedPhotoSet(): Promise<Set<string>> {
     blogsSnap.forEach(docSnap => {
       const d = docSnap.data();
       if (d.featuredImage) used.add(cleanPhotoUrl(d.featuredImage));
-      // Scan content for unsplash image links
+      // Scan content for unsplash and pexels image links
       const content = `${d.content || ''} ${d.contentEs || ''} ${d.contentEn || ''}`;
-      const matches = content.match(/https:\/\/images\.unsplash\.com\/photo-[a-zA-Z0-9_-]+/g);
-      if (matches) {
-        matches.forEach(m => used.add(cleanPhotoUrl(m)));
+      const unsplashMatches = content.match(/https:\/\/images\.unsplash\.com\/photo-[a-zA-Z0-9_-]+/g);
+      if (unsplashMatches) {
+        unsplashMatches.forEach(m => used.add(cleanPhotoUrl(m)));
+      }
+      const pexelsMatches = content.match(/https:\/\/images\.pexels\.com\/photos\/[0-9]+/g);
+      if (pexelsMatches) {
+        pexelsMatches.forEach(m => used.add(cleanPhotoUrl(m)));
       }
     });
   } catch (e) {
@@ -119,22 +185,27 @@ export async function getUsedPhotoSet(): Promise<Set<string>> {
 }
 
 export function cleanPhotoUrl(url: string): string {
-  const match = url.match(/photo-([a-zA-Z0-9_-]+)/);
-  return match ? match[1] : url.split('?')[0];
+  if (!url) return '';
+  const unsplashMatch = url.match(/photo-([a-zA-Z0-9_-]+)/);
+  if (unsplashMatch) return unsplashMatch[1];
+  const pexelsMatch = url.match(/photos\/(\d+)/);
+  if (pexelsMatch) return `pexels-${pexelsMatch[1]}`;
+  return url.split('?')[0];
 }
 
 /**
  * Marks a photo as used in the Firestore Used Photos Album
  */
-export async function markPhotoAsUsed(photo: { id?: string; url: string; alt?: string; topic?: string; blogId?: string }) {
+export async function markPhotoAsUsed(photo: { id?: string | number; url: string; alt?: string; topic?: string; blogId?: string; provider?: string }) {
   try {
-    const photoId = photo.id || cleanPhotoUrl(photo.url);
+    const photoId = String(photo.id || cleanPhotoUrl(photo.url));
     await addDoc(collection(db, 'usedImages'), {
       photoId,
       url: photo.url,
       alt: photo.alt || 'Blog Image',
       topic: photo.topic || 'General',
       blogId: photo.blogId || '',
+      provider: photo.provider || (photo.url.includes('pexels') ? 'pexels' : 'unsplash'),
       usedAt: serverTimestamp()
     });
   } catch (e) {
@@ -142,67 +213,123 @@ export async function markPhotoAsUsed(photo: { id?: string; url: string; alt?: s
   }
 }
 
+export interface PhotoResult {
+  id: string;
+  url: string;
+  thumbUrl: string;
+  alt: string;
+  photographer: string;
+  photographerUrl: string;
+  source?: 'unsplash' | 'pexels' | 'curated';
+}
+
 /**
- * Searches Unsplash API with full pagination and quality filters
+ * Searches Pexels API with pagination and landscape orientation
  */
-export async function searchUnsplashPhotos(query: string, page = 1, perPage = 12): Promise<Array<{ id: string; url: string; thumbUrl: string; alt: string; photographer: string; photographerUrl: string }>> {
-  const accessKey = await getUnsplashAccessKey();
-  if (!accessKey) {
-    // Return filtered pool when key is not configured
-    const cleanQuery = query.toLowerCase();
-    const matches = CURATED_UNSPLASH_POOL.filter(p => p.topic.includes(cleanQuery) || p.alt.toLowerCase().includes(cleanQuery));
-    const pool = matches.length > 0 ? matches : CURATED_UNSPLASH_POOL;
-    return pool.map(p => ({
-      id: p.id,
-      url: p.url,
-      thumbUrl: p.url.replace('&w=1200', '&w=400'),
-      alt: p.alt,
-      photographer: 'Unsplash Artist',
-      photographerUrl: 'https://unsplash.com'
-    }));
-  }
+export async function searchPexelsPhotos(query: string, page = 1, perPage = 12): Promise<PhotoResult[]> {
+  const apiKey = await getPexelsApiKey();
+  if (!apiKey) return [];
 
   try {
-    const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${accessKey}&page=${page}&per_page=${perPage}&orientation=landscape`);
-    if (!res.ok) throw new Error(`Unsplash error (${res.status})`);
+    const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}&orientation=landscape`, {
+      headers: {
+        Authorization: apiKey
+      }
+    });
+    if (!res.ok) throw new Error(`Pexels error (${res.status})`);
     const data = await res.json();
-    return (data.results || []).map((item: any) => ({
-      id: item.id,
-      url: item.urls?.regular ? `${item.urls.regular}&w=1200&q=80&auto=format&fit=crop` : (item.urls?.full || ''),
-      thumbUrl: item.urls?.small ? `${item.urls.small}&w=600&q=75&auto=format&fit=crop` : (item.urls?.thumb || ''),
-      alt: item.alt_description || item.description || `High quality photo for ${query}`,
-      photographer: item.user?.name || 'Unsplash Contributor',
-      photographerUrl: item.user?.links?.html || 'https://unsplash.com'
+    return (data.photos || []).map((item: any) => ({
+      id: `pexels-${item.id}`,
+      url: item.src?.landscape || item.src?.large2x || item.src?.large || item.src?.original,
+      thumbUrl: item.src?.medium || item.src?.small || item.src?.tiny,
+      alt: item.alt || `${query} high quality stock photo`,
+      photographer: item.photographer || 'Pexels Creator',
+      photographerUrl: item.photographer_url || item.url || 'https://www.pexels.com',
+      source: 'pexels'
     }));
   } catch (e) {
-    console.warn("Unsplash API search failed, falling back to curated pool:", e);
-    return CURATED_UNSPLASH_POOL.slice(0, perPage).map(p => ({
-      id: p.id,
-      url: p.url,
-      thumbUrl: p.url.replace('&w=1200', '&w=600').replace('&q=80', '&q=75'),
-      alt: p.alt,
-      photographer: 'Unsplash Artist',
-      photographerUrl: 'https://unsplash.com'
-    }));
+    console.warn("Pexels API search failed:", e);
+    return [];
   }
 }
 
 /**
- * Gets a guaranteed UNIQUE Unsplash photo that has never been used on any blog post
+ * Searches Unsplash API with full pagination and quality filters
+ */
+export async function searchUnsplashPhotos(query: string, page = 1, perPage = 12): Promise<PhotoResult[]> {
+  const unsplashKey = await getUnsplashAccessKey();
+  
+  // 1. Try Unsplash if Key is available
+  if (unsplashKey) {
+    try {
+      const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${unsplashKey}&page=${page}&per_page=${perPage}&orientation=landscape`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          return (data.results || []).map((item: any) => ({
+            id: item.id,
+            url: item.urls?.regular ? `${item.urls.regular}&w=1200&q=80&auto=format&fit=crop` : (item.urls?.full || ''),
+            thumbUrl: item.urls?.small ? `${item.urls.small}&w=600&q=75&auto=format&fit=crop` : (item.urls?.thumb || ''),
+            alt: item.alt_description || item.description || `High quality photo for ${query}`,
+            photographer: item.user?.name || 'Unsplash Contributor',
+            photographerUrl: item.user?.links?.html || 'https://unsplash.com',
+            source: 'unsplash'
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn("Unsplash API search failed, attempting Pexels fallback:", e);
+    }
+  }
+
+  // 2. Try Pexels as active live provider
+  const pexelsResults = await searchPexelsPhotos(query, page, perPage);
+  if (pexelsResults.length > 0) {
+    return pexelsResults;
+  }
+
+  // 3. Fall back to curated pool when live keys are unavailable or empty
+  const cleanQuery = query.toLowerCase();
+  const matches = CURATED_UNSPLASH_POOL.filter(p => p.topic.includes(cleanQuery) || p.alt.toLowerCase().includes(cleanQuery));
+  const pool = matches.length > 0 ? matches : CURATED_UNSPLASH_POOL;
+  return pool.slice(0, perPage).map(p => ({
+    id: p.id,
+    url: p.url,
+    thumbUrl: p.url.replace('&w=1200', '&w=600').replace('&q=80', '&q=75'),
+    alt: p.alt,
+    photographer: 'Curated Photo',
+    photographerUrl: 'https://unsplash.com',
+    source: 'curated'
+  }));
+}
+
+/**
+ * Universal photo search helper (alias for searchUnsplashPhotos with Pexels fallback)
+ */
+export const searchPhotos = searchUnsplashPhotos;
+
+/**
+ * Gets a guaranteed UNIQUE photo (via Unsplash, Pexels, or Curated Pool) that has never been used on any blog post
  */
 export async function getUniqueUnsplashPhoto(topic: string, blogId?: string): Promise<{ url: string; alt: string; photoId: string }> {
   const usedPhotos = await getUsedPhotoSet();
-  const accessKey = await getUnsplashAccessKey();
+  const unsplashKey = await getUnsplashAccessKey();
+  const pexelsKey = await getPexelsApiKey();
 
-  // 1. If Unsplash API Key is available, search live API
-  if (accessKey) {
+  // 1. If Unsplash API Key is available, search live Unsplash API
+  if (unsplashKey) {
     try {
-      const results = await searchUnsplashPhotos(topic, 1, 15);
-      for (const item of results) {
-        const key = cleanPhotoUrl(item.url);
-        if (!usedPhotos.has(key) && !usedPhotos.has(item.id)) {
-          await markPhotoAsUsed({ id: item.id, url: item.url, alt: item.alt, topic, blogId });
-          return { url: item.url, alt: item.alt, photoId: item.id };
+      const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(topic)}&client_id=${unsplashKey}&page=1&per_page=15&orientation=landscape`);
+      if (res.ok) {
+        const data = await res.json();
+        for (const item of (data.results || [])) {
+          const rawUrl = item.urls?.regular ? `${item.urls.regular}&w=1200&q=80&auto=format&fit=crop` : (item.urls?.full || '');
+          const key = cleanPhotoUrl(rawUrl);
+          if (!usedPhotos.has(key) && !usedPhotos.has(item.id)) {
+            const alt = item.alt_description || item.description || `High quality photo for ${topic}`;
+            await markPhotoAsUsed({ id: item.id, url: rawUrl, alt, topic, blogId, provider: 'unsplash' });
+            return { url: rawUrl, alt, photoId: item.id };
+          }
         }
       }
     } catch (e) {
@@ -210,18 +337,40 @@ export async function getUniqueUnsplashPhoto(topic: string, blogId?: string): Pr
     }
   }
 
-  // 2. Fallback to curated pool: Find the first unused photo
+  // 2. If Pexels API Key is available, search live Pexels API
+  if (pexelsKey) {
+    try {
+      const pexelsResults = await searchPexelsPhotos(topic, 1, 20);
+      for (const item of pexelsResults) {
+        const key = cleanPhotoUrl(item.url);
+        if (!usedPhotos.has(key) && !usedPhotos.has(item.id)) {
+          await markPhotoAsUsed({ id: item.id, url: item.url, alt: item.alt, topic, blogId, provider: 'pexels' });
+          return { url: item.url, alt: item.alt, photoId: item.id };
+        }
+      }
+    } catch (e) {
+      console.warn("Error fetching unique live Pexels photo:", e);
+    }
+  }
+
+  // 3. Fallback to curated pool: Find the first unused photo
   for (const item of CURATED_UNSPLASH_POOL) {
     const key = cleanPhotoUrl(item.url);
     if (!usedPhotos.has(key) && !usedPhotos.has(item.id)) {
-      await markPhotoAsUsed({ id: item.id, url: item.url, alt: item.alt, topic, blogId });
+      await markPhotoAsUsed({ id: item.id, url: item.url, alt: item.alt, topic, blogId, provider: 'curated' });
       return { url: item.url, alt: item.alt, photoId: item.id };
     }
   }
 
-  // 3. If all pool items have been used, pick with random variance parameter to ensure unique asset hash
+  // 4. If all pool items have been used, pick with random variance parameter to ensure unique asset hash
   const randomPick = CURATED_UNSPLASH_POOL[Math.floor(Math.random() * CURATED_UNSPLASH_POOL.length)];
   const randomizedUrl = `${randomPick.url}&sig=${Date.now()}`;
-  await markPhotoAsUsed({ id: randomPick.id, url: randomizedUrl, alt: randomPick.alt, topic, blogId });
+  await markPhotoAsUsed({ id: randomPick.id, url: randomizedUrl, alt: randomPick.alt, topic, blogId, provider: 'curated' });
   return { url: randomizedUrl, alt: randomPick.alt, photoId: randomPick.id };
 }
+
+/**
+ * Universal alias for getUniqueUnsplashPhoto
+ */
+export const getUniquePhoto = getUniqueUnsplashPhoto;
+

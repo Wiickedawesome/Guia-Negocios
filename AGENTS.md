@@ -20,4 +20,4 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
-\n- When generating or updating blog posts, ensure that each post uses a unique cover image (e.g., from Unsplash) to avoid repeated images across the blog.
+- When generating or updating blog posts, ensure that each post uses a unique cover image (e.g., from Pexels or Unsplash) to avoid repeated images across the blog.
