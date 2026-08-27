@@ -18,6 +18,7 @@
     "firestore-send-email": "firebase/firestore-send-email@0.2.10"
   },
   "hosting": {
+    "site": "guianegocios-prod",
     "public": "dist",
     "ignore": [
       "firebase.json",
