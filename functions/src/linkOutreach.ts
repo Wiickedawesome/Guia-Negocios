@@ -14,19 +14,7 @@ export const scheduledLinkOutreach = onSchedule({
     const competitors = ["competitor1.com", "competitor2.com"];
     const firehoseApiKey = "fhm_H6OtKuL3ybUvrkUJ1btiU8MxFwIdlvD8bsX1QI94";
 
-    const settingsDoc = await db.collection("settings").doc("admin").get();
-    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : "";
-    if (!geminiKey) {
-      console.error("Gemini API key is not configured in settings.");
-      return;
-    }
-
-    const { GoogleGenerativeAI } = await import("@google/generative-ai");
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
-      generationConfig: { responseMimeType: "application/json" }
-    });
+    const { generateContentWithAi } = await import("./ai.js");
 
     for (const competitor of competitors) {
       // 1. Firehose API for Backlink Discovery
@@ -54,7 +42,7 @@ export const scheduledLinkOutreach = onSchedule({
       }
 
       for (const backlink of backlinks) {
-        // 2. Generate personalized outreach email via Gemini
+        // 2. Generate personalized outreach email via Vertex AI
         const prompt = `
           You are the Outreach Manager for GUIA DE NEGOCIOS.
           We found that the website ${backlink.domain} (specifically at ${backlink.url}) is linking to our competitor (${competitor}).
@@ -70,10 +58,12 @@ export const scheduledLinkOutreach = onSchedule({
           }
         `;
 
-        const result = await model.generateContent(prompt);
         let emailDraft;
         try {
-          emailDraft = JSON.parse(result.response.text());
+          const aiText = await generateContentWithAi(prompt, {
+            responseMimeType: "application/json"
+          });
+          emailDraft = JSON.parse(aiText);
         } catch (e) {
           console.error("Failed to parse outreach email JSON");
           continue;

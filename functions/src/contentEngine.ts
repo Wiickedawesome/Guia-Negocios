@@ -80,28 +80,12 @@ export const scheduledContentEngine = onSchedule({
       return;
     }
 
-    const settingsDoc = await db.collection('settings').doc('admin').get();
-    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
-    if (!geminiKey) {
-      console.error('Gemini API key is not configured in settings.');
-      return;
-    }
-
-    const { GoogleGenerativeAI } = await import('@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
-      generationConfig: { responseMimeType: "application/json" }
-    });
-    
     // --- Phase 3: Programmatic Internal Linking ---
     // Generate an embedding for the target keyword to find related posts
-    const embedModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
-    const embedResult = await embedModel.embedContent(targetKeyword);
-    const queryVector = embedResult.embedding.values;
-
     let relatedLinksText = "";
     try {
+      const { generateEmbeddingWithAi } = await import("./ai.js");
+      const queryVector = await generateEmbeddingWithAi(targetKeyword);
       const nearestSnap = await db.collection("blogs").findNearest("embedding", FieldValue.vector(queryVector), { limit: 3, distanceMeasure: "COSINE" }).get();
       const relatedLinks = nearestSnap.docs.map(doc => {
         const data = doc.data();
@@ -109,10 +93,10 @@ export const scheduledContentEngine = onSchedule({
         return `- [${data.title}](/${langCode}/blog/${data.slug})`;
       });
       if (relatedLinks.length > 0) {
-        relatedLinksText = `\\n\\nInternal Linking Requirements:\\nPlease organically inject markdown hyperlinks to the following related articles within the body of your text (do not just list them at the end, weave them into relevant paragraphs):\\n${relatedLinks.join("\\n")}`;
+        relatedLinksText = `\n\nInternal Linking Requirements:\nPlease organically inject markdown hyperlinks to the following related articles within the body of your text (do not just list them at the end, weave them into relevant paragraphs):\n${relatedLinks.join("\n")}`;
       }
     } catch (e) {
-      console.error("Vector search failed (perhaps index is missing), skipping internal links.", e);
+      console.warn("Vector search failed or skipped for internal links:", e);
     }
 
     const prompt = `
@@ -137,10 +121,13 @@ export const scheduledContentEngine = onSchedule({
       }
     `;
 
-    const result = await model.generateContent(prompt);
+    const { generateContentWithAi } = await import("./ai.js");
+    const aiText = await generateContentWithAi(prompt, {
+      responseMimeType: "application/json"
+    });
     let draftedPost;
     try {
-      draftedPost = JSON.parse(result.response.text());
+      draftedPost = JSON.parse(aiText);
     } catch (e) {
       console.error("AI JSON parse failed", e);
       return;

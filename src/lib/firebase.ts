@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
+import { getAI, getGenerativeModel, VertexAIBackend } from 'firebase/ai';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
@@ -45,10 +45,12 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Initialize Firebase AI Logic
-export const ai = getAI(app, { backend: new GoogleAIBackend() });
+// Initialize Firebase AI Logic with Vertex AI backend (utilizes Firebase/Google Cloud $300 credits)
+export const ai = getAI(app, {
+  backend: new VertexAIBackend({ location: 'us-central1' })
+});
 
-// Default active Gemini API Key
+// Default active Gemini API Key (optional fallback)
 export const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6LBgrMKX5ptupNN-2XRgEWoI9RJzqknms5CvtU88cNdoQ';
 
 // Cached Gemini API Key helper
@@ -100,19 +102,18 @@ export async function getGeminiApiKey(): Promise<string> {
   return DEFAULT_GEMINI_KEY;
 }
 
-// Active Gemini 3.x models (Gemini 2.x and 2.5 series are retired)
+// Active Vertex AI and Gemini models
 export const ACTIVE_GEMINI_MODELS = [
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+  'gemini-2.5-flash',
   'gemini-3.5-flash',
-  'gemini-flash-latest',
-  'gemini-3.6-flash',
-  'gemini-3.7-flash',
-  'gemini-3.5-flash-lite',
-  'gemini-3.1-flash-lite',
-  'gemini-3.1-pro-preview'
+  'gemini-flash-latest'
 ];
 
 // Call Google Generative AI Developer REST API directly
-export async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'gemini-3.5-flash'): Promise<string> {
+export async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'gemini-2.0-flash'): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
@@ -168,16 +169,52 @@ export async function testGeminiApiKey(apiKey: string): Promise<{ valid: boolean
 
 /**
  * Universal AI Model wrapper that provides:
- * 1. Direct Gemini Developer REST API using configured API key
- * 2. Firebase AI Logic with App Check fallback
- * 3. Server-side Callable Cloud Function fallback
+ * 1. Firebase AI Logic with Vertex AI Backend (uses Firebase $300 Credits)
+ * 2. Server-side Callable Cloud Function fallback (Vertex AI on Cloud Functions ADC)
+ * 3. Direct Gemini Developer REST API fallback (if custom key configured)
  */
 export const aiModel = {
   async generateContent(prompt: any) {
     const promptStr = typeof prompt === 'string' ? prompt : (prompt?.contents?.[0]?.parts?.[0]?.text || JSON.stringify(prompt));
     let lastError: any = null;
 
-    // --- Tier 1: Try Direct Gemini REST API with API Key ---
+    // --- Tier 1: Try Firebase AI Logic (Vertex AI in Firebase) ---
+    for (const modelName of ACTIVE_GEMINI_MODELS) {
+      try {
+        const model = getGenerativeModel(ai, { 
+          model: modelName,
+          generationConfig: {
+            temperature: 0.7,
+          }
+        });
+        const result = await model.generateContent(prompt);
+        if (result?.response) {
+          return result;
+        }
+      } catch (err: any) {
+        console.warn(`Vertex AI in Firebase (${modelName}) note:`, err?.message || err);
+        lastError = err;
+      }
+    }
+
+    // --- Tier 2: Try Callable Cloud Function (Server-Side Vertex AI with ADC) ---
+    try {
+      const generateAiFn = httpsCallable(functions, 'generateAiContent');
+      const fnResult = await generateAiFn({ prompt: promptStr });
+      const text = (fnResult.data as any)?.text;
+      if (text) {
+        return {
+          response: {
+            text: () => text
+          }
+        };
+      }
+    } catch (fnErr: any) {
+      console.warn("Callable Cloud Function generateAiContent note:", fnErr?.message || fnErr);
+      if (!lastError) lastError = fnErr;
+    }
+
+    // --- Tier 3: Try Direct Gemini REST API with Custom API Key ---
     try {
       const apiKey = await getGeminiApiKey();
       if (apiKey) {
@@ -199,48 +236,15 @@ export const aiModel = {
       console.warn("Direct Gemini REST attempt error:", apiKeyErr);
     }
 
-    // --- Tier 2: Try Firebase AI Logic (with App Check) ---
-    for (const modelName of ACTIVE_GEMINI_MODELS) {
-      try {
-        const model = getGenerativeModel(ai, { 
-          model: modelName,
-          generationConfig: {
-            temperature: 0.7,
-          }
-        });
-        return await model.generateContent(prompt);
-      } catch (err: any) {
-        console.warn(`Firebase AI Logic (${modelName}) note:`, err?.message || err);
-        lastError = err;
-      }
-    }
-
-    // --- Tier 3: Try Callable Cloud Function (Server-Side) ---
-    try {
-      const generateAiFn = httpsCallable(functions, 'generateAiContent');
-      const fnResult = await generateAiFn({ prompt: promptStr });
-      const text = (fnResult.data as any)?.text;
-      if (text) {
-        return {
-          response: {
-            text: () => text
-          }
-        };
-      }
-    } catch (fnErr: any) {
-      console.warn("Callable Cloud Function generateAiContent note:", fnErr?.message || fnErr);
-      if (!lastError) lastError = fnErr;
-    }
-
     // If all failed, provide a friendly actionable error message
     const msg = lastError?.message || 'Unknown AI error';
     if (msg.includes('credits are depleted') || msg.includes('billing')) {
-      throw new Error("Your Gemini credits are depleted on this project. Please check AI Studio billing or update your key in Settings.");
+      throw new Error("Your Gemini credits are depleted. Vertex AI in Firebase is configured to use your Firebase credit.");
     }
     if (msg.includes('403') || msg.includes('deactivated') || msg.includes('App Check')) {
-      throw new Error("Firebase AI Logic App Check is verifying. Please ensure your active Gemini API key is set in Admin > Settings.");
+      throw new Error("Firebase AI Logic is authenticating. Please try again in a moment.");
     }
-    throw lastError || new Error("Failed to generate content with AI. Please check your Gemini API Key in Settings.");
+    throw lastError || new Error("Failed to generate content with Vertex AI.");
   }
 };
 

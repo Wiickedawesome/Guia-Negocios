@@ -19,25 +19,12 @@ export const generateBlogEmbedding = onDocumentWritten(
     if (!afterData.content) return;
 
     try {
-      const db = getFirestore();
-      const settingsDoc = await db.collection("settings").doc("admin").get();
-      const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : "";
-      if (!geminiKey) {
-        console.error("Gemini API key is missing. Cannot generate embedding.");
-        return;
-      }
-
-      const { GoogleGenerativeAI } = await import("@google/generative-ai");
-      const genAI = new GoogleGenerativeAI(geminiKey);
-      
-      // text-embedding-004 is the recommended embedding model
-      const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+      const { generateEmbeddingWithAi } = await import("./ai.js");
       
       // Strip markdown/html to get raw text for better embedding
       const rawText = afterData.content.replace(/<[^>]+>/g, '').substring(0, 5000); 
       
-      const result = await model.embedContent(rawText);
-      const embeddingValues = result.embedding.values;
+      const embeddingValues = await generateEmbeddingWithAi(rawText);
 
       // Update document with the vector embedding
       await snap.after.ref.update({

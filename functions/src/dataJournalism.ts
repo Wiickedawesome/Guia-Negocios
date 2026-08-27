@@ -40,19 +40,7 @@ export const scheduledDataJournalism = onSchedule({
       updateFrequency: ds.update_frequency
     }));
 
-    const settingsDoc = await db.collection('settings').doc('admin').get();
-    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
-    if (!geminiKey) {
-      console.error('Gemini API key is not configured in settings.');
-      return;
-    }
-
-    const { GoogleGenerativeAI } = await import('@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
-      generationConfig: { responseMimeType: "application/json" }
-    });
+    const { generateContentWithAi } = await import("./ai.js");
 
     const prompt = `
       You are an expert data journalist for GUIA DE NEGOCIOS, a business consultancy in Knoxville, TN helping Latino entrepreneurs.
@@ -79,10 +67,12 @@ export const scheduledDataJournalism = onSchedule({
       }
     `;
 
-    const result = await model.generateContent(prompt);
+    const aiText = await generateContentWithAi(prompt, {
+      responseMimeType: "application/json"
+    });
     let draftedPost;
     try {
-      draftedPost = JSON.parse(result.response.text());
+      draftedPost = JSON.parse(aiText);
     } catch (e) {
       console.error("AI JSON parse failed", e);
       return;

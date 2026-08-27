@@ -9,6 +9,7 @@ import * as fs from 'fs';
 // @ts-ignore
 import * as googleTrends from 'google-trends-api';
 import * as cheerio from 'cheerio';
+import { generateContentWithAi } from './ai.js';
 
 admin.initializeApp();
 
@@ -636,43 +637,34 @@ async function internalSiteWideAudit() {
 
     let summary = `Completed site-wide technical crawl across ${pageReports.length} pages (${totalWordCount.toLocaleString()} words). Technical health is strong with clean URL routing, proper meta titles, and structured semantic HTML.`;
 
-    // 4. Try Gemini AI enhancement if API key is provided
+    // 4. Try Vertex AI enhancement
     try {
-      const settingsDoc = await getFirestore().collection('settings').doc('admin').get();
-      const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : process.env.GEMINI_API_KEY;
-      if (geminiKey) {
-        const { GoogleGenerativeAI } = await import('@google/generative-ai');
-        const genAI = new GoogleGenerativeAI(geminiKey);
-        const model = genAI.getGenerativeModel({ 
-          model: 'gemini-3.5-flash',
-          generationConfig: { responseMimeType: 'application/json' }
-        });
+      const prompt = `
+        You are an expert SEO auditor for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
+        We crawled ${pageReports.length} pages (${totalWordCount} total words).
+        Issues found:
+        ${allIssues.slice(0, 30).join('\n') || 'None detected'}
 
-        const prompt = `
-          You are an expert SEO auditor for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
-          We crawled ${pageReports.length} pages (${totalWordCount} total words).
-          Issues found:
-          ${allIssues.slice(0, 30).join('\n') || 'None detected'}
-
-          Provide a summary and 3 prioritized action items.
-          Format response EXACTLY as JSON:
-          {
-            "globalScore": ${calculatedScore},
-            "summary": "1-2 paragraph executive summary",
-            "actionableItems": [
-              { "priority": "High"|"Medium"|"Low", "task": "string", "impact": "string" }
-            ]
-          }
-        `;
-        const result = await model.generateContent(prompt);
-        const parsed = JSON.parse(result.response.text());
-        if (parsed.summary) summary = parsed.summary;
-        if (parsed.actionableItems && parsed.actionableItems.length > 0) {
-          actionableItems.splice(0, actionableItems.length, ...parsed.actionableItems);
+        Provide a summary and 3 prioritized action items.
+        Format response EXACTLY as JSON:
+        {
+          "globalScore": ${calculatedScore},
+          "summary": "1-2 paragraph executive summary",
+          "actionableItems": [
+            { "priority": "High"|"Medium"|"Low", "task": "string", "impact": "string" }
+          ]
         }
+      `;
+      const aiResponse = await generateContentWithAi(prompt, {
+        responseMimeType: 'application/json'
+      });
+      const parsed = JSON.parse(aiResponse);
+      if (parsed.summary) summary = parsed.summary;
+      if (parsed.actionableItems && parsed.actionableItems.length > 0) {
+        actionableItems.splice(0, actionableItems.length, ...parsed.actionableItems);
       }
     } catch (aiErr) {
-      console.warn("AI enhancement skipped or failed, using calculated audit report:", aiErr);
+      console.warn("Vertex AI enhancement note, using calculated audit report:", aiErr);
     }
 
     // 5. Save to Firestore seoAudits collection
@@ -953,53 +945,23 @@ export const submitContactForm = onCall({ cors: true, invoker: 'public' }, async
   }
 });
 
-// ── AI Content Generator (Server-Side Fallback) ──
+// ── AI Content Generator (Server-Side Vertex AI / Fallback) ──
 export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
   const { prompt, temperature, model: requestedModel } = request.data || {};
   if (!prompt) {
     throw new HttpsError('invalid-argument', 'Prompt is required.');
   }
 
-  const db = getFirestore();
-  const settingsDoc = await db.collection('settings').doc('admin').get();
-  const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : '';
-  const apiKey = geminiKey || process.env.GEMINI_API_KEY;
-
-  if (!apiKey) {
-    throw new HttpsError('failed-precondition', 'Gemini API key is not configured in Admin Settings.');
+  try {
+    const text = await generateContentWithAi(prompt, {
+      model: requestedModel,
+      temperature
+    });
+    return { text };
+  } catch (err: any) {
+    console.error("generateAiContent error:", err);
+    throw new HttpsError('internal', err?.message || 'Failed to generate AI content with Vertex AI.');
   }
-
-  const { GoogleGenerativeAI } = await import('@google/generative-ai');
-  const genAI = new GoogleGenerativeAI(apiKey);
-
-  const modelNames = [
-    requestedModel,
-    'gemini-3.5-flash',
-    'gemini-flash-latest',
-    'gemini-3.6-flash',
-    'gemini-3.7-flash',
-    'gemini-3.5-flash-lite',
-    'gemini-3.1-flash-lite',
-    'gemini-3.1-pro-preview'
-  ].filter(Boolean);
-  let lastErr: any = null;
-
-  for (const mName of modelNames) {
-    try {
-      const model = genAI.getGenerativeModel({
-        model: mName as string,
-        generationConfig: { temperature: temperature || 0.7 }
-      });
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
-      return { text };
-    } catch (e: any) {
-      console.warn(`Model ${mName} failed in generateAiContent:`, e?.message || e);
-      lastErr = e;
-    }
-  }
-
-  throw new HttpsError('internal', lastErr?.message || 'Failed to generate AI content.');
 });
 
 export * from './contentEngine';

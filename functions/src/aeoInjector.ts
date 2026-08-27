@@ -24,23 +24,10 @@ export const scheduledAeoInjector = onSchedule({
 
     const keywords = keywordsSnap.docs.map(doc => doc.data().keyword);
 
-    // 2. Fetch Gemini API Key
-    const settingsDoc = await db.collection("settings").doc("admin").get();
-    const geminiKey = settingsDoc.exists ? settingsDoc.data()?.geminiKey : "";
-    if (!geminiKey) {
-      console.error("Gemini API key is not configured in settings.");
-      return;
-    }
-
-    const { GoogleGenerativeAI } = await import("@google/generative-ai");
-    const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
-      generationConfig: { responseMimeType: "application/json" }
-    });
+    const { generateContentWithAi } = await import("./ai.js");
 
     for (const keyword of keywords) {
-      // 3. Prompt Gemini to simulate "People Also Ask" scraping and generate FAQ Schema
+      // 3. Prompt Vertex AI to simulate "People Also Ask" scraping and generate FAQ Schema
       const prompt = `
         You are an Answer Engine Optimization (AEO) expert for GUIA DE NEGOCIOS.
         Our target keyword is: "${keyword}".
@@ -57,10 +44,12 @@ export const scheduledAeoInjector = onSchedule({
         }
       `;
 
-      const result = await model.generateContent(prompt);
       let aeoData;
       try {
-        aeoData = JSON.parse(result.response.text());
+        const aiText = await generateContentWithAi(prompt, {
+          responseMimeType: "application/json"
+        });
+        aeoData = JSON.parse(aiText);
       } catch (e) {
         console.error("AI JSON parse failed for AEO", e);
         continue;
