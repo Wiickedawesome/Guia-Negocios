@@ -51,6 +51,11 @@ CRITICAL VISUAL PACING & PROSE BUFFER RULES:
    - Every blog post must be exhaustive, authoritative, and deeply practical.
    - Include clear H2 and H3 sections, step-by-step instructions, real dollar amounts and filing timelines, state & IRS form references, comparison tables, real-world case studies, and common pitfall warnings.
 4. ZERO INDENTATION RULE: NEVER indent HTML lines with 4 spaces or tabs! All HTML tags MUST start flush to column 0.
+5. INFOGRAPHIC PLACEMENT VARIATION (MANDATORY):
+   - Do NOT default to placing infographics at the same depth in every article (e.g. always right after section 2).
+   - Vary placement based on the natural narrative flow: valid anchor points include right after the H1 intro divider, mid-way through the core breakdown, immediately before the case studies, inside the pitfalls section, or just before the closing CTA.
+   - Across any single article, no two consecutive H2 sections should each contain an infographic; there must be at least one prose-only H2 between visual sections.
+   - The FIRST infographic must not always be the same archetype; rotate between metric grids, bar charts, checklists, timelines, fee matrices, and comparison callouts so consecutive published posts look visually distinct.
 
 =============================================================================
 VISUAL COMPONENT ARCHETYPES (LIGHT & DARK VERSIONS):

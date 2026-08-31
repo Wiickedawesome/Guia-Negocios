@@ -14,9 +14,39 @@ const { title, description, ogImage, altPath } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// OG image: use page-specific if provided, otherwise default branded share image
+// OG image: use page-specific if provided, otherwise default branded share image.
+// Social platforms require ~1200x630 (1.91:1); force-fit Unsplash/Pexels URLs
+// to that crop so cards never render letterboxed or randomly cropped.
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
+
+const toSocialCrop = (url: string): string => {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes('images.unsplash.com')) {
+      parsed.searchParams.set('auto', 'format');
+      parsed.searchParams.set('fit', 'crop');
+      parsed.searchParams.set('w', OG_WIDTH.toString());
+      parsed.searchParams.set('h', OG_HEIGHT.toString());
+      parsed.searchParams.set('q', '80');
+      return parsed.toString();
+    }
+    if (parsed.hostname.includes('images.pexels.com')) {
+      parsed.searchParams.set('auto', 'compress');
+      parsed.searchParams.set('cs', 'tinysrgb');
+      parsed.searchParams.set('w', OG_WIDTH.toString());
+      parsed.searchParams.set('h', OG_HEIGHT.toString());
+      parsed.searchParams.set('fit', 'crop');
+      return parsed.toString();
+    }
+    return url;
+  } catch {
+    return url;
+  }
+};
+
 const resolvedOgImage = ogImage
-  ? (ogImage.startsWith('http') ? ogImage : `https://guianegocios.net${ogImage}`)
+  ? toSocialCrop(ogImage.startsWith('http') ? ogImage : `https://guianegocios.net${ogImage}`)
   : 'https://guianegocios.net/images/og-default.png';
 
 // Bilingual meta tags for hreflang

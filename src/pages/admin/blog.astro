@@ -93,6 +93,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     import { db, aiModel } from '../../lib/firebase';
     import { getUniqueUnsplashPhoto } from '../../utils/unsplash';
     import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../utils/research';
+    import { getBrandVoicePrompt } from '../../utils/brand-voice';
     import { getInfographicSystemPrompt } from '../../utils/infographics';
     
     // Filter tabs
@@ -211,6 +212,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         const prompt = `
           You are the lead bilingual SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and business consultancy strategist for GUIA DE NEGOCIOS.
+          ${getBrandVoicePrompt()}
           Topic: "${topic}".
           ${customKeywords ? `Target Keywords: "${customKeywords}".` : ''}
           Primary Focus: ${primaryLang === 'es' ? 'Spanish (with full English translation)' : 'English (with full Spanish translation)'}.

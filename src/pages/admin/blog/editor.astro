@@ -345,6 +345,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       CURATED_UNSPLASH_POOL 
     } from '../../../utils/unsplash';
     import { getRelevantCitations, AUTHORITATIVE_SOURCES } from '../../../utils/research';
+    import { getBrandVoicePrompt } from '../../../utils/brand-voice';
     import { getInfographicSystemPrompt } from '../../../utils/infographics';
     import { markdownToHtml } from '../../../utils/blog';
 
@@ -705,6 +706,8 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       try {
         const fullSystemContext = `
 You are the Lead Executive Editor, bilingual SEO/AEO/GEO Strategist, and Business Consultancy Author for GUIA DE NEGOCIOS (guianegocios.net).
+
+${getBrandVoicePrompt()}
 
 CORE AUTONOMOUS EDITORIAL ROLE:
 You do NOT just passively echo or paste what the user said. You act as an expert, highly intelligent co-author who:
