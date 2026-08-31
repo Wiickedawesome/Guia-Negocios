@@ -2,7 +2,8 @@ import { GoogleGenAI } from '@google/genai';
 import { getFirestore } from 'firebase-admin/firestore';
 
 const PROJECT_ID = process.env.GCLOUD_PROJECT || 'guianegocios-prod';
-const LOCATION = process.env.VERTEX_LOCATION || 'us-central1';
+// Gemini 3.x models are served from the Vertex AI `global` endpoint.
+const LOCATION = process.env.VERTEX_LOCATION || 'global';
 
 // Initialize official Vertex AI backend (charged to Firebase/GCP Blaze credits)
 export const vertexGenAI = new GoogleGenAI({
@@ -12,11 +13,9 @@ export const vertexGenAI = new GoogleGenAI({
 });
 
 export const ACTIVE_VERTEX_MODELS = [
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro',
-  'gemini-2.5-flash',
-  'gemini-3.5-flash'
+  'gemini-3.7-flash',
+  'gemini-3.7-flash-lite',
+  'gemini-3.6-flash'
 ];
 
 export interface AiGenerateOptions {
@@ -35,7 +34,7 @@ export async function generateContentWithAi(
   prompt: string,
   options: AiGenerateOptions = {}
 ): Promise<string> {
-  const modelName = options.model || 'gemini-2.0-flash';
+  const modelName = options.model || 'gemini-3.7-flash';
   const modelsToTry = [
     modelName,
     ...ACTIVE_VERTEX_MODELS.filter(m => m !== modelName)
@@ -103,12 +102,12 @@ export async function generateContentWithAi(
 }
 
 /**
- * Generate vector embeddings using Vertex AI (text-embedding-004)
+ * Generate vector embeddings using Vertex AI (gemini-embedding-001)
  */
 export async function generateEmbeddingWithAi(text: string): Promise<number[]> {
   try {
     const response = await vertexGenAI.models.embedContent({
-      model: 'text-embedding-004',
+      model: 'gemini-embedding-001',
       contents: text
     });
 
@@ -129,7 +128,7 @@ export async function generateEmbeddingWithAi(text: string): Promise<number[]> {
     if (apiKey) {
       const { GoogleGenerativeAI } = await import('@google/generative-ai');
       const genAI = new GoogleGenerativeAI(apiKey);
-      const embedModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
+      const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
       const embedResult = await embedModel.embedContent(text);
       if (embedResult?.embedding?.values) {
         return embedResult.embedding.values;
