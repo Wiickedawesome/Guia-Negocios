@@ -64,7 +64,15 @@ const altUrl = `/en/blog/${post?.altSlug || ''}`;
   <article class="bg-slate-50">
     <!-- Hero Image Section -->
     <div class="relative w-full h-[400px] md:h-[500px] bg-slate-900 overflow-hidden">
-      <img src={optimizeImageUrl(post?.featuredImage || '', { width: 1200, quality: 80 })} alt={post?.title || ''} class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" decoding="async" />
+      <img
+        src={optimizeImageUrl(post?.featuredImage || '', { width: 1200, quality: 80 })}
+        srcset={`${optimizeImageUrl(post?.featuredImage || '', { width: 640, quality: 80 })} 640w, ${optimizeImageUrl(post?.featuredImage || '', { width: 1200, quality: 80 })} 1200w, ${optimizeImageUrl(post?.featuredImage || '', { width: 1920, quality: 80 })} 1920w`}
+        sizes="100vw"
+        alt={post?.title || ''}
+        class="absolute inset-0 w-full h-full object-cover"
+        fetchpriority="high"
+        decoding="async"
+      />
       <div class="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
       
       <div class="absolute inset-0 flex items-center justify-center pt-20">

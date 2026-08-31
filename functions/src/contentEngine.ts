@@ -82,14 +82,15 @@ export const scheduledContentEngine = onSchedule({
   try {
     const db = getFirestore();
 
-    let gscUrl = "sc-domain:guianegocios.net";
+    let gscUrl = "https://guianegocios.net/";
     try {
       const settingsDoc = await db.collection("settings").doc("admin").get();
-      if (settingsDoc.exists && settingsDoc.data()?.gscUrl) {
-        gscUrl = settingsDoc.data()?.gscUrl;
+      const stored = settingsDoc.exists ? settingsDoc.data()?.gscUrl : "";
+      if (typeof stored === "string" && stored.trim()) {
+        gscUrl = stored.trim();
       }
     } catch (e) {
-      console.warn("Could not fetch gscUrl from settings, defaulting to sc-domain:guianegocios.net");
+      console.warn("Could not fetch gscUrl from settings, defaulting to https://guianegocios.net/");
     }
     const pexelsKey = await getSetting(db, "pexelsKey");
     const unsplashKey = await getSetting(db, "unsplashKey");

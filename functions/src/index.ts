@@ -382,7 +382,9 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
     const db = getFirestore();
     const settingsDoc = await db.collection('settings').doc('admin').get();
     const gscUrl = settingsDoc.exists ? settingsDoc.data()?.gscUrl : '';
-    const siteUrl = gscUrl || 'https://guianegocios.net/';
+    // SA is a Full user on the Domain property; URL-prefix is a separate GSC
+    // property and denies access. sc-domain covers all subdomains/protocols.
+    const siteUrl = gscUrl || 'sc-domain:guianegocios.net';
 
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
