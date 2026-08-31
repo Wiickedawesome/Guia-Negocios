@@ -228,13 +228,13 @@ export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async 
         if (lastPoint < prevPoint) trend = `↓ ${prevPoint - lastPoint}`;
         return { keyword: kw, trend, relativeVolume: lastPoint };
       }
-      
-      const pseudoVolume = Math.floor(65 + Math.random() * 30);
-      const delta = Math.floor(Math.random() * 8) + 1;
+
+      // Trends data unavailable — report keyword with unknown metrics
+      // instead of fabricating random volumes/positions.
       return {
         keyword: kw,
-        trend: index % 2 === 0 ? `↑ ${delta}` : (index === 1 ? `↑ ${delta + 2}` : '-'),
-        relativeVolume: pseudoVolume
+        trend: '—',
+        relativeVolume: null
       };
     });
 
@@ -388,6 +388,7 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
     const startDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
     let rows: any[] = [];
+    let gscConnected = false;
 
     // Attempt GSC API query if service account or ADC exists
     try {
@@ -423,11 +424,14 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
       });
 
       rows = response.data.rows || [];
-    } catch (gscErr) {
-      console.warn("Direct GSC API call bypassed/unconnected, running query intelligence engine:", gscErr);
+      gscConnected = true;
+    } catch (gscErr: any) {
+      console.warn("Direct GSC API call bypassed/unconnected, running query intelligence engine:", gscErr?.message || gscErr);
     }
 
-    // High-value search query discovery engine for Guia Negocios in Knoxville TN
+    // Fallback: Google Autocomplete keyword discovery (real suggestions, no
+    // fabricated metrics). Position/clicks/impressions stay 0/null so the UI
+    // can label these as "discovered" rather than "measured".
     if (rows.length === 0) {
       const seedQueries = phrase && phrase.trim()
         ? [phrase.trim(), `${phrase.trim()} knoxville`, `${phrase.trim()} tennessee`]
@@ -453,17 +457,14 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
           if (res.ok) {
             const data: any = await res.json();
             const suggestions: string[] = data[1] || [];
-            [q, ...suggestions.slice(0, 3)].forEach((kw, idx) => {
+            [q, ...suggestions.slice(0, 3)].forEach((kw) => {
               if (kw && !discoveredMap.has(kw.toLowerCase())) {
-                const impressions = Math.floor(140 + Math.random() * 420) - (idx * 20);
-                const clicks = Math.floor(impressions * (0.05 + Math.random() * 0.07));
-                const position = Math.round((3.8 + (idx * 2.5) + Math.random() * 1.5) * 10) / 10;
                 discoveredMap.set(kw.toLowerCase(), {
                   keys: [kw],
-                  clicks: Math.max(1, clicks),
-                  impressions: Math.max(12, impressions),
-                  ctr: (clicks / impressions),
-                  position
+                  clicks: 0,
+                  impressions: 0,
+                  ctr: null,
+                  position: null
                 });
               }
             });
@@ -480,14 +481,15 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
       keyword: row.keys?.[0] || '',
       clicks: row.clicks || 0,
       impressions: row.impressions || 0,
-      ctr: row.ctr ? (row.ctr * 100).toFixed(1) + '%' : '0%',
-      position: row.position ? Math.round(row.position * 10) / 10 : 99,
+      ctr: row.ctr ? (row.ctr * 100).toFixed(1) + '%' : '—',
+      position: (row.position !== null && row.position !== undefined) ? Math.round(row.position * 10) / 10 : null,
     })).filter((kw: any) => kw.keyword && !existingSet.has(kw.keyword.toLowerCase()));
 
     return {
       keywords,
       dateRange: { startDate, endDate },
       totalRows: keywords.length,
+      source: gscConnected ? 'gsc' : 'autocomplete'
     };
 
   } catch (error: any) {

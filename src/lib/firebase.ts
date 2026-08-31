@@ -30,6 +30,9 @@ export const functions = getFunctions(app);
 // Initialize Firebase App Check for Web
 export const RECAPTCHA_SITE_KEY = "6LfS1oMtAAAAADOn7vSke2FTZ9YgprAc9iUBIWIL";
 
+// App Check is ENFORCED on Firestore, but server-side contexts (Astro build,
+// SSG) run in Node where reCAPTCHA cannot issue tokens. Without this the whole
+// build-time content pipeline silently fails and pages render empty.
 export let appCheck: any = null;
 if (typeof window !== 'undefined') {
   try {
@@ -43,15 +46,28 @@ if (typeof window !== 'undefined') {
   } catch (err: any) {
     console.warn("App Check initialization note:", err?.message || err);
   }
+} else if (process.env.APP_CHECK_DEBUG_TOKEN) {
+  // SSG/Node build: use a registered debug token so Firestore queries succeed.
+  (globalThis as any).FIREBASE_APPCHECK_DEBUG_TOKEN = process.env.APP_CHECK_DEBUG_TOKEN;
+  try {
+    appCheck = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
+      isTokenAutoRefreshEnabled: false,
+    });
+  } catch (err: any) {
+    console.warn("App Check (build) initialization note:", err?.message || err);
+  }
 }
 
 // Initialize Firebase AI Logic with Vertex AI backend (utilizes Firebase/Google Cloud $300 credits)
+// Gemini 3.x models are served from the `global` endpoint, not regional ones.
 export const ai = getAI(app, {
-  backend: new VertexAIBackend({ location: 'us-central1' })
+  backend: new VertexAIBackend({ location: 'global' })
 });
 
-// Default active Gemini API Key (optional fallback)
-export const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6LBgrMKX5ptupNN-2XRgEWoI9RJzqknms5CvtU88cNdoQ';
+// No hardcoded Gemini key: AI runs on Vertex AI (Firebase/GCP billing) with the
+// generateAiContent callable as server-side fallback. A user-provided key from
+// localStorage/env/Firestore is only used for the optional direct REST path.
 
 // Cached Gemini API Key helper
 let cachedGeminiKey: string | null = null;
@@ -92,28 +108,19 @@ export async function getGeminiApiKey(): Promise<string> {
     console.warn("Could not fetch geminiKey from Firestore settings:", e);
   }
 
-  // 4. Default fallback key
-  cachedGeminiKey = DEFAULT_GEMINI_KEY;
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem('gemini_api_key', DEFAULT_GEMINI_KEY);
-    } catch {}
-  }
-  return DEFAULT_GEMINI_KEY;
+  // 4. No key configured — direct REST path will be skipped (Vertex AI handles it)
+  return '';
 }
 
-// Active Vertex AI and Gemini models
+// Active Vertex AI models (Gemini 3.x — 1.x/2.x retired)
 export const ACTIVE_GEMINI_MODELS = [
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro',
-  'gemini-2.5-flash',
-  'gemini-3.5-flash',
-  'gemini-flash-latest'
+  'gemini-3.7-flash',
+  'gemini-3.7-flash-lite',
+  'gemini-3.6-flash'
 ];
 
 // Call Google Generative AI Developer REST API directly
-export async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'gemini-2.0-flash'): Promise<string> {
+export async function callGeminiRestApi(prompt: string, apiKey: string, modelName = 'gemini-3.7-flash'): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',

@@ -1,8 +1,6 @@
 import { collection, getDocs, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
-export const DEFAULT_PEXELS_KEY = 'UjOzqPlMtaqk5zfkV0difSV4EeBwcxKp1lkX7BHfIKRlartKAGabyWYa';
-
 let cachedUnsplashKey: string | null = null;
 let cachedPexelsKey: string | null = null;
 
@@ -107,12 +105,7 @@ export async function getPexelsApiKey(): Promise<string> {
     console.warn("Could not fetch pexelsKey from settings:", e);
   }
 
-  // Fallback to default configured Pexels Key
-  if (DEFAULT_PEXELS_KEY) {
-    cachedPexelsKey = DEFAULT_PEXELS_KEY;
-    return cachedPexelsKey;
-  }
-
+  // No key configured — caller decides how to proceed
   return '';
 }
 

@@ -1,7 +1,20 @@
 ---
 import { getActiveAeoSchemas } from '../utils/seo-schemas';
 
-const aeoSchemas = await getActiveAeoSchemas();
+// AEO FAQ schemas are keyword-targeted, so they are only relevant on pages
+// whose content matches the keyword topic. Injecting the identical FAQPage on
+// every page is a duplicate-content spam signal for Google and AI engines.
+const path = Astro.url.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+const isHomePage = path === '/' || path === '/en';
+
+const aeoSchemas = isHomePage
+  ? await getActiveAeoSchemas()
+  : (await getActiveAeoSchemas()).filter((schema) => {
+      const slug = (schema?.keyword || '').toLowerCase().replace(/\s+/g, '-');
+      if (!slug) return false;
+      const pageTokens = path.replace(/^\/(en|es)/, '').split('/').filter(Boolean).join('-');
+      return slug.includes(pageTokens) || pageTokens.includes(slug);
+    });
 ---
 {aeoSchemas.map((schema) => (
   <script type="application/ld+json" set:html={schema.schemaStr} />

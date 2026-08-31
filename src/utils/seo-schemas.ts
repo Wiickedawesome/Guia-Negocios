@@ -17,8 +17,10 @@ export async function getActiveAeoSchemas(): Promise<any[]> {
     cachedSchemas = schemaSnap.docs.map(d => d.data());
     lastFetchTime = now;
     return cachedSchemas;
-  } catch (e) {
-    // If it fails (e.g. offline or permission), cache empty array to avoid 50 repeated failures
+  } catch (e: any) {
+    // Failure must be visible: silent empty-cache hid a broken build pipeline
+    // (App Check enforced + no token in Node) for months.
+    console.error('getActiveAeoSchemas failed, returning []:', e?.message || e);
     cachedSchemas = [];
     lastFetchTime = now;
     return [];
