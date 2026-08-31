@@ -236,7 +236,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           statusEl.innerHTML = `✓ Connected successfully to Google Gemini (${result.model}). Ready for blog generation!`;
           statusEl.classList.remove('hidden');
         }
-        if (showAlert) showToast('Gemini API key is verified and operational!', 'success');
+        if (showAlert) window.showToast?.('Gemini API key is verified and operational!', 'success');
       } else {
         if (badgeEl) { badgeEl.textContent = '✕ Issue Detected'; badgeEl.className = 'text-xs text-red-500 font-semibold'; }
         if (statusEl) {
@@ -244,7 +244,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           statusEl.textContent = `Connection issue: ${result.error}`;
           statusEl.classList.remove('hidden');
         }
-        if (showAlert) showToast(`Key error: ${result.error}`, 'error');
+        if (showAlert) window.showToast?.(`Key error: ${result.error}`, 'error');
       }
     }
 
@@ -282,7 +282,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           statusEl.textContent = '✓ Connected to Pexels API. Live stock photo search and unique image selection are active!';
           statusEl.classList.remove('hidden');
         }
-        if (showAlert) showToast('Pexels API Key verified successfully!', 'success');
+        if (showAlert) window.showToast?.('Pexels API Key verified successfully!', 'success');
       } else {
         if (badgeEl) { badgeEl.textContent = '✕ Error'; badgeEl.className = 'text-xs text-red-500 font-semibold'; }
         if (statusEl) {
@@ -290,7 +290,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           statusEl.textContent = `Pexels issue: ${result.error}`;
           statusEl.classList.remove('hidden');
         }
-        if (showAlert) showToast(`Pexels error: ${result.error}`, 'error');
+        if (showAlert) window.showToast?.(`Pexels error: ${result.error}`, 'error');
       }
     }
 
@@ -328,7 +328,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           statusEl.textContent = '✓ Connected to Unsplash API. Unique photo search & album tracking are active!';
           statusEl.classList.remove('hidden');
         }
-        if (showAlert) showToast('Unsplash Access Key verified successfully!', 'success');
+        if (showAlert) window.showToast?.('Unsplash Access Key verified successfully!', 'success');
       } else {
         if (badgeEl) { badgeEl.textContent = '✕ Error'; badgeEl.className = 'text-xs text-red-500 font-semibold'; }
         if (statusEl) {
@@ -336,7 +336,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           statusEl.textContent = `Unsplash issue: ${result.error}`;
           statusEl.classList.remove('hidden');
         }
-        if (showAlert) showToast(`Unsplash error: ${result.error}`, 'error');
+        if (showAlert) window.showToast?.(`Unsplash error: ${result.error}`, 'error');
       }
     }
 
@@ -356,7 +356,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (auth.currentUser) {
           await updateProfile(auth.currentUser, { displayName: name });
           document.getElementById('settings-avatar')!.innerText = name[0].toUpperCase();
-          showToast('Profile updated successfully!', 'success');
+          window.showToast?.('Profile updated successfully!', 'success');
         }
       } catch (e: any) {
         alert('Failed to update profile: ' + e.message);
@@ -405,7 +405,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (pexelsVal) await runPexelsTest(pexelsVal, false);
         if (unsplashVal) await runUnsplashTest(unsplashVal, false);
 
-        showToast('Settings saved successfully!', 'success');
+        window.showToast?.('Settings saved successfully!', 'success');
       } catch (e: any) {
         alert('Failed to save settings: ' + e.message);
       } finally {
@@ -418,8 +418,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     
     // Danger Zone
     document.getElementById('btn-reset-data')?.addEventListener('click', () => {
-      showConfirm('Reset All Data', 'This will permanently delete all SEO metrics, keyword tracking data, and report history. This cannot be undone.').then(ok => {
-        if (ok) showToast('Data reset cancelled — this is a demo environment.', 'warning');
+      window.showConfirm?.('Reset All Data', 'This will permanently delete all SEO metrics, keyword tracking data, and report history. This cannot be undone.').then(ok => {
+        if (ok) window.showToast?.('Data reset cancelled — this is a demo environment.', 'warning');
       });
     });
 
@@ -465,11 +465,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (e.target.checked) {
           document.documentElement.classList.add('dark');
           localStorage.setItem('adminDarkMode', 'true');
-          showToast('Dark mode enabled', 'success');
+          window.showToast?.('Dark mode enabled', 'success');
         } else {
           document.documentElement.classList.remove('dark');
           localStorage.setItem('adminDarkMode', 'false');
-          showToast('Dark mode disabled', 'info');
+          window.showToast?.('Dark mode disabled', 'info');
         }
       });
     }

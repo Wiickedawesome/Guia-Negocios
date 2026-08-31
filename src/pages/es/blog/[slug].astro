@@ -159,7 +159,7 @@ const altUrl = `/en/blog/${post?.altSlug || ''}`;
             {relatedPosts.map(rp => (
               <a href={`/es/blog/${rp.slug}`} class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <div class="overflow-hidden h-48 relative bg-slate-100">
-                  <img src={optimizeImageUrl(rp.featuredImage, { width: 600, quality: 75 })} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" width="384" height="192" loading="lazy" decoding="async" />
+                  <img src={optimizeImageUrl(rp.featuredImage || '', { width: 600, quality: 75 })} alt={rp.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" width="384" height="192" loading="lazy" decoding="async" />
                 </div>
                 <div class="p-5">
                   <h4 class="font-bold text-slate-800 group-hover:text-brand-primary transition-colors leading-snug text-lg mb-3">{rp.title}</h4>
