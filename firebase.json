@@ -75,6 +75,36 @@
         "type": 301
       },
       {
+        "source": "/es/",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/about{,/*}",
+        "destination": "/es/about/",
+        "type": 301
+      },
+      {
+        "source": "/services{,/*}",
+        "destination": "/es/services/",
+        "type": 301
+      },
+      {
+        "source": "/contact{,/*}",
+        "destination": "/es/contact/",
+        "type": 301
+      },
+      {
+        "source": "/faq{,/*}",
+        "destination": "/es/faq/",
+        "type": 301
+      },
+      {
+        "source": "/blog{,/*}",
+        "destination": "/es/blog/",
+        "type": 301
+      },
+      {
         "source": "/en/services/paquete-lanzamiento-completo",
         "destination": "/en/services/complete-launch-bundle/",
         "type": 301
