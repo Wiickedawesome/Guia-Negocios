@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import FaqAccordion from '../../components/FaqAccordion.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { PROGRAMMATIC_PAGES } from '../../utils/programmatic-pages';
 import { Image } from 'astro:assets';
 import launchHeroImg from '../../assets/images/LaunchHERO-Resized.webp';
 import favImg from '../../assets/images/GuiaNegociosFAV.webp';
@@ -683,15 +684,25 @@ const faqItems = [
     </div>
   </section>
 
-  <!-- SECTION 4: FAQ Accordion (Figma Node 86:77 style) -->
-  <FaqAccordion
-    title={t('services.faqTitle')}
-    contactText={t('services.faqContactText')}
-    contactUrl={`/${lang}/contact`}
-    viewMoreText={t('services.faqViewAll')}
-    viewMoreUrl={`/${lang}/faq`}
-    items={faqItems}
-  />
+  <!-- SECTION 4.5: Practical Guides (programmatic SEO pages) -->
+  <section class="py-20 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-heading font-semibold text-brand-dark mb-2">Business Guides</h2>
+      <p class="text-slate-600 mb-10 max-w-2xl">Practical, step-by-step guides from our bilingual consulting team — the same expertise we bring to client engagements.</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {PROGRAMMATIC_PAGES.map((p) => (
+          <a href={`/en/services/${p.slug}/`} class="group block border border-slate-200 rounded-2xl p-6 hover:border-brand-primary hover:shadow-lg transition-all">
+            <h3 class="font-bold text-slate-900 group-hover:text-brand-primary transition-colors leading-snug">{p.en.title}</h3>
+            <p class="mt-2 text-sm text-slate-600 line-clamp-3">{p.en.description}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-primary">
+              Read guide
+              <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
 
   <!-- SECTION 5: Full-Width Call to Action -->
   <section class="py-24 lg:py-32 bg-slate-100 border-t border-slate-200 relative overflow-hidden">

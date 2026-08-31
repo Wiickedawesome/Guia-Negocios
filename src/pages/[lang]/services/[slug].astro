@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { getLangFromUrl } from '../../../i18n/utils';
+import { PROGRAMMATIC_PAGES, getProgrammaticBySlug } from '../../../utils/programmatic-pages';
+
+export function getStaticPaths() {
+  const langs = ['es', 'en'];
+  return langs.flatMap((lang) =>
+    PROGRAMMATIC_PAGES.map((page) => ({
+      params: { slug: page.slug, lang },
+      props: { lang },
+    })),
+  );
+}
+
+const { lang } = Astro.props;
+const { slug } = Astro.params;
+const page = getProgrammaticBySlug(slug)!;
+const content = lang === 'es' ? page.es : page.en;
+const isEs = lang === 'es';
+const altPath = `/${isEs ? 'en' : 'es'}/services/${page.slug}`;
+const siteName = 'GUIA NEGOCIOS';
+---
+
+<BaseLayout title={`${content.title} | ${siteName}`} description={content.description} altPath={altPath}>
+  <Header slot="header" altPath={altPath} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "name": content.h1,
+        "serviceType": content.keyword,
+        "provider": {
+          "@type": "LocalBusiness",
+          "@id": "https://guianegocios.net/#business",
+          "name": siteName,
+          "url": "https://guianegocios.net",
+          "telephone": "+1-865-202-7112",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Knoxville",
+            "addressRegion": "TN",
+            "addressCountry": "US"
+          }
+        },
+        "areaServed": isEs ? "Knoxville, TN y todo Estados Unidos" : "Knoxville, TN and nationwide",
+        "description": content.description
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": content.faqs.map((f) => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": { "@type": "Answer", "text": f.a }
+        }))
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": isEs ? "Inicio" : "Home", "item": isEs ? "https://guianegocios.net/" : "https://guianegocios.net/en/" },
+          { "@type": "ListItem", "position": 2, "name": isEs ? "Servicios" : "Services", "item": `https://guianegocios.net/${lang}/services/` },
+          { "@type": "ListItem", "position": 3, "name": content.title, "item": `https://guianegocios.net/${lang}/services/${page.slug}/` }
+        ]
+      }
+    ]
+  })} />
+
+  <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <a href={`/${lang}/services`} class="text-brand-primary hover:underline">← {isEs ? 'Volver a Todos los Servicios' : 'Back to All Services'}</a>
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-tight text-white">
+        {content.h1}
+      </h1>
+      <p class="text-xl text-slate-300 leading-relaxed font-sans">{content.intro[0]}</p>
+      <div class="pt-6 border-t border-slate-800/80">
+        <a href={`/${lang}/contact`} class="inline-block bg-brand-accent text-brand-dark font-bold py-3.5 px-8 rounded-full hover:bg-yellow-300 transition-colors shadow-md text-base">
+          {isEs ? 'Consulta Gratuita' : 'Free Consultation'}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <article class="py-16 bg-white text-slate-800 leading-relaxed font-sans">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+
+      <p class="text-lg text-slate-700">{content.intro[1]}</p>
+
+      <div class="bg-brand-light border-l-4 border-brand-primary rounded-r-2xl p-6 lg:p-8 space-y-4">
+        <h2 class="text-2xl font-heading font-bold text-brand-dark">
+          {isEs ? 'Qué Incluye Este Servicio' : 'What This Service Includes'}
+        </h2>
+        <ul class="space-y-3">
+          {content.bullets.map((b) => (
+            <li class="flex gap-3">
+              <svg class="w-5 h-5 mt-0.5 text-brand-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-brand-dark border-b border-slate-200 pb-2">
+          {isEs ? 'Preguntas Frecuentes' : 'Frequently Asked Questions'}
+        </h2>
+        {content.faqs.map((f) => (
+          <div class="border-b border-slate-100 pb-4">
+            <h3 class="text-lg font-bold text-slate-900">{f.q}</h3>
+            <p class="mt-2 text-slate-700">{f.a}</p>
+          </div>
+        ))}
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-brand-dark border-b border-slate-200 pb-2">
+          {isEs ? 'Servicios Relacionados' : 'Related Services'}
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          {PROGRAMMATIC_PAGES.filter((p) => p.slug !== page.slug).map((p) => {
+            const other = lang === 'es' ? p.es : p.en;
+            return (
+              <a href={`/${lang}/services/${p.slug}/`} class="group block border border-slate-200 rounded-xl p-5 hover:border-brand-primary hover:shadow-md transition-all">
+                <h3 class="font-bold text-slate-900 group-hover:text-brand-primary transition-colors">{other.title}</h3>
+                <p class="mt-1 text-sm text-slate-600 line-clamp-2">{other.description}</p>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <section class="bg-brand-dark text-white rounded-2xl p-8 text-center space-y-4">
+        <h2 class="text-2xl font-heading font-bold">
+          {isEs ? '¿Necesita Ayuda con Este Trámite?' : 'Need Help With This Process?'}
+        </h2>
+        <p class="text-slate-300">
+          {isEs
+            ? 'En GUIA DE NEGOCIOS, con sede en Knoxville, Tennessee, acompañamos a emprendedores hispanos en todo EE.UU. con trámites bilingües de principio a fin.'
+            : 'At GUIA DE NEGOCIOS, headquartered in Knoxville, Tennessee, we guide Hispanic entrepreneurs nationwide through every step — in both languages.'}
+        </p>
+        <a href={`/${lang}/contact`} class="inline-block bg-brand-accent text-brand-dark font-bold py-3 px-8 rounded-full hover:bg-yellow-300 transition-colors">
+          {isEs ? 'Póngase en Contacto Hoy' : 'Get in Touch Today'}
+        </a>
+        <p class="text-sm text-slate-400">(865) 202-7112</p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>
