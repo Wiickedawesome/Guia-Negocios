@@ -36,7 +36,7 @@ The application routes are structured strictly into three domain sections:
 * `/admin/dashboard.astro` — Central operations overview & metrics.
 * `/admin/blog.astro` — Blog post collection manager (List, filter, status, delete).
 * `/admin/blog/editor.astro` — EasyMDE Markdown Editor with Gemini AI draft copilot.
-* `/admin/seo-audit.astro` — Real-time page SEO health auditor.
+* `/admin/seo-agent.astro` — SEO Agent command center: 7-day autonomous skill schedule, per-skill manual runs, kill switch, site-wide Gemini audit (writes `seoAudits`), and recent agent runs.
 * `/admin/keywords.astro` — Keyword rank tracking tool.
 * `/admin/backlinks.astro` — Backlink index monitor.
 * `/admin/reports.astro` — Analytics & conversion report generator.
