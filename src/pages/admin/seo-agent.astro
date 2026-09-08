@@ -93,6 +93,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         <div id="action-items-list"></div>
       </div>
     </div>
+
+    <!-- Agent-generated directives from /seo-tasks (kill/onpage issues etc.) -->
+    <div class="rounded-xl border border-slate-200 shadow-sm overflow-hidden mt-6 bg-white">
+      <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+        <h3 class="font-bold text-slate-900">Agent Directives</h3>
+        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Fix now or dismiss</span>
+      </div>
+      <div id="tasks-list">
+        <div class="px-6 py-6 text-center text-sm text-slate-500">Loading directives…</div>
+      </div>
+    </div>
   </div>
 
   <!-- 7-Day Skills Status Grid -->
@@ -302,8 +313,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('audit-empty')?.classList.remove('hidden');
         return;
       }
-      const data = snap.docs[0]?.data();
-      if (data) renderAuditData(data);
+      const doc0 = snap.docs[0];
+      const data = doc0?.data();
+      if (data && doc0) renderAuditData({ ...data, id: doc0.id });
     } catch (e) {
       console.error('Failed to load audit:', e);
     }
@@ -347,30 +359,63 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     if (summaryText) summaryText.innerText = data.summary || 'Site-wide crawl complete. All core metrics verified.';
 
     const actionList = document.getElementById('action-items-list');
+    const auditId = data.id;
     const items = data.actionableItems || data.actionItems || [];
     if (actionList) {
       if (items && items.length > 0) {
-        actionList.innerHTML = items.map((item: any) => {
+        actionList.innerHTML = items.map((item: any, idx: number) => {
           const priority = item.priority || 'Medium';
           const isHigh = priority === 'High';
           const isMedium = priority === 'Medium';
           const priorityColor = isHigh ? 'bg-red-50 text-red-700 border-red-200' : (isMedium ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-50 text-slate-700 border-slate-200');
           const dotColor = isHigh ? 'bg-red-500' : (isMedium ? 'bg-amber-500' : 'bg-slate-500');
           return `
-            <div class="px-6 py-5 flex items-start gap-4 hover:bg-slate-50 transition-colors">
-              <div class="mt-1 flex-shrink-0">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold border ${priorityColor} uppercase tracking-wide">
+            <div class="px-6 py-5 flex flex-col md:flex-row md:items-center gap-4 hover:bg-slate-50 transition-colors audit-item" data-audit-id="${auditId || ''}" data-idx="${idx}">
+              <div class="flex items-start gap-4 flex-1 min-w-0">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold border ${priorityColor} uppercase tracking-wide flex-shrink-0">
                   <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
                   ${priority}
                 </span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 mb-1">${item.task || item.title || 'Optimization Task'}</p>
+                  <p class="text-sm text-slate-600">${item.impact || item.description || ''}</p>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-bold text-slate-900 mb-1">${item.task || item.title || 'Optimization Task'}</p>
-                <p class="text-sm text-slate-600">${item.impact || item.description || ''}</p>
+              <div class="flex items-center gap-2 flex-shrink-0 audit-actions" data-dismissed="${item.dismissed === true}">
               </div>
             </div>
           `;
         }).join('');
+
+        // Wire Dismiss buttons (hidden once dismissed)
+        actionList.querySelectorAll('.audit-item').forEach((row) => {
+          const actions = row.querySelector('.audit-actions') as HTMLElement | null;
+          if (!actions) return;
+          if (actions.dataset.dismissed === 'true') {
+            actions.innerHTML = '<span class="text-xs text-slate-400 font-semibold uppercase">Dismissed</span>';
+            return;
+          }
+          const auditIdVal = (row.dataset.auditId || '').slice(0, 100);
+          const buttonLabel = row.dataset.idx || '0';
+          actions.innerHTML = `
+            <button class="dismiss-audit-item-btn inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">Dismiss</button>
+          `;
+          actions.querySelector('.dismiss-audit-item-btn')?.addEventListener('click', async () => {
+            if (!auditIdVal) { showToast('Older audit entries can not be dismissed — run a new scan.'); return; }
+            try {
+              const { updateDoc, arrayUnion } = await import('firebase/firestore');
+              const idx = Number((row as HTMLElement).dataset.idx || 0);
+              const docRef = doc(db, 'seoAudits', auditIdVal);
+              await updateDoc(docRef, {
+                dismissedItemIndices: arrayUnion(idx),
+              });
+              actions.innerHTML = '<span class="text-xs text-slate-400 font-semibold uppercase">Dismissed</span>';
+              showToast('Item dismissed — will stay hidden for future scans of this audit.');
+            } catch (err: any) {
+              showToast(err?.message || 'Dismiss failed.');
+            }
+          });
+        });
       } else {
         actionList.innerHTML = '<div class="px-6 py-8 text-center text-slate-500 text-sm">No action items found — site performing at optimal health.</div>';
       }
@@ -472,6 +517,66 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   }
 
   // ─── Actions & init ─────────────────────────────────
+  // ─── Agent Directives (from /seo-tasks) ──────────────────
+  interface TaskEntry { id: string; data: DocumentData; }
+  let taskEntries: TaskEntry[] = [];
+
+  async function loadAgentTasks() {
+    const container = document.getElementById('tasks-list');
+    if (!container) return;
+    try {
+      const snap = await getDocs(query(collection(db, 'seo-tasks'), orderBy('updatedAt', 'desc'), limit(50)));
+      taskEntries = snap.docs.filter((d) => (d.data()?.status ?? 'open') !== 'dismissed' && (d.data()?.status ?? 'open') !== 'resolved')
+        .map((d) => ({ id: d.id, data: d.data() }));
+    } catch (err) {
+      console.warn('Agent tasks load failed:', err);
+      taskEntries = [];
+    }
+    if (taskEntries.length === 0) {
+      container.innerHTML = '<div class="px-6 py-8 text-center"><p class="text-sm font-semibold text-slate-700">No open directives.</p><p class="text-xs text-slate-400 mt-1">Agent findings (crawled pages, skill results) appear here once the agent runs Mon-Sun, or after Run All.</p></div>';
+      return;
+    }
+    container.innerHTML = taskEntries.map(({ id, data }) => {
+      const severity = data.severity || 'medium';
+      const sevColor = severity === 'high' ? 'rose' : severity === 'medium' ? 'amber' : 'blue';
+      return `
+        <div class="px-6 py-5 flex flex-col md:flex-row md:items-center gap-4 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors" data-task-id="${id}">
+          <div class="flex items-start gap-3 flex-1 min-w-0">
+            <span class="inline-flex items-center rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-${sevColor}-50 text-${sevColor}-700 border border-${sevColor}-200 flex-shrink-0">${severity} priority</span>
+            <span class="rounded bg-slate-200/70 px-2 py-0.5 text-[10px] font-semibold text-slate-700 flex-shrink-0">${data.type || 'issue'}</span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-bold text-slate-900">${data.message || 'Issue detected'}</p>
+              ${data.fix ? `<p class="text-xs text-slate-600 mt-1">${data.fix}</p>` : ''}
+              ${data.url ? `<a href="${data.url}" class="text-xs text-blue-600 hover:underline truncate block">${data.url}</a>` : ''}
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            ${data.url ? `<a href="${data.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-lg bg-brand-primary px-3.5 py-2 text-xs font-bold text-white hover:bg-emerald-900 transition shadow-sm">Fix Now →</a>` : ''}
+            <button class="resolve-task-btn inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 transition">Mark Done</button>
+            <button class="dismiss-task-btn p-2 text-slate-400 hover:text-slate-600 transition" title="Dismiss">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+
+    container.querySelectorAll('[data-task-id]').forEach((row) => {
+      const taskId = (row as HTMLElement).dataset.taskId || '';
+      const markStatus = async (status: string) => {
+        try {
+          const { updateDoc } = await import('firebase/firestore');
+          await updateDoc(doc(db, 'seo-tasks', taskId), { status, updatedAt: new Date() });
+          row.remove();
+          showToast(status === 'resolved' ? 'Marked done.' : 'Dismissed.', 'success');
+        } catch (err: any) {
+          showToast(err?.message || 'Update failed.');
+        }
+      };
+      row.querySelector('.resolve-task-btn')?.addEventListener('click', () => markStatus('resolved'));
+      row.querySelector('.dismiss-task-btn')?.addEventListener('click', () => markStatus('dismissed'));
+    });
+  }
+
   async function runSingle(skillId: string, skillName: string) {
     try {
       const callable = httpsCallable(functions, 'seoAgentRun');
@@ -529,7 +634,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   });
 
   (async function init() {
-    await Promise.all([loadAgentConfig(), loadRecentRuns(), loadLatestAudit()]);
+    await Promise.all([loadAgentConfig(), loadRecentRuns(), loadLatestAudit(), loadAgentTasks()]);
     renderSkills();
   })();
 </script>
