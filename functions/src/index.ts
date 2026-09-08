@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { onCall, HttpsError, onRequest } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import * as admin from 'firebase-admin';
@@ -504,6 +504,78 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
 export const runSiteWideAudit = onCall({ cors: true, invoker: 'public', timeoutSeconds: 540, memory: '1GiB' }, async (request) => {
   return await internalSiteWideAudit();
 });
+
+/**
+ * Slug validator for wildcard rewrites (/es|/en/blog/**, /es|/en/lp/**).
+ * Firebase static hosting rewrites ANY path under those prefixes to the client
+ * view shell, so garbage URLs like /es/blog/does-not-exist served HTTP 200
+ * soft-404s with thin duplicate content. This function checks Firestore and:
+ *   - known slug  -> serves the static shell (200) which client JS hydrates
+ *   - unknown slug -> returns a real 404 so Google doesn't crawl thin pages
+ * Runs in region us-central1 (default for v2) with a 10s timeout.
+ */
+export const validateSlugRewrite = onRequest({ timeoutSeconds: 10, memory: '256MiB' }, async (req, res) => {
+  // Only handle GET/HEAD document requests; let Firebase serve everything else.
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
+
+  const path = req.path || '/';
+  // Match /{lang}/{blog|lp}/<slug> — anything else passes through to hosting.
+  const match = path.match(/^\/(en|es)\/(blog|lp)\/([^/]+)\/?$/);
+
+  if (!match) {
+    // Not a document URL we validate (e.g. /view shells, query strings).
+    // Redirect back to the same path on hosting so Firebase serves content.
+    res.status(302).set('Location', `https://guianegocios.net${path}`).send();
+    return;
+  }
+
+  const [, lang, section, slug] = match;
+  const slugValue: string = slug || '';
+
+  try {
+    const db = getFirestore();
+    // Blogs validate against slugEs/slugEn/slug in Firestore; landing pages
+    // (lp) have no Firestore registry, so the shell is always served there.
+    if (section === 'blog') {
+      const esMatch = await getDocsAsAdmin(db, 'blogs', 'slugEs', slugValue);
+      const found = esMatch
+        || await getDocsAsAdmin(db, 'blogs', 'slugEn', slugValue)
+        || await getDocsAsAdmin(db, 'blogs', 'slug', slugValue);
+      if (found) {
+        // Known slug: serve the language-appropriate shell so client JS
+        // hydrates the post in the URL's language.
+        const shell = lang === 'en' ? `/en/blog/view/index.html` : `/es/blog/view/index.html`;
+        const shellRes = await fetch(`https://guianegocios.net${shell}`);
+        res.status(200).set('Content-Type', 'text/html; charset=utf-8').send(await shellRes.text());
+        return;
+      }
+      res.status(404).send('Not Found');
+      return;
+    }
+    // Landing pages (lp) have no Firestore registry — pass through to the shell.
+    const shellRes = await fetch(`https://guianegocios.net/es/lp/view/index.html`);
+    res.status(200).set('Content-Type', 'text/html; charset=utf-8').send(await shellRes.text());
+  } catch (err: any) {
+    console.error('validateSlugRewrite error:', err?.message || err);
+    // Fail open: on Firestore errors, let hosting serve the shell rather than
+    // hard-fail real users. Google still sees a valid page for known URLs.
+    res.status(302).set('Location', `https://guianegocios.net${path}`).send();
+  }
+});
+
+async function getDocsAsAdmin(
+  db: any,
+  collectionName: string,
+  field: string,
+  value: string
+): Promise<any> {
+  const snap = await db.collection(collectionName).where(field, '==', value).get();
+  return snap.empty ? null : snap;
+}
+
 
 async function internalSiteWideAudit() {
   try {

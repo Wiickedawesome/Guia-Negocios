@@ -82,7 +82,9 @@ export const scheduledContentEngine = onSchedule({
   try {
     const db = getFirestore();
 
-    let gscUrl = "https://guianegocios.net/";
+    // The service account is a Full user ONLY on the Domain property.
+    // The URL-prefix property is separate in GSC and denies access.
+    let gscUrl = "sc-domain:guianegocios.net";
     try {
       const settingsDoc = await db.collection("settings").doc("admin").get();
       const stored = settingsDoc.exists ? settingsDoc.data()?.gscUrl : "";
@@ -90,7 +92,7 @@ export const scheduledContentEngine = onSchedule({
         gscUrl = stored.trim();
       }
     } catch (e) {
-      console.warn("Could not fetch gscUrl from settings, defaulting to https://guianegocios.net/");
+      console.warn("Could not fetch gscUrl from settings, defaulting to sc-domain:guianegocios.net");
     }
     const pexelsKey = await getSetting(db, "pexelsKey");
     const unsplashKey = await getSetting(db, "unsplashKey");

@@ -49,11 +49,11 @@
     "rewrites": [
       {
         "source": "/es/blog/**",
-        "destination": "/es/blog/view/index.html"
+        "function": "validateSlugRewrite"
       },
       {
         "source": "/en/blog/**",
-        "destination": "/en/blog/view/index.html"
+        "function": "validateSlugRewrite"
       },
       {
         "source": "/es/lp/**",
@@ -132,6 +132,11 @@
       {
         "source": "/es/services/creedava-support",
         "destination": "/es/services/apoyo-creedava/",
+        "type": 301
+      },
+      {
+        "source": "/en/blog/how-to-build-business-credit",
+        "destination": "/en/blog/how-to-build-business-credit-united-states/",
         "type": 301
       }
     ]
