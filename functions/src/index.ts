@@ -1045,3 +1045,5 @@ export * from './dataJournalism';
 export * from './aeoInjector';
 export * from './internalLinking';
 export * from './linkOutreach';
+export * from './seo-agent';
+export * from './seo-schedules';

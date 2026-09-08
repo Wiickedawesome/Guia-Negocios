@@ -9,7 +9,7 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "20"
+    "node": "24"
   },
   "main": "lib/index.js",
   "dependencies": {
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
+    "@types/node": "^24.13.3",
     "typescript": "^7.0.2"
   },
   "overrides": {
