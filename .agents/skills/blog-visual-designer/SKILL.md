@@ -7,19 +7,85 @@ description: Comprehensive visual and graphic design skill for generating respon
 
 This skill empowers AI agents to craft state-of-the-art, colorful, and engaging visual graphics, charts, and micro-layouts directly inside Markdown blog posts for **GUIA DE NEGOCIOS**.
 
-## 1. Core Visual Philosophy: "Never Read Like a Dense Book"
+## 1. Core Visual Philosophy & Mandatory Rules
+
+### Philosophy: "Never Read Like a Dense Book"
 - **Pacing & Breathing Room:** No paragraph should ever exceed 2 to 3 sentences.
 - **Rhythm:** Alternate between bold lead-in lists, color-accented quote callouts, metric cards, comparison matrices, and visual charts.
 - **Strict Zero-Emoji Policy:** Never use informal unicode emojis. Always use clean inline SVG vector icons, sleek numeral badges, or modern geometric accents.
-- **Color Palette & Visual Warmth:**
-  - **Brand Forest Green:** `#1B4E2B` (Authority, trust, positive action)
-  - **Golden Amber:** `#F0C850` (Highlights, star metrics, awards)
-  - **Charcoal Slate Navy:** `#1A2E35` (Strong headers, dark contrast cards)
-  - **Soft Mint Cream:** `#F2F7F4` (Light background cards, solutions)
-  - **Electric Blue / Indigo:** `#2563EB` (Tech, banking, international wire)
-  - **Royal Violet:** `#7C3AED` (Strategic insights, innovation)
-  - **Coral Crimson:** `#D92D3C` (Risks, IRS fines, mistakes to avoid)
-  - **Emerald Green:** `#059669` (Success metrics, approved status)
+
+### 🚨 Mandatory Rules (Non-Negotiable)
+
+**Rule 1 — NO INDENTS / NO LINNING (PERMANENTLY BANNED)**
+The following layout must NEVER be used for any visual:
+- A narrow vertical left-border (`border-l-4` or similar)
+- Numbered green circles placed to the left of indented card rows
+- Card-based rows that are indented under a header with a left gutter line
+
+**This style is rejected on sight.** If you find yourself reaching for "narrow left border + numbered circles + indented cards", STOP and pick a different visual type from the catalog in Section 3.
+
+**Rule 2 — No Repeating Visual Types Back-to-Back**
+Every blog post in a sequence MUST use a **completely different** infographic/visual style than the previous post. If blog post N used a comparison card list, blog post N+1 cannot use the same type. **Before generating a visual, check what the previous blog post used and pick something different.**
+
+**Rule 3 — Full Visual Variety Required**
+You must utilize the complete catalog of visual types listed in Section 3. Never default to the same template twice in a row. Rotate through the available types based on what best fits the content.
+
+**Rule 4 — Use Stock Images (Pexels & Unsplash)**
+Blog posts must include relevant stock photos from **Pexels** and **Unsplash** integrated alongside or within the HTML infographics. Posts should not be HTML-only infographics — use real photographs to break up text and add visual warmth. Reference the Pexels and Unsplash keys stored in Admin → Settings (Firestore `settings/admin`).
+
+**Rule 5 — Agent Must Know All Visual Types**
+This skill document IS the authoritative catalog. Before generating any blog visual, scan the Visual Type Catalog in Section 3 to pick the right archetype for the content — never default to the first one you remember.
+
+**Rule 6 — Cite Official Sources (Minimum 3)**
+Every blog post MUST include a references section at the bottom with at least 3 verified source links. Sources are NOT limited — they can come from any domain including government (.gov), educational (.edu), major news outlets, industry associations, or authoritative organizations. Each source must be real, current, and relevant to the post topic. Format as a styled reference block using Archetype 30 (Resource Link Grid) from the catalog. Use this template:
+```html
+<div class="my-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+<h4 class="text-base font-bold text-[#1A2E35] mb-3">Fuentes Oficiales y Referencias / Official Sources & References</h4>
+<ul class="text-xs text-slate-700 space-y-2">
+<li><a href="https://www.irs.gov/..." target="_blank" class="text-[#2563EB] hover:underline">IRS — [Relevant Page Title]</a></li>
+<li><a href="https://www.sba.gov/..." target="_blank" class="text-[#2563EB] hover:underline">SBA — [Relevant Guide]</a></li>
+<li><a href="https://www.tn.gov/..." target="_blank" class="text-[#2563EB] hover:underline">Tennessee [Department Name]</a></li>
+</ul>
+</div>
+```
+
+**Rule 7 — Dynamic Visual Sizing (Word-Count Driven)**
+Instead of hard numbers, use this formula to determine how many visuals to include based on blog length:
+
+```
+total_visuals = ceil(word_count / 200) + 1
+```
+
+**Breakdown:**
+- `word_count / 200` = base visuals needed (rounded up)
+- `+1` = always include citations block (Rule 6)
+
+**Examples:**
+| Word Count | Calculation | Total Visuals |
+|------------|-------------|---------------|
+| 500 | 3 + 1 | **4 visuals** |
+| 800 | 4 + 1 | **5 visuals** |
+| 1200 | 6 + 1 | **7 visuals** |
+| 2000 | 10 + 1 | **11 visuals** |
+
+**Visual mix split:**
+- Infographics: 50–60% (primary data/process visuals)
+- Stock photos: 30–40% (cover + inline)
+- Callouts/citations: remaining (advisor tips, references)
+
+**Range constraints:**
+- Minimum: 3 visuals (even for short posts)
+- Maximum: 12 visuals (prevent overload)
+
+### Color Palette & Visual Warmth
+- **Brand Forest Green:** `#1B4E2B` (Authority, trust, positive action)
+- **Golden Amber:** `#F0C850` (Highlights, star metrics, awards)
+- **Charcoal Slate Navy:** `#1A2E35` (Strong headers, dark contrast cards)
+- **Soft Mint Cream:** `#F2F7F4` (Light background cards, solutions)
+- **Electric Blue / Indigo:** `#2563EB` (Tech, banking, international wire)
+- **Royal Violet:** `#7C3AED` (Strategic insights, innovation)
+- **Coral Crimson:** `#D92D3C` (Risks, IRS fines, mistakes to avoid)
+- **Emerald Green:** `#059669` (Success metrics, approved status)
 
 ---
 
@@ -159,3 +225,88 @@ Un plan de negocios sólido no solo le permite obtener financiamiento bancario o
 </div>
 </div>
 ```
+
+### Full Visual Type Catalog (30 Archetypes)
+
+Every blog post must pick its primary visual type from this list. **No two consecutive blog posts may use the same archetype.**
+
+#### Data & Charts
+| # | Visual Type | Best For |
+|---|------------|----------|
+| 1 | **Bar Chart** (horizontal, multi-color) | Comparing quantities, growth rates, market share |
+| 2 | **Column Chart** (vertical bars) | Time-series comparisons, monthly data |
+| 3 | **Stacked Bar Chart** | Parts-of-a-whole across categories |
+| 4 | **Line Chart** (SVG polyline) | Trends over time, growth curves |
+| 5 | **Area Chart** | Cumulative trends, volume over time |
+| 6 | **Pie / Donut Chart** (SVG circle + stroke-dasharray) | Percentage breakdowns, market segments |
+| 7 | **Statistical Callout / Metric Cards** | Hero numbers, key KPIs, impact stats |
+
+#### Process & Flow
+| # | Visual Type | Best For |
+|---|------------|----------|
+| 8 | **Timeline / Roadmap** (horizontal or zigzag) | Chronological steps, history, milestones |
+| 9 | **Process Steps** (numbered phases in grid) | Sequential workflows, how-to guides |
+| 10 | **Journey Map** | Customer experience, end-to-end lifecycle |
+| 11 | **Funnel / Inbound Diagram** | Sales funnels, conversion stages, lead pipeline |
+| 12 | **Flowchart / Decision Tree** | If-then logic, branching choices, compliance flows |
+
+#### Structure & Comparison
+| # | Visual Type | Best For |
+|---|------------|----------|
+| 13 | **Comparison Matrix / Table** | Side-by-side pros-vs-cons, feature comparisons |
+| 14 | **Hierarchical / Org Chart** | Company structures, tax entity hierarchies, org levels |
+| 15 | **Decision Matrix** (Do's vs Don'ts) | Good vs bad practices, right vs wrong choices |
+| 16 | **Feature Grid** (icon cards) | Listing services, benefits, capabilities |
+
+#### Spatial & Architectural
+| # | Visual Type | Best For |
+|---|------------|----------|
+| 17 | **Geographical / Map Diagram** | Service areas, state-by-state data, location references |
+| 18 | **Cloud / Architecture Diagram** | Tech stack, system integrations, data flow |
+| 19 | **Ecosystem Diagram** | How entities relate to each other (IRS-STATE-BANK relationships) |
+
+#### Text & Callouts
+| # | Visual Type | Best For |
+|---|------------|----------|
+| 20 | **Pro-Advisor Callout** (gradient bg + icon) | Expert tips, key warnings, consultant advice |
+| 21 | **Quote Block** (large styled blockquote) | Testimonials, regulatory quotes, key statements |
+| 22 | **Checklist** (SVG checkboxes) | Action items, compliance requirements, to-do lists |
+| 23 | **Warning / Risk Callout** (coral-themed) | Penalties, mistakes, things to avoid |
+| 24 | **Success / Approval Callout** (emerald-themed) | Benefits achieved, approved status, wins |
+
+#### Mixed & Compound
+| # | Visual Type | Best For |
+|---|------------|----------|
+| 25 | **Icon + Stat Row** (image left, numbers right) | Key findings backed by photos |
+| 26 | **Tabbed Card** (simulated tabs via radio/checkbox) | Multi-view content in one space |
+| 27 | **Accordion Section** (details/summary) | FAQ, expandable sections |
+| 28 | **Photo + Text Split** (image + side-by-side text) | Case studies, before/after, storytelling |
+| 29 | **Badge & Award Showcase** | Certifications, accreditations, recognitions |
+| 30 | **Resource Link Grid** | Official source links, reference cards |
+
+### Stock Image Integration Rules
+
+When generating or editing blog posts:
+
+1. **Every post MUST have a unique cover image** from Pexels or Unsplash (never reuse across posts).
+2. **Inline photos**: Use at least 1–2 relevant stock photos per post to break up HTML-only content.
+3. **Placement**: Photos can be used inside Archetype 25 (Icon + Stat Row), Archetype 28 (Photo + Text Split), or as standalone full-width images between sections.
+4. **Sourcing**: Use the Pexels and Unsplash API keys stored in Admin → Settings (Firestore `settings/admin`). Query keywords related to the post topic (e.g., "restaurant kitchen", "small business meeting", "bank documents").
+5. **Alt text**: Every image must have descriptive bilingual alt text.
+
+### Visual Selection Checklist
+
+Before finalizing a blog post's visuals, verify:
+
+- [ ] **Primary visual type** is different from the previous blog post (Rule 2)
+- [ ] **No indent/linning style** anywhere (Rule 1)
+- [ ] Total visuals match the **word-count formula**: `ceil(word_count / 200) + 1` (Rule 7)
+- [ ] At least **2 different visual archetypes** used within the post
+- [ ] At least **1 stock photo** from Pexels or Unsplash (Rule 4)
+- [ ] Cover image is unique (not used by any other post)
+- [ ] All HTML flush to column 0 (no 4-space indents)
+- [ ] Colors use brand palette values from Section 1
+- [ ] Zero emojis — only inline SVG icons and numeral badges
+- [ ] At least **3 verified source citations** at the bottom from any authoritative domain (Rule 6)
+
+---
