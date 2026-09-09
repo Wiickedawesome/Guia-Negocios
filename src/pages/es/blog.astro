@@ -172,14 +172,17 @@ const posts = await getBlogPosts('es');
         const livePosts: any[] = [];
         snap.forEach(docSnap => {
           const data = docSnap.data();
+          // Use language-specific fields first (slugEs, titleEs, contentEs)
           const title = data.titleEs || data.title;
           const slug = data.slugEs || data.slug;
-          if (title && (data.contentEs || data.content)) {
+          const content = data.contentEs || data.content;
+          // Only include posts that have Spanish content
+          if (title && slug && content && data.slugEs) {
             livePosts.push({
               id: docSnap.id,
               title,
               slug,
-              excerpt: data.metaDesc || '',
+              excerpt: data.metaDescEs || data.metaDesc || '',
               tags: data.keywords || [],
               date: data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-17'),
               readTime: data.readTime || 7,

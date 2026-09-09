@@ -1131,6 +1131,352 @@ At **Guia Negocios**, we guide Latino entrepreneurs and small business owners th
 * [Free Business Consultation](/en/contact) — Schedule a free consultation with our bilingual consulting team.
 `
   }
+,
+  'itin-tax-credits-business-owners': {
+    title: "ITIN and Tax Credits: What Every Hispanic Entrepreneur Should Know",
+    slug: "itin-tax-credits-business-owners",
+    altSlug: "itin-creditos-impuestos-negocios",
+    lang: "en",
+    date: "2026-09-08",
+    excerpt: "Discover how an ITIN opens doors to tax credits like the EITC and CTC. Practical guide for Hispanic entrepreneurs in the U.S.",
+    featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+    tags: ["ITIN", "Tax Credits", "EITC", "Hispanic Business", "IRS"],
+    readTime: 10,
+    content: `
+# ITIN and Tax Credits: What Every Hispanic Entrepreneur Should Know
+
+**An ITIN is not just a number for paying taxes. It is the key that unlocks tax credits that can return thousands of dollars to you each year.** If you have a business or are thinking about starting one, understanding how the ITIN works and the associated credits can mean the difference between losing money and taking advantage of benefits the government legally offers.
+
+---
+
+<div style="margin: 2rem 0; padding: 2rem; background: linear-gradient(135deg, #F0C850 0%, #FFD966 100%); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  <h3 style="margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #1A2E35; border-bottom: 2px solid #1A2E35; padding-bottom: 0.5rem;">
+    Créditos Fiscales Disponibles con ITIN
+  </h3>
+  
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+    
+    <div style="background: #1A2E35; color: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #F0C850; margin-bottom: 0.75rem; font-weight: 600;">Earned Income Tax Credit (EITC)</div>
+      <div style="margin-bottom: 0.75rem;">
+        <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">Sin hijos: <strong style="color: #F0C850; font-size: 1.125rem;">\$632</strong></div>
+        <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">1 hijo: <strong style="color: #F0C850; font-size: 1.125rem;">\$4,213</strong></div>
+        <div style="font-size: 0.875rem; margin-bottom: 0.25rem;">2 hijos: <strong style="color: #F0C850; font-size: 1.125rem;">\$6,960</strong></div>
+        <div style="font-size: 0.875rem;">3+ hijos: <strong style="color: #F0C850; font-size: 1.25rem;">\$7,830</strong></div>
+      </div>
+      <div style="font-size: 0.75rem; opacity: 0.85; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.5rem;">Para trabajadores de ingresos bajos y moderados</div>
+    </div>
+
+    <div style="background: #1A2E35; color: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #F0C850; margin-bottom: 0.75rem; font-weight: 600;">Child Tax Credit (CTC)</div>
+      <div style="font-size: 2rem; font-weight: bold; color: #F0C850; margin-bottom: 0.5rem;">\$2,000</div>
+      <div style="font-size: 0.875rem; margin-bottom: 0.75rem;">por hijo calificado (menor de 17)</div>
+      <div style="font-size: 0.75rem; opacity: 0.85; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.5rem;">Hasta \$1,700 reembolsable</div>
+    </div>
+
+    <div style="background: #1A2E35; color: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #F0C850; margin-bottom: 0.75rem; font-weight: 600;">American Opportunity Tax Credit</div>
+      <div style="font-size: 2rem; font-weight: bold; color: #F0C850; margin-bottom: 0.5rem;">\$2,500</div>
+      <div style="font-size: 0.875rem; margin-bottom: 0.75rem;">por estudiante (primeros 4 años de educación superior)</div>
+      <div style="font-size: 0.75rem; opacity: 0.85; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.5rem;">40% reembolsable</div>
+    </div>
+
+    <div style="background: #1A2E35; color: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
+      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #F0C850; margin-bottom: 0.75rem; font-weight: 600;">Child and Dependent Care Credit</div>
+      <div style="font-size: 2rem; font-weight: bold; color: #F0C850; margin-bottom: 0.5rem;">20-35%</div>
+      <div style="font-size: 0.875rem; margin-bottom: 0.75rem;">de gastos calificados de cuidado</div>
+      <div style="font-size: 0.75rem; opacity: 0.85; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.5rem;">Máximo: \$3,000 (1 dependiente) / \$6,000 (2+)</div>
+    </div>
+
+  </div>
+
+  <div style="background: #1A2E35; padding: 1rem; border-radius: 8px; text-align: center;">
+    <div style="color: #F0C850; font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">Dato Importante</div>
+    <div style="color: #FFFFFF; font-size: 0.9375rem;">Muchos emprendedores hispanos pierden entre <strong style="color: #FF6B6B;">\$2,000 y \$8,000 al año</strong> en créditos que no reclaman simplemente porque no saben que existen.</div>
+  </div>
+</div>
+
+
+## What Exactly Is an ITIN?
+
+The **Individual Taxpayer Identification Number (ITIN)** is a tax processing number issued by the IRS for people who need to comply with tax obligations but do not qualify for an SSN.
+
+Key points:
+
+- Starts with the number **9**
+- Has the same format as an SSN (XXX-XX-XXXX)
+- **Does not give the right to work** or receive Social Security benefits
+- **Does allow** filing tax returns and claiming tax credits
+
+## Tax Credits Available With an ITIN
+
+### Earned Income Tax Credit (EITC)
+
+The EITC is one of the most generous credits for low and moderate-income workers. For tax year 2025:
+
+- **No children:** up to **\$632**
+- **1 child:** up to **\$4,213**
+- **2 children:** up to **\$6,960**
+- **3 or more children:** up to **\$7,830**
+
+To claim it you need a valid ITIN, reported earned income, and must meet income requirements. You can claim the EITC even without an SSN, as long as you file your return with an ITIN.
+
+### Child Tax Credit (CTC)
+
+If you have children living with you under age 17:
+
+- Up to **\$2,000 per qualifying child**
+- Up to **\$1,700 refundable** (Additional Child Tax Credit)
+- You need an ITIN for yourself and SSN or ITIN for each child
+
+### American Opportunity Tax Credit (AOTC)
+
+If you or your dependents are in school:
+
+- Up to **\$2,500 per student** for the first 4 years of higher education
+- 40% is refundable (up to \$1,000 even if you owe no tax)
+- Can claim with ITIN
+
+### Child and Dependent Care Credit
+
+If you pay for child or dependent care while working:
+
+- Between **20% and 35%** of qualified expenses
+- Maximum \$3,000 for one dependent, \$6,000 for two or more
+- You need a valid ITIN
+
+## How to Maximize These Credits
+
+1. **Get your ITIN first** Form W-7 with the IRS (or use an authorized CAA)
+2. **Report all your income** even cash or self-employment income
+3. **Keep records of deductible expenses** materials, equipment, business transportation
+4. **File a return every year** even if you owe no tax, you may receive a refund
+5. **Consult a bilingual professional** a tax preparer can identify credits you don't know about
+
+## Common Mistakes That Cost You Money
+
+- **Not filing a return** because you think you don't earn enough you may lose refundable credits
+- **Mixing personal and business expenses** lose legitimate deductions
+- **Not claiming the EITC** thinking you don't qualify income limits are higher than you think
+- **Using a preparer who doesn't know ITIN credits** not all preparers know how to claim EITC with ITIN
+
+## How Can Guia Negocios Help?
+
+At **Guia Negocios** we understand the reality of the Hispanic entrepreneur:
+
+- **Bilingual tax preparation** for individuals and businesses with ITIN
+- **Credit identification** that other preparers miss
+- **ITIN application assistance** through W-7
+- **Monthly bookkeeping** so your records are ready for maximum deductions
+- **Tax planning** to minimize what you owe and maximize what you receive
+
+Don't leave money on the table. Many Hispanic entrepreneurs lose between \$2,000 and \$8,000 per year in credits they don't claim simply because they don't know they exist.
+
+## Official Sources Consulted
+
+- [IRS - ITIN Information](https://www.irs.gov/individuals/international-taxpayers/individual-taxpayer-identification-number)
+- [IRS - Earned Income Tax Credit](https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit-eitc)
+- [IRS - Child Tax Credit](https://www.irs.gov/credits-deductions/individuals/child-tax-credit)
+- [IRS - American Opportunity Tax Credit](https://www.irs.gov/credits-deductions/individuals/aotc)
+- [VITA/TCE - Free Tax Prep](https://www.irs.gov/individuals/free-tax-return-preparation-for-you-from-the-irs)
+
+---
+
+*Don't lose more money on credits you aren't claiming. [Contact us](/en/contact) for a free review of your tax situation.*
+`,
+  },
+  'itin-creditos-impuestos-negocios': {
+    title: "ITIN y Créditos de Impuestos: Lo que Todo Emprendedor Hispano Debe Saber",
+    slug: "itin-creditos-impuestos-negocios",
+    altSlug: "itin-tax-credits-business-owners",
+    lang: "es",
+    date: "2026-09-08",
+    excerpt: "Descubra cómo un ITIN abre puertas a créditos de impuestos como el EITC y CTC. Guía práctica para emprendedores hispanos en EE.UU.",
+    featuredImage: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+    tags: ["ITIN", "Créditos Fiscales", "EITC", "Negocios Hispanos", "IRS"],
+    readTime: 10,
+    content: `
+# ITIN y créditos de impuestos: Lo que todo emprendedor hispano debe saber
+
+**Un ITIN no es solo un número para pagar impuestos. Es la llave que abre créditos fiscales que pueden devolverle miles de dólares cada año.** Si usted tiene un negocio o está pensando en abrir uno, entender cómo funciona el ITIN y qué créditos puede reclamar es esencial.
+
+---
+
+<div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
+<div class="flex items-center justify-between mb-6">
+<h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
+El ITIN en Cifras
+</h4>
+<span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">IRS 2025</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+<div class="bg-white/5 p-4 rounded-xl border border-white/10">
+<div class="text-3xl font-extrabold text-[#F0C850] mb-1">5M+</div>
+<div class="text-xs text-slate-300 font-medium">ITINs Activos en EE.UU.</div>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/10">
+<div class="text-3xl font-extrabold text-emerald-400 mb-1">\$7,830</div>
+<div class="text-xs text-slate-300 font-medium">Crédito EITC Máximo (3 hijos)</div>
+</div>
+<div class="bg-white/5 p-4 rounded-xl border border-white/10">
+<div class="text-3xl font-extrabold text-blue-400 mb-1">\$2,000</div>
+<div class="text-xs text-slate-300 font-medium">CTC por Hijo Menor de 17</div>
+</div>
+</div>
+</div>
+
+---
+
+## Qué es exactamente un ITIN
+
+Un ITIN (Individual Taxpayer Identification Number) es un número de procesamiento fiscal de 9 dígitos emitido por el IRS. Empieza con el número 9 y tiene un formato específico: **9XX-7X-XXXX**.
+
+El ITIN sirve para:
+
+- **Presentar declaraciones de impuestos** aunque no tenga SSN
+- **Abrir cuentas bancarias** de negocio
+- **Reclamar créditos fiscales** como el EITC y CTC
+- **Cumplir con obligaciones fiscales** legales
+
+> **Importante:** El ITIN no autoriza a trabajar en EE.UU. ni proporciona estatus migratorio. Es exclusivamente para fines tributarios.
+
+---
+
+<div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
+<h4 class="text-base font-bold text-[#1A2E35] mb-4">Créditos Fiscales que Puede Reclamar con ITIN</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-[#F2F7F4] p-4 rounded-xl border border-[#1B4E2B]/20">
+<div class="flex items-center gap-2 text-[#1B4E2B] font-bold text-sm mb-3">
+<svg class="w-4 h-4 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+Earned Income Tax Credit (EITC)
+</div>
+<ul class="text-xs text-slate-700 space-y-1.5 leading-relaxed">
+<li>Hasta <strong>\$7,830</strong> para familias con 3+ hijos</li>
+<li>Requisito: ingresos menores a \$63,398 (2025)</li>
+<li>Necesita SSN válido para trabajo</li>
+</ul>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200">
+<div class="flex items-center gap-2 text-[#2563EB] font-bold text-sm mb-3">
+<svg class="w-4 h-4 text-[#2563EB] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+Child Tax Credit (CTC)
+</div>
+<ul class="text-xs text-slate-700 space-y-1.5 leading-relaxed">
+<li>Hasta <strong>\$2,000</strong> por hijo menor de 17</li>
+<li><strong>\$1,700</strong> reembolsable (ACTC)</li>
+<li>Requiere ITIN válido para dependientes</li>
+</ul>
+</div>
+</div>
+</div>
+
+---
+
+## Cómo obtener su ITIN
+
+El proceso es directo. Necesita completar el **formulario W-7** del IRS y enviarlo con su declaración de impuestos o a través de un **Certified Acceptance Agent (CAA)**.
+
+### Documentos necesarios:
+- Pasaporte vigente (documento principal)
+- O combinación de: visa + tarjeta de identidad + certificado de nacimiento
+
+### Costo:
+- IRS: **gratuito** si envía por correo
+- CAA: **\$150-\$300** (pero procesa más rápido)
+
+![Familia hispana revisando documentos fiscales](https://images.pexels.com/photos/7693566/pexels-photo-7693566.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop)
+
+---
+
+<div class="my-8 p-6 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl shadow-sm font-sans">
+<h4 class="text-base font-bold text-[#1A2E35] mb-4">Ruta para Obtener su ITIN</h4>
+<div class="space-y-3">
+<div class="flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-[#F0C850] text-[#1A2E35] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</div>
+<div class="flex-1">
+<strong class="text-sm text-[#1A2E35]">Completar Formulario W-7</strong>
+<p class="text-xs text-slate-600 mt-1">Disponible en IRS.gov. Llene todos los campos correctamente.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-[#F0C850] text-[#1A2E35] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</div>
+<div class="flex-1">
+<strong class="text-sm text-[#1A2E35]">Preparar Documentos de Identidad</strong>
+<p class="text-xs text-slate-600 mt-1">Pasaporte vigente o combinación de documentos secundarios.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-[#F0C850] text-[#1A2E35] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</div>
+<div class="flex-1">
+<strong class="text-sm text-[#1A2E35]">Enviar con Declaración de Impuestos</strong>
+<p class="text-xs text-slate-600 mt-1">Adjunte W-7 + documentos a su tax return anual.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-[#F0C850] text-[#1A2E35] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</div>
+<div class="flex-1">
+<strong class="text-sm text-[#1A2E35]">Recibir ITIN en 7-11 Semanas</strong>
+<p class="text-xs text-slate-600 mt-1">El IRS le envía carta con su número. CAA reduce a 2-3 semanas.</p>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## Créditos para negocios con ITIN
+
+Si tiene un negocio, puede reclamar créditos adicionales:
+
+<div class="my-8 p-5 bg-[#F2F7F4] border border-[#1B4E2B]/20 rounded-2xl font-sans">
+<h5 class="text-sm font-bold text-[#1A2E35] mb-3">Checklist de Créditos Empresariales</h5>
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+<span class="text-xs text-slate-700"><strong>Small Business Health Care Tax Credit</strong> — hasta 50% de primas de salud</span>
+</div>
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+<span class="text-xs text-slate-700"><strong>Work Opportunity Tax Credit</strong> — hasta \$9,600 por empleado de grupos objetivo</span>
+</div>
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+<span class="text-xs text-slate-700"><strong>Research & Development Credit</strong> — hasta 20% de gastos calificables</span>
+</div>
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+<span class="text-xs text-slate-700"><strong>General Business Credit</strong> — acumulación de créditos menores</span>
+</div>
+</div>
+</div>
+
+---
+
+<div class="my-8 p-6 bg-gradient-to-r from-emerald-50 to-teal-50 border border-[#1B4E2B]/20 rounded-2xl shadow-sm font-sans">
+<h5 class="text-sm font-bold text-[#1A2E35] mb-2">Consejo de Nuestro Equipo</h5>
+<p class="text-xs text-slate-700 leading-relaxed">
+Muchos emprendedores hispanos con ITIN dejan miles de dólares sobre la mesa cada año porque no conocen los créditos disponibles. Un contador especializado puede identificar oportunidades que reducen significativamente su carga fiscal.
+</p>
+</div>
+
+---
+
+<div class="my-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+<h4 class="text-base font-bold text-[#1A2E35] mb-3">Fuentes Oficiales y Referencias</h4>
+<ul class="text-xs text-slate-700 space-y-2">
+<li><a href="https://www.irs.gov/individuals/international-taxpayers/individual-taxpayer-identification-number" target="_blank" class="text-[#2563EB] hover:underline">IRS — ITIN Application (Form W-7)</a></li>
+<li><a href="https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit-eitc" target="_blank" class="text-[#2563EB] hover:underline">IRS — Earned Income Tax Credit (EITC)</a></li>
+<li><a href="https://www.irs.gov/credits-deductions/individuals/child-tax-credit" target="_blank" class="text-[#2563EB] hover:underline">IRS — Child Tax Credit</a></li>
+<li><a href="https://www.irs.gov/businesses/small-businesses-self-employed/general-business-credits" target="_blank" class="text-[#2563EB] hover:underline">IRS — General Business Credits</a></li>
+</ul>
+</div>
+
+---
+
+*¿Necesita ayuda con su ITIN o declaración de impuestos? [Contáctenos](/es/contact) para una consulta gratuita con nuestro equipo bilingüe.*
+`,
+  }
 };
 
 // In-memory caching for blog posts to prevent repeated Firestore fetches during build and renders
@@ -1155,11 +1501,10 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
       const data = doc.data();
       if (data.status !== 'Published') return;
       const hasLang = lang === 'en' ? !!data.titleEn : !!data.titleEs;
-      if (hasLang) {
-        let postDate = data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-10');
-        if (postDate > '2026-08-16') {
-          postDate = '2026-08-10';
-        }
+      const langSlug = lang === 'en' ? data.slugEn : data.slugEs;
+      // Only include posts that have a language-specific slug
+      if (hasLang && langSlug) {
+        const postDate = data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-10');
 
         const fallbackImg = (data.slugEs?.includes('knoxville') || data.slugEn?.includes('knoxville'))
           ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80'
@@ -1167,12 +1512,12 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
 
         let post: BlogPost = {
           title: lang === 'en' ? (data.titleEn || data.title) : (data.titleEs || data.title),
-          slug: lang === 'en' ? (data.slugEn || data.slug) : (data.slugEs || data.slug),
+          slug: langSlug,
           date: postDate,
           author: data.author || 'Guia Negocios Team',
           excerpt: data.metaDesc || '',
           lang: lang,
-          altSlug: lang === 'en' ? (data.slugEs || data.slug) : (data.slugEn || data.slug),
+          altSlug: lang === 'en' ? (data.slugEs || '') : (data.slugEn || ''),
           tags: data.keywords || [],
           content: lang === 'en' ? (data.contentEn || data.content) : (data.contentEs || data.content),
           featuredImage: data.featuredImage || fallbackImg,
