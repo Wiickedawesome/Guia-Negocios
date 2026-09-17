@@ -44,5 +44,3 @@ Disallow: /admin/*
 
 # XML Sitemaps
 Sitemap: https://guianegocios.net/sitemap-index.xml
-Sitemap: https://guianegocios.net/sitemap.xml
-Sitemap: https://guianegocios.net/sitemap-0.xml

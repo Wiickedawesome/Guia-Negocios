@@ -71,7 +71,7 @@ const toAbsoluteUrl = (path: string) => {
 const canonicalUrl = toAbsoluteUrl(currentPath);
 const enUrl = toAbsoluteUrl(isEnglish ? currentPath : alternatePath);
 const esUrl = toAbsoluteUrl(!isEnglish ? currentPath : alternatePath);
-const xDefaultUrl = 'https://guianegocios.net/'; // Default primary language (Spanish)
+const xDefaultUrl = esUrl; // Contextual default primary language (Spanish version of this content)
 
 ---
 

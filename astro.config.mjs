@@ -18,6 +18,8 @@ export default defineConfig({
       filter: (page) => {
         // Exclude /es/ redirect URL since it 301s to root / (sitemap should only contain 200 OK indexable pages)
         if (page === 'https://guianegocios.net/es/' || page === 'https://guianegocios.net/es') return false;
+        // Exclude legacy 301-redirected blog slug
+        if (page === 'https://guianegocios.net/en/blog/how-to-build-business-credit' || page === 'https://guianegocios.net/en/blog/how-to-build-business-credit/') return false;
         // Exclude admin dashboard
         if (page.includes('/admin')) return false;
         // Exclude dynamic client view shells and fallbacks

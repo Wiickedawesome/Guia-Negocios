@@ -46,6 +46,7 @@
       }
     ],
     "cleanUrls": true,
+    "trailingSlash": true,
     "rewrites": [
       {
         "source": "/es/blog/**",
