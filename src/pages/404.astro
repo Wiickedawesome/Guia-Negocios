@@ -12,15 +12,15 @@ import Footer from '../components/Footer.astro';
       <div class="w-20 h-20 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center font-extrabold text-3xl mx-auto mb-6">
         404
       </div>
-      <h1 class="text-3xl font-bold font-heading text-slate-900 mb-3">Página No Encontrada</h1>
-      <p class="text-slate-600 mb-8 leading-relaxed">
+      <h1 id="nf-title" class="text-3xl font-bold font-heading text-slate-900 mb-3">Página No Encontrada</h1>
+      <p id="nf-message" class="text-slate-600 mb-8 leading-relaxed">
         Lo sentimos, la página que intenta acceder no existe, ha sido movida o está en proceso de publicación.
       </p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <a href="/es/" class="px-6 py-3 bg-brand-primary text-white font-medium rounded-xl hover:bg-opacity-95 transition-all shadow-sm">
+        <a id="nf-home" href="/" class="px-6 py-3 bg-brand-primary text-white font-medium rounded-xl hover:bg-opacity-95 transition-all shadow-sm">
           Ir al Inicio
         </a>
-        <a href="/es/blog" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-all shadow-xs">
+        <a id="nf-blog" href="/es/blog" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-all shadow-xs">
           Ver Nuestro Blog
         </a>
       </div>
@@ -29,31 +29,39 @@ import Footer from '../components/Footer.astro';
 
   <Footer slot="footer" />
 
-  <script>
-    // Client-side automatic route handler for dynamically created blog posts & landing pages
-    document.addEventListener('DOMContentLoaded', () => {
-      const path = window.location.pathname;
-      if (path.startsWith('/es/blog/') && !path.includes('/view')) {
-        const slug = path.replace('/es/blog/', '').replace(/\/$/, '');
-        if (slug) {
-          window.location.replace(`/es/blog/view?slug=${encodeURIComponent(slug)}`);
-        }
-      } else if (path.startsWith('/en/blog/') && !path.includes('/view')) {
-        const slug = path.replace('/en/blog/', '').replace(/\/$/, '');
-        if (slug) {
-          window.location.replace(`/en/blog/view?slug=${encodeURIComponent(slug)}`);
-        }
-      } else if (path.startsWith('/es/lp/') && !path.includes('/view')) {
-        const slug = path.replace('/es/lp/', '').replace(/\/$/, '');
-        if (slug) {
-          window.location.replace(`/es/lp/view?slug=${encodeURIComponent(slug)}`);
-        }
-      } else if (path.startsWith('/en/lp/') && !path.includes('/view')) {
-        const slug = path.replace('/en/lp/', '').replace(/\/$/, '');
-        if (slug) {
-          window.location.replace(`/en/lp/view?slug=${encodeURIComponent(slug)}`);
-        }
-      }
-    });
+  <script is:inline>
+    // Firebase Hosting serves this single file for every unmatched URL in both
+    // languages, so the copy is authored in Spanish (the default locale) and
+    // switched to English when the visitor arrived on an /en/ path.
+    //
+    // The previous version of this page redirected /es|en/blog|<slug> into the
+    // client view shell. That is deliberately GONE: firebase.json rewrites
+    // those paths to the validateSlugRewrite function, which returns a real 404
+    // for unknown slugs. A redirect here would turn that 404 into a 200 shell
+    // and re-create the soft-404s the function exists to prevent.
+    (function () {
+      if (!window.location.pathname.startsWith('/en')) return;
+
+      document.documentElement.lang = 'en';
+      document.title = 'Page Not Found | Guia Negocios';
+
+      var setText = function (id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text;
+      };
+
+      setText('nf-title', 'Page Not Found');
+      setText(
+        'nf-message',
+        'Sorry, the page you are looking for does not exist, has been moved, or is not published yet.'
+      );
+      setText('nf-home', 'Go Home');
+      setText('nf-blog', 'View Our Blog');
+
+      var home = document.getElementById('nf-home');
+      var blog = document.getElementById('nf-blog');
+      if (home) home.setAttribute('href', '/en/');
+      if (blog) blog.setAttribute('href', '/en/blog');
+    })();
   </script>
 </BaseLayout>
