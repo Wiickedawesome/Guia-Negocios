@@ -8,9 +8,13 @@ interface Props {
   description: string;
   ogImage?: string;
   altPath?: string;
+  // Set on the 404 page. Firebase serves dist/404.html both for real 404s and
+  // for the literal /404/ URL, and the latter is a 200 response, so the page
+  // has to opt out of indexing explicitly.
+  noindex?: boolean;
 }
 
-const { title, description, ogImage, altPath } = Astro.props;
+const { title, description, ogImage, altPath, noindex = false } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -80,6 +84,7 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <meta name="viewport" content="width=device-width" />
     <meta name="facebook-domain-verification" content="ecfskyr5gn59dcfe0wxa9b9szyp7vm" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
