@@ -10,21 +10,29 @@ export async function getStaticPaths() {
   // Build runs in Node, where the client SDK cannot obtain an App Check token,
   // so the Admin SDK is preferred. The client SDK is the fallback for
   // environments that only supply an App Check debug token.
-  let docs: any[];
+  // Prefer the Admin SDK (no App Check token needed); fall back to the client
+  // SDK, which works when APP_CHECK_DEBUG_TOKEN is configured (as CI does).
+  let docs: any[] | null = null;
 
   try {
     const adminDb = getAdminDb();
     if (adminDb) {
       const snapshot = await adminDb.collection('landingPages').where('lang', '==', 'en').get();
       docs = snapshot.docs;
-    } else {
+    }
+  } catch (adminErr: any) {
+    console.warn(`[lp] Admin SDK read failed, falling back to client SDK: ${adminErr?.message || adminErr}`);
+  }
+
+  if (docs === null) {
+    try {
       const snapshot = await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'en')));
       docs = snapshot.docs;
+    } catch (err: any) {
+      // Both paths failed. Emitting only the empty fallback would silently
+      // delete every landing page URL from the deployed site, so fail instead.
+      throw new Error(`Could not load EN landing pages at build time: ${err?.message || err}`);
     }
-  } catch (err: any) {
-    // A failed read must fail the build. Emitting only the empty fallback would
-    // silently delete every landing page URL from the deployed site.
-    throw new Error(`Could not load EN landing pages at build time: ${err?.message || err}`);
   }
 
   const pages = docs

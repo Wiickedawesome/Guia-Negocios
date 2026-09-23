@@ -1500,23 +1500,32 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
   }
 
   try {
-    let docs: any[];
+    // Build/SSR prefers the Admin SDK: it is the only path that needs no App
+    // Check token. If no credential is usable - or it lacks Firestore access,
+    // as the CI service account currently does - fall back to the client SDK,
+    // which succeeds when APP_CHECK_DEBUG_TOKEN is configured (as CI does).
+    // Only when both paths fail does the build error out; that is deliberate,
+    // because silently shipping the hardcoded seed set hid this breakage before.
+    //
+    // The admin import is dynamic and guarded by import.meta.env.SSR (statically
+    // replaced per environment) so firebase-admin is never bundled for browsers
+    // - this module is also imported by client-side scripts.
+    let docs: any[] | null = null;
 
     if (import.meta.env.SSR) {
-      // Build/SSR only: the client SDK cannot obtain an App Check token in Node,
-      // so every Firestore read was denied and this function silently fell back
-      // to hardcoded POST_OVERRIDES (4 posts instead of the 8 published). The
-      // Admin SDK bypasses App Check and reads the real content.
-      //
-      // The import is dynamic and guarded by import.meta.env.SSR (statically
-      // replaced per environment) so firebase-admin is never bundled into the
-      // browser build -- this module is also imported by client-side scripts.
-      const { getAdminDb } = await import('./admin-db');
-      const adminDb = getAdminDb();
-      if (!adminDb) throw new Error('Admin SDK unavailable for build-time blog read');
-      const adminSnapshot = await adminDb.collection('blogs').where('status', '==', 'Published').get();
-      docs = adminSnapshot.docs;
-    } else {
+      try {
+        const { getAdminDb } = await import('./admin-db');
+        const adminDb = getAdminDb();
+        if (adminDb) {
+          const adminSnapshot = await adminDb.collection('blogs').where('status', '==', 'Published').get();
+          docs = adminSnapshot.docs;
+        }
+      } catch (adminErr: any) {
+        console.warn(`[blog] Admin SDK read failed, falling back to client SDK: ${adminErr?.message || adminErr}`);
+      }
+    }
+
+    if (docs === null) {
       const postsQuery = query(collection(db, 'blogs'), where('status', '==', 'Published'));
       const snapshot = await getDocs(postsQuery);
       docs = snapshot.docs;

@@ -16,18 +16,28 @@ export async function getActiveAeoSchemas(): Promise<any[]> {
   }
 
   try {
-    let rows: any[];
+    // Build/SSR prefers the Admin SDK (no App Check token needed). If no
+    // credential is usable, or it lacks Firestore access as the CI service
+    // account currently does, fall back to the client SDK - that path works
+    // when APP_CHECK_DEBUG_TOKEN is configured (as CI does).
+    let rows: any[] | null = null;
 
-    // Build/SSR: use the Admin SDK so reads bypass App Check.
-    const adminDb = isNode ? getAdminDb() : null;
-    if (adminDb) {
-      const snapshot = await adminDb
-        .collection('seoSchemas')
-        .where('status', '==', 'Active')
-        .get();
-      rows = snapshot.docs.map((d: any) => ({ id: d.id, ...d.data() }));
-    } else {
-      // Browser runtime, or Admin SDK unavailable: client SDK path.
+    if (isNode) {
+      try {
+        const adminDb = getAdminDb();
+        if (adminDb) {
+          const snapshot = await adminDb
+            .collection('seoSchemas')
+            .where('status', '==', 'Active')
+            .get();
+          rows = snapshot.docs.map((d: any) => ({ id: d.id, ...d.data() }));
+        }
+      } catch (adminErr: any) {
+        console.warn(`[seo-schemas] Admin SDK read failed, falling back to client SDK: ${adminErr?.message || adminErr}`);
+      }
+    }
+
+    if (rows === null) {
       const q = query(collection(db, 'seoSchemas'), where('status', '==', 'Active'));
       const schemaSnap = await getDocs(q);
       rows = schemaSnap.docs.map(d => ({ id: d.id, ...d.data() }));
