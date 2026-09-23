@@ -443,38 +443,99 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     empty?.classList.add('hidden');
 
     try {
-      let blogsCount = 3;
-      let lpCount = 2;
-      try {
-        const bSnap = await getDocs(collection(db, 'blogs'));
-        if (!bSnap.empty) blogsCount = bSnap.size;
-        const lSnap = await getDocs(collection(db, 'landingPages'));
-        if (!lSnap.empty) lpCount = lSnap.size;
-      } catch (e) {
-        console.warn('Crawl stats notice:', e);
+      // Define key pages to audit
+      const keyPages = [
+        { url: '/', label: 'Homepage (ES)' },
+        { url: '/en/', label: 'Homepage (EN)' },
+        { url: '/en/services/', label: 'Services (EN)' },
+        { url: '/es/services/', label: 'Services (ES)' },
+        { url: '/en/about/', label: 'About (EN)' },
+        { url: '/es/about/', label: 'About (ES)' },
+        { url: '/en/blog/', label: 'Blog (EN)' },
+        { url: '/es/blog/', label: 'Blog (ES)' },
+        { url: '/en/contact/', label: 'Contact (EN)' },
+        { url: '/es/contact/', label: 'Contact (ES)' }
+      ];
+
+      // Fetch and parse pages for SEO data
+      const pageData: any[] = [];
+      for (const page of keyPages) {
+        try {
+          const response = await fetch(page.url);
+          if (!response.ok) continue;
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // Extract SEO metadata
+          const title = doc.querySelector('title')?.textContent || '';
+          const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+          const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
+          const h2s = Array.from(doc.querySelectorAll('h2')).slice(0, 3).map(h => h.textContent?.trim()).filter(Boolean);
+          const canonical = doc.querySelector('link[rel="canonical"]')?.getAttribute('href') || '';
+          const hreflangs = Array.from(doc.querySelectorAll('link[rel="alternate"][hreflang]')).map(l => ({
+            lang: l.getAttribute('hreflang'),
+            href: l.getAttribute('href')
+          }));
+          const schemas = Array.from(doc.querySelectorAll('script[type="application/ld+json"]')).map(s => {
+            try { return JSON.parse(s.textContent || '{}'); } catch { return null; }
+          }).filter(Boolean);
+
+          pageData.push({
+            url: page.url,
+            label: page.label,
+            title,
+            metaDescription: metaDesc,
+            h1,
+            h2s: h2s.slice(0, 3),
+            canonical,
+            hreflangs,
+            hasSchema: schemas.length > 0,
+            schemaTypes: schemas.map(s => s['@type']).filter(Boolean)
+          });
+        } catch (e) {
+          console.warn(`Failed to fetch ${page.url}:`, e);
+        }
       }
 
       const prompt = `
-        You are the lead SEO Auditor & Core Web Vitals Specialist for GUIA DE NEGOCIOS (guianegocios.net).
-        Analyze the current website state across 25+ bilingual pages in English and Spanish (Home, Services, About, Contact, Blog Archive, Blog Articles, Landing Pages).
+You are the lead SEO Auditor & Core Web Vitals Specialist for GUIA DE NEGOCIOS (guianegocios.net).
 
-        Recent optimizations completed:
-        - Canonical URLs and clean 301 redirects configured for /es and /en
-        - Daily autonomous SEO agent runs 8 skills Mon-Sun with audit/keyword/citation/backlink collections
-        - Blog titles under 60 chars, hreflang tags verified, schema.org graph present
+I've crawled ${pageData.length} key pages from the site. Here's the actual SEO data:
 
-        Return ONLY valid JSON matching this schema:
-        {
-          "globalScore": 88,
-          "pagesScanned": 26,
-          "criticalCount": 0,
-          "warningCount": 1,
-          "summary": "...",
-          "actionableItems": [
-            { "priority": "Medium", "task": "...", "impact": "..." }
-          ]
-        }
-      `;
+${pageData.map(p => `
+PAGE: ${p.label} (${p.url})
+- Title: ${p.title} (${p.title.length} chars)
+- Meta Description: ${p.metaDescription} (${p.metaDescription.length} chars)
+- H1: ${p.h1}
+- H2s: ${p.h2s.join(', ')}
+- Canonical: ${p.canonical}
+- Hreflang tags: ${p.hreflangs.length} (${p.hreflangs.map(h => h.lang).join(', ')})
+- Schema markup: ${p.hasSchema ? 'YES - ' + p.schemaTypes.join(', ') : 'NO'}
+`).join('\n')}
+
+Analyze this data and return ONLY valid JSON matching this schema:
+{
+  "globalScore": 0-100,
+  "pagesScanned": ${pageData.length},
+  "criticalCount": number of critical issues,
+  "warningCount": number of warnings,
+  "summary": "2-3 sentence executive summary of findings",
+  "actionableItems": [
+    { "priority": "High|Medium|Low", "task": "specific task", "impact": "expected impact" }
+  ]
+}
+
+Scoring criteria:
+- Title length (50-60 chars optimal)
+- Meta description length (150-160 chars optimal)
+- Single H1 per page
+- Proper heading hierarchy
+- Canonical tags present
+- Hreflang tags for bilingual content
+- Schema markup (Article, FAQ, LocalBusiness, etc.)
+- No duplicate content issues
+`;
 
       const aiResponse = await aiModel.generateContent(prompt);
       let responseText: string = (aiResponse as any).response?.text?.() ?? '';

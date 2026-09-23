@@ -15,6 +15,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
         env:
+          # Admin SDK credential (service account JSON) so build-time Firestore
+          # reads bypass App Check. Reuses the same service account as the deploy
+          # step below. Without it, blog/landing-page/AEO reads fall back or fail.
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GUIANEGOCIOS_PROD }}
+          # Kept for the client-SDK fallback path.
           APP_CHECK_DEBUG_TOKEN: ${{ secrets.APP_CHECK_DEBUG_TOKEN }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

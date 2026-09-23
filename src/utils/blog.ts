@@ -21,6 +21,13 @@ export interface BlogPost {
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
+// Firestore still stores the pre-rename slug for this post. The canonical public
+// URL is the long form, enforced by a 301 in firebase.json (old -> new) and by the
+// sitemap exclusion of the old slug. Without this map the 301 target would 404.
+const PUBLISHED_SLUG_ALIASES: Record<string, string> = {
+  'how-to-build-business-credit': 'how-to-build-business-credit-united-states',
+};
+
 /**
  * Optimizes Unsplash and external image URLs to specific dimensions and format
  * e.g., converts w=2070&q=80 to w=600&q=75&auto=format&fit=crop
@@ -1493,15 +1500,39 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
   }
 
   try {
-    const postsQuery = query(collection(db, 'blogs'), where('status', '==', 'Published'));
-    const snapshot = await getDocs(postsQuery);
+    let docs: any[];
+
+    if (import.meta.env.SSR) {
+      // Build/SSR only: the client SDK cannot obtain an App Check token in Node,
+      // so every Firestore read was denied and this function silently fell back
+      // to hardcoded POST_OVERRIDES (4 posts instead of the 8 published). The
+      // Admin SDK bypasses App Check and reads the real content.
+      //
+      // The import is dynamic and guarded by import.meta.env.SSR (statically
+      // replaced per environment) so firebase-admin is never bundled into the
+      // browser build -- this module is also imported by client-side scripts.
+      const { getAdminDb } = await import('./admin-db');
+      const adminDb = getAdminDb();
+      if (!adminDb) throw new Error('Admin SDK unavailable for build-time blog read');
+      const adminSnapshot = await adminDb.collection('blogs').where('status', '==', 'Published').get();
+      docs = adminSnapshot.docs;
+    } else {
+      const postsQuery = query(collection(db, 'blogs'), where('status', '==', 'Published'));
+      const snapshot = await getDocs(postsQuery);
+      docs = snapshot.docs;
+    }
+
     const posts: BlogPost[] = [];
-  
-    snapshot.forEach(doc => {
+
+    docs.forEach(doc => {
       const data = doc.data();
       if (data.status !== 'Published') return;
       const hasLang = lang === 'en' ? !!data.titleEn : !!data.titleEs;
-      const langSlug = lang === 'en' ? data.slugEn : data.slugEs;
+      const rawSlug = lang === 'en' ? data.slugEn : data.slugEs;
+      // Canonical public slug may differ from the stored slug: this post was
+      // republished at a long-form URL (see firebase.json 301 from the old slug
+      // and the Astro sitemap exclusion). Map it so the redirect target exists.
+      const langSlug = PUBLISHED_SLUG_ALIASES[rawSlug] || rawSlug;
       // Only include posts that have a language-specific slug
       if (hasLang && langSlug) {
         const postDate = data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-10');
@@ -1534,28 +1565,38 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
       cachedPosts[lang] = { posts, timestamp: now };
       return posts;
     }
-    throw new Error('No published posts in Firestore, using static overrides');
-  } catch (error) {
-    const fallbackPosts: BlogPost[] = Object.entries(POST_OVERRIDES)
-      .filter(([slug, p]) => p.lang === lang && p.content && p.content.length > 0)
-      .map(([slug, p]) => ({
-        title: p.title || slug,
-        slug: p.slug || slug,
-        date: p.date || '2026-08-10',
-        author: p.author || 'Guia Negocios Team',
-        excerpt: p.excerpt || '',
-        lang: lang,
-        altSlug: p.altSlug || slug,
-        tags: p.tags || [],
-        content: p.content || '',
-        featuredImage: p.featuredImage || (slug.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80'),
-        authorAvatar: p.authorAvatar || '/images/team-avatar.webp',
-        readTime: p.readTime || 7,
-      }));
-    fallbackPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    cachedPosts[lang] = { posts: fallbackPosts, timestamp: now };
-    return fallbackPosts;
+
+    // Read succeeded but nothing is published: serve the seed set so a
+    // brand-new or intentionally empty database still renders a blog.
+    console.warn(`[blog] Firestore has no published "${lang}" posts; serving hardcoded seed posts.`);
+  } catch (error: any) {
+    // A failed read must fail the build. Silently shipping fewer posts (or no
+    // landing pages) is exactly how this went unnoticed before.
+    throw new Error(
+      `[blog] Could not read published "${lang}" posts from Firestore: ${error?.message || error}. ` +
+        `Provide FIREBASE_SERVICE_ACCOUNT_KEY, GOOGLE_APPLICATION_CREDENTIALS, or serviceAccountKey.json.`
+    );
   }
+
+  const fallbackPosts: BlogPost[] = Object.entries(POST_OVERRIDES)
+    .filter(([slug, p]) => p.lang === lang && p.content && p.content.length > 0)
+    .map(([slug, p]) => ({
+      title: p.title || slug,
+      slug: p.slug || slug,
+      date: p.date || '2026-08-10',
+      author: p.author || 'Guia Negocios Team',
+      excerpt: p.excerpt || '',
+      lang: lang,
+      altSlug: p.altSlug || slug,
+      tags: p.tags || [],
+      content: p.content || '',
+      featuredImage: p.featuredImage || (slug.includes('knoxville') ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80' : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80'),
+      authorAvatar: p.authorAvatar || '/images/team-avatar.webp',
+      readTime: p.readTime || 7,
+    }));
+  fallbackPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  cachedPosts[lang] = { posts: fallbackPosts, timestamp: now };
+  return fallbackPosts;
 }
 
 /**

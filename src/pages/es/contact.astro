@@ -124,6 +124,9 @@ const t = useTranslations(lang);
                   Enviar Mensaje
                 </button>
               </div>
+              
+              <!-- Inline Toast Notification -->
+              <div id="contact-toast" class="hidden rounded-xl p-4 text-sm font-medium border"></div>
             </form>
           </div>
         </div>
@@ -261,11 +264,24 @@ const t = useTranslations(lang);
           createdAt: serverTimestamp()
         });
         
-        alert('¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.');
+        // Show inline toast instead of alert
+        const toast = document.getElementById('contact-toast');
+        if (toast) {
+          toast.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
+          toast.className = 'rounded-xl p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 5000);
+        }
         form.reset();
       } catch (error) {
         console.error("Error submitting form:", error);
-        alert('Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo o use WhatsApp.');
+        const toast = document.getElementById('contact-toast');
+        if (toast) {
+          toast.textContent = 'Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo o use WhatsApp.';
+          toast.className = 'rounded-xl p-4 text-sm font-medium border bg-red-50 text-red-800 border-red-200';
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 5000);
+        }
       } finally {
         submitBtn.innerText = originalText;
         submitBtn.disabled = false;

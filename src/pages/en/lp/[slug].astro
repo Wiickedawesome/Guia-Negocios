@@ -2,35 +2,49 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
+import { getAdminDb } from '../../../utils/admin-db';
 import { db } from '../../../lib/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export async function getStaticPaths() {
-  try {
-    const snapshot = await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'en')));
-    
-    if (snapshot.empty) {
-      return [{ params: { slug: 'empty' }, props: { lp: null } }];
-    }
+  // Build runs in Node, where the client SDK cannot obtain an App Check token,
+  // so the Admin SDK is preferred. The client SDK is the fallback for
+  // environments that only supply an App Check debug token.
+  let docs: any[];
 
-    return snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        params: { slug: data.slug },
-        props: { lp: data }
-      };
-    });
-  } catch (err) {
-    console.warn("Could not load EN landing pages at build time:", err);
+  try {
+    const adminDb = getAdminDb();
+    if (adminDb) {
+      const snapshot = await adminDb.collection('landingPages').where('lang', '==', 'en').get();
+      docs = snapshot.docs;
+    } else {
+      const snapshot = await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'en')));
+      docs = snapshot.docs;
+    }
+  } catch (err: any) {
+    // A failed read must fail the build. Emitting only the empty fallback would
+    // silently delete every landing page URL from the deployed site.
+    throw new Error(`Could not load EN landing pages at build time: ${err?.message || err}`);
+  }
+
+  const pages = docs
+    .map((doc: any) => doc.data())
+    .filter((lp: any) => typeof lp?.slug === 'string' && lp.slug.trim().length > 0);
+
+  if (pages.length === 0) {
     return [{ params: { slug: 'empty' }, props: { lp: null } }];
   }
+
+  return pages.map((lp: any) => ({
+    params: { slug: lp.slug },
+    props: { lp },
+  }));
 }
 
 const { slug } = Astro.params;
 const { lp } = Astro.props;
 
 if (!lp) {
-  // Fallback for empty DB
   return Astro.redirect('/404');
 }
 ---

@@ -2,49 +2,49 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /landingPages/{document=**} {
-      allow read, write: if true;
+
+    // Only @guianegocios.net accounts may manage data. The admin suite signs in
+    // with Firebase Auth, and AdminLayout enforces the same domain check.
+    // NOTE: rules string methods are limited - endsWith() does not exist. matches()
+    // is a full-string match, so "...@guianegocios.net.evil.com" is rejected.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email.lower().matches('.*@guianegocios[.]net');
     }
-    match /blogs/{document=**} {
-      allow read, write: if true;
-    }
-    match /seoSchemas/{document=**} {
-      allow read, write: if true;
-    }
-    match /keywords/{document=**} {
-      allow read, write: if true;
-    }
-    match /seoAudits/{document=**} {
-      allow read, write: if true;
-    }
-    match /seoFixes/{document=**} {
-      allow read, write: if true;
-    }
-    match /backlinks/{document=**} {
-      allow read, write: if true;
-    }
-    match /linkOutreach/{document=**} {
-      allow read, write: if true;
-    }
-    match /reports/{document=**} {
-      allow read, write: if true;
-    }
-    match /settings/{document=**} {
-      allow read, write: if true;
-    }
+
+    // ── Public content: world-readable, admin-writable ──────────────────────
+    // The blog listing search, related-post lookups, and the landing-page client
+    // shells read these straight from the browser, so read stays public.
+    match /blogs/{document=**}        { allow read: if true; allow write: if isAdmin(); }
+    match /landingPages/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /seoSchemas/{document=**}   { allow read: if true; allow write: if isAdmin(); }
+
+    // ── Public form intake: anonymous create, admin-only reads/edits ────────
     match /contacts/{document=**} {
-      allow read, write: if true;
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message']);
+      allow read, update, delete: if isAdmin();
     }
+
     match /notifications/{document=**} {
-      allow read, write: if true;
+      allow create: if request.resource.data.keys().hasAll(['title', 'message']);
+      allow read, update, delete: if isAdmin();
     }
+
     match /mail/{document=**} {
-      allow read, write: if true;
+      // The public contact form may only email the business inbox. Admins may
+      // dispatch reports to any recipient (see admin/reports.astro).
+      allow create: if isAdmin()
+        || request.resource.data.to == 'info@guianegocios.net';
+      allow read, update, delete: if isAdmin();
     }
-    
-    // Default rule
-    match /{document=**} {
-      allow read, write: if true;
+
+    // ── Everything else is admin-only ──────────────────────────────────────
+    // keywords, settings, seoAudits, seoFixes, backlinks, linkOutreach,
+    // reports, integrations, seo-tasks, agent-runs, usedImages.
+    // Cloud Functions use the Admin SDK, which bypasses these rules.
+    match /{collection}/{document=**} {
+      allow read, write: if isAdmin();
     }
   }
 }
