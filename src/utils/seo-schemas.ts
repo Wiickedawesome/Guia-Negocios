@@ -43,7 +43,7 @@ export async function getActiveAeoSchemas(): Promise<any[]> {
       rows = schemaSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     }
 
-    cachedSchemas = dedupeByKeyword(rows);
+    cachedSchemas = rows;
     lastFetchTime = now;
     return cachedSchemas;
   } catch (e: any) {
@@ -54,36 +54,4 @@ export async function getActiveAeoSchemas(): Promise<any[]> {
         `Provide FIREBASE_SERVICE_ACCOUNT_KEY, GOOGLE_APPLICATION_CREDENTIALS, or serviceAccountKey.json.`
     );
   }
-}
-
-/**
- * Collapse near-duplicate schemas that target the same keyword.
- *
- * The collection has accumulated two documents per keyword (a space-form and a
- * hyphen-form document ID) whose FAQs are paraphrases of each other. Emitting
- * both puts duplicate questions in the page's structured data, which risks
- * Google discarding the markup. Keep one document per keyword: the richest
- * schemaStr wins, tie-broken by document ID so the choice is deterministic.
- */
-function dedupeByKeyword(schemas: any[]): any[] {
-  const bestPerKeyword = new Map<string, any>();
-
-  for (const schema of schemas) {
-    const key = String(schema?.keyword || '').trim().toLowerCase();
-    if (!key || !schema?.schemaStr) continue;
-
-    const current = bestPerKeyword.get(key);
-    if (current && !isRicherSchema(schema, current)) continue;
-
-    bestPerKeyword.set(key, schema);
-  }
-
-  return [...bestPerKeyword.values()];
-}
-
-function isRicherSchema(candidate: any, incumbent: any): boolean {
-  const candidateLen = String(candidate.schemaStr || '').length;
-  const incumbentLen = String(incumbent.schemaStr || '').length;
-  if (candidateLen !== incumbentLen) return candidateLen > incumbentLen;
-  return String(candidate.id) < String(incumbent.id);
 }
