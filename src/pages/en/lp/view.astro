@@ -33,6 +33,7 @@ import Footer from '../../../components/Footer.astro';
   <script>
     import { db } from '../../../lib/firebase';
     import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+    import { stripEditorAttributes } from '../../../utils/sanitize-landing-html';
     // Content is injected with innerHTML below, so the handler is registered in
     // the capture phase and covers forms that appear after load.
     import { initLandingPageLeadForms } from '../../../scripts/lp-lead-form';
@@ -80,7 +81,7 @@ import Footer from '../../../components/Footer.astro';
         document.title = `${lpData.title || 'Guia Negocios'} | GUIA NEGOCIOS`;
         
         const contentBody = document.getElementById('lp-content-body')!;
-        contentBody.innerHTML = lpData.content || '';
+        contentBody.innerHTML = stripEditorAttributes(lpData.content || '');
 
         document.getElementById('lp-loading-state')?.classList.add('hidden');
         document.getElementById('lp-live-container')?.classList.remove('hidden');

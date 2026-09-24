@@ -71,7 +71,12 @@ export default defineConfig({
           item.priority = 0.6;
           item.changefreq = 'monthly';
         }
-        item.lastmod = new Date();
+        // lastmod is deliberately NOT set. It used to be `new Date()`, which
+        // stamped build time on all 36 URLs on every deploy, so the value was
+        // identical everywhere and changed constantly - Google treats a
+        // lastmod like that as unreliable and ignores it. Omitting it is
+        // honest and has the same practical effect. Setting a real per-page
+        // value needs a build-time content map (post date field).
         return item;
       }
     })

@@ -96,6 +96,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
     import { db, aiModel } from '../../lib/firebase';
+    import { stripEditorAttributes } from '../../utils/sanitize-landing-html';
 
     // Filters tab logic
     document.querySelectorAll('.flex.items-center.gap-1 button').forEach(tab => {
@@ -443,7 +444,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           metaDesc: data.metaDesc || '',
           lang: data.lang || 'es',
           goal: goal,
-          content: data.html || '',
+          // contenteditable is a builder affordance, not published markup. The
+          // visual builder strips it on save; this quick-create path used to
+          // store the raw HTML, which is how click-to-edit attributes reached
+          // live pages. The LP renderers also strip at render time.
+          content: stripEditorAttributes(data.html || ''),
           status: 'Draft',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

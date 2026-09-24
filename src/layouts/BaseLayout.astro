@@ -12,9 +12,13 @@ interface Props {
   // for the literal /404/ URL, and the latter is a 200 response, so the page
   // has to opt out of indexing explicitly.
   noindex?: boolean;
+  // Set by AdminLayout. GA4 and the Meta Pixel used to load on every page,
+  // including the whole admin suite, so browsing the dashboard was reported to
+  // Google and Meta as public site traffic. Admin pages must not be tracked.
+  noTracking?: boolean;
 }
 
-const { title, description, ogImage, altPath, noindex = false } = Astro.props;
+const { title, description, ogImage, altPath, noindex = false, noTracking = false } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -98,30 +102,34 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E8GG9X33H"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-4E8GG9X33H');
-    </script>
+    <!-- Google Analytics (skipped entirely on admin pages) -->
+    {!noTracking && (
+      <Fragment>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E8GG9X33H"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-4E8GG9X33H');
+        </script>
 
-    <!-- Meta Pixel Code -->
-    <script is:inline>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '822562974211520');
-      fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=822562974211520&ev=PageView&noscript=1" /></noscript>
-    <!-- End Meta Pixel Code -->
+        <!-- Meta Pixel Code -->
+        <script is:inline>
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '822562974211520');
+          fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=822562974211520&ev=PageView&noscript=1" /></noscript>
+        <!-- End Meta Pixel Code -->
+      </Fragment>
+    )}
     <!-- Canonical & SEO i18n -->
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" hreflang="en" href={enUrl} />

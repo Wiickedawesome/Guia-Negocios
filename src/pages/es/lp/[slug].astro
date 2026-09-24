@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 import { getAdminDb } from '../../../utils/admin-db';
+import { stripEditorAttributes } from '../../../utils/sanitize-landing-html';
 import { db } from '../../../lib/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -61,7 +62,7 @@ if (!lp) {
   <Header slot="header" />
   
   <main class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
-    <div class="landing-page-content max-w-6xl mx-auto space-y-6" set:html={lp.content} />
+    <div class="landing-page-content max-w-6xl mx-auto space-y-6" set:html={stripEditorAttributes(lp.content)} />
   </main>
 
   <script>

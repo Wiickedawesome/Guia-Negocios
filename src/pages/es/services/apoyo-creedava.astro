@@ -32,11 +32,12 @@ const lang = getLangFromUrl(Astro.url);
     "offers": {
       "@type": "Offer",
       "priceCurrency": "USD",
-      "price": "600",
+      // Must match the retainer price quoted in this page's own copy below:
+      // "Los retainers mensuales comienzan en $1,499/mes".
+      "price": "1499",
       "priceSpecification": {
         "@type": "PriceSpecification",
-        "minPrice": "600",
-        "maxPrice": "2400",
+        "minPrice": "1499",
         "priceCurrency": "USD"
       }
     }

@@ -21,21 +21,42 @@ service cloud.firestore {
     match /seoSchemas/{document=**}   { allow read: if true; allow write: if isAdmin(); }
 
     // ── Public form intake: anonymous create, admin-only reads/edits ────────
+    // Anonymous creates are capped by size and type. Without these a single
+    // request could store an arbitrarily large document (and a very large
+    // message would also be relayed by the mail extension). The limits match
+    // FIELD_LIMITS in functions/src/index.ts and the contact form's fields.
     match /contacts/{document=**} {
-      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message']);
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'message'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 200
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 320
+        && request.resource.data.message is string
+        && request.resource.data.message.size() <= 5000
+        && (!('phone' in request.resource.data)
+            || (request.resource.data.phone is string && request.resource.data.phone.size() <= 40))
+        && (!('subject' in request.resource.data)
+            || (request.resource.data.subject is string && request.resource.data.subject.size() <= 200));
       allow read, update, delete: if isAdmin();
     }
 
     match /notifications/{document=**} {
-      allow create: if request.resource.data.keys().hasAll(['title', 'message']);
+      allow create: if request.resource.data.keys().hasAll(['title', 'message'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.message is string
+        && request.resource.data.message.size() <= 500;
       allow read, update, delete: if isAdmin();
     }
 
     match /mail/{document=**} {
       // The public contact form may only email the business inbox. Admins may
       // dispatch reports to any recipient (see admin/reports.astro).
-      allow create: if isAdmin()
-        || request.resource.data.to == 'info@guianegocios.net';
+      allow create: if (isAdmin()
+          || request.resource.data.to == 'info@guianegocios.net')
+        && request.resource.data.message is map
+        && (!('to' in request.resource.data)
+            || (request.resource.data.to is string && request.resource.data.to.size() <= 320));
       allow read, update, delete: if isAdmin();
     }
 

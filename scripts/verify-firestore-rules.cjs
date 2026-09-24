@@ -89,6 +89,52 @@ const allowed = (s) => s === 200 || s === 404;
 
   const checks = [];
 
+  // ── Anonymous: intake size caps must reject oversized writes ──
+  // These are the negative controls for the new validation: each one is the
+  // same create that is allowed above, with a single field over its limit.
+  checks.push([
+    '[anon] oversized message (5001)',
+    await writeDoc(`contacts/bigmsg${RUN_ID}`, ANON, {
+      name: { stringValue: 'A' },
+      email: { stringValue: 'a@b.co' },
+      message: { stringValue: 'x'.repeat(5001) },
+    }),
+    'DENY',
+  ]);
+  checks.push([
+    '[anon] oversized name (201)',
+    await writeDoc(`contacts/bigname${RUN_ID}`, ANON, {
+      name: { stringValue: 'x'.repeat(201) },
+      email: { stringValue: 'a@b.co' },
+      message: { stringValue: 'hi' },
+    }),
+    'DENY',
+  ]);
+  checks.push([
+    '[anon] non-string message (type bypass)',
+    await writeDoc(`contacts/badtype${RUN_ID}`, ANON, {
+      name: { stringValue: 'A' },
+      email: { stringValue: 'a@b.co' },
+      message: { integerValue: '1' },
+    }),
+    'DENY',
+  ]);
+  checks.push([
+    '[anon] oversized notification title (201)',
+    await writeDoc(`notifications/big${RUN_ID}`, ANON, {
+      title: { stringValue: 'x'.repeat(201) },
+      message: { stringValue: 'M' },
+    }),
+    'DENY',
+  ]);
+  checks.push([
+    '[anon] mail without message map',
+    await writeDoc(`mail/nomsg${RUN_ID}`, ANON, {
+      to: { stringValue: 'info@guianegocios.net' },
+    }),
+    'DENY',
+  ]);
+
   // ── Anonymous: public reads and form intake must work ──
   checks.push(['[anon] read blogs', await readDocs(`blogs/r${RUN_ID}`, ANON), 'ALLOW']);
   checks.push(['[anon] read landingPages', await readDocs(`landingPages/r${RUN_ID}`, ANON), 'ALLOW']);

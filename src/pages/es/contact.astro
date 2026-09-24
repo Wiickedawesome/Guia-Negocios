@@ -53,6 +53,13 @@ const t = useTranslations(lang);
             </div>
 
             <form id="contact-form" class="space-y-5">
+              <!-- Honeypot: hidden from users and assistive tech. Bots fill every
+                   field they find, so a value here means the submission is not
+                   from a person and it is discarded without a write. -->
+              <div class="hidden" aria-hidden="true">
+                <label for="company-website">Sitio web</label>
+                <input type="text" id="company-website" name="company_website" tabindex="-1" autocomplete="off" />
+              </div>
               <div>
                 <label for="name" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Nombre *</label>
                 <input 
@@ -97,8 +104,11 @@ const t = useTranslations(lang);
                 >
                   <option value="general">Consulta Comercial General</option>
                   <option value="tier1-4">Servicios Básicos de Lanzamiento (Niveles 1–4)</option>
-                  <option value="tier5">Operaciones y Crecimiento (Nivel 5)</option>
-                  <option value="tier6">Paquete Completo de Lanzamiento (Nivel 6)</option>
+                  <!-- Tier numbers must match src/pages/es/services.astro, where tier5 is the
+                       Complete Launch Bundle and tier6 is Operations & Growth. These two
+                       options previously had their names swapped. -->
+                  <option value="tier5">Paquete Completo de Lanzamiento (Nivel 5)</option>
+                  <option value="tier6">Sistemas de Operación y Crecimiento (Nivel 6)</option>
                   <option value="notary">Notario Público / Soporte de Traducción</option>
                   <option value="custom">Solicitar Servicio Personalizado No Listado</option>
                 </select>
@@ -229,6 +239,23 @@ const t = useTranslations(lang);
 
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
+
+      // Honeypot: a real visitor never sees this field. Report the normal
+      // success state but write nothing, so scripted submitters get no signal
+      // that they were filtered.
+      if (data.company_website) {
+        form.reset();
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+        const toast = document.getElementById('contact-toast');
+        if (toast) {
+          toast.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
+          toast.className = 'rounded-xl p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 5000);
+        }
+        return;
+      }
 
       try {
         const name = data.name as string;
