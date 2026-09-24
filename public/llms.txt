@@ -28,17 +28,17 @@ Guia Negocios publishes free bilingual guides on the following topics. The pages
 - [Preguntas Frecuentes](https://guianegocios.net/es/faq/): Answers about LLC, EIN, licensing in Tennessee
 - [Contacto](https://guianegocios.net/es/contact/): Free consultation scheduling
 
-## Key Services & Pricing
+## Key Services
 
-Prices below match the published services page. Quoted figures are starting points; the exact scope is confirmed on a consultation.
+The exact scope and rate for each engagement are confirmed on a consultation.
 
-- **Starter Services:** LLC registration in Tennessee and EIN application assistance. (Starting at $350)
-- **Foundation Package:** Business structure, compliance and bookkeeping setup. ($850+)
-- **Brand & Marketing Setup:** Logo, brand kit, social and WhatsApp Business. ($1,200+)
-- **Website Setup:** Professional multi-page website. ($1,800+)
-- **Complete Business Launch Bundle:** LLC + branding + website + operations. ($4,500-$9,500+)
-- **Operations & Growth Systems:** Billing, workflows and margin strategy. ($1,500-$4,500)
-- **CreedaVA Ongoing Support:** Bilingual virtual assistant retainer. (From $1,499/mo)
+- **Starter Services:** LLC registration in Tennessee and EIN application assistance.
+- **Foundation Package:** Business structure, compliance and bookkeeping setup.
+- **Brand & Marketing Setup:** Logo, brand kit, social and WhatsApp Business.
+- **Website Setup:** Professional multi-page website.
+- **Complete Business Launch Bundle:** LLC + branding + website + operations.
+- **Operations & Growth Systems:** Billing, workflows and margin strategy.
+- **CreedaVA Ongoing Support:** Bilingual virtual assistant retainer.
 
 ## Comprehensive Business Guides (Blog)
 
@@ -60,7 +60,7 @@ Prices below match the published services page. Quoted figures are starting poin
 A: No. Non-residents and immigrants can form a Tennessee LLC without an SSN. You will need an EIN, which can be obtained using an ITIN or passport.
 
 **Q: How much does it cost to start an LLC in Tennessee?**
-A: The state filing fee is $300 (minimum). Guia Negocios offers complete LLC formation packages starting at $350, which includes state filing, EIN, and local licensing assistance.
+A: The state filing fee is $300 (minimum). Guia Negocios offers complete LLC formation packages that include state filing, EIN, and local licensing assistance.
 
 **Q: Can I get an EIN without a Social Security Number?**
 A: Yes. The IRS allows non-residents to apply for an EIN using Form SS-4. Guia Negocios handles this process for non-resident entrepreneurs.

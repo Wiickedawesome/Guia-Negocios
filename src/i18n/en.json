@@ -30,39 +30,31 @@
     "faqViewAll": "View all questions & answers",
     "tier1": {
       "name": "Starter Services",
-      "price": "Starting at $350",
-      "range": "Commonly $350–$650",
       "description": "Focused entry points for clients who need help with one clear business setup need."
     },
     "tier2": {
       "name": "Foundation Package",
-      "price": "$850+",
       "description": "Organizes the business from the ground up before investing heavily in marketing or a website."
     },
     "tier3": {
       "name": "Brand & Marketing Setup",
-      "price": "$1,200+",
       "description": "Creates a professional brand presence and basic marketing system to get found and trusted."
     },
     "tier4": {
       "name": "Website Setup",
-      "price": "$1,800+",
       "description": "Professional website setup to explain your services, show photos, and convert leads."
     },
     "tier5": {
       "name": "Complete Business Launch Bundle",
-      "price": "$4,500–$9,500+",
       "badge": "BEST VALUE",
       "description": "The best value for clients who want a guided, professional launch from idea to market. Combines foundation setup, branding, marketing, website, operations, and launch coaching."
     },
     "tier6": {
       "name": "Operations & Growth Systems",
-      "price": "$1,500–$4,500",
       "description": "Structure, client flow, invoicing systems, and profitability improvements for running businesses."
     },
     "tier7": {
       "name": "CreedaVA Ongoing Support",
-      "price": "From $1,499/mo",
       "description": "Ongoing virtual assistance, administrative support, customer communication, CRM, and project coordination."
     }
   },

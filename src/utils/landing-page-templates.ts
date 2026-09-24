@@ -279,10 +279,10 @@ export const LANDING_PAGE_TEMPLATES = {
           <td class="py-3.5 px-4 text-center text-slate-500" contenteditable="true">Solo en inglés</td>
         </tr>
         <tr>
-          <td class="py-3.5 px-4 font-semibold text-slate-800" contenteditable="true">Precios Claros y Accesibles</td>
-          <td class="py-3.5 px-4 text-center bg-emerald-50/40 text-emerald-700 font-bold" contenteditable="true">✓ Paquetes cerrados</td>
-          <td class="py-3.5 px-4 text-center text-slate-500" contenteditable="true">Tarifas por hora altas</td>
-          <td class="py-3.5 px-4 text-center text-slate-500" contenteditable="true">Cobros recurrentes ocultos</td>
+          <td class="py-3.5 px-4 font-semibold text-slate-800" contenteditable="true">Alcance Claro desde el Inicio</td>
+          <td class="py-3.5 px-4 text-center bg-emerald-50/40 text-emerald-700 font-bold" contenteditable="true">✓ Paquetes cerrados por escrito</td>
+          <td class="py-3.5 px-4 text-center text-slate-500" contenteditable="true">Alcance que cambia con frecuencia</td>
+          <td class="py-3.5 px-4 text-center text-slate-500" contenteditable="true">Expectativas poco claras</td>
         </tr>
         <tr>
           <td class="py-3.5 px-4 font-semibold text-slate-800" contenteditable="true">Enfoque 360° (Fiscal + Comercial)</td>
@@ -474,7 +474,7 @@ export const LANDING_PAGE_TEMPLATES = {
         ¡Asegure su Descuento del 15% Hoy!
       </h2>
       <p class="text-sm sm:text-base text-slate-600 max-w-md mx-auto" contenteditable="true">
-        Complete el formulario a continuación para congelar su precio especial. Un asesor se comunicará en menos de 24 horas.
+        Complete el formulario a continuación y un asesor se comunicará en menos de 24 horas.
       </p>
     </div>
 
