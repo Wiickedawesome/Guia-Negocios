@@ -47,12 +47,8 @@ export async function getUnsplashAccessKey(): Promise<string> {
     }
   }
 
-  const envKey = (import.meta as any).env?.PUBLIC_UNSPLASH_ACCESS_KEY || (typeof window !== 'undefined' && (window as any).UNSPLASH_ACCESS_KEY);
-  if (envKey && envKey.trim()) {
-    cachedUnsplashKey = envKey.trim();
-    return cachedUnsplashKey;
-  }
-
+  // Not read from a PUBLIC_ environment variable, for the same reason as the
+  // Pexels key below: Astro inlines PUBLIC_* values into the client bundle.
   try {
     const settingsSnap = await getDoc(doc(db, 'settings', 'admin'));
     if (settingsSnap.exists()) {
@@ -83,12 +79,11 @@ export async function getPexelsApiKey(): Promise<string> {
     }
   }
 
-  const envKey = (import.meta as any).env?.PUBLIC_PEXELS_API_KEY || (typeof window !== 'undefined' && (window as any).PEXELS_API_KEY);
-  if (envKey && envKey.trim()) {
-    cachedPexelsKey = envKey.trim();
-    return cachedPexelsKey;
-  }
-
+  // The key is deliberately NOT read from a PUBLIC_ environment variable.
+  // Astro inlines every PUBLIC_* value straight into the client bundle, so a
+  // real key placed there is shipped to every visitor in readable JS. The
+  // admin settings page is the only supported entry point: it stores the key
+  // here in localStorage and in settings/admin, which is what we read below.
   try {
     const settingsSnap = await getDoc(doc(db, 'settings', 'admin'));
     if (settingsSnap.exists()) {
