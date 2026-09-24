@@ -1,3 +1,73 @@
+# =============================================================================
+# iam.allowedPolicyMemberDomains override for guianegocios-prod
+# =============================================================================
+#
+# STATUS: LIVE AND DELIBERATELY LEFT IN PLACE - open decision, see below.
+#
+# This file records a project-level override of an organization policy. It is
+# not referenced by any build, script or workflow; it exists purely as the
+# artifact of record for the override, so the reasoning travels with the repo.
+#
+# --- What the override does -------------------------------------------------
+#
+# The organization "guianegocios.net" (org id 453692960445, directory customer
+# id C02129jhe) sets iam.allowedPolicyMemberDomains to allowedValues:
+# [C02129jhe]. That default restricts IAM grants on all its projects to
+# identities inside the guianegocios.net Workspace domain.
+#
+# This project overrides that constraint to allValues: ALLOW, which removes the
+# domain restriction entirely for this project. Verified live on 2026-09-23:
+#
+#   $ gcloud resource-manager org-policies describe \
+#       iam.allowedPolicyMemberDomains --project=guianegocios-prod --effective
+#   listPolicy:
+#     allValues: ALLOW
+#   updateTime: '2026-08-13T20:27:42.035101Z'
+#
+# --- Actual exposure (measured, not assumed) --------------------------------
+#
+# The project IAM policy was enumerated on 2026-09-23. Of the 43 members whose
+# addresses fall outside the Workspace domain:
+#
+#   * 0 are external human users or groups
+#   * 43 are service accounts, and every one of them references this project's
+#     own id (guianegocios-prod) or number (437513389633) - i.e. project-owned
+#     identities such as github-action-*@guianegocios-prod, firebase-adminsdk-*,
+#     appspot, compute@developer, and Google's own *@gcp-sa-* service agents.
+#
+# The only human grant in the whole policy is user:info@guianegocios.net
+# (roles/owner), which is inside the domain and unaffected either way.
+#
+# So this is a LATENT weakening, not an active exposure: it would matter if an
+# external identity were ever granted a role, because the org guardrail that
+# would otherwise block that grant is switched off for this project.
+#
+# --- Why it was left in place -----------------------------------------------
+#
+# Reverting to the org default is the stricter setting, but on a Firebase
+# project it commonly breaks things: the *@gcp-sa-* service agents and the
+# appspot / compute default accounts that Firebase, Cloud Functions, Eventarc,
+# Pub/Sub and Cloud Build depend on are not in the customer's Workspace domain,
+# and Google's own guidance for this constraint on Firebase projects is to not
+# restrict it. Attempting the revert here risks breaking CI deploys and the 28
+# deployed functions to close a gap that no external identity can currently
+# exploit.
+#
+# Because that is a real availability trade-off rather than a clear win, the
+# call is the owner's, and it is recorded here instead of being made silently.
+#
+# --- Options if this is revisited ------------------------------------------
+#
+#   1. Leave as-is and rely on the fact that only one in-domain owner exists.
+#   2. Revert to the org default, then watch CI, function deploys and App Check
+#      enforcement for failures. Roll back by re-applying this exact file:
+#        gcloud resource-manager org-policies set-policy policy.yaml
+#   3. Narrow it to an allowlist naming the required service accounts instead
+#      of allValues: ALLOW.
+#
+# Rollback for option 2 is this file, unmodified.
+# =============================================================================
+
 name: projects/guianegocios-prod/policies/iam.allowedPolicyMemberDomains
 spec:
   rules:
