@@ -3,7 +3,30 @@
  * monthly schedule (which failed in past months due to the broken Gemini path).
  * Uses the deployed generateAiContent function (Vertex AI, GCP billing).
  *
- * Usage: node scripts/backfill-aeo-schemas.mjs
+ * ── REQUIRES AN ADMIN ID TOKEN ──────────────────────────────────────────────
+ * generateAiContent now enforces an @guianegocios.net caller (see assertAdmin
+ * in functions/src/index.ts), so an anonymous run fails with HTTP 403
+ * permission-denied. Pass a Firebase ID token for an admin account:
+ *
+ *   FIREBASE_ID_TOKEN="$(firebase auth:print-access-token)"  *     node scripts/backfill-aeo-schemas.mjs
+ *
+ * (Or grab the token from the browser session of a signed-in admin.)
+ *
+ * ── READ BEFORE RUNNING ─────────────────────────────────────────────────────
+ * This script has ALREADY RUN: its output is the hyphenated documents in the
+ * seoSchemas collection. Do not re-run it blindly, because:
+ *
+ *   1. It writes seoSchemas/{keyword-slug} with { merge: true }, so it will
+ *      OVERWRITE the hyphenated document for each keyword and will NOT remove
+ *      the older duplicate documents whose ids contain spaces.
+ *   2. seoSchemas currently holds two documents per keyword (one id with
+ *      spaces, one hyphenated), each a separately generated schema. The
+ *      homepage injects every active schema, so those duplicates are rendered
+ *      as repeated FAQPage blocks. Running this again does not fix that.
+ *
+ * Clean up the duplicates first, or the page keeps emitting repeated markup.
+ *
+ * Usage: FIREBASE_ID_TOKEN=... node scripts/backfill-aeo-schemas.mjs
  */
 import { initializeApp, applicationDefault } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
@@ -18,10 +41,28 @@ const db = getFirestore();
 const GENERATE_URL =
   'https://us-central1-guianegocios-prod.cloudfunctions.net/generateAiContent';
 
+// generateAiContent requires an @guianegocios.net caller, so every request has
+// to carry a valid ID token. Fail loudly up front rather than letting the
+// function return an opaque 403 for each keyword in the loop.
+const ID_TOKEN = process.env.FIREBASE_ID_TOKEN?.trim();
+
+if (!ID_TOKEN) {
+  console.error(
+    'Missing FIREBASE_ID_TOKEN.\n' +
+      'generateAiContent now requires an admin Firebase ID token, so this script\n' +
+      'cannot run anonymously. Example:\n' +
+      '  FIREBASE_ID_TOKEN="$(firebase auth:print-access-token)" node scripts/backfill-aeo-schemas.mjs'
+  );
+  process.exit(1);
+}
+
 async function generateJson(prompt) {
   const res = await fetch(GENERATE_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${ID_TOKEN}`,
+    },
     body: JSON.stringify({
       data: {
         prompt,
