@@ -1,0 +1,27 @@
+---
+// Standard "not licensed advisors" notice.
+//
+// The markup here is deliberately identical to the disclaimer already shown on
+// the About and Contact pages, so the band renders the same everywhere. It
+// belongs on any page that gives business, tax, LLC or EIN guidance; it is
+// intentionally omitted from the homepage, which only introduces the business.
+//
+// No props: the language comes from the URL, the same way Footer does it.
+import { getLangFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const isEnglish = lang === 'en';
+
+const text = isEnglish
+  ? 'GUIA NEGOCIOS provides general business education and consulting support. We are not attorneys, accountants, or licensed financial advisors. For legal, tax, or financial advice, please consult a licensed professional.'
+  : 'GUIA NEGOCIOS proporciona educación comercial general y apoyo de consultoría. No somos abogados, contadores ni asesores financieros con licencia. Para obtener asesoramiento legal, fiscal o financiero, consulte a un profesional con licencia.';
+---
+
+<!-- Legal Disclaimer Banner -->
+<section class="py-12 bg-slate-100 border-t border-slate-200 text-center">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="text-xs text-slate-500 italic leading-relaxed">
+      "{text}"
+    </p>
+  </div>
+</section>

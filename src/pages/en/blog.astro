@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import LegalDisclaimer from '../../components/LegalDisclaimer.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { getBlogPosts, formatDate, optimizeImageUrl } from '../../utils/blog';
 
@@ -329,6 +330,8 @@ const posts = await getBlogPosts('en');
       </div>
     </div>
   </section>
+
+  <LegalDisclaimer />
 
   <Footer slot="footer" />
 </BaseLayout>
