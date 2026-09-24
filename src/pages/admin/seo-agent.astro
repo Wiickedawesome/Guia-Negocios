@@ -29,7 +29,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
-  <div id="agent-toast" class="hidden fixed bottom-6 right-6 z-50 rounded-xl bg-slate-900 px-5 py-3 text-xs font-semibold text-white shadow-xl flex items-center gap-2">
+  <div id="agent-toast" style="display:none" class="fixed bottom-6 right-6 z-50 rounded-xl bg-slate-900 px-5 py-3 text-xs font-semibold text-white shadow-xl items-center gap-2">
     <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
     <span id="agent-toast-msg"></span>
   </div>
@@ -143,7 +143,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 <script>
   import { db, aiModel, functions } from '../../lib/firebase';
   import { httpsCallable } from 'firebase/functions';
-  import { collection, getDocs, addDoc, query, limit, getDoc, orderBy, serverTimestamp } from 'firebase/firestore';
+  import { collection, getDocs, addDoc, query, limit, getDoc, orderBy, serverTimestamp, doc } from 'firebase/firestore';
   import type { DocumentData } from 'firebase/firestore';
 
   interface SkillDef {
@@ -173,8 +173,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     const text = document.getElementById('agent-toast-msg');
     if (!toast || !text) return;
     text.textContent = msg;
-    toast.classList.remove('hidden');
-    setTimeout(() => toast.classList.add('hidden'), 4000);
+    // Toggled with inline style, not with `hidden`. The element also carries
+    // `flex`, and both classes set `display`, so whichever Tailwind emits later
+    // won - the toast was pinned open instead of appearing on demand.
+    toast.style.display = 'flex';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
   }
 
   // Map an audit/directive label to the admin page that can actually fix it.
@@ -330,11 +333,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     document.getElementById('audit-empty')?.classList.add('hidden');
     document.getElementById('audit-results')?.classList.remove('hidden');
 
-    const score = data.globalScore || data.overallScore || 0;
+    const score = typeof data.globalScore === 'number' ? data.globalScore
+      : (typeof data.overallScore === 'number' ? data.overallScore : null);
     const scoreText = document.getElementById('score-text');
-    if (scoreText) scoreText.innerText = `${score}%`;
+    if (scoreText) scoreText.innerText = score === null ? '—' : `${score}%`;
     const pagesCount = document.getElementById('pages-scanned-count');
-    if (pagesCount) pagesCount.innerText = data.pagesScanned || data.scannedPages || 25;
+    if (pagesCount) pagesCount.innerText = data.pagesScanned ?? data.scannedPages ?? 0;
 
     let dateStr = 'Just now';
     if (data.scannedAt) {
@@ -393,7 +397,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         }).join('');
 
         // Wire Dismiss buttons (hidden once dismissed)
-        actionList.querySelectorAll('.audit-item').forEach((row) => {
+        actionList.querySelectorAll('.audit-item').forEach((rowEl) => {
+          // querySelectorAll returns Element; dataset lives on HTMLElement.
+          const row = rowEl as HTMLElement;
           const actions = row.querySelector('.audit-actions') as HTMLElement | null;
           if (!actions) return;
           if (actions.dataset.dismissed === 'true') {
@@ -426,7 +432,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           });
         });
       } else {
-        actionList.innerHTML = '<div class="px-6 py-8 text-center text-slate-500 text-sm">No action items found — site performing at optimal health.</div>';
+        actionList.innerHTML = '<div class="px-6 py-8 text-center text-slate-500 text-sm">No action items recorded for this audit.</div>';
       }
     }
   }
@@ -497,44 +503,78 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           console.warn(`Failed to fetch ${page.url}:`, e);
         }
       }
+      if (pageData.length === 0) {
+        throw new Error('Crawl fetched no pages; refusing to score an empty audit.');
+      }
 
+      // Deterministic score. Each page is scored out of 100 and the site score
+      // is the mean, so every point traces back to a check that actually ran.
+      // Previously the number came from the model, so an unparseable reply or a
+      // hallucinated figure produced a confident-looking score.
+      let criticalCount = 0;
+      let warningCount = 0;
+      const pageScores = pageData.map(p => {
+        let pageScore = 0;
+
+        const titleLen = p.title.length;
+        if (titleLen === 0) { criticalCount++; }
+        else if (titleLen >= 50 && titleLen <= 60) { pageScore += 25; }
+        else if (titleLen >= 10 && titleLen <= 70) { pageScore += 18; warningCount++; }
+        else { pageScore += 10; warningCount++; }
+
+        const metaLen = p.metaDescription.length;
+        if (metaLen === 0) { criticalCount++; }
+        else if (metaLen >= 50 && metaLen <= 160) { pageScore += 20; }
+        else { pageScore += 12; warningCount++; }
+
+        if (p.h1) { pageScore += 20; } else { criticalCount++; }
+
+        if (p.canonical) { pageScore += 15; } else { criticalCount++; }
+
+        const hreflangCount = p.hreflangs.length;
+        if (hreflangCount >= 2) { pageScore += 10; }
+        else if (hreflangCount === 1) { pageScore += 5; warningCount++; }
+        else { warningCount++; }
+
+        if (p.hasSchema) { pageScore += 10; } else { warningCount++; }
+
+        return pageScore;
+      });
+
+      const computedScore = Math.round(pageScores.reduce((sum, s) => sum + s, 0) / pageScores.length);
+      const issueSummary = `Measured across ${pageData.length} page(s): score ${computedScore}/100, ${criticalCount} critical issue(s) (missing title, meta description, H1 or canonical) and ${warningCount} warning(s) (sub-optimal title/meta length, missing hreflang or schema).`;
       const prompt = `
-You are the lead SEO Auditor & Core Web Vitals Specialist for GUIA DE NEGOCIOS (guianegocios.net).
+You are the lead SEO Auditor for GUIA DE NEGOCIOS (guianegocios.net).
 
-I've crawled ${pageData.length} key pages from the site. Here's the actual SEO data:
+A browser crawl measured the following ${pageData.length} pages. These are the ONLY facts available:
 
 ${pageData.map(p => `
 PAGE: ${p.label} (${p.url})
-- Title: ${p.title} (${p.title.length} chars)
-- Meta Description: ${p.metaDescription} (${p.metaDescription.length} chars)
-- H1: ${p.h1}
-- H2s: ${p.h2s.join(', ')}
-- Canonical: ${p.canonical}
-- Hreflang tags: ${p.hreflangs.length} (${p.hreflangs.map(h => h.lang).join(', ')})
+- Title: "${p.title}" (${p.title.length} chars)
+- Meta Description: "${p.metaDescription}" (${p.metaDescription.length} chars)
+- H1: ${p.h1 || '(none)'}
+- H2s: ${p.h2s.join(', ') || '(none)'}
+- Canonical: ${p.canonical || '(missing)'}
+- Hreflang tags: ${p.hreflangs.length} (${p.hreflangs.map((h: any) => h.lang).join(', ') || 'none'})
 - Schema markup: ${p.hasSchema ? 'YES - ' + p.schemaTypes.join(', ') : 'NO'}
 `).join('\n')}
 
-Analyze this data and return ONLY valid JSON matching this schema:
+This crawl produced a score of ${computedScore}/100, with ${criticalCount} critical issue(s) and ${warningCount} warning(s).
+${issueSummary}
+
+Write the summary and the action items.
+Return ONLY valid JSON matching this schema:
 {
-  "globalScore": 0-100,
-  "pagesScanned": ${pageData.length},
-  "criticalCount": number of critical issues,
-  "warningCount": number of warnings,
   "summary": "2-3 sentence executive summary of findings",
   "actionableItems": [
-    { "priority": "High|Medium|Low", "task": "specific task", "impact": "expected impact" }
+    { "priority": "High|Medium|Low", "task": "specific task", "impact": "what it addresses" }
   ]
 }
 
-Scoring criteria:
-- Title length (50-60 chars optimal)
-- Meta description length (150-160 chars optimal)
-- Single H1 per page
-- Proper heading hierarchy
-- Canonical tags present
-- Hreflang tags for bilingual content
-- Schema markup (Article, FAQ, LocalBusiness, etc.)
-- No duplicate content issues
+Grounding rules (mandatory):
+- Use only the measured facts above. Every action item must trace to a defect listed above.
+- Do not invent traffic, impressions, click-through rates, conversions, rankings, competitor data, or Core Web Vitals scores - none of those were measured here.
+- Do not claim anything improved or regressed: this is a single snapshot with no history.
 `;
 
       const aiResponse = await aiModel.generateContent(prompt);
@@ -542,15 +582,20 @@ Scoring criteria:
       responseText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(responseText);
 
+      // Score, page count and issue counts are computed from the crawl above.
+      // They used to come from the model with defaults of 88/26/1, which meant
+      // an unparseable response still produced a confident-looking report.
       const auditData = {
-        globalScore: parsed.globalScore || 88,
-        overallScore: parsed.globalScore || 88,
-        pagesScanned: parsed.pagesScanned || 26,
-        scannedPages: parsed.pagesScanned || 26,
-        criticalCount: parsed.criticalCount || 0,
-        warningCount: parsed.warningCount || 1,
-        summary: parsed.summary || 'Site-wide crawl successfully completed.',
-        actionableItems: parsed.actionableItems || [],
+        globalScore: computedScore,
+        overallScore: computedScore,
+        pagesScanned: pageData.length,
+        scannedPages: pageData.length,
+        criticalCount,
+        warningCount,
+        summary: typeof parsed.summary === 'string' && parsed.summary.trim()
+          ? parsed.summary.trim()
+          : issueSummary,
+        actionableItems: Array.isArray(parsed.actionableItems) ? parsed.actionableItems : [],
         scannedAt: serverTimestamp(),
       };
 
@@ -637,7 +682,7 @@ Scoring criteria:
           const { updateDoc } = await import('firebase/firestore');
           await updateDoc(doc(db, 'seo-tasks', taskId), { status, updatedAt: new Date() });
           row.remove();
-          showToast(status === 'resolved' ? 'Marked done.' : 'Dismissed.', 'success');
+          showToast(status === 'resolved' ? 'Marked done.' : 'Dismissed.');
         } catch (err: any) {
           showToast(err?.message || 'Update failed.');
         }

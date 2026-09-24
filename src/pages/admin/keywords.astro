@@ -67,6 +67,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <div class="text-xs text-slate-500 mt-1">Stable</div>
         </div>
       </div>
+      <p id="stat-measured-note" class="text-xs text-slate-400 mt-4 leading-relaxed"></p>
     </div>
   </div>
 
@@ -150,6 +151,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         let html = '';
         let total = 0, top10 = 0, top20 = 0, top50 = 0;
         let improved = 0, declined = 0, stable = 0;
+        let unmeasured = 0;
 
         trackedKeywords.clear();
         snapshot.forEach(document => {
@@ -157,31 +159,52 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const id = document.id;
           trackedKeywords.add((kw.keyword || '').toLowerCase());
           
-          // Stats computation
+          // Stats computation. A ranking is only counted when it was actually
+          // measured: `kw.position <= 10` was previously true for a missing
+          // position (null coerces to 0), so untracked keywords were counted
+          // as Top-10 rankings.
           total++;
-          if (kw.position <= 10) top10++;
-          if (kw.position <= 20) top20++;
-          if (kw.position <= 50) top50++;
+          const position = typeof kw.position === 'number' ? kw.position : null;
+          if (position !== null) {
+            if (position <= 10) top10++;
+            if (position <= 20) top20++;
+            if (position <= 50) top50++;
+          }
 
-          const trend = kw.trend || '-';
-          if (trend.includes('↑')) improved++;
-          else if (trend.includes('↓')) declined++;
-          else stable++;
+          // A position change is only real when two measured positions exist.
+          // The stored `trend` string is deliberately not used: the AI prompt
+          // used to *prescribe* "↑ High Opportunity", and the Search Console
+          // fallback hardcoded it, so every saved row counted as "improved"
+          // regardless of what actually happened in search.
+          const previousPosition = typeof kw.previousPosition === 'number' ? kw.previousPosition : null;
+          let positionDelta: number | null = null;
+          if (position !== null && previousPosition !== null) {
+            positionDelta = previousPosition - position; // lower position is better
+            if (positionDelta > 0) improved++;
+            else if (positionDelta < 0) declined++;
+            else stable++;
+          } else {
+            unmeasured++;
+          }
           
-          const posClass = kw.position <= 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700';
-          const trendHtml = trend.includes('↑') 
-            ? `<span class="text-emerald-600 font-medium">${trend}</span>`
-            : trend.includes('↓') ? `<span class="text-red-500 font-medium">${trend}</span>`
-            : `<span class="text-slate-400 font-medium">-</span>`;
+          const posClass = position !== null && position <= 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700';
+          const posText = position === null ? '—' : `#${position}`;
+          const volumeText = typeof kw.volume === 'number' ? kw.volume : '—';
+          const trendHtml = positionDelta === null
+            ? `<span class="text-slate-400 font-medium" title="No measured position change">—</span>`
+            : positionDelta > 0 ? `<span class="text-emerald-600 font-medium">↑ ${positionDelta}</span>`
+            : positionDelta < 0 ? `<span class="text-red-500 font-medium">↓ ${Math.abs(positionDelta)}</span>`
+            : `<span class="text-slate-400 font-medium">0</span>`;
 
           html += `
             <tr class="keyword-row hover:bg-slate-50/50" data-kw="${kw.keyword.toLowerCase()}">
               <td class="px-6 py-4 font-medium text-brand-dark">
                 ${kw.keyword}
-                <span class="ml-2 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${kw.language || 'en'}</span>
+                <span class="ml-2 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${kw.language || '—'}</span>
+                <span class="ml-1 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded" title="Where this row's numbers came from">${kw.source === 'search-console' ? 'GSC' : (kw.source === 'manual' ? 'Manual' : 'Not measured')}</span>
               </td>
-              <td class="px-6 py-4"><span class="px-2 py-1 ${posClass} font-bold rounded">#${kw.position}</span></td>
-              <td class="px-6 py-4 text-slate-600">${kw.volume}</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 ${posClass} font-bold rounded">${posText}</span></td>
+              <td class="px-6 py-4 text-slate-600">${volumeText}</td>
               <td class="px-6 py-4">${trendHtml}</td>
               <td class="px-6 py-4 text-right">
                 <button data-id="${id}" class="delete-kw-btn text-xs text-red-500 hover:text-red-700 font-medium">Remove</button>
@@ -208,6 +231,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (dImproved) dImproved.innerText = improved.toString();
         if (dDeclined) dDeclined.innerText = declined.toString();
         if (dStable) dStable.innerText = stable.toString();
+
+        // Without this line the panel shows 0/0/0 next to 50 tracked keywords
+        // with no explanation of why nothing moved.
+        const dPct = document.getElementById('stat-measured-note');
+        if (dPct) {
+          dPct.textContent = unmeasured === 0
+            ? `All ${total} keyword(s) have a measured position change.`
+            : `${unmeasured} of ${total} keyword(s) have no measured position change yet — a change needs two recorded positions to compare.`;
+        }
 
         // Attach delete handlers
         document.querySelectorAll('.delete-kw-btn').forEach(btn => {
@@ -363,13 +395,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                 {
                   "keyword": "string",
                   "language": "en or es",
-                  "volume": number,
-                  "position": number,
-                  "trend": "↑ High Opportunity",
                   "priority": "High",
                   "reason": "High intent search query for business setup in TN/Southeast"
                 }
               ]
+              Do not include volume, position, trend or rankings - you have no way to measure them, and inventing them makes the ranking table meaningless. Only suggest keywords that are NOT already tracked.
               Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
             `;
 
@@ -384,14 +414,18 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }
 
           if (suggestions.length === 0) {
+            // No AI pass. Use the Search Console rows exactly as returned: an
+            // absent position/impression count stays null and renders as "—"
+            // rather than the previous `impressions || 150, position || 5`.
             suggestions = data.keywords.slice(0, 12).map((k: any) => ({
               keyword: k.keyword,
-              language: 'es',
-              volume: k.impressions || 150,
-              position: k.position || 5,
-              trend: '↑ High Opportunity',
+              language: null,
+              volume: typeof k.impressions === 'number' ? k.impressions : null,
+              position: typeof k.position === 'number' ? k.position : null,
               priority: 'High',
-              reason: `${k.impressions} impressions, rank #${k.position || 5}`
+              reason: typeof k.position === 'number'
+                ? `${k.impressions ?? 0} impressions, rank #${k.position}`
+                : `${k.impressions ?? 0} impressions (query discovered; position not measured)`
             }));
           }
 
@@ -403,11 +437,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             aiList.innerHTML = suggestions.map((kw: any) => `
               <div class="flex items-start justify-between gap-3 p-3 border border-slate-100 rounded-lg bg-slate-50">
                 <div class="flex-1 min-w-0">
-                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language || 'es'}</span></div>
-                  <div class="text-xs text-slate-500 mt-0.5">Pos: #${kw.position} · ${kw.trend || '↑ High Opportunity'} · ${kw.priority || 'High'} Priority</div>
+                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language || '—'}</span></div>
+                  <div class="text-xs text-slate-500 mt-0.5">${typeof kw.position === 'number' ? 'Pos: #' + kw.position : 'Position not measured'} · ${kw.priority || 'High'} Priority</div>
                   <div class="text-xs text-slate-400 mt-1 italic">${kw.reason || 'High intent keyword'}</div>
                 </div>
-                <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language || 'es', volume: kw.volume || 100, position: Math.round(kw.position || 1), trend: kw.trend || '↑', priority: kw.priority || 'High'}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
+                <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language || null, volume: typeof kw.volume === 'number' ? kw.volume : null, position: typeof kw.position === 'number' ? kw.position : null, priority: kw.priority || 'High'}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
               </div>
             `).join('');
             
@@ -499,12 +533,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               {
                 "keyword": "string",
                 "language": "string ('en' or 'es')",
-                "volume": number,
-                "position": number,
-                "trend": "string",
-                "priority": "string"
+                "priority": "string",
+                "reason": "string (why this keyword is relevant)"
               }
             ]
+            Do not include volume, position or trend - they cannot be measured this way and would be invented. They are filled only from Search Console.
             
             Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
           `;
@@ -521,8 +554,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             listContainer.innerHTML = keywords.map((kw: any) => `
               <div class="flex items-center justify-between p-3 border border-slate-100 rounded bg-slate-50">
                 <div>
-                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language}</span></div>
-                  <div class="text-xs text-slate-500">Vol: ${kw.volume} | Pri: ${kw.priority}</div>
+                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language || '—'}</span></div>
+                  <div class="text-xs text-slate-500">Pri: ${kw.priority || '—'}</div>
                 </div>
                 <button data-ai-save='${JSON.stringify(kw).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200">Save</button>
               </div>
@@ -590,10 +623,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           await addDoc(collection(db, 'keywords'), {
             keyword: kw,
             language: langInput.value || 'en',
-            volume: 0,
-            position: 99,
-            trend: '-',
+            // Deliberately empty: adding a keyword by hand records no ranking,
+            // so position/volume stay null until something measures them.
+            volume: null,
+            position: null,
             priority: 'Medium',
+            source: 'manual',
             createdAt: serverTimestamp()
           });
           

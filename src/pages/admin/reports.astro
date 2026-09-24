@@ -243,16 +243,19 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Compiling Live Metrics & Generating AI Report...`;
       
       try {
-        // 1. Gather Live Firestore Metrics
-        let seoScore = 79;
-        let pagesScanned = 16;
+        // 1. Gather Live Firestore Metrics.
+        // These start as "unknown" rather than invented sample values: the old
+        // defaults (score 79, 28 keywords, rank #3, 42 backlinks) were written
+        // straight into an emailed executive report when a collection was empty.
+        let seoScore: number | null = null;
+        let pagesScanned = 0;
         let criticalIssues = 0;
-        let warnings = 2;
-        let keywordsCount = 28;
-        let topKeywordsText = "1. 'crear llc en tennessee' (Pos #3), 2. 'abrir cuenta bancaria sin ssn' (Pos #4), 3. 'licencia de contratista knoxville' (Pos #2)";
-        let backlinksCount = 42;
-        let blogsCount = 3;
-        let lpCount = 2;
+        let warnings = 0;
+        let keywordsCount = 0;
+        let topKeywordsText = '';
+        let backlinksCount = 0;
+        let blogsCount = 0;
+        let lpCount = 0;
 
         try {
           // SEO Audits
@@ -260,10 +263,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (!auditSnap.empty) {
             const audits = auditSnap.docs.map(d => d.data()).sort((a, b) => (b.scannedAt || '').localeCompare(a.scannedAt || ''));
             const latest = audits[0];
-            seoScore = latest.globalScore || latest.overallScore || 79;
-            pagesScanned = latest.scannedPages || 16;
-            criticalIssues = latest.criticalCount || 0;
-            warnings = latest.warningCount || 2;
+            if (typeof latest.globalScore === 'number') seoScore = latest.globalScore;
+            else if (typeof latest.overallScore === 'number') seoScore = latest.overallScore;
+            pagesScanned = latest.pagesScanned ?? latest.scannedPages ?? 0;
+            criticalIssues = latest.criticalCount ?? 0;
+            warnings = latest.warningCount ?? 0;
           }
 
           // Keywords
@@ -272,7 +276,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             keywordsCount = kwSnap.size;
             const topList = kwSnap.docs.slice(0, 4).map((d, i) => {
               const kd = d.data();
-              return `${i+1}. "${kd.keyword || 'keyword'}" (Rank #${kd.position || kd.rank || 5})`;
+              const pos = typeof kd.position === 'number' ? kd.position
+                : (typeof kd.rank === 'number' ? kd.rank : null);
+              const label = kd.keyword ? `"${kd.keyword}"` : '(unnamed)';
+              return `${i + 1}. ${label} (${pos === null ? 'position not measured' : 'Rank #' + pos})`;
             });
             if (topList.length > 0) topKeywordsText = topList.join(', ');
           }
@@ -289,7 +296,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const lpSnap = await getDocs(collection(db, 'landingPages'));
           if (!lpSnap.empty) lpCount = lpSnap.size;
         } catch (dataErr) {
-          console.warn('Metric collation notice (using baseline fallbacks):', dataErr);
+          console.warn('Metric collation failed; report will state which metrics are unavailable:', dataErr);
         }
 
         // 2. Prompt Gemini to construct the Executive Report
@@ -299,24 +306,29 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           Generate a formal, highly actionable, C-Level Executive SEO & Digital Performance Report in clean GitHub-flavored Markdown.
 
-          CURRENT AUDIT & SITE METRICS:
-          - Overall Technical SEO Health: ${seoScore}/100 (Status: ${seoScore >= 80 ? 'Optimal' : 'Healthy with Actionable Fixes'})
-          - Pages Scanned & Indexed: ${pagesScanned} URLs
+          CURRENT AUDIT & SITE METRICS (the ONLY figures you may cite):
+          - Overall Technical SEO Health: ${seoScore === null ? 'NOT MEASURED - no site audit has been run yet' : `${seoScore}/100`}
+          - Pages Scanned: ${pagesScanned} URLs
           - Critical Technical Errors: ${criticalIssues}
-          - Warnings & Optimization Items: ${warnings} (e.g., duplicate title refinement, schema coverage)
+          - Warnings & Optimization Items: ${warnings}
           - Active Tracked Keywords: ${keywordsCount} keywords
-          - Top Keyword Positions: ${topKeywordsText}
-          - Referring Backlinks: ${backlinksCount} verified domains
-          - Active Content Footprint: ${blogsCount} long-form pillar articles, ${lpCount} targeted conversion landing pages
+          - Top Tracked Keywords: ${topKeywordsText || 'no keywords tracked yet'}
+          - Referring Backlinks On Record: ${backlinksCount} entries
+          - Active Content Footprint: ${blogsCount} blog articles, ${lpCount} landing pages
           - Target Audience: Hispanic entrepreneurs & contractors in Knoxville, East Tennessee, and international Non-Resident Aliens (NRA)
           - Designated Recipient: ${recipientEmail}
+
+          GROUNDING RULES (mandatory):
+          - Cite only the numbers listed above. Do not invent traffic, impressions, click-through rates, conversions, revenue, rankings, competitor figures, industry benchmarks, or Core Web Vitals scores.
+          - Do not describe a metric as measured, verified, or improving unless a number above supports it.
+          - If a metric above says NOT MEASURED or is zero, say plainly that it is not yet available and recommend measuring it.
 
           REPORT REQUIREMENTS:
           1. Professional header: Report Title, Company Name (Guía de Negocios), Date (${currentDate}), and Recipient (${recipientEmail}).
           2. Section 1: Executive Summary (3-4 concise paragraphs highlighting strengths, Google indexing status, and traffic readiness).
           3. Section 2: Search Engine & Local Knoxville Visibility (Breakdown of keyword momentum, local pack presence, and search intent capture).
-          4. Section 3: Technical Health & Core Web Vitals (Analysis of site architecture, mobile responsiveness, fast static SSG rendering, and structured data).
-          5. Section 4: Content Assets & Conversion Pipeline (Evaluation of blog authority and landing page conversion efficiency).
+          4. Section 3: Technical Health (Analysis of what the audit above actually checked: titles, meta descriptions, headings, canonical tags, hreflang alternates, alt text and structured data).
+          5. Section 4: Content Assets & Conversion Pipeline (Evaluation of blog and landing page coverage based on the counts above).
           6. Section 5: Strategic 30-Day Action Roadmap (5 bulleted high-impact recommendations prioritized by ROI).
 
           Keep tone authoritative, encouraging, and highly professional. Use Markdown tables, bold text, and clean formatting.

@@ -58,11 +58,11 @@
       },
       {
         "source": "/es/lp/**",
-        "destination": "/es/lp/view/index.html"
+        "function": "validateSlugRewrite"
       },
       {
         "source": "/en/lp/**",
-        "destination": "/en/lp/view/index.html"
+        "function": "validateSlugRewrite"
       },
       {
         "source": "/sitemap.xml",

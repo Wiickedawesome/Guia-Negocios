@@ -102,32 +102,28 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Google Analytics (skipped entirely on admin pages) -->
+    <!-- Google Analytics - gated by consent (Consent Mode v2). Everything
+         defaults to denied and only flips to granted when the visitor accepts,
+         so no analytics or ad cookies are written before a choice is made.
+         Skipped entirely on admin pages. -->
     {!noTracking && (
       <Fragment>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E8GG9X33H"></script>
         <script is:inline>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
+          // Must be set before the config call so the default covers the first
+          // page view. wait_for_update lets an "accept" click land in time.
+          gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied',
+            wait_for_update: 500
+          });
           gtag('js', new Date());
           gtag('config', 'G-4E8GG9X33H');
         </script>
-
-        <!-- Meta Pixel Code -->
-        <script is:inline>
-          !function(f,b,e,v,n,t,s)
-          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-          'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '822562974211520');
-          fbq('track', 'PageView');
-        </script>
-        <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=822562974211520&ev=PageView&noscript=1" /></noscript>
-        <!-- End Meta Pixel Code -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4E8GG9X33H"></script>
       </Fragment>
     )}
     <!-- Canonical & SEO i18n -->
@@ -374,5 +370,112 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
       <slot />
     </main>
     <slot name="footer" />
+
+    <!-- Consent banner + controller. Analytics stays in the default "denied"
+         state until this is answered, and the Meta Pixel is never requested
+         before then. Not rendered on admin pages. -->
+    {!noTracking && (
+      <Fragment>
+        <div id="consent-banner" role="region" aria-labelledby="consent-title" style="display:none" class="fixed bottom-4 left-4 right-4 z-[60] rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl sm:left-auto sm:right-6 sm:max-w-sm">
+          <h2 id="consent-title" class="text-sm font-bold text-slate-900"></h2>
+          <p id="consent-body" class="mt-2 text-xs leading-relaxed text-slate-600"></p>
+          <div class="mt-4 flex gap-2">
+            <button id="consent-accept" type="button" class="flex-1 cursor-pointer rounded-lg px-3 py-2 text-xs font-bold text-white transition-opacity hover:opacity-90" style="background-color:#1B4E2B"></button>
+            <button id="consent-reject" type="button" class="flex-1 cursor-pointer rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"></button>
+          </div>
+        </div>
+
+        <script is:inline>
+          (function () {
+            var STORAGE_KEY = 'gn_consent_v1';
+            var PIXEL_ID = '822562974211520';
+            var isEnglish = window.location.pathname.indexOf('/en') === 0;
+
+            var COPY = {
+              title: isEnglish ? 'Cookies and measurement' : 'Cookies y medición',
+              body: isEnglish
+                ? 'We use cookies to measure how this site is used so we can improve it. You can accept or reject measurement — the site works either way.'
+                : 'Usamos cookies para medir cómo se usa este sitio y así mejorarlo. Puedes aceptar o rechazar la medición — el sitio funciona igual en ambos casos.',
+              accept: isEnglish ? 'Accept' : 'Aceptar',
+              reject: isEnglish ? 'Reject' : 'Rechazar'
+            };
+
+            function readChoice() {
+              try { return window.localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+            }
+
+            function saveChoice(value) {
+              try { window.localStorage.setItem(STORAGE_KEY, value); } catch (e) { /* storage unavailable */ }
+            }
+
+            // Loaded only after consent: unlike gtag, the Meta Pixel has no
+            // cookieless mode, so requesting it before a choice would already
+            // set advertising cookies.
+            function loadMetaPixel() {
+              if (window.fbq) return;
+              !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return; n = f.fbq = function () {
+                  n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+                };
+                if (!f._fbq) f._fbq = n;
+                n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+                t = b.createElement(e); t.async = !0; t.src = v;
+                s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+              }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+              window.fbq('init', PIXEL_ID);
+              window.fbq('track', 'PageView');
+            }
+
+            function applyConsent(granted) {
+              if (typeof window.gtag === 'function') {
+                window.gtag('consent', 'update', {
+                  ad_storage: granted ? 'granted' : 'denied',
+                  ad_user_data: granted ? 'granted' : 'denied',
+                  ad_personalization: granted ? 'granted' : 'denied',
+                  analytics_storage: granted ? 'granted' : 'denied'
+                });
+              }
+              if (granted) loadMetaPixel();
+            }
+
+            function closeBanner() {
+              var banner = document.getElementById('consent-banner');
+              if (banner) banner.style.display = 'none';
+            }
+
+            function decide(granted) {
+              saveChoice(granted ? 'granted' : 'denied');
+              applyConsent(granted);
+              closeBanner();
+            }
+
+            var stored = readChoice();
+
+            if (stored === 'granted') {
+              applyConsent(true);
+            } else if (stored === 'denied') {
+              applyConsent(false);
+            } else {
+              var title = document.getElementById('consent-title');
+              var body = document.getElementById('consent-body');
+              var accept = document.getElementById('consent-accept');
+              var reject = document.getElementById('consent-reject');
+              if (title) title.textContent = COPY.title;
+              if (body) body.textContent = COPY.body;
+              if (accept) {
+                accept.textContent = COPY.accept;
+                accept.addEventListener('click', function () { decide(true); });
+              }
+              if (reject) {
+                reject.textContent = COPY.reject;
+                reject.addEventListener('click', function () { decide(false); });
+              }
+              var banner = document.getElementById('consent-banner');
+              if (banner) banner.style.display = 'block';
+            }
+          })();
+        </script>
+      </Fragment>
+    )}
   </body>
 </html>

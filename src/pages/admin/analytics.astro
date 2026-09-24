@@ -15,6 +15,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
+  <!-- Shown when GA4 cannot be queried. The dashboard must not fall back to
+       invented figures, so the cards are blanked and this explains why. -->
+  <div id="analytics-error" class="hidden mb-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"></div>
+
   <!-- Top Metrics -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
@@ -243,6 +247,28 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
         const result = await getAnalyticsData({ range });
         const data = result.data as any;
+
+        const errorBanner = document.getElementById('analytics-error');
+
+        if (data.ok === false) {
+          // The function reports a genuine failure rather than substituting
+          // sample numbers, so surface it instead of showing a plausible chart.
+          ['metric-visitors', 'metric-new', 'metric-bounce', 'metric-session'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = '—';
+          });
+          if (errorBanner) {
+            errorBanner.textContent = `Live Google Analytics data is unavailable: ${data.message || 'the query failed'}. No figures are shown because none were returned.`;
+            errorBanner.classList.remove('hidden');
+          }
+          const chart = document.getElementById('traffic-chart-container');
+          if (chart) chart.innerHTML = '<p class="text-slate-400 text-sm">No chart data available.</p>';
+          const sources = document.getElementById('traffic-sources-container');
+          if (sources) sources.innerHTML = '<p class="text-slate-500 text-sm">No traffic data available.</p>';
+          return;
+        }
+
+        if (errorBanner) errorBanner.classList.add('hidden');
 
         if (data.totals) {
           document.getElementById('metric-visitors')!.innerText = data.totals.activeUsers;

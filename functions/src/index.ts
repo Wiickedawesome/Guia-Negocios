@@ -189,47 +189,21 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
       trafficSources
     };
 
-  } catch (error) {
-    console.warn("GA4 data query failed or unconfigured, returning active baseline metrics:", error);
+  } catch (error: any) {
+    // Report the failure instead of inventing numbers. A made-up baseline is
+    // indistinguishable from real traffic in the dashboard and would be acted
+    // on as if it were measured.
+    console.error("GA4 data query failed:", error?.message || error);
     return {
-      totals: {
-        activeUsers: '142',
-        newUsers: '98',
-        bounceRate: '41.2%',
-        avgSessionDuration: '114.5s'
-      },
-      topPages: [
-        { path: '/es/', views: '384' },
-        { path: '/en/', views: '210' },
-        { path: '/es/services/paquete-lanzamiento-completo', views: '142' },
-        { path: '/es/blog/como-iniciar-llc-knoxville', views: '115' },
-        { path: '/es/contact', views: '89' }
-      ],
-      topCities: [
-        { city: 'Knoxville', users: '94' },
-        { city: 'Maryville', users: '18' },
-        { city: 'Oak Ridge', users: '14' },
-        { city: 'Nashville', users: '10' },
-        { city: 'Chattanooga', users: '6' }
-      ],
-      languages: [
-        { language: 'Spanish', users: '102' },
-        { language: 'English', users: '40' }
-      ],
-      timeSeries: [
-        { date: '20260807', users: '18' },
-        { date: '20260808', users: '24' },
-        { date: '20260809', users: '21' },
-        { date: '20260810', users: '32' },
-        { date: '20260811', users: '29' },
-        { date: '20260812', users: '35' },
-        { date: '20260813', users: '38' }
-      ],
-      trafficSources: [
-        { channel: 'Organic Search', users: 82 },
-        { channel: 'Direct', users: 34 },
-        { channel: 'Social / WhatsApp', users: 26 }
-      ]
+      ok: false,
+      reason: 'ga4_query_failed',
+      message: error?.message || 'Google Analytics did not return data.',
+      totals: null,
+      topPages: [],
+      topCities: [],
+      languages: [],
+      timeSeries: [],
+      trafficSources: []
     };
   }
 });
@@ -404,12 +378,13 @@ export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (requ
     let aeoReadiness = "Page has standard structure. Ensure direct FAQ answers and structured schema are maintained for AI search engines.";
     let contentFeedback = `Scanned ${wordCount} words. Content is informative and clear.`;
 
-    const finalScore = Math.max(40, Math.min(100, score));
+    const finalScore = Math.max(0, Math.min(100, score));
 
+    // `aiGrade` used to sit here as a fixed 85. Nothing measured it and no
+    // page read it, so it was a fabricated metric with no consumer.
     return {
       score: finalScore,
-      technicalScore: Math.max(0, score),
-      aiGrade: 85,
+      technicalScore: finalScore,
       issues,
       passed,
       aeoReadiness,
@@ -583,9 +558,11 @@ export const validateSlugRewrite = onRequest({ timeoutSeconds: 10, memory: '256M
   const match = path.match(/^\/(en|es)\/(blog|lp)\/([^/]+)\/?$/);
 
   if (!match) {
-    // Not a document URL we validate (e.g. /view shells, query strings).
-    // Redirect back to the same path on hosting so Firebase serves content.
-    res.status(302).set('Location', `https://guianegocios.net${path}`).send();
+    // Any path that reaches this function is already known NOT to be a static
+    // file (hosting matches static content before rewrites), so nothing exists
+    // behind it. This used to 302 to its own URL, which looped forever for
+    // multi-segment paths such as /es/blog/a/b/. A real 404 is correct.
+    res.status(404).type('text/plain').send('Not Found');
     return;
   }
 
@@ -612,14 +589,35 @@ export const validateSlugRewrite = onRequest({ timeoutSeconds: 10, memory: '256M
       res.status(404).send('Not Found');
       return;
     }
-    // Landing pages (lp) have no Firestore registry — pass through to the shell.
-    const shellRes = await fetch(`https://guianegocios.net/es/lp/view/index.html`);
+    // Landing pages are stored as `landingPages/{lang}_{slug}` (see
+    // src/pages/{es,en}/lp/view.astro). Real slugs are static files and never
+    // reach this function, so an unknown slug here is a genuine 404 rather
+    // than the thin 200 shell that used to be served for any path.
+    const lpDoc = await db.collection('landingPages').doc(`${lang}_${slugValue}`).get();
+    if (!lpDoc.exists) {
+      res.status(404).type('text/plain').send('Not Found');
+      return;
+    }
+    // Serve the shell for the requested language (the old code always served
+    // the Spanish shell, even for /en/ URLs).
+    const lpShell = lang === 'en' ? '/en/lp/view/index.html' : '/es/lp/view/index.html';
+    const shellRes = await fetch(`https://guianegocios.net${lpShell}`);
     res.status(200).set('Content-Type', 'text/html; charset=utf-8').send(await shellRes.text());
   } catch (err: any) {
     console.error('validateSlugRewrite error:', err?.message || err);
-    // Fail open: on Firestore errors, let hosting serve the shell rather than
-    // hard-fail real users. Google still sees a valid page for known URLs.
-    res.status(302).set('Location', `https://guianegocios.net${path}`).send();
+    // Fail open on infrastructure errors (e.g. Firestore unavailable) so real
+    // visitors still get a page. This replaces a 302 to the request's own URL,
+    // which never resolved.
+    const isEn = path.startsWith('/en/');
+    const fallbackShell = path.includes('/blog/')
+      ? (isEn ? '/en/blog/view/index.html' : '/es/blog/view/index.html')
+      : (isEn ? '/en/lp/view/index.html' : '/es/lp/view/index.html');
+    try {
+      const shellRes = await fetch(`https://guianegocios.net${fallbackShell}`);
+      res.status(200).set('Content-Type', 'text/html; charset=utf-8').send(await shellRes.text());
+    } catch (shellErr: any) {
+      res.status(503).type('text/plain').send('Temporarily unavailable');
+    }
   }
 });
 
@@ -638,6 +636,9 @@ async function internalSiteWideAudit() {
   try {
     const sitemapUrl = 'https://guianegocios.net/sitemap-0.xml';
     let urls: string[] = [];
+    // Recorded on the audit so a caller can tell a real crawl from the
+    // hardcoded route fallback below.
+    let sitemapFetched = false;
 
     // 1. Discover URLs from sitemap
     try {
@@ -648,6 +649,7 @@ async function internalSiteWideAudit() {
         $xml('url loc').each((_, el) => {
           urls.push($xml(el).text().trim());
         });
+        sitemapFetched = urls.length > 0;
       }
     } catch (e) {
       console.warn("Failed to fetch sitemap, using manual core routes:", e);
@@ -680,7 +682,9 @@ async function internalSiteWideAudit() {
       ];
     }
 
-    urls = urls.slice(0, 25);
+    const totalUrlsDiscovered = urls.length;
+    // Ceiling only, to bound the crawl. The sitemap is the real scope.
+    urls = urls.slice(0, 50);
 
     // 2. Crawl and analyze each URL
     const pageReports: any[] = [];
@@ -688,6 +692,12 @@ async function internalSiteWideAudit() {
     let totalWordCount = 0;
     let missingAltCount = 0;
     let missingMetaCount = 0;
+    let missingTitleCount = 0;
+    let badTitleLengthCount = 0;
+    let missingH1Count = 0;
+    let missingCanonicalCount = 0;
+    let missingHreflangCount = 0;
+    let thinContentCount = 0;
 
     for (const url of urls) {
       try {
@@ -715,19 +725,19 @@ async function internalSiteWideAudit() {
         const schemaCount = $('script[type="application/ld+json"]').length;
 
         const issues = [];
-        if (!title) issues.push(`Missing Title`);
-        else if (title.length < 10 || title.length > 70) issues.push(`Title length (${title.length}) is sub-optimal`);
+        if (!title) { issues.push(`Missing Title`); missingTitleCount++; }
+        else if (title.length < 10 || title.length > 70) { issues.push(`Title length (${title.length}) is sub-optimal`); badTitleLengthCount++; }
         
         if (!metaDescription) {
           issues.push(`Missing Meta Description`);
           missingMetaCount++;
         }
         
-        if (h1Count === 0) issues.push(`Missing H1 tag`);
+        if (h1Count === 0) { issues.push(`Missing H1 tag`); missingH1Count++; }
         if (imgsWithoutAlt > 0) issues.push(`${imgsWithoutAlt} images missing alt text`);
-        if (wordCount < 200) issues.push(`Thin content (${wordCount} words)`);
-        if (!canonical) issues.push(`Missing canonical link tag`);
-        if (hreflangCount === 0) issues.push(`Missing alternate hreflang tags`);
+        if (wordCount < 200) { issues.push(`Thin content (${wordCount} words)`); thinContentCount++; }
+        if (!canonical) { issues.push(`Missing canonical link tag`); missingCanonicalCount++; }
+        if (hreflangCount === 0) { issues.push(`Missing alternate hreflang tags`); missingHreflangCount++; }
 
         pageReports.push({ url, title, canonical, hreflangCount, schemaCount, issues });
         issues.forEach(i => allIssues.push(`[${url}] ${i}`));
@@ -737,12 +747,33 @@ async function internalSiteWideAudit() {
       }
     }
 
-    // 3. Compute Deterministic Score & Action Items
-    let calculatedScore = 98;
-    if (missingMetaCount > 0) calculatedScore -= Math.min(10, missingMetaCount * 2);
-    if (missingAltCount > 0) calculatedScore -= Math.min(8, missingAltCount * 2);
-    if (allIssues.length > 0) calculatedScore -= Math.min(15, allIssues.length * 3);
-    calculatedScore = Math.max(70, Math.min(100, calculatedScore));
+    // 3. Deterministic score. Every penalty maps to a check that actually
+    // failed on a crawled page, so the number is reproducible from the crawl
+    // below. It used to start at a hardcoded 98 and clamp at 70, which meant
+    // the site could never score below 70 no matter how broken it was.
+    const scoredPages = pageReports.length;
+    if (scoredPages === 0) {
+      throw new Error('Crawl fetched no pages; refusing to score an empty audit.');
+    }
+
+    const checks: Array<{ label: string; count: number; perItem: number; max: number }> = [
+      { label: 'pages with no title', count: missingTitleCount, perItem: 5, max: 20 },
+      { label: 'titles outside 10-70 chars', count: badTitleLengthCount, perItem: 2, max: 10 },
+      { label: 'pages with no meta description', count: missingMetaCount, perItem: 3, max: 15 },
+      { label: 'pages with no H1', count: missingH1Count, perItem: 5, max: 20 },
+      { label: 'images with no alt text', count: missingAltCount, perItem: 1, max: 12 },
+      { label: 'pages under 200 words', count: thinContentCount, perItem: 3, max: 12 },
+      { label: 'pages with no canonical tag', count: missingCanonicalCount, perItem: 4, max: 16 },
+      { label: 'pages with no hreflang alternates', count: missingHreflangCount, perItem: 2, max: 8 },
+    ];
+
+    const deductions = checks
+      .filter(c => c.count > 0)
+      .map(c => ({ label: c.label, count: c.count, points: Math.min(c.max, c.count * c.perItem) }))
+      .sort((a, b) => b.points - a.points);
+
+    const totalDeduction = deductions.reduce((sum, d) => sum + d.points, 0);
+    const calculatedScore = Math.max(0, 100 - totalDeduction);
 
     const actionableItems = allIssues.length > 0 ? [
       {
@@ -768,20 +799,29 @@ async function internalSiteWideAudit() {
       }
     ];
 
-    let summary = `Completed site-wide technical crawl across ${pageReports.length} pages (${totalWordCount.toLocaleString()} words). Technical health is strong with clean URL routing, proper meta titles, and structured semantic HTML.`;
+    // Derived from the crawl, not asserted. The previous text claimed "clean
+    // URL routing, proper meta titles, and structured semantic HTML" even when
+    // the crawl had found missing titles and missing descriptions.
+    let summary = deductions.length === 0
+      ? `Crawled ${scoredPages} pages (${totalWordCount.toLocaleString()} words). All ${checks.length} scored checks passed.`
+      : `Crawled ${scoredPages} pages (${totalWordCount.toLocaleString()} words). ${allIssues.length} issue(s) across ${deductions.length} of ${checks.length} checks, costing ${totalDeduction} points. Largest contributors: ${deductions.slice(0, 3).map(d => `${d.label} (${d.count}, -${d.points})`).join('; ')}.`;
 
     // 4. Try Vertex AI enhancement
     try {
       const prompt = `
         You are an expert SEO auditor for GUIA DE NEGOCIOS (a bilingual business consultancy in Knoxville, TN).
-        We crawled ${pageReports.length} pages (${totalWordCount} total words).
-        Issues found:
+        A crawler measured ${scoredPages} pages (${totalWordCount} total words) and produced this score: ${calculatedScore}/100.
+
+        Deductions (measured, do not change or re-derive them):
+        ${deductions.length === 0 ? 'None - every check passed.' : deductions.map(d => `- ${d.label}: ${d.count} occurrence(s), -${d.points} points`).join('\n')}
+
+        Full issue list:
         ${allIssues.slice(0, 30).join('\n') || 'None detected'}
 
-        Provide a summary and 3 prioritized action items.
+        Provide a professional summary and 3 prioritized action items that follow directly from the measured findings above.
+        Do not invent metrics, benchmarks, competitor comparisons, or statistics that are not in this message.
         Format response EXACTLY as JSON:
         {
-          "globalScore": ${calculatedScore},
           "summary": "1-2 paragraph executive summary",
           "actionableItems": [
             { "priority": "High"|"Medium"|"Low", "task": "string", "impact": "string" }
@@ -803,8 +843,14 @@ async function internalSiteWideAudit() {
     // 5. Save to Firestore seoAudits collection
     const auditDoc = {
       scannedAt: FieldValue.serverTimestamp(),
-      pagesScanned: pageReports.length,
+      pagesScanned: scoredPages,
+      // Total URLs the sitemap advertised, so a partial crawl is visible as
+      // partial instead of being presented as a full site scan.
+      urlsDiscovered: totalUrlsDiscovered,
+      sitemapFetched,
       globalScore: calculatedScore,
+      deductions,
+      issuesFound: allIssues.length,
       summary,
       actionableItems,
       rawPageReports: pageReports
@@ -838,24 +884,6 @@ async function internalVerifyBacklinks() {
   try {
     const db = getFirestore();
     let backlinksSnap = await db.collection('backlinks').get();
-    
-    // Seed initial local Knoxville citations if empty
-    if (backlinksSnap.empty) {
-      const initialLinks = [
-        { url: 'https://www.centrohispano.org', pageTitle: 'Centro Hispano de East TN', status: 'Active', isNofollow: false },
-        { url: 'https://www.knoxvillechamber.com', pageTitle: 'Knoxville Chamber of Commerce', status: 'Active', isNofollow: false },
-        { url: 'https://sos.tn.gov', pageTitle: 'TN Secretary of State Business Services', status: 'Active', isNofollow: false },
-        { url: 'https://holahoralatina.org', pageTitle: 'Hola Hora Latina Community Resources', status: 'Active', isNofollow: false }
-      ];
-      for (const link of initialLinks) {
-        await db.collection('backlinks').add({
-          ...link,
-          createdAt: FieldValue.serverTimestamp(),
-          lastVerifiedAt: FieldValue.serverTimestamp()
-        });
-      }
-      backlinksSnap = await db.collection('backlinks').get();
-    }
 
     let verifiedCount = 0;
 
@@ -870,11 +898,14 @@ async function internalVerifyBacklinks() {
 
       try {
         const res = await fetch(targetUrl, { signal: AbortSignal.timeout(6000) });
-        if (res.ok) {
+        if (!res.ok) {
+          // The page is unreachable, so we cannot claim the link is there.
+          status = 'Unreachable';
+        } else {
           const html = await res.text();
           const $ = cheerio.load(html);
           title = $('title').text().trim() || title;
-          
+
           const links = $('a[href*="guianegocios.net"]');
           if (links.length > 0) {
             status = 'Active';
@@ -884,9 +915,16 @@ async function internalVerifyBacklinks() {
                 isNofollow = true;
               }
             });
+          } else {
+            // Reachable page, but no link to us. Reporting that is the point of
+            // the check - the old code left the previous status in place, so a
+            // lost link kept showing as 'Active' forever.
+            status = 'No link found';
+            isNofollow = false;
           }
         }
       } catch (e) {
+        status = 'Unreachable';
         console.warn(`Backlink ping notice for ${targetUrl}`);
       }
 
@@ -919,48 +957,44 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, as
       {
         targetName: "Centro Hispano de East TN",
         targetUrl: "https://www.centrohispano.org/recursos",
-        daEstimate: 42,
         strategy: "Community Resource Guide & Workshop Partnership (Knoxville)",
         emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
       },
       {
         targetName: "Tennessee Hispanic Chamber of Commerce",
         targetUrl: "https://tnhcc.org/business-resources",
-        daEstimate: 54,
         strategy: "Statewide Advisory & Minority Business Referral (Tennessee)",
         emailDraft: "Subject: Strategic Referral Partnership & Listing — Guia de Negocios Tennessee\n\nEstimada Junta Directiva de TNHCC,\n\nFelicitaciones por su liderazgo en el fortalecimiento del ecosistema empresarial latino en Tennessee. En GUIA DE NEGOCIOS proporcionamos asesoría bilingüe para registro de empresas (LLC, EIN, licencias locales) y contabilidad operativa en todo el estado.\n\nNos complacería colaborar con la Cámara como recurso técnico y figurar en su directorio estatal de proveedores de servicios profesionales.\n\nAtentamente,\nEquipo GUIA DE NEGOCIOS\nhttps://guianegocios.net"
       },
       {
         targetName: "Knoxville Chamber of Commerce",
         targetUrl: "https://www.knoxvillechamber.com/directory",
-        daEstimate: 58,
         strategy: "Minority Business & Bilingual Consultancy Listing (Knox County)",
         emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
       },
       {
         targetName: "Nashville Area Hispanic Chamber of Commerce (NAHCC)",
         targetUrl: "https://nashvillehispanicchamber.com/directory",
-        daEstimate: 48,
         strategy: "Regional Hispanic Network & Launch Resource (Middle TN & Southeast)",
         emailDraft: "Subject: Collaboration on Bilingual Business Launch Systems — NAHCC & Guia Negocios\n\nEstimado equipo de NAHCC,\n\nReconocemos la gran labor que realizan impulsando negocios en la región central de Tennessee. Desde GUIA DE NEGOCIOS ayudamos a emprendedores hispanos a estructurar empresas rentables con cumplimiento tributario, sistemas digitales y asistentes virtuales bilingües.\n\nNos encantaría conectar para intercambiar recursos educativos y participar en sus redes de asesoría.\n\nUn cordial saludo,\nGUIA NEGOCIOS"
       },
       {
         targetName: "Tennessee SBDC at Pellissippi State",
         targetUrl: "https://www.tsbdc.org/knoxville",
-        daEstimate: 62,
         strategy: "Bilingual Resource Referral Partner (Statewide Network)",
         emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Advisers,\n\nAs a consultancy serving Spanish-speaking entrepreneurs across Knox, surrounding counties, and statewide Tennessee, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local and regional founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
       },
       {
         targetName: "Chattanooga Area Chamber - Diverse Business Hub",
         targetUrl: "https://chattanoogachamber.com/diversity-equity-inclusion",
-        daEstimate: 56,
         strategy: "Southeast Regional Latino Hub Inclusion (Southeast TN / North GA)",
         emailDraft: "Subject: Bilingual Entrepreneurship Resource Listing — Guia Negocios\n\nDear Chattanooga Chamber Inclusion Team,\n\nWe provide turnkey bilingual business setup, bookkeeping, and operational consulting for diverse entrepreneurs across East and Southeast Tennessee.\n\nWe would love to connect and share our guides as a trusted Spanish/English resource for founders in the region.\n\nWarm regards,\nGUIA NEGOCIOS Team"
       }
     ];
 
-    // Persist opportunities to Firestore linkOutreach collection
+    // Persist opportunities to Firestore linkOutreach collection.
+    // Note: no Domain Authority value is stored. The previous `daEstimate`
+    // numbers (42/54/58/48/62/56) were invented, not measured by any tool.
     const db = getFirestore();
     for (const opp of curatedOpportunities) {
       try {
@@ -968,7 +1002,9 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, as
         if (queryExisting.empty) {
           await db.collection('linkOutreach').add({
             ...opp,
-            status: 'Ready to Send',
+            // A draft, not a sent/ready email: nothing here has verified that
+            // the target accepts submissions.
+            status: 'Draft',
             createdAt: FieldValue.serverTimestamp()
           });
         }
@@ -995,9 +1031,12 @@ async function internalGenerateReport(generatedBy: string = 'system') {
     const db = getFirestore();
     
     const auditsSnap = await db.collection('seoAudits').orderBy('scannedAt', 'desc').limit(1).get();
-    let seoScore = 90;
+    // null when no audit exists yet. The previous default of 90 put a made-up
+    // score on the report.
+    let seoScore: number | null = null;
     if (!auditsSnap.empty && auditsSnap.docs[0]) {
-      seoScore = auditsSnap.docs[0].data().globalScore || 90;
+      const gs = auditsSnap.docs[0].data().globalScore;
+      if (typeof gs === 'number') seoScore = gs;
     }
 
     const backlinksSnap = await db.collection('backlinks').get();

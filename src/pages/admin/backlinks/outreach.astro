@@ -59,42 +59,36 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       {
         targetName: "Centro Hispano de East TN",
         targetUrl: "https://www.centrohispano.org/recursos",
-        daEstimate: 42,
         strategy: "Community Resource Guide & Workshop Partnership (Knoxville)",
         emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
       },
       {
         targetName: "Tennessee Hispanic Chamber of Commerce",
         targetUrl: "https://tnhcc.org/business-resources",
-        daEstimate: 54,
         strategy: "Statewide Advisory & Minority Business Referral (Tennessee)",
         emailDraft: "Subject: Strategic Referral Partnership & Listing — Guia de Negocios Tennessee\n\nEstimada Junta Directiva de TNHCC,\n\nFelicitaciones por su liderazgo en el fortalecimiento del ecosistema empresarial latino en Tennessee. En GUIA DE NEGOCIOS proporcionamos asesoría bilingüe para registro de empresas (LLC, EIN, licencias locales) y contabilidad operativa en todo el estado.\n\nNos complacería colaborar con la Cámara como recurso técnico y figurar en su directorio estatal de proveedores de servicios profesionales.\n\nAtentamente,\nEquipo GUIA DE NEGOCIOS\nhttps://guianegocios.net"
       },
       {
         targetName: "Knoxville Chamber of Commerce",
         targetUrl: "https://www.knoxvillechamber.com/directory",
-        daEstimate: 58,
         strategy: "Minority Business & Bilingual Consultancy Listing (Knox County)",
         emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
       },
       {
         targetName: "Nashville Area Hispanic Chamber of Commerce (NAHCC)",
         targetUrl: "https://nashvillehispanicchamber.com/directory",
-        daEstimate: 48,
         strategy: "Regional Hispanic Network & Launch Resource (Middle TN & Southeast)",
         emailDraft: "Subject: Collaboration on Bilingual Business Launch Systems — NAHCC & Guia Negocios\n\nEstimado equipo de NAHCC,\n\nReconocemos la gran labor que realizan impulsando negocios en la región central de Tennessee. Desde GUIA DE NEGOCIOS ayudamos a emprendedores hispanos a estructurar empresas rentables con cumplimiento tributario, sistemas digitales y asistentes virtuales bilingües.\n\nNos encantaría conectar para intercambiar recursos educativos y participar en sus redes de asesoría.\n\nUn cordial saludo,\nGUIA NEGOCIOS"
       },
       {
         targetName: "Tennessee SBDC at Pellissippi State",
         targetUrl: "https://www.tsbdc.org/knoxville",
-        daEstimate: 62,
         strategy: "Bilingual Resource Referral Partner (Statewide Network)",
         emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Advisers,\n\nAs a consultancy serving Spanish-speaking entrepreneurs across Knox, surrounding counties, and statewide Tennessee, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local and regional founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
       },
       {
         targetName: "Chattanooga Area Chamber - Diverse Business Hub",
         targetUrl: "https://chattanoogachamber.com/diversity-equity-inclusion",
-        daEstimate: 56,
         strategy: "Southeast Regional Latino Hub Inclusion (Southeast TN / North GA)",
         emailDraft: "Subject: Bilingual Entrepreneurship Resource Listing — Guia Negocios\n\nDear Chattanooga Chamber Inclusion Team,\n\nWe provide turnkey bilingual business setup, bookkeeping, and operational consulting for diverse entrepreneurs across East and Southeast Tennessee.\n\nWe would love to connect and share our guides as a trusted Spanish/English resource for founders in the region.\n\nWarm regards,\nGUIA NEGOCIOS Team"
       }
@@ -115,7 +109,6 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-bold text-slate-900 text-lg">${opp.targetName}</h4>
-                  <span class="px-2 py-0.5 bg-brand-primary/10 text-brand-primary text-xs font-bold uppercase rounded">DA ~${opp.daEstimate || 45}</span>
                 </div>
                 <a href="${opp.targetUrl}" target="_blank" class="text-sm text-brand-primary hover:underline flex items-center gap-1 mt-1 font-medium">
                   ${opp.targetUrl}
