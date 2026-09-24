@@ -148,6 +148,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const result = await getAnalyticsData();
         const data = result.data as any;
 
+        // getAnalyticsData reports a genuine failure instead of substituting
+        // sample numbers, so say the data is unavailable rather than leaving
+        // the loading placeholder in place forever.
+        if (data.ok === false) {
+          const el = document.getElementById('dash-metric-visitors');
+          if (el) el.innerText = '—';
+          const sub = document.getElementById('dash-metric-visitors-sub');
+          if (sub) {
+            sub.innerText = 'GA4 unavailable';
+            sub.className = 'flex items-center text-xs text-amber-600 font-medium';
+          }
+          return;
+        }
+
         if (data.totals) {
           const el = document.getElementById('dash-metric-visitors');
           if (el) el.innerText = data.totals.activeUsers;
@@ -249,10 +263,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               seoSubLabel.className = seoScoreVal >= 80 ? 'text-emerald-600 font-semibold' : (seoScoreVal >= 50 ? 'text-amber-600 font-semibold' : 'text-rose-600 font-semibold');
             }
           } else {
-            seoEl.innerText = '79%';
+            // No audit exists yet. This branch used to display a hardcoded
+            // "79% / Fair Health (25 Pages Scanned)", i.e. a score for a scan
+            // that never ran. Say so instead.
+            seoEl.innerText = '—';
             if (seoSubLabel) {
-              seoSubLabel.innerText = 'Fair Health (25 Pages Scanned)';
-              seoSubLabel.className = 'text-amber-600 font-semibold';
+              seoSubLabel.innerText = 'No audit yet — run one from SEO Agent';
+              seoSubLabel.className = 'text-slate-400 font-semibold';
             }
           }
         }
