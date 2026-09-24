@@ -128,6 +128,14 @@ const allowed = (s) => s === 200 || s === 404;
     'DENY',
   ]);
   checks.push([
+    '[anon] oversized notification message (601)',
+    await writeDoc(`notifications/bigmsg${RUN_ID}`, ANON, {
+      title: { stringValue: 'T' },
+      message: { stringValue: 'x'.repeat(601) },
+    }),
+    'DENY',
+  ]);
+  checks.push([
     '[anon] mail without message map',
     await writeDoc(`mail/nomsg${RUN_ID}`, ANON, {
       to: { stringValue: 'info@guianegocios.net' },

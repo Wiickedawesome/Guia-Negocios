@@ -41,11 +41,14 @@ service cloud.firestore {
     }
 
     match /notifications/{document=**} {
+      // The message body is composed by the public forms from capped inputs, so
+      // the worst case is 566 chars (200 name + 323 email + 43 phone). Anything
+      // below that would reject a legitimate lead from a long-but-valid entry.
       allow create: if request.resource.data.keys().hasAll(['title', 'message'])
         && request.resource.data.title is string
         && request.resource.data.title.size() <= 200
         && request.resource.data.message is string
-        && request.resource.data.message.size() <= 500;
+        && request.resource.data.message.size() <= 600;
       allow read, update, delete: if isAdmin();
     }
 
