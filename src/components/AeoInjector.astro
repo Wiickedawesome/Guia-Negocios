@@ -6,15 +6,27 @@ import { getActiveAeoSchemas } from '../utils/seo-schemas';
 // every page is a duplicate-content spam signal for Google and AI engines.
 const path = Astro.url.pathname.toLowerCase().replace(/\/+$/, '') || '/';
 const isHomePage = path === '/' || path === '/en';
+const pageTokens = path.replace(/^\/(en|es)/, '').split('/').filter(Boolean).join('-');
 
-const aeoSchemas = isHomePage
-  ? await getActiveAeoSchemas()
-  : (await getActiveAeoSchemas()).filter((schema) => {
-      const slug = (schema?.keyword || '').toLowerCase().replace(/\s+/g, '-');
-      if (!slug) return false;
-      const pageTokens = path.replace(/^\/(en|es)/, '').split('/').filter(Boolean).join('-');
-      return slug.includes(pageTokens) || pageTokens.includes(slug);
-    });
+// The AEO generator stores each keyword twice - once under a space-separated
+// document id and once under a hyphenated one - so the same FAQPage was emitted
+// twice. Collapse both spellings onto one key and keep whichever comes first.
+const seenKeywordKeys = new Set<string>();
+
+const aeoSchemas = (await getActiveAeoSchemas()).filter((schema) => {
+  const slug = (schema?.keyword || '').toLowerCase().trim().replace(/\s+/g, '-');
+  if (!slug || seenKeywordKeys.has(slug)) return false;
+
+  // Home carries the general FAQ topics; elsewhere a schema only belongs on a
+  // page whose path matches its keyword. An empty pageTokens (e.g. a bare /es)
+  // must not match everything.
+  const belongsOnPage =
+    isHomePage || (pageTokens !== '' && (slug.includes(pageTokens) || pageTokens.includes(slug)));
+  if (!belongsOnPage) return false;
+
+  seenKeywordKeys.add(slug);
+  return true;
+});
 ---
 {aeoSchemas.map((schema) => (
   <script type="application/ld+json" set:html={schema.schemaStr} />

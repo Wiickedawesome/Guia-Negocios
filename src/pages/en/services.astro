@@ -692,6 +692,16 @@ const faqItems = [
     </div>
   </section>
 
+  <!-- SECTION 4: FAQ Accordion (Figma Node 86:77 style) -->
+  <FaqAccordion
+    title={t('services.faqTitle')}
+    contactText={t('services.faqContactText')}
+    contactUrl={`/${lang}/contact`}
+    viewMoreText={t('services.faqViewAll')}
+    viewMoreUrl={`/${lang}/faq`}
+    items={faqItems}
+  />
+
   <!-- SECTION 5: Full-Width Call to Action -->
   <section class="py-24 lg:py-32 bg-slate-100 border-t border-slate-200 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
