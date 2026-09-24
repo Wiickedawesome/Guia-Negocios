@@ -83,7 +83,7 @@ export const seoAgentSun = onSchedule(
 // ─── Manual "Run now" callable ──────────────────────
 
 export const seoAgentRun = onCall(
-  { region: REGION, cors: true, memory: '1GiB', timeoutSeconds: 540 },
+  { region: REGION, cors: true, memory: '1GiB', timeoutSeconds: 540, enforceAppCheck: true },
   async (req) => {
     const email = req.auth?.token?.email;
     if (!allowSkillRun(email)) {

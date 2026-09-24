@@ -73,7 +73,7 @@ const analyticsDataClient = fs.existsSync(keyFilename)
 
 const PROPERTY_ID = '546623303';
 
-export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async (request) => {
+export const getAnalyticsData = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   const rangeStr = request.data?.range || '30';
   let startDate = '30daysAgo';
@@ -211,7 +211,7 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
 /**
  * discoverKeywords fetches real autocomplete suggestions and trends.
  */
-export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async (request) => {
+export const discoverKeywords = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   try {
     const { topic, lang = 'en', existingKeywords = [] } = request.data || {};
@@ -274,7 +274,7 @@ export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async 
 });
 
 // Advanced Single-Page SEO Audit Function
-export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (request) => {
+export const runSeoAudit = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   const { targetUrl } = request.data || {};
   
@@ -404,7 +404,7 @@ export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (requ
 });
 
 // ── Search Console Scanner ──
-export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async (request) => {
+export const scanSearchConsole = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   const { phrase, existingKeywords = [] } = request.data || {};
   const existingSet = new Set((existingKeywords as string[]).map((k: string) => k.toLowerCase()));
@@ -532,7 +532,7 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
 });
 
 // ── Autonomous Site-Wide SEO Audit ──
-export const runSiteWideAudit = onCall({ cors: true, invoker: 'public', timeoutSeconds: 540, memory: '1GiB' }, async (request) => {
+export const runSiteWideAudit = onCall({ cors: true, invoker: 'public', timeoutSeconds: 540, memory: '1GiB', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   return await internalSiteWideAudit();
 });
@@ -875,7 +875,7 @@ export const scheduledSeoAudit = onSchedule({
 });
 
 // ── Backlink Verifier ──
-export const verifyBacklinks = onCall({ cors: true, invoker: 'public' }, async (request) => {
+export const verifyBacklinks = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   return await internalVerifyBacklinks();
 });
@@ -950,7 +950,7 @@ export const scheduledVerifyBacklinks = onSchedule("every 48 hours", async (even
 });
 
 // ── AI Link Building Outreach ──
-export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, async (request) => {
+export const generateLinkOutreach = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   try {
     const curatedOpportunities = [
@@ -1021,7 +1021,7 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, as
   }
 });
 
-export const generateOnDemandReport = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
+export const generateOnDemandReport = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120, enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   return await internalGenerateReport(request.auth?.uid || 'admin');
 });
@@ -1139,7 +1139,7 @@ export const submitContactForm = onCall(
 );
 
 // ── AI Content Generator (Server-Side Vertex AI / Fallback) ──
-export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
+export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120, enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   const { prompt, temperature, model: requestedModel } = request.data || {};
   if (!prompt) {
