@@ -1160,7 +1160,9 @@ export const generateAiContent = onCall({ cors: true, invoker: 'public', timeout
 
 export * from './contentEngine';
 export * from './dataJournalism';
-export * from './aeoInjector';
+// `./aeoInjector` was removed: scheduledAeoInjector generated FAQPage markup from
+// model-simulated "People Also Ask" questions, which described content no page
+// actually showed (0 of 56 pages matched any of its keywords).
 export * from './internalLinking';
 export * from './linkOutreach';
 export * from './seo-agent';

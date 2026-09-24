@@ -11,17 +11,21 @@ Welcome to the Guia de Negocios repository. Please adhere to the following archi
 
 ## 0. Invariants - breaking these causes real damage
 
-- **Spanish is served at the site root (`/`), English at `/en/`.** `/es/*` 301-redirects to `/`
-  **by design**. Do NOT "fix" this and do NOT add Spanish pages under `/src/pages/es/` expecting
-  them to be reachable at `/es/...`.
+- **Locales:** Spanish home is served at `/`; Spanish **subpages** live under `/es/*` (e.g.
+  `/es/services/`, `/es/faq/`), and English under `/en/*`. Only `/es` and `/es/` themselves 301 to
+  `/`; unprefixed `/services/`, `/about/`, `/blog/`, `/faq/` 301 to their `/es/...` equivalents.
+  This is all intentional - do NOT "fix" it. Spanish pages under `src/pages/es/` **are** reachable at
+  `/es/...`, and each is self-canonical.
 - **Never read an API key from `import.meta.env.PUBLIC_*`.** Astro inlines every `PUBLIC_*` value
   into the client bundle, shipping it to all visitors. Keys live in `settings/admin` in Firestore.
 - **App Check is enforced on the callable Cloud Functions in code**, via `enforceAppCheck: true`.
   The Firebase console CANNOT enforce it for Cloud Functions - `cloudfunctions.googleapis.com` is
   not one of the services the console manages.
-- **Do not dedupe `seoSchemas` by keyword.** Each keyword is stored twice (space-form and
-  hyphen-form document ids). They look like duplicates but hold *different* questions.
-  Collapsing them silently deletes content. Attempted and reverted twice.
+- **Do not dedupe `seoSchemas` by keyword.** Two writers used different document-id schemes, so
+  every keyword has two documents: the backfill script slugifies spaces to hyphens, while the
+  removed `scheduledAeoInjector` left spaces intact (broken `/\\s+/g` regex). They look like
+  duplicates but hold *different* questions. Collapsing them silently deletes content from the
+  homepage. Attempted and reverted twice.
 - **Admin pages may not work on `localhost`** - App Check cannot be satisfied normally there.
   Verify admin UI on the live domain.
 

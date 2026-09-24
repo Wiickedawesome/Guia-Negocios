@@ -18,12 +18,15 @@ Full documentation: https://docs.astro.build
 
 ## Project invariants
 
-- **Spanish is served at the site root** (`/`), English at `/en/`. `/es/*` 301s to `/`
-  by design — do not "fix" it.
-- **Do not dedupe `seoSchemas` by keyword.** The generator writes each keyword twice
-  (space-form and hyphen-form document ids). The pairs look like duplicates but hold
-  *different* questions. Collapsing them silently deletes content from the homepage.
-  Attempted and reverted twice.
+- **Locales:** Spanish home is served at `/`; Spanish **subpages** live under `/es/*` (e.g.
+  `/es/services/`, `/es/faq/`), English under `/en/*`. Only `/es` and `/es/` themselves 301 to `/`,
+  and the unprefixed `/services/`, `/about/`, `/blog/`, `/faq/` 301 to their `/es/...` equivalents.
+  All intentional — do not "fix" it, and do not assume every `/es/*` path redirects.
+- **Do not dedupe `seoSchemas` by keyword.** Two writers used different document-id schemes, so
+  every keyword has two documents: the backfill script slugifies spaces to hyphens, while
+  `scheduledAeoInjector` left spaces intact because of a broken `/\\s+/g` regex (that function has
+  since been removed). The pairs look like duplicates but hold *different* questions. Collapsing
+  them silently deletes content from the homepage. Attempted and reverted twice.
 - **App Check is enforced on the callable Cloud Functions in code**, via
   `enforceAppCheck: true`. The Firebase console cannot enforce it for Cloud Functions.
 - **Never read an API key from `import.meta.env.PUBLIC_*`** — Astro inlines those into
