@@ -1,26 +1,37 @@
 ---
 import { getActiveAeoSchemas } from '../utils/seo-schemas';
 
-// AEO FAQ schemas are keyword-targeted, so they are only relevant on pages
-// whose content matches the keyword topic. Injecting the identical FAQPage on
-// every page is a duplicate-content spam signal for Google and AI engines.
-// ⛔ DO NOT DEDUPE THESE SCHEMAS BY KEYWORD. This has been attempted TWICE and
-// both times it silently deleted content. The generator stores each keyword
-// under two documents - a space-form id and a hyphen-form id - which looks like
-// duplication, but they are NOT copies: verified 2026-09-24, all 5 pairs carry
-// DIFFERENT questions (32 unique across the 10 docs). Collapsing to 5 documents
-// dropped 14 unique questions from the homepage.
+// AEO FAQ schemas are keyword-targeted, so one is only emitted on a page whose
+// content actually matches its keyword.
+//
+// The homepage deliberately emits NONE. The generator writes questions by asking
+// the model to simulate "People Also Ask", and verified 2026-09-24 that 0 of its
+// 32 unique questions appeared anywhere in the rendered page - the page has zero
+// <details> elements. FAQPage markup must describe content a visitor can see, so
+// emitting it on the homepage was a structured-data violation with no upside:
+// FAQ rich results have been deprecated for non-government, non-health sites
+// since 2023, so the markup bought nothing and risked a spam signal.
+//
+// ⛔ DO NOT DEDUPE THESE SCHEMAS BY KEYWORD, and do not "helpfully" restore a
+// homepage case. Deduping has been attempted TWICE and silently deleted content
+// both times: the generator stores each keyword under two documents (a space-form
+// id and a hyphen-form id) which look like copies, but all 5 live pairs carry
+// DIFFERENT questions - 32 unique across the 10 documents. Collapsing them kept
+// only 18 and dropped 14 unique questions. See AGENTS.md.
 const path = Astro.url.pathname.toLowerCase().replace(/\/+$/, '') || '/';
-const isHomePage = path === '/' || path === '/en';
 
-const aeoSchemas = isHomePage
-  ? await getActiveAeoSchemas()
-  : (await getActiveAeoSchemas()).filter((schema) => {
+// A root path yields no tokens. Treat that as "no keyword applies" instead of
+// matching on an empty string: slug.includes('') is always true, so an unguarded
+// empty token matches EVERY schema and silently re-creates the problem above.
+const pageTokens = path.replace(/^\/(en|es)/, '').split('/').filter(Boolean).join('-');
+
+const aeoSchemas = pageTokens
+  ? (await getActiveAeoSchemas()).filter((schema) => {
       const slug = (schema?.keyword || '').toLowerCase().replace(/\s+/g, '-');
       if (!slug) return false;
-      const pageTokens = path.replace(/^\/(en|es)/, '').split('/').filter(Boolean).join('-');
       return slug.includes(pageTokens) || pageTokens.includes(slug);
-    });
+    })
+  : [];
 ---
 {aeoSchemas.map((schema) => (
   <script type="application/ld+json" set:html={schema.schemaStr} />
