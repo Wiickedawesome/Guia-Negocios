@@ -313,6 +313,10 @@ const t = useTranslations(lang);
           toast.className = 'rounded-xl p-4 text-sm font-medium border bg-red-50 text-red-800 border-red-200';
           toast.textContent = 'There was an error sending your message. Please try again or use WhatsApp.';
           toast.classList.remove('hidden');
+          // Must auto-dismiss like the success toast and the Spanish form,
+          // otherwise an English visitor is left with a permanent red banner
+          // and no way to clear it short of reloading the page.
+          setTimeout(() => toast.classList.add('hidden'), 5000);
         }
       } finally {
         submitBtn.innerText = originalText;
