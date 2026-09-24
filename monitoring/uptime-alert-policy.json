@@ -1,0 +1,38 @@
+{
+  "displayName": "guianegocios.net is down",
+  "documentation": {
+    "content": "The uptime check for https://guianegocios.net/ has failed from multiple regions.\n\nWhat to check, in order:\n1. Open https://guianegocios.net/ yourself. If it loads, the check may be a false alarm - review the check in Monitoring > Uptime checks.\n2. https://status.firebase.google.com/ for a Hosting or Cloud Functions incident.\n3. Check the last hosting deploy: `gh run list --limit 5` then `gh run view <id>`. If the newest run is bad, roll back with `firebase hosting:rollback --project guianegocios-prod`.\n4. If the cert, DNS or domain mapping has lapsed, check Hosting > Domains in the Firebase console.\n\nRollback procedures are in docs/07-backup-monitoring-rollback.md.",
+    "mimeType": "text/markdown"
+  },
+  "combiner": "OR",
+  "conditions": [
+    {
+      "displayName": "Uptime check failing on the homepage",
+      "conditionThreshold": {
+        "filter": "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" AND metric.label.check_id=\"guianegocios-net-home-MdXWvDEm_r8\" AND resource.type=\"uptime_url\"",
+        "aggregations": [
+          {
+            "alignmentPeriod": "300s",
+            "perSeriesAligner": "ALIGN_NEXT_OLDER",
+            "crossSeriesReducer": "REDUCE_COUNT_FALSE",
+            "groupByFields": [
+              "resource.label.host"
+            ]
+          }
+        ],
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 1,
+        "duration": "300s",
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "1800s"
+  },
+  "notificationChannels": [
+    "projects/guianegocios-prod/notificationChannels/4662172721375116843"
+  ]
+}

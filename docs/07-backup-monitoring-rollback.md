@@ -7,13 +7,50 @@ Last reviewed: 2026-09-24.
 
 | Control | Status | Owned by |
 | --- | --- | --- |
-| Post-deploy smoke test | **In place** — runs on every deploy | repo / CI |
+| Post-deploy smoke test | **In place** — runs on every deploy (36 checks) | repo / CI |
 | Rules-drift check | **In place** — `scripts/check-deployed-rules.cjs` | repo |
 | Hosting rollback | Documented below (one command) | repo / Firebase CLI |
-| Firestore automated backups | **NOT ENABLED** — blocked on IAM | needs a project Owner |
-| Firestore point-in-time recovery | **NOT ENABLED** — blocked on IAM | needs a project Owner |
-| Uptime check / alerting | **NOT ENABLED** — blocked on IAM | needs a project Owner |
-| Billing budget alert | **NOT ENABLED** — needs billing access | needs billing admin |
+| Firestore automated backups | **ENABLED** — daily, 7-day retention | gcloud |
+| Uptime check | **ENABLED** — every 5 min, HTTPS + content match | gcloud |
+| Email alert channel | **CREATED — needs one click to verify** (see 3.3) | gcloud + inbox |
+| Alert policy on uptime failure | **ENABLED** | gcloud |
+| Firestore point-in-time recovery | **NOT ENABLED** — console only | needs console access |
+| Billing budget alert | **NOT ENABLED** — needs billing admin | needs billing access |
+
+## 0. Live resource IDs (verified 2026-09-24)
+
+```
+backup schedule   projects/guianegocios-prod/databases/(default)/backupSchedules/e846dc38-b414-4baa-9820-72c537822cfa
+                      daily recurrence, retention 604800s (7d)
+uptime check      projects/guianegocios-prod/uptimeCheckConfigs/guianegocios-net-home-MdXWvDEm_r8
+                      https://guianegocios.net/ every 300s, expects 200 + body contains "GUIA NEGOCIOS"
+email channel     projects/guianegocios-prod/notificationChannels/4662172721375116843
+                      info@guianegocios.net
+alert policy      projects/guianegocios-prod/alertPolicies/1710147716258357131
+                      fires after 2+ failing checks across 300s
+```
+
+The alert policy is stored in the repo at `monitoring/uptime-alert-policy.json`, so
+it can be recreated or edited as code:
+
+```bash
+gcloud alpha monitoring policies create \
+  --policy-from-file=monitoring/uptime-alert-policy.json --project=guianegocios-prod
+```
+
+### Auth note — read before running any gcloud command here
+
+The workstation's default gcloud config is shared with another project, so:
+
+- `gcloud config get-value project` returns `evrconstruction-5f7bd`, and the
+  service-account entry for that project has **no access to `guianegocios-prod`**.
+  Every command in this document therefore passes `--project=guianegocios-prod`
+  explicitly, which is what makes them work.
+- To make this the default project (only if the other project is not in use):
+
+  ```bash
+  gcloud config set project guianegocios-prod
+  ```
 
 ## 1. What is already monitored
 
@@ -91,35 +128,18 @@ node scripts/check-deployed-rules.cjs
 ```
 
 ### Firestore data
-**There is currently no automated backup, so this rollback is not possible.**
-See the blocked items below.
+Restore from the most recent backup (see 3.1). Note that a restore **overwrites
+the database** — it is a last resort, not a selective undo.
 
-## 3. NOT ENABLED — requires project-owner IAM
+## 3. Backup and monitoring (configured 2026-09-24)
 
-Both items below were attempted on 2026-09-24 and refused. The gcloud CLI on the
-workstation is authenticated as an account with **no access to this project**:
+An earlier attempt at these failed because the gcloud CLI was pointed at a
+different project's credentials entirely. `info@guianegocios.net` has access;
+what is missing now is only point-in-time recovery and the billing budget
+alert, both of which are console/billing-account actions rather than CLI ones.
 
-```
-ERROR: (gcloud.projects.describe) [contact@evrconstructions.com] does not have
-permission to access projects instance [guianegocios-prod]
-
-ERROR: (gcloud.firestore.backups.schedules.list) PERMISSION_DENIED
-
-ERROR: (gcloud.monitoring.uptime.list-configs) Permission
-'monitoring.uptimeCheckConfigs.list' denied
-```
-
-Using the repo's `serviceAccountKey.json`
-(`firebase-adminsdk-fbsvc@guianegocios-prod.iam.gserviceaccount.com`) in an
-isolated gcloud config fails the same way — that Firebase Admin SDK role covers
-Firestore/Functions/Hosting but **not** Monitoring or backup administration.
-
-To do these, either run them as a project Owner, or grant the caller
-`roles/monitoring.admin` and `roles/datastore.backupAdmin`.
-
-### 3.1 Firestore automated backups
-Firestore managed backups take a daily snapshot with a configurable retention
-window (7 days is plenty here). Console: **Firestore → Backups → Create schedule**.
+### 3.1 Firestore automated backups — ENABLED
+Daily snapshot, 7-day retention. Created with:
 
 ```bash
 gcloud firestore backups schedules create \
@@ -129,67 +149,64 @@ gcloud firestore backups schedules create \
   --project=guianegocios-prod
 ```
 
-Verify:
+List schedules and the backups they produce:
 
 ```bash
 gcloud firestore backups schedules list --database='(default)' --project=guianegocios-prod
+gcloud firestore backups list --location=nam5 --project=guianegocios-prod
 ```
 
-Restore is per-backup:
+The database is in `nam5`, so backups live there too (not `us-central1`).
+
+Restore:
 
 ```bash
-gcloud firestore backups list --location=us-central1 --project=guianegocios-prod
 gcloud firestore databases restore \
-  --source-backup=projects/guianegocios-prod/locations/us-central1/backups/<id> \
+  --source-backup=projects/guianegocios-prod/locations/nam5/backups/<backup-id> \
   --destination-database='(default)' \
   --project=guianegocios-prod
 ```
 
-Worth knowing before enabling: a restore **overwrites the database**. The
-content that matters most here (blogs, landingPages, seoSchemas) is also
-regenerable from the repo and from `scripts/`, but `contacts`, `mail` and
-`notifications` — real customer leads — are not.
+A restore **overwrites the database**. The content that matters most here
+(blogs, landingPages, seoSchemas) is regenerable from the repo and `scripts/`,
+but `contacts`, `mail` and `notifications` — real customer leads — are not,
+which is the whole reason this backup exists.
 
-### 3.2 Point-in-time recovery
-Recovers to any minute within the last 7 days (protects against a bad bulk
-delete, not just disk failure). Console: **Firestore → Backups → Point-in-time
-recovery**. Both PITR and backups are billed on stored bytes; this database is
-small, so the cost is negligible against the lead data it protects.
+### 3.2 Point-in-time recovery — NOT ENABLED
+Recovers to any minute within the last 7 days, which protects against a bad bulk
+delete rather than just disk failure. This one is console-only:
+**Firestore → Backups → Point-in-time recovery**. It cannot be enabled from the
+CLI. Small extra storage cost; this database is a few MB.
 
-### 3.3 Uptime check and alerting
-Console: **Monitoring → Uptime checks → Create**. An HTTPS check against
-`https://guianegocios.net/` every 5 minutes, expecting a 200 and optionally a
-body match, covers the whole hosting surface — if Hosting, DNS, or the SSL cert
-breaks, you find out from an alert instead of from a customer.
+### 3.3 Uptime check and alerting — ENABLED (one click outstanding)
 
-Suggested alerting policy: notify `info@guianegocios.net` when a check fails for
-more than one region for 5 minutes.
+The uptime check requests `https://guianegocios.net/` every 5 minutes and
+requires both a `200` **and** the body to contain `GUIA NEGOCIOS`. The content
+match matters: a deploy that serves an empty or error page with a 200 status
+would otherwise pass unnoticed.
 
-```bash
-gcloud monitoring uptime create guianegocios-net \
-  --resource-type=uptime-url \
-  --resource-labels=host=guianegocios.net,project_id=guianegocios-prod \
-  --protocol=https \
-  --path=/ \
-  --period=5 \
-  --project=guianegocios-prod
-```
+The email channel still needs its verification click — Google sent a
+confirmation email to `info@guianegocios.net`, and alerts will not be delivered
+until that link is clicked. Check the inbox for "Google Cloud Monitoring".
 
-### 3.4 Billing budget alert
-Needs `roles/billing.admin` on the billing account that funds
-`guianegocios-prod`. Set a budget with alerts at 50/90/100% — this project's
-billing account has been closed once already, and when it closes, **deploys fail**
-with `403 ... check billing account` while the live site keeps serving.
+### 3.4 Billing budget alert — NOT ENABLED
+Needs `roles/billing.admin` on billing account `01F9BA-A59866-0F6B15`. Set a
+budget with alerts at 50/90/100%. This matters more than usual here: the billing
+account has been closed once before, and when it closes **deploys fail** with
+`403 ... check billing account` while the live site keeps serving.
 
 ## 4. Known gaps
 
-- **No Firestore backup**, so a bad write or an accidental delete is unrecoverable.
-  This is the single highest-impact gap on this page; `contacts` and `mail` hold
-  real customer leads.
+- **Point-in-time recovery** is off, so a bad bulk write between backups (up to
+  24h of data) is unrecoverable.
+- **The alert email is unverified** until someone clicks the link in Google's
+  confirmation email.
 - **No off-site backup of the Functions config or Firestore rules** — both are in
   git, which is adequate.
 - **No alert on function errors.** Cloud Functions errors are visible in the
   console but nothing notifies anyone.
+- **No alert on a failing CI deploy**, but the smoke test fails the workflow,
+  which GitHub notifies on.
 - **Analytics collection is consent-gated** (see BaseLayout), so GA4 figures
   under-count visitors who never answer the banner. That is intentional, but
   reports must not be read as total traffic.
