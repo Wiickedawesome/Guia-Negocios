@@ -5,7 +5,7 @@
 The application routes are structured strictly into three domain sections:
 
 ### A. Root Redirector
-* `/src/pages/index.astro` — Detects browser locale or defaults redirect to `/en/` or `/es/`.
+* `/src/pages/index.astro` — Spanish homepage. Spanish is the default locale and is served at the site root, so this is the real `/es` home content rather than a locale-detecting redirect.
 
 ### B. English Public Portal (`/src/pages/en/`)
 * `/en/index.astro` — Homepage featuring business value propositions, service highlights, and testimonials.

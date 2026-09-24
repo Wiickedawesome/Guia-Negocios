@@ -1,6 +1,14 @@
 /**
  * Blog utilities for loading and parsing markdown blog posts.
- * Posts are stored as .md files in src/content/blog/{lang}/ with YAML frontmatter.
+ *
+ * Posts live in the Cloud Firestore `blogs` collection, one document per
+ * article holding both languages (`titleEs`/`contentEs`, `titleEn`/`contentEn`)
+ * and a `status` of Published or Draft. The markdown content is stored as a
+ * string and rendered by `markdownToHtml` below.
+ *
+ * This module is imported by client-side scripts as well as by the build, so it
+ * must never import firebase-admin at the top level - see the guarded dynamic
+ * import in `getBlogPosts`.
  */
 
 export interface BlogPost {
