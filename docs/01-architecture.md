@@ -39,7 +39,7 @@ The system combines static page generation (SSG) with dynamic serverless databas
 
 ## 3. Core Technical Decisions
 
-### A. Astro 5 Framework Choice
+### A. Astro 7 Framework Choice
 * **Why Astro?** Guia Negocios is a content-rich business portal. Astro ships zero JavaScript by default for static pages, resulting in perfect Google Lighthouse scores and superior mobile web performance.
 * **Island Architecture:** Interactive components (such as administrative forms or dynamic modals) are hydrated only when required.
 

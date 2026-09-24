@@ -11,9 +11,9 @@ The application routes are structured strictly into three domain sections:
 * `/en/index.astro` — Homepage featuring business value propositions, service highlights, and testimonials.
 * `/en/about.astro` — Company history, mission, vision, and team overview in Knoxville, TN.
 * `/en/services.astro` — Comprehensive listing of consultancy tiers and launch packages.
-* `/en/services/operations-growth.astro` — Tier 05 Operations & Growth Systems detailed service guide.
-* `/en/services/complete-launch-bundle.astro` — Tier 03 Complete Launch Bundle detailed service guide.
-* `/en/services/creedava-support.astro` — Tier 01 Business Support & Compliance guide.
+* `/en/services/operations-growth.astro` — Tier 06 Operations & Growth Systems detailed service guide.
+* `/en/services/complete-launch-bundle.astro` — Tier 05 Complete Business Launch Bundle detailed service guide.
+* `/en/services/creedava-support.astro` — Tier 07 CreedaVA Ongoing Support guide.
 * `/en/blog.astro` — Public blog feed listing published articles from Firestore.
 * `/en/blog/[slug].astro` — Dynamic article viewer rendering transformed markdown and Table of Contents.
 * `/en/contact.astro` — Consultation intake form and direct contact channels.
@@ -23,9 +23,9 @@ The application routes are structured strictly into three domain sections:
 * `/es/index.astro` — Página de inicio con propuesta de valor, servicios destacados y testimonios.
 * `/es/about.astro` — Historia de la empresa, misión, visión y equipo en Knoxville, TN.
 * `/es/services.astro` — Catálogo completo de servicios de consultoría y paquetes de lanzamiento.
-* `/es/services/operaciones-crecimiento.astro` — Guía detallada del servicio Operaciones y Crecimiento.
-* `/es/services/paquete-lanzamiento-completo.astro` — Guía detallada del Paquete de Lanzamiento Completo.
-* `/es/services/apoyo-creedava.astro` — Guía de Apoyo Empresarial y Cumplimiento.
+* `/es/services/operaciones-crecimiento.astro` — Tier 06, Guía detallada de Sistemas de Operación y Crecimiento.
+* `/es/services/paquete-lanzamiento-completo.astro` — Tier 05, Guía detallada del Paquete Completo de Lanzamiento.
+* `/es/services/apoyo-creedava.astro` — Tier 07, Guía de Apoyo Continuo con CreedaVA.
 * `/es/blog.astro` — Feed público del blog con artículos publicados desde Firestore.
 * `/es/blog/[slug].astro` — Visor dinámico de artículos con tabla de contenidos.
 * `/es/contact.astro` — Formulario de contacto y consulta de negocios.

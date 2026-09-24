@@ -1,6 +1,6 @@
 # Guia Negocios — Enterprise Platform Architecture & Codebase Guide
 
-[![Framework: Astro 5](https://img.shields.io/badge/Framework-Astro_v5-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
+[![Framework: Astro 7](https://img.shields.io/badge/Framework-Astro_v7-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
 [![Styling: Tailwind CSS v4](https://img.shields.io/badge/Styling-Tailwind_CSS_v4-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Database: Firebase Firestore](https://img.shields.io/badge/Database-Firebase_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![AI Integration: Gemini API](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
@@ -20,7 +20,7 @@ The application serves dual operational functions:
 
 ## System Architecture
 
-The project leverages a hybrid Jamstack architecture combining static site generation (SSG) via Astro 5 for ultra-fast performance, localized client hydration, and serverless real-time data persistence via Cloud Firestore and Firebase Cloud Functions.
+The project leverages a hybrid Jamstack architecture combining static site generation (SSG) via Astro 7 for ultra-fast performance, localized client hydration, and serverless real-time data persistence via Cloud Firestore and Firebase Cloud Functions.
 
 ### High-Level Architecture Diagram
 
