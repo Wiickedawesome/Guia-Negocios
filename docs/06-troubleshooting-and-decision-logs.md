@@ -5,7 +5,8 @@
 ### Issue 1: Firebase Permission Denied on Firestore Queries
 * **Symptom:** `FirebaseError: Missing or insufficient permissions` when fetching blog documents or saving in `/admin/blog/editor`.
 * **Cause:** `firestore.rules` is blocking access or authentication context is unverified.
-* **Fix:** Inspect `firestore.rules` and verify that `allow read: if true;` is enabled for published blog queries, and `allow read, write: if request.auth != null;` is enforced for administrative mutations.
+* **Fix:** Inspect `firestore.rules`. Public read is granted per collection (`blogs`, `landingPages`, `seoSchemas`), and unauthenticated **create** is granted for `contacts` / `notifications` / `mail`. Everything else is admin-only, and "admin" is an **email** check — `email.lower().matches('.*@guianegocios[.]net')` — not merely `request.auth != null`.
+* **Note:** `endsWith` is **not** a valid rules function and fails validation silently; use the `matches()` form above. Admin pages and the blog editor additionally depend on App Check being satisfied (see `docs/04-firebase-and-cms.md`).
 
 ### Issue 2: EasyMDE Editor Fails to Render on Astro Hydration
 * **Symptom:** Textarea displays as plain text without Markdown toolbars in `/admin/blog/editor`.

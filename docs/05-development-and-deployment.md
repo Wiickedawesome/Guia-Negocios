@@ -63,11 +63,22 @@ npm run build
 
 This command triggers `astro build`, compiling static HTML pages for all routes (`/en/*`, `/es/*`, `/admin/*`).
 
-### Build-time Firestore credentials (required)
+### Build-time Firestore credentials
 
-Blog posts, landing pages, and AEO schemas are read from Firestore **at build time**. Those reads run in Node, where the client SDK cannot obtain an App Check token, so the build uses the Firebase Admin SDK instead. Without a usable credential the build **fails on purpose** — previously it silently fell back to hardcoded content, which shipped only 4 of 8 posts and omitted every landing page.
+Blog posts, landing pages, AEO schemas and landing-page HTML are read from Firestore **at build time**. Those reads run in Node, where the client SDK cannot obtain a normal App Check token, so a second path is needed as well.
 
-Credentials are resolved in this order:
+Reads try **two paths in order** and fail loudly only if **both** fail:
+
+1. **Admin SDK** (`src/utils/admin-db.ts`) — used when a service-account credential is present.
+2. **Client SDK with an App Check debug token** — used when `APP_CHECK_DEBUG_TOKEN` is set and that token is registered in the Firebase console.
+
+**Neither path is mandatory, and that is deliberate.** Making the Admin SDK mandatory broke CI: the CI service account (`github-action-…@`) has no Firestore role, so `7 PERMISSION_DENIED`, build exit 1, and hosting stopped redeploying.
+
+> **CI is carried by the client-SDK fallback, not by the service account.** The workflow does pass `FIREBASE_SERVICE_ACCOUNT_KEY`, but that service account currently lacks a Firestore role, so the Admin SDK path fails there. The debug-token path is what actually builds in CI — evidenced by successive green `firebase-hosting-merge.yml` runs during the same period.
+>
+> **Do not repeat the "content was missing for months" story.** App Check is enforced, so build-time reads do fail *without* a debug token — but that describes **local builds only** (`.env` has no `APP_CHECK_DEBUG_TOKEN`). CI has the token. The live site was verified to hold the full content throughout. One real production defect did exist: one EN post was absent from the sitemap while `firebase.json` 301'd its Firestore slug to a URL that 404'd.
+
+Admin SDK credentials are resolved in this order:
 
 1. `FIREBASE_SERVICE_ACCOUNT_KEY` (or `FIREBASE_SERVICE_ACCOUNT_JSON`) — raw JSON or base64-encoded JSON. This is how CI supplies the key.
 2. `GOOGLE_APPLICATION_CREDENTIALS` — path to a service account JSON file.

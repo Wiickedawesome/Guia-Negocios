@@ -41,11 +41,11 @@ As an AI agent operating within the **Guia Negocios** workspace, you **MUST** st
 | :--- | :--- | :--- |
 | `src/layouts/BaseLayout.astro` | Main public site layout shell | Handles `<head>`, canonical URLs, `hreflang` tags, schema JSON-LD, header/footer slots |
 | `src/layouts/AdminLayout.astro` | Admin workspace layout shell | Handles sidebar navigation, user auth check, admin head metadata |
-| `src/lib/firebase.ts` | Centralized Firebase SDK setup | Exports `db` (Firestore) and `aiModel` (Gemini API) |
+| `src/lib/firebase.ts` | Centralized Firebase SDK setup | Exports `app`, `db` (Firestore), `auth`, `functions`, `appCheck`, and `ai` / `aiModel` (Gemini via Vertex AI) |
 | `src/utils/blog.ts` | Blog markdown processor | Contains `markdownToHtml` and `processHtmlForBlog` (Auto Table of Contents generator) |
 | `src/scripts/admin-utils.js` | Admin UI client helper library | Provides global window helpers `showToast()`, `showModal()`, `showConfirm()`, `simulateAction()` |
 | `src/pages/admin/blog/editor.astro` | Admin Markdown Blog Editor | Embeds EasyMDE instance and Gemini AI Copilot generator |
-| `functions/src/index.ts` | Firebase Cloud Functions | Serverless Node 20 TypeScript entrypoint |
+| `functions/src/index.ts` | Firebase Cloud Functions | Node.js 24 (2nd gen, `us-central1`) TypeScript entrypoint; `seo-schedules.ts` adds the scheduled/`seoAgentRun` functions |
 
 ---
 

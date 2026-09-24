@@ -49,8 +49,9 @@ The application routes are structured strictly into three domain sections:
 
 ### `BaseLayout.astro`
 Wraps all public pages.
-* **Props:** `title: string`, `description: string`
+* **Props:** `title: string`, `description: string`, `ogImage?: string`, `altPath?: string`, `noindex?: boolean`, `noTracking?: boolean`
 * **Features:** Injects canonical tags, bilingual `hreflang` metadata, OpenGraph tags, JSON-LD Schema.org metadata, header slot, and footer slot.
+* `noindex` defaults to `false` and is used only by `404.astro` — it reproduces the `noindex` that Astro adds to redirect pages, which the branded 404 page would otherwise lose.
 
 ### `AdminLayout.astro`
 Wraps all administrative dashboard pages.
@@ -63,4 +64,7 @@ Wraps all administrative dashboard pages.
 
 * `Header.astro`: Public header with desktop/mobile responsive navigation, language toggle (`EN` / `ES`), and quick contact CTA.
 * `Footer.astro`: Enterprise footer with localized links, service directory, address, and legal disclaimers.
-* `FaqAccordion.astro`: Accessible accordion component for frequently asked questions.
+* `FaqAccordion.astro`: Accessible accordion component for frequently asked questions. Rendered by **both** `/services` pages — if it is imported but not rendered the page still emits FAQPage schema with no visible FAQ, which is a structured-data violation.
+* `LegalDisclaimer.astro`: Legal-advice disclaimer. Takes no props and derives its language from the URL. Shown on the blog index, blog posts, both `/services` pages and the six service guides — deliberately **not** on the homepage.
+* `AeoInjector.astro`: Emits FAQPage JSON-LD from the `seoSchemas` collection. Rendered once by `BaseLayout`, so it runs on every public page; the homepage receives every active schema and other pages only keyword-matching ones.
+  * **Do not dedupe these schemas by keyword.** The generator stores each keyword under two documents (a space-form id and a hyphen-form id) which looks like duplication, but the pairs hold **different** questions — 32 unique across the 10 documents. Collapsing them silently deletes content. This has already been attempted and reverted twice.

@@ -4,7 +4,7 @@
 
 **Guia Negocios** is built using a modern Jamstack architecture designed for extreme performance, high search engine visibility (SEO), and low operational maintenance cost.
 
-The system combines static page generation (SSG) with dynamic serverless database persistence via Cloud Firestore and on-demand artificial intelligence capabilities via Google Gemini.
+The system combines static page generation (SSG) with dynamic serverless database persistence via Cloud Firestore and on-demand artificial intelligence via Gemini models served from **Vertex AI** (Firebase AI Logic in the browser; the Vertex `global` endpoint from Cloud Functions, because Gemini 3.x models 404 in regional locations such as `us-central1`).
 
 ---
 
@@ -25,13 +25,13 @@ The system combines static page generation (SSG) with dynamic serverless databas
                    │                                           │
                    │           ┌──────────────────┐            │
                    └──────────►│ Cloud Firestore  │◄───────────┘
-                               │ Database ('blogs')│
+                               │ blogs, seoSchemas│
                                └─────────┬────────┘
                                          │
                                          ▼
                                ┌──────────────────┐
-                               │  Google Gemini   │
-                               │  AI Model Engine │
+                               │ Gemini on Vertex │
+                               │  AI (global)     │
                                └──────────────────┘
 ```
 
