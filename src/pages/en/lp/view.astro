@@ -33,6 +33,11 @@ import Footer from '../../../components/Footer.astro';
   <script>
     import { db } from '../../../lib/firebase';
     import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+    // Content is injected with innerHTML below, so the handler is registered in
+    // the capture phase and covers forms that appear after load.
+    import { initLandingPageLeadForms } from '../../../scripts/lp-lead-form';
+
+    initLandingPageLeadForms();
 
     async function loadDynamicLandingPage() {
       const pathParts = window.location.pathname.split('/').filter(Boolean);

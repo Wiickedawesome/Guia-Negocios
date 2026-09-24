@@ -478,7 +478,11 @@ export const LANDING_PAGE_TEMPLATES = {
       </p>
     </div>
 
-    <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Descuento activado! Le enviaremos su confirmación por WhatsApp.');">
+    <!-- Submission is handled by src/scripts/lp-lead-form.ts, which the landing-page
+         renderers attach. Do not add an alert() here: it fired before the handler
+         ran and told the visitor their details were received even when the write
+         failed. -->
+    <form class="space-y-4" onsubmit="event.preventDefault();">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5" contenteditable="true">Nombre Completo</label>
@@ -527,7 +531,9 @@ export const LANDING_PAGE_TEMPLATES = {
       </p>
     </div>
 
-    <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Gracias! Nos comunicaremos con usted a la brevedad.');">
+    <!-- Submission is handled by src/scripts/lp-lead-form.ts. See the note on
+         form_promo above for why the alert() was removed. -->
+    <form class="space-y-4" onsubmit="event.preventDefault();">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5" contenteditable="true">Nombre Completo</label>
@@ -576,7 +582,9 @@ export const LANDING_PAGE_TEMPLATES = {
       </p>
     </div>
 
-    <form class="space-y-4" onsubmit="event.preventDefault(); alert('¡Cita solicitada! Le confirmaremos la hora exacta por mensaje.');">
+    <!-- Submission is handled by src/scripts/lp-lead-form.ts. See the note on
+         form_promo above for why the alert() was removed. -->
+    <form class="space-y-4" onsubmit="event.preventDefault();">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5" contenteditable="true">Nombre Completo</label>

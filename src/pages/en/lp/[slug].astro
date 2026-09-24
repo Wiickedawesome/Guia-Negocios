@@ -64,5 +64,12 @@ if (!lp) {
     <div class="landing-page-content max-w-6xl mx-auto space-y-6" set:html={lp.content} />
   </main>
 
+  <script>
+    // Landing-page forms live in raw HTML stored in Firestore, so lead capture
+    // is attached here instead of in the markup. See src/scripts/lp-lead-form.ts.
+    import { initLandingPageLeadForms } from '../../../scripts/lp-lead-form';
+    initLandingPageLeadForms();
+  </script>
+
   <Footer slot="footer" />
 </BaseLayout>
