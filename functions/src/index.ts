@@ -13,6 +13,58 @@ import { generateContentWithAi } from './ai.js';
 
 admin.initializeApp();
 
+// ── Admin authorization ──────────────────────────────────────────────
+// Cloud Functions are publicly invocable by default, so every admin-only
+// callable has to check the caller explicitly. This mirrors the isAdmin()
+// rule in firestore.rules and the email guard in AdminLayout.astro, so an
+// account that can already use the admin dashboard can also call these.
+// The regex is anchored at the end on purpose: '...@guianegocios.net.evil.com'
+// must not match.
+const ADMIN_EMAIL_PATTERN = /@guianegocios[.]net$/i;
+
+interface CallableRequest {
+  auth?: { uid?: string; token?: { email?: unknown } };
+}
+
+function isAdminCaller(request: CallableRequest): boolean {
+  const email = request.auth?.token?.email;
+  return typeof email === 'string' && ADMIN_EMAIL_PATTERN.test(email);
+}
+
+function assertAdmin(request: CallableRequest): void {
+  if (!isAdminCaller(request)) {
+    throw new HttpsError('permission-denied', 'Admin access required.');
+  }
+}
+
+// ── Public form intake limits ────────────────────────────────────────
+// submitContactForm is the one deliberately-public callable. App Check keeps
+// scripted abuse out, and these caps stop a single request from writing an
+// unbounded document into Firestore (firestore.rules only checks that the
+// required keys are present, not how large they are).
+const FIELD_LIMITS = {
+  name: 200,
+  email: 320,
+  phone: 40,
+  subject: 200,
+  message: 5000,
+} as const;
+
+function cleanString(value: unknown, field: keyof typeof FIELD_LIMITS): string {
+  if (typeof value !== 'string') return '';
+  return value.trim().slice(0, FIELD_LIMITS[field]);
+}
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // Load the service account if present, otherwise use ADC
 const keyFilename = path.join(__dirname, '../serviceAccount.json');
 const analyticsDataClient = fs.existsSync(keyFilename)
@@ -22,6 +74,7 @@ const analyticsDataClient = fs.existsSync(keyFilename)
 const PROPERTY_ID = '546623303';
 
 export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async (request) => {
+  assertAdmin(request);
   const rangeStr = request.data?.range || '30';
   let startDate = '30daysAgo';
   if (rangeStr === '90') startDate = '90daysAgo';
@@ -185,6 +238,7 @@ export const getAnalyticsData = onCall({ cors: true, invoker: 'public' }, async 
  * discoverKeywords fetches real autocomplete suggestions and trends.
  */
 export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async (request) => {
+  assertAdmin(request);
   try {
     const { topic, lang = 'en', existingKeywords = [] } = request.data || {};
     const existingSet = new Set((existingKeywords as string[]).map((k: string) => k.toLowerCase()));
@@ -247,6 +301,7 @@ export const discoverKeywords = onCall({ cors: true, invoker: 'public' }, async 
 
 // Advanced Single-Page SEO Audit Function
 export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (request) => {
+  assertAdmin(request);
   const { targetUrl } = request.data || {};
   
   if (!targetUrl) {
@@ -375,6 +430,7 @@ export const runSeoAudit = onCall({ cors: true, invoker: 'public' }, async (requ
 
 // ── Search Console Scanner ──
 export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async (request) => {
+  assertAdmin(request);
   const { phrase, existingKeywords = [] } = request.data || {};
   const existingSet = new Set((existingKeywords as string[]).map((k: string) => k.toLowerCase()));
 
@@ -502,6 +558,7 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public' }, async
 
 // ── Autonomous Site-Wide SEO Audit ──
 export const runSiteWideAudit = onCall({ cors: true, invoker: 'public', timeoutSeconds: 540, memory: '1GiB' }, async (request) => {
+  assertAdmin(request);
   return await internalSiteWideAudit();
 });
 
@@ -773,6 +830,7 @@ export const scheduledSeoAudit = onSchedule({
 
 // ── Backlink Verifier ──
 export const verifyBacklinks = onCall({ cors: true, invoker: 'public' }, async (request) => {
+  assertAdmin(request);
   return await internalVerifyBacklinks();
 });
 
@@ -855,6 +913,7 @@ export const scheduledVerifyBacklinks = onSchedule("every 48 hours", async (even
 
 // ── AI Link Building Outreach ──
 export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, async (request) => {
+  assertAdmin(request);
   try {
     const curatedOpportunities = [
       {
@@ -927,6 +986,7 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public' }, as
 });
 
 export const generateOnDemandReport = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
+  assertAdmin(request);
   return await internalGenerateReport(request.auth?.uid || 'admin');
 });
 
@@ -976,53 +1036,72 @@ async function internalGenerateReport(generatedBy: string = 'system') {
 }
 
 // ── Contact Form Handler ──
-export const submitContactForm = onCall({ cors: true, invoker: 'public' }, async (request) => {
-  try {
-    const { name, email, phone, subject, message } = request.data || {};
+// Intentionally public: this is the website's own intake endpoint. Nothing in
+// src/ calls it today (the contact page writes to Firestore directly), so
+// App Check enforcement cannot break a live UI path.
+export const submitContactForm = onCall(
+  { cors: true, invoker: 'public', enforceAppCheck: true },
+  async (request) => {
+    const name = cleanString(request.data?.name, 'name');
+    const email = cleanString(request.data?.email, 'email');
+    const phone = cleanString(request.data?.phone, 'phone');
+    const subject = cleanString(request.data?.subject, 'subject');
+    const message = cleanString(request.data?.message, 'message');
 
     if (!name || !email || !message) {
       throw new HttpsError('invalid-argument', 'Missing required fields.');
     }
+    if (!EMAIL_PATTERN.test(email)) {
+      throw new HttpsError('invalid-argument', 'Invalid email address.');
+    }
 
-    const db = getFirestore();
-    
-    await db.collection('contacts').add({
-      name,
-      email,
-      phone: phone || '',
-      subject: subject || '',
-      message,
-      createdAt: FieldValue.serverTimestamp()
-    });
+    try {
+      const db = getFirestore();
 
-    await db.collection('notifications').add({
-      title: 'Nuevo Mensaje de Contacto',
-      message: `${name} (${email}) — ${subject || 'Consulta'}`,
-      type: 'contact',
-      read: false,
-      link: '/admin/dashboard',
-      createdAt: FieldValue.serverTimestamp()
-    });
+      await db.collection('contacts').add({
+        name,
+        email,
+        phone,
+        subject,
+        message,
+        createdAt: FieldValue.serverTimestamp()
+      });
 
-    await db.collection('mail').add({
-      to: 'info@guianegocios.net',
-      message: {
-        subject: `New Lead from Guia Negocios: ${name} - ${subject}`,
-        text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${subject}\n\nMessage:\n${message}`,
-        html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Service:</strong> ${subject}</p><p><strong>Message:</strong><br/>${message}</p>`
-      },
-      createdAt: FieldValue.serverTimestamp()
-    });
+      await db.collection('notifications').add({
+        title: 'Nuevo Mensaje de Contacto',
+        message: `${name} (${email}) — ${subject || 'Consulta'}`,
+        type: 'contact',
+        read: false,
+        link: '/admin/dashboard',
+        createdAt: FieldValue.serverTimestamp()
+      });
 
-    return { success: true, message: 'Message sent successfully.' };
-  } catch (error: any) {
-    console.error("submitContactForm error:", error);
-    throw new HttpsError('internal', 'Failed to submit contact form.');
+      // Values are escaped before interpolation: this string is rendered as
+      // HTML by the email extension, and every field here is user input.
+      await db.collection('mail').add({
+        to: 'info@guianegocios.net',
+        message: {
+          subject: `New Lead from Guia Negocios: ${name} - ${subject}`,
+          text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${subject}\n\nMessage:\n${message}`,
+          html: `<p><strong>Name:</strong> ${escapeHtml(name)}</p><p><strong>Email:</strong> ${escapeHtml(email)}</p><p><strong>Phone:</strong> ${escapeHtml(phone)}</p><p><strong>Service:</strong> ${escapeHtml(subject)}</p><p><strong>Message:</strong><br/>${escapeHtml(message)}</p>`
+        },
+        createdAt: FieldValue.serverTimestamp()
+      });
+
+      return { success: true, message: 'Message sent successfully.' };
+    } catch (error: any) {
+      // Let deliberate validation errors reach the caller instead of masking
+      // every failure as 'internal'.
+      if (error instanceof HttpsError) throw error;
+      console.error("submitContactForm error:", error);
+      throw new HttpsError('internal', 'Failed to submit contact form.');
+    }
   }
-});
+);
 
 // ── AI Content Generator (Server-Side Vertex AI / Fallback) ──
 export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120 }, async (request) => {
+  assertAdmin(request);
   const { prompt, temperature, model: requestedModel } = request.data || {};
   if (!prompt) {
     throw new HttpsError('invalid-argument', 'Prompt is required.');
