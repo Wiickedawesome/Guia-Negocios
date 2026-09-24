@@ -225,7 +225,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const kwEl = document.getElementById('dash-metric-keywords');
         if (kwEl) kwEl.innerText = keywordsSnap.data().count.toString();
         
-        // 1b. New Keywords (last 7 days)
         // 2. SEO Score (latest audit from seoAudits collection)
         let seoScoreVal: number | null = null;
 
