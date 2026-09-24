@@ -90,27 +90,11 @@ Si está planeando lanzar o formalizar un negocio en los Estados Unidos desde La
 Muchas personas asumen erróneamente que para tener una empresa registrada en EE.UU. y contar con una cuenta bancaria comercial es obligatorio ser ciudadano estadounidense o residir físicamente en el país. **Esto es completamente falso.** El marco regulatorio del IRS y las leyes corporativas de estados como Tennessee permiten expresamente a ciudadanos extranjeros y residentes sin SSN fundar empresas y obtener identificación tributaria comercial sin restricciones territoriales.
 
 <div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
-<div class="flex items-center justify-between mb-6">
-<h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+<div class="flex items-center gap-2 mb-4">
 <span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
-Impacto Económico del Emprendimiento Latino en EE.UU.
-</h4>
-<span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">Datos Oficiales SBA / SLEI</span>
+<h4 class="text-base sm:text-lg font-bold text-white">Impacto Económico del Emprendimiento Latino en EE.UU.</h4>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-[#F0C850] mb-1">178%</div>
-<div class="text-xs text-slate-300 font-medium">Tasa de Creación de Nuevas Empresas Hispanas</div>
-</div>
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-emerald-400 mb-1">$653B</div>
-<div class="text-xs text-slate-300 font-medium">Aporte Anual Bruto a la Economía Estadounidense</div>
-</div>
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-blue-400 mb-1">5M+</div>
-<div class="text-xs text-slate-300 font-medium">Negocios Registrados Propiedad de Hispanos</div>
-</div>
-</div>
+<p class="text-sm text-slate-300 leading-relaxed">Las cifras de aportación económica y de número de negocios hispanos cambian cada año y dependen de la metodología de cada estudio. Antes de usar una cifra en su plan de negocios o en una solicitud de financiamiento, consulte la fuente oficial más reciente: el <a href="https://www.census.gov" class="text-[#F0C850] underline">U.S. Census Bureau (Annual Business Survey)</a> y la <a href="https://www.sba.gov" class="text-[#F0C850] underline">SBA Office of Advocacy</a>.</p>
 </div>
 
 Para capitalizar esta extraordinaria oportunidad económica, es imperativo establecer una estructura corporativa sólida. En esta guía exhaustiva le explicamos cómo funciona el EIN para **no residentes y emprendedores hispanos**, cómo obtenerlo paso a paso directamente ante el IRS y los errores fiscales más costosos que debe evitar.
@@ -243,27 +227,11 @@ If you are planning to launch or formalize a business in the United States from 
 Many entrepreneurs mistakenly assume that registering a U.S. company and opening a commercial bank account requires U.S. citizenship or physical residency. **This is completely false.** U.S. federal tax codes and state commercial statutes in states like Tennessee expressly permit non-resident aliens and ITIN holders to establish companies and secure business tax identification numbers.
 
 <div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
-<div class="flex items-center justify-between mb-6">
-<h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+<div class="flex items-center gap-2 mb-4">
 <span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
-Latino Business Economic Contribution in the U.S.
-</h4>
-<span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">Official SBA & SLEI Data</span>
+<h4 class="text-base sm:text-lg font-bold text-white">Latino Business Economic Contribution in the U.S.</h4>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-[#F0C850] mb-1">178%</div>
-<div class="text-xs text-slate-300 font-medium">New Hispanic Business Creation Rate</div>
-</div>
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-emerald-400 mb-1">$653B</div>
-<div class="text-xs text-slate-300 font-medium">Annual Revenue Generated for the U.S. Economy</div>
-</div>
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-blue-400 mb-1">5M+</div>
-<div class="text-xs text-slate-300 font-medium">Active Latino-Owned Businesses in the U.S.</div>
-</div>
-</div>
+<p class="text-sm text-slate-300 leading-relaxed">Economic contribution and business-count figures change every year and differ by methodology. Before quoting a number in a business plan or a lending application, check the current official source: the <a href="https://www.census.gov" class="text-[#F0C850] underline">U.S. Census Bureau (Annual Business Survey)</a> and the <a href="https://www.sba.gov" class="text-[#F0C850] underline">SBA Office of Advocacy</a>.</p>
 </div>
 
 In this comprehensive guide, we explain how the EIN works for **non-resident clients and Hispanic entrepreneurs**, step-by-step procedures to obtain it directly from the IRS, and critical tax mistakes to avoid.
@@ -393,27 +361,11 @@ Iniciar un negocio formal en los Estados Unidos es uno de los pasos más trascen
 Ya sea que opere en jardinería, contratista de construcción, servicios de limpieza comercial, restaurantes, camiones de comida (food trucks) o consultoría digital, registrar su LLC establece una barrera legal infranqueable entre las obligaciones comerciales y su patrimonio personal.
 
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
-<div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-<div class="flex items-center gap-2">
+<div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
 <span class="w-3 h-3 rounded-full bg-[#1B4E2B]"></span>
-<h4 class="text-base font-bold text-[#1A2E35]">Tasa de Supervivencia y Éxito de Pequeños Negocios en TN</h4>
+<h4 class="text-base font-bold text-[#1A2E35]">Supervivencia de Pequeños Negocios en Tennessee</h4>
 </div>
-<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">Datos SBA / Tennessee DoR</span>
-</div>
-<div class="space-y-3.5">
-<div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-slate-600"><span>Operación Informal (Sin Registro Legal ni EIN)</span><span>30% Tasa de Supervivencia a 3 Años</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-400 rounded-full" style="width: 30%;"></div></div>
-</div>
-<div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#2563EB]"><span>Registro Básico sin Asesoría Local de Knox County</span><span>62% Tasa de Supervivencia</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#2563EB] rounded-full" style="width: 62%;"></div></div>
-</div>
-<div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>Estructura Integral Guia Negocios (LLC + EIN + Licencias + Cuenta Bancaria)</span><span>89% Tasa de Éxito (+196%)</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 89%;"></div></div>
-</div>
-</div>
+<p class="text-sm text-slate-600 leading-relaxed">No publicamos tasas de supervivencia ni de éxito por segmento: esas cifras dependen de la definición de "éxito", del periodo medido y de la fuente, y no tenemos datos propios verificados de resultados de clientes. Para cifras oficiales consulte el <a href="https://www.sba.gov" class="text-[#1B4E2B] underline">SBA Office of Advocacy</a> y el <a href="https://www.tn.gov/revenue.html" class="text-[#1B4E2B] underline">Departamento de Ingresos de Tennessee</a>.</p>
 </div>
 
 Para garantizar que su emprendimiento comience con el pie derecho, hemos diseñado esta guía paso a paso con todos los requisitos estatales de Tennessee y las regulaciones locales del Condado de Knox.
@@ -541,27 +493,11 @@ Starting a formal business in the United States is one of the most powerful step
 Whether launching a construction trade business, commercial cleaning crew, restaurant, food truck, or digital advisory firm, an LLC constructs an unbreakable corporate shield separating business liabilities from personal family assets.
 
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
-<div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
-<div class="flex items-center gap-2">
+<div class="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
 <span class="w-3 h-3 rounded-full bg-[#1B4E2B]"></span>
-<h4 class="text-base font-bold text-[#1A2E35]">Small Business 3-Year Survival Rates in Tennessee</h4>
+<h4 class="text-base font-bold text-[#1A2E35]">Small Business Survival Rates in Tennessee</h4>
 </div>
-<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">SBA & Tennessee DoR Data</span>
-</div>
-<div class="space-y-3.5">
-<div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-slate-600"><span>Informal Operation (No Legal Entity or EIN)</span><span>30% Survival Rate</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-400 rounded-full" style="width: 30%;"></div></div>
-</div>
-<div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#2563EB]"><span>DIY Entity Registration (Missing Local Knox County Filings)</span><span>62% Survival Rate</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#2563EB] rounded-full" style="width: 62%;"></div></div>
-</div>
-<div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>Comprehensive Guia Negocios Setup (LLC + EIN + TNTAP + Banking)</span><span>89% Survival Rate (+196%)</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 89%;"></div></div>
-</div>
-</div>
+<p class="text-sm text-slate-600 leading-relaxed">We do not publish survival or success rates by segment. Those figures depend on how "success" is defined, on the period measured, and on the source, and we hold no verified client-outcome data of our own. For official figures see the <a href="https://www.sba.gov" class="text-[#1B4E2B] underline">SBA Office of Advocacy</a> and the <a href="https://www.tn.gov/revenue.html" class="text-[#1B4E2B] underline">Tennessee Department of Revenue</a>.</p>
 </div>
 
 To ensure your business launches seamlessly, this guide delivers a comprehensive breakdown of Tennessee state statutes and local Knox County compliance requirements.
@@ -1310,27 +1246,11 @@ Don't leave money on the table. Many Hispanic entrepreneurs lose between \$2,000
 ---
 
 <div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
-<div class="flex items-center justify-between mb-6">
-<h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+<div class="flex items-center gap-2 mb-4">
 <span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
-El ITIN en Cifras
-</h4>
-<span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">IRS 2025</span>
+<h4 class="text-base sm:text-lg font-bold text-white">El ITIN y los créditos fiscales</h4>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-[#F0C850] mb-1">5M+</div>
-<div class="text-xs text-slate-300 font-medium">ITINs Activos en EE.UU.</div>
-</div>
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-emerald-400 mb-1">\$7,830</div>
-<div class="text-xs text-slate-300 font-medium">Crédito EITC Máximo (3 hijos)</div>
-</div>
-<div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-blue-400 mb-1">\$2,000</div>
-<div class="text-xs text-slate-300 font-medium">CTC por Hijo Menor de 17</div>
-</div>
-</div>
+<p class="text-sm text-slate-300 leading-relaxed">Los montos de créditos fiscales y las reglas de elegibilidad se actualizan cada año fiscal. No publicamos cifras fijas aquí para que no trabaje con un número desactualizado. Verifique el monto máximo vigente y su elegibilidad en el <a href="https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit-eitc" class="text-[#F0C850] underline">EITC del IRS</a> y el <a href="https://www.irs.gov/credits-deductions/individuals/child-tax-credit" class="text-[#F0C850] underline">Crédito por Hijos del IRS</a> para el año de impuestos que corresponda.</p>
 </div>
 
 ---

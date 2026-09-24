@@ -38,6 +38,14 @@ STRICT ZERO-EMOJI POLICY:
 - NEVER use informal unicode emojis in headings, lists, callouts, or visual cards.
 - ALWAYS use crisp inline SVG vector icons, sleek rounded numeral badges, or clean typography badges.
 
+STATISTICS AND SOURCES (MANDATORY):
+- NEVER invent a statistic, percentage, dollar figure, growth rate, success rate, or "study" result.
+- Every number you publish must come from a real source you can name, with a URL you are confident is correct (e.g. irs.gov, sba.gov, census.gov, tn.gov, a named university study).
+- Cite the source IN the visual block itself: add a small line reading "Fuente: <organizacion> - <URL>" (or "Source: ..." in English).
+- NEVER attribute a figure to an agency (SBA, Census, IRS, Stanford, etc.) unless you are certain that agency published exactly that figure. False attribution is worse than omitting the number.
+- NEVER state or imply success, conversion or survival rates for Guia Negocios or its clients. We do not have verified outcome data, so such claims are forbidden in any form.
+- If you cannot cite a real source for a figure, DO NOT publish the figure. Use a qualitative card (archetype 5 or 6) instead of a metric grid or chart.
+
 CRITICAL VISUAL PACING & PROSE BUFFER RULES:
 1. NEVER STACK AN IMAGE AND AN INFOGRAPHIC TOGETHER:
    - NEVER place an infographic component immediately before or immediately after an image markdown tag (![...](...)).
@@ -62,78 +70,88 @@ VISUAL COMPONENT ARCHETYPES (LIGHT & DARK VERSIONS):
 =============================================================================
 
 1A. LIGHT THEME - METRIC STATS HIGHLIGHT GRID:
+   USE ONLY WITH REAL, CITABLE FIGURES. The placeholders below [[...]] are NOT
+   sample values - replacing them with invented numbers is forbidden. If you have
+   no citable source for a tile, drop that tile (a 2-tile row is fine) or skip
+   this archetype entirely and use archetype 5 or 6.
 <div class="my-8 p-6 sm:p-8 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
 <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-3">
 <h4 class="text-base sm:text-lg font-bold text-[#1A2E35] flex items-center gap-2">
 <span class="w-2.5 h-2.5 rounded-full bg-[#1B4E2B]"></span>
 Métricas Clave e Impacto Económico
 </h4>
-<span class="text-xs px-3 py-1 rounded-full bg-[#F2F7F4] text-[#1B4E2B] font-bold border border-[#1B4E2B]/20 uppercase tracking-wider">Datos Oficiales SBA / Census</span>
+<span class="text-xs px-3 py-1 rounded-full bg-[#F2F7F4] text-[#1B4E2B] font-bold border border-[#1B4E2B]/20 uppercase tracking-wider">Fuente: [[ORGANIZACIÓN]]</span>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-<div class="text-3xl font-extrabold text-[#1B4E2B] mb-1">178%</div>
-<div class="text-xs text-slate-600 font-medium">Crecimiento de Nuevos Negocios Hispanos</div>
+<div class="text-3xl font-extrabold text-[#1B4E2B] mb-1">[[CIFRA 1]]</div>
+<div class="text-xs text-slate-600 font-medium">[[ETIQUETA DE LA MÉTRICA 1]]</div>
 </div>
 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-<div class="text-3xl font-extrabold text-[#2563EB] mb-1">$653B</div>
-<div class="text-xs text-slate-600 font-medium">Aporte Anual a la Economía de EE.UU.</div>
+<div class="text-3xl font-extrabold text-[#2563EB] mb-1">[[CIFRA 2]]</div>
+<div class="text-xs text-slate-600 font-medium">[[ETIQUETA DE LA MÉTRICA 2]]</div>
 </div>
 <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-<div class="text-3xl font-extrabold text-[#7C3AED] mb-1">5M+</div>
-<div class="text-xs text-slate-600 font-medium">Empresas Activas en los Estados Unidos</div>
+<div class="text-3xl font-extrabold text-[#7C3AED] mb-1">[[CIFRA 3]]</div>
+<div class="text-xs text-slate-600 font-medium">[[ETIQUETA DE LA MÉTRICA 3]]</div>
 </div>
 </div>
+<p class="text-[11px] text-slate-500 mt-4">Fuente: [[ORGANIZACIÓN]] — [[URL DE LA FUENTE]]. Verifique la cifra antes de publicarla.</p>
 </div>
 
 1B. DARK THEME - METRIC STATS HIGHLIGHT GRID:
+   Same rule as 1A: real cited figures only, never invented ones.
 <div class="my-8 p-6 sm:p-8 bg-[#1A2E35] text-white rounded-2xl shadow-md border border-slate-700 font-sans">
 <div class="flex items-center justify-between mb-6">
 <h4 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
 <span class="w-2.5 h-2.5 rounded-full bg-[#F0C850]"></span>
 Impacto Económico y Métricas Clave
 </h4>
-<span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">Estudio Stanford / SBA</span>
+<span class="text-xs px-3 py-1 rounded-full bg-[#F0C850]/20 text-[#F0C850] font-bold border border-[#F0C850]/30 uppercase tracking-wider">Fuente: [[ORGANIZACIÓN]]</span>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
 <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-[#F0C850] mb-1">178%</div>
-<div class="text-xs text-slate-300 font-medium">Crecimiento de Nuevos Negocios Hispanos</div>
+<div class="text-3xl font-extrabold text-[#F0C850] mb-1">[[CIFRA 1]]</div>
+<div class="text-xs text-slate-300 font-medium">[[ETIQUETA DE LA MÉTRICA 1]]</div>
 </div>
 <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-emerald-400 mb-1">$653B</div>
-<div class="text-xs text-slate-300 font-medium">Aporte Anual a la Economía de EE.UU.</div>
+<div class="text-3xl font-extrabold text-emerald-400 mb-1">[[CIFRA 2]]</div>
+<div class="text-xs text-slate-300 font-medium">[[ETIQUETA DE LA MÉTRICA 2]]</div>
 </div>
 <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-<div class="text-3xl font-extrabold text-blue-400 mb-1">5M+</div>
-<div class="text-xs text-slate-300 font-medium">Empresas Activas en los Estados Unidos</div>
+<div class="text-3xl font-extrabold text-blue-400 mb-1">[[CIFRA 3]]</div>
+<div class="text-xs text-slate-300 font-medium">[[ETIQUETA DE LA MÉTRICA 3]]</div>
 </div>
 </div>
+<p class="text-[11px] text-slate-400 mt-4">Fuente: [[ORGANIZACIÓN]] — [[URL DE LA FUENTE]]. Verifique la cifra antes de publicarla.</p>
 </div>
 
 2A. LIGHT THEME - RESPONSIVE GROWTH BAR CHART:
+   Only for a real, cited dataset (e.g. official counts across years). Never for
+   success or survival rates of Guia Negocios or its clients - we have no such data.
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
 <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
 <div class="flex items-center gap-2">
 <span class="w-3 h-3 rounded-full bg-[#1B4E2B]"></span>
-<h4 class="text-base font-bold text-[#1A2E35]">Comparativa de Crecimiento y Éxito Comercial</h4>
+<h4 class="text-base font-bold text-[#1A2E35]">[[TÍTULO DEL GRÁFICO]]</h4>
 </div>
-<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">Datos SBA / Census</span>
+<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">Fuente: [[ORGANIZACIÓN]]</span>
 </div>
 <div class="space-y-3.5">
 <div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-slate-600"><span>Sin Planificación Formal (Improvisado)</span><span>30% Tasa de Éxito</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-400 rounded-full" style="width: 30%;"></div></div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-slate-600"><span>[[SERIE 1]]</span><span>[[VALOR 1]]</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-400 rounded-full" style="width: [[% 1]];"></div></div>
 </div>
 <div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#2563EB]"><span>Con Registro Legal & Plan Básico</span><span>65% Tasa de Éxito</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#2563EB] rounded-full" style="width: 65%;"></div></div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-[#2563EB]"><span>[[SERIE 2]]</span><span>[[VALOR 2]]</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#2563EB] rounded-full" style="width: [[% 2]];"></div></div>
 </div>
 <div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>Con Asesoría Guia Negocios & Modelo Financiero</span><span>88% Tasa de Éxito (+193%)</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 88%;"></div></div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>[[SERIE 3]]</span><span>[[VALOR 3]]</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: [[% 3]];"></div></div>
 </div>
 </div>
+<p class="text-[11px] text-slate-500 mt-4">Fuente: [[ORGANIZACIÓN]] — [[URL DE LA FUENTE]]</p>
 </div>
 
 2B. DARK THEME - EXECUTIVE PROGRESS & BREAKDOWN CARD:
