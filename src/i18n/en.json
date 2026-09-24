@@ -2,7 +2,6 @@
   "site": {
     "title": "GUIA NEGOCIOS",
     "metaTitle": "GUIA NEGOCIOS — Bilingual Small Business Consulting in Knoxville, TN",
-    "tagline": "Bilingual Small Business Consulting",
     "description": "Bilingual business consulting for entrepreneurs and small businesses in Knoxville, TN. LLC setup, branding, websites, and bookkeeping — all in English and Spanish."
   },
   "nav": {
@@ -11,24 +10,18 @@
     "about": "About",
     "contact": "Contact",
     "blog": "Blog",
-    "faq": "FAQ",
-    "login": "Login"
+    "faq": "FAQ"
   },
   "home": {
     "hero": {
       "title": "Launch Your Business with Confidence",
       "subtitle": "Bilingual business consulting for entrepreneurs and small business owners in Knoxville, TN. Our approach is to work side-by-side with you to launch, organize, and grow your business.",
       "cta": "Get Started Today"
-    },
-    "services": {
-      "title": "Our Services",
-      "subtitle": "Comprehensive support for every stage of your business"
     }
   },
   "services": {
     "title": "Bilingual Business Consulting in Knoxville, TN | LLC Setup, EIN & Branding",
     "metaDescription": "Bilingual business services in Knoxville, TN for Hispanic entrepreneurs. LLC formation, EIN without SSN, bookkeeping, branding & websites. Call (865) 202-7112.",
-    "subtitle": "Practical support in English and Spanish to take your business from idea to launch and beyond.",
     "coreHeading": "Core Launch Packages",
     "advancedHeading": "Advanced Growth & Launch Bundles",
     "alacarteHeading": "À La Carte Services",
@@ -73,20 +66,9 @@
       "description": "Ongoing virtual assistance, administrative support, customer communication, CRM, and project coordination."
     }
   },
-  "contact": {
-    "title": "Contact Us",
-    "form": {
-      "name": "Your Name",
-      "email": "Email Address",
-      "phone": "Phone Number",
-      "message": "Your Message",
-      "submit": "Send Message"
-    }
-  },
   "blog": {
     "title": "Blog & Resources",
-    "readMore": "Read More",
-    "share": "Share this post"
+    "readMore": "Read More"
   },
   "footer": {
     "copyright": "© 2026 GUIA NEGOCIOS. All rights reserved.",

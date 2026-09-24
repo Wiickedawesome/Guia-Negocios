@@ -139,6 +139,56 @@
         "source": "/en/blog/how-to-build-business-credit",
         "destination": "/en/blog/how-to-build-business-credit-united-states/",
         "type": 301
+      },
+      {
+        "source": "/es/services/llc-para-extranjeros-sin-ssn{,/**}",
+        "destination": "/es/blog/como-abrir-llc-estados-unidos-sin-ssn/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/eitc-itin-creditos-impuestos{,/**}",
+        "destination": "/es/blog/itin-creditos-impuestos-negocios/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/contabilidad-para-restaurantes{,/**}",
+        "destination": "/es/blog/contabilidad-para-restaurantes-guia-completa/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/licencia-comercial-knoxville{,/**}",
+        "destination": "/es/blog/licencia-comercial-knoxville-guia-paso-a-paso/",
+        "type": 301
+      },
+      {
+        "source": "/es/services/cuenta-bancaria-para-negocio{,/**}",
+        "destination": "/es/blog/cuenta-bancaria-para-negocio-guia-practica/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/llc-para-extranjeros-sin-ssn{,/**}",
+        "destination": "/en/blog/how-to-open-llc-in-us-without-ssn/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/eitc-itin-creditos-impuestos{,/**}",
+        "destination": "/en/blog/itin-tax-credits-business-owners/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/contabilidad-para-restaurantes{,/**}",
+        "destination": "/en/blog/restaurant-accounting-complete-guide/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/licencia-comercial-knoxville{,/**}",
+        "destination": "/en/blog/knoxville-business-license-step-by-step-guide/",
+        "type": 301
+      },
+      {
+        "source": "/en/services/cuenta-bancaria-para-negocio{,/**}",
+        "destination": "/en/blog/business-bank-account-practical-guide/",
+        "type": 301
       }
     ]
   }

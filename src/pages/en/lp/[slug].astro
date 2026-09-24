@@ -61,9 +61,9 @@ if (!lp) {
 <BaseLayout title={`${lp.title} | GUIA NEGOCIOS`} description={lp.metaDesc || ''} ogImage={lp.ogImage || ''}>
   <Header slot="header" />
   
-  <main class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
     <div class="landing-page-content max-w-6xl mx-auto space-y-6" set:html={stripEditorAttributes(lp.content)} />
-  </main>
+  </div>
 
   <script>
     // Landing-page forms live in raw HTML stored in Firestore, so lead capture

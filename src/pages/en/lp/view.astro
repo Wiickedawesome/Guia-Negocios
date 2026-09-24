@@ -4,7 +4,7 @@ import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 ---
 
-<BaseLayout title="Landing Page | Guia Negocios" description="Business consulting services for entrepreneurs.">
+<BaseLayout title="Landing Page | Guia Negocios" description="Business consulting services for entrepreneurs." noindex>
   <Header slot="header" />
 
   <!-- Loading State -->
@@ -24,9 +24,9 @@ import Footer from '../../../components/Footer.astro';
   </div>
 
   <!-- Live Dynamic Landing Page Content -->
-  <main id="lp-live-container" class="hidden min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div id="lp-live-container" class="hidden min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
     <div id="lp-content-body" class="max-w-6xl mx-auto space-y-6"></div>
-  </main>
+  </div>
 
   <Footer slot="footer" />
 
@@ -65,8 +65,9 @@ import Footer from '../../../components/Footer.astro';
         if (docSnap.exists()) {
           lpData = docSnap.data();
         } else {
-          // Query by slug field
-          const q = query(lpRef, where('slug', '==', slug));
+          // Query by slug field. Scoped to this viewer's language - without the
+          // lang filter an EN URL could resolve an ES document sharing the slug.
+          const q = query(lpRef, where('slug', '==', slug), where('lang', '==', 'en'));
           const snap = await getDocs(q);
           if (!snap.empty) {
             lpData = snap.docs[0].data();

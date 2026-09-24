@@ -10,7 +10,7 @@ import Footer from '../components/Footer.astro';
        language toggle would otherwise point at /404/ and dead-end. -->
   <Header slot="header" altPath="/en/" />
 
-  <main class="min-h-[70vh] flex items-center justify-center bg-slate-50 px-4 py-20">
+  <div class="min-h-[70vh] flex items-center justify-center bg-slate-50 px-4 py-20">
     <div class="max-w-md w-full text-center">
       <div class="w-20 h-20 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center font-extrabold text-3xl mx-auto mb-6">
         404
@@ -28,7 +28,7 @@ import Footer from '../components/Footer.astro';
         </a>
       </div>
     </div>
-  </main>
+  </div>
 
   <Footer slot="footer" />
 
@@ -74,6 +74,26 @@ import Footer from '../components/Footer.astro';
         toggles[i].setAttribute('href', '/');
         toggles[i].setAttribute('aria-label', 'Switch to Spanish');
         toggles[i].textContent = 'ES';
+      }
+
+      // Same problem for the navigation itself: it is rendered in Spanish, so on
+      // an /en/ URL every nav link would send the visitor back into the Spanish
+      // site. Rewrite both the label and the target for each of the five items,
+      // in the desktop nav and the mobile panel alike.
+      var navMap = {
+        'Inicio': { text: 'Home', href: '/en' },
+        'Servicios': { text: 'Services', href: '/en/services' },
+        'Sobre Nosotros': { text: 'About', href: '/en/about' },
+        'Contacto': { text: 'Contact', href: '/en/contact' },
+        'Blog': { text: 'Blog', href: '/en/blog' }
+      };
+
+      var navLinks = document.querySelectorAll('header nav a, #mobile-menu a');
+      for (var n = 0; n < navLinks.length; n++) {
+        var entry = navMap[navLinks[n].textContent.trim()];
+        if (!entry) continue;
+        navLinks[n].textContent = entry.text;
+        navLinks[n].setAttribute('href', entry.href);
       }
     })();
   </script>

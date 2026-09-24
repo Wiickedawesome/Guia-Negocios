@@ -2,7 +2,6 @@
   "site": {
     "title": "GUIA NEGOCIOS",
     "metaTitle": "GUIA NEGOCIOS — Consultoría de Negocios Bilingüe en Knoxville, TN",
-    "tagline": "Consultoría de Negocios Bilingüe",
     "description": "Consultoría de negocios bilingüe para emprendedores y pequeñas empresas en Knoxville, TN. Registro LLC, marca, sitios web y contabilidad — todo en español e inglés."
   },
   "nav": {
@@ -11,24 +10,18 @@
     "about": "Sobre Nosotros",
     "contact": "Contacto",
     "blog": "Blog",
-    "faq": "Preguntas Frecuentes",
-    "login": "Iniciar Sesión"
+    "faq": "Preguntas Frecuentes"
   },
   "home": {
     "hero": {
       "title": "Lanza Tu Negocio con Confianza",
       "subtitle": "Consultoría de negocios bilingüe para emprendedores y dueños de empresas en Knoxville, TN. Nuestro enfoque es trabajar codo a codo con usted para lanzar, organizar y hacer crecer su negocio.",
       "cta": "Comienza Hoy"
-    },
-    "services": {
-      "title": "Nuestros Servicios",
-      "subtitle": "Apoyo integral para cada etapa de tu negocio"
     }
   },
   "services": {
     "title": "Consultoría de Negocios Bilingüe en Knoxville, TN | LLC, EIN y Branding",
     "metaDescription": "Servicios bilingües para emprendedores hispanos en Knoxville, TN. Registro LLC, EIN sin SSN, contabilidad, branding y sitios web. Llama al (865) 202-7112.",
-    "subtitle": "Apoyo práctico en español e inglés para llevar su negocio de la idea al lanzamiento y más allá.",
     "coreHeading": "Paquetes Principales de Lanzamiento",
     "advancedHeading": "Paquetes Avanzados de Crecimiento y Lanzamiento",
     "alacarteHeading": "Servicios A La Carta",
@@ -73,20 +66,9 @@
       "description": "Asistencia virtual continua, apoyo administrativo, atención al cliente, CRM y coordinación de proyectos."
     }
   },
-  "contact": {
-    "title": "Contáctanos",
-    "form": {
-      "name": "Su Nombre",
-      "email": "Correo Electrónico",
-      "phone": "Número de Teléfono",
-      "message": "Tu Mensaje",
-      "submit": "Enviar Mensaje"
-    }
-  },
   "blog": {
     "title": "Blog y Recursos",
-    "readMore": "Leer Más",
-    "share": "Compartir esta publicación"
+    "readMore": "Leer Más"
   },
   "footer": {
     "copyright": "© 2026 GUIA NEGOCIOS. Todos los derechos reservados.",

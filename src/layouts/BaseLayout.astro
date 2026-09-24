@@ -192,13 +192,7 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
             "@type": "PostalAddress",
             "addressLocality": "Knoxville",
             "addressRegion": "TN",
-            "postalCode": "37902",
             "addressCountry": "US"
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 35.9606,
-            "longitude": -83.9207
           },
           "areaServed": [
             {
@@ -248,8 +242,9 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
           },
           "description": description,
           "sameAs": [
-            "https://www.facebook.com/guianegociosknoxville",
+            "https://www.facebook.com/profile.php?id=61593296305502",
             "https://www.instagram.com/guianegocios",
+            "https://www.linkedin.com/company/guia-negocios",
             "https://www.yelp.com/biz/guia-negocios-knoxville"
           ],
           "hasOfferCatalog": {
@@ -365,8 +360,12 @@ const xDefaultUrl = esUrl; // Contextual default primary language (Spanish versi
     <AeoInjector />
   </head>
   <body class="bg-slate-50 text-slate-900 font-body antialiased flex flex-col min-h-screen">
+    <!-- Keyboard users need a way past the nav. Visible only when focused. -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-brand-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">
+      {lang === 'en' ? 'Skip to main content' : 'Saltar al contenido principal'}
+    </a>
     <slot name="header" />
-    <main class="flex-grow">
+    <main id="main-content" class="flex-grow">
       <slot />
     </main>
     <slot name="footer" />

@@ -7,7 +7,7 @@ import { useTranslations } from '../../../i18n/utils';
 const t = useTranslations('es');
 ---
 
-<BaseLayout title="Blog | Guia Negocios" description="Artículos y guías para emprendedores hispanos en EE.UU.">
+<BaseLayout title="Blog | Guia Negocios" description="Artículos y guías para emprendedores hispanos en EE.UU." noindex>
   <Header slot="header" />
 
   <!-- Dynamic Post Container (Loaded via Client-side JS from Firestore) -->
@@ -73,7 +73,7 @@ const t = useTranslations('es');
           </aside>
 
           <!-- Center: Article Body -->
-          <main class="w-full lg:flex-1 min-w-0">
+          <div class="w-full lg:flex-1 min-w-0">
             <div class="bg-white p-6 md:p-10 lg:p-12 rounded-2xl border border-slate-200 shadow-sm">
               <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
                 <div id="post-html-body" class="blog-content"></div>
@@ -100,7 +100,7 @@ const t = useTranslations('es');
                 <!-- Dynamically rendered -->
               </div>
             </div>
-          </main>
+          </div>
         </div>
       </div>
     </div>

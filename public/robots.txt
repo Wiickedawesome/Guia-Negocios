@@ -41,6 +41,12 @@ User-agent: Amazonbot
 Allow: /
 Disallow: /admin/
 Disallow: /admin/*
+Disallow: /en/lp/empty
+Disallow: /es/lp/empty
+Disallow: /en/lp/view
+Disallow: /es/lp/view
+Disallow: /en/blog/view
+Disallow: /es/blog/view
 
 # XML Sitemaps
 Sitemap: https://guianegocios.net/sitemap-index.xml

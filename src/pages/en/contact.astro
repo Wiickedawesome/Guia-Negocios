@@ -139,8 +139,9 @@ const t = useTranslations(lang);
                 </button>
               </div>
 
-              <!-- Inline Toast Notification -->
-              <div id="contact-toast" class="hidden rounded-xl p-4 text-sm font-medium border"></div>
+              <!-- Inline Toast Notification. role="status" so screen readers
+                   announce the result without moving focus. -->
+              <div id="contact-toast" role="status" aria-live="polite" class="hidden rounded-xl p-4 text-sm font-medium border"></div>
             </form>
           </div>
         </div>

@@ -129,7 +129,7 @@ const altUrl = `/en/blog/${post?.altSlug || ''}`;
         </aside>
 
         <!-- Center: Article Body -->
-        <main class="w-full lg:flex-1 min-w-0">
+        <div class="w-full lg:flex-1 min-w-0">
           <div class="bg-white p-6 md:p-10 lg:p-12 rounded-2xl border border-slate-200 shadow-sm">
             <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
               <div class="blog-content" set:html={contentHtml} />
@@ -148,7 +148,7 @@ const altUrl = `/en/blog/${post?.altSlug || ''}`;
               </div>
             </footer>
           </div>
-        </main>
+        </div>
       </div>
 
       <!-- Related Services CTA -->

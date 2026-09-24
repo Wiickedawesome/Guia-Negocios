@@ -29,6 +29,10 @@ extensions/*.env
 *-prod-*.json
 guianegocios-*.json
 
+# Pre-edit snapshots of live content. Can contain full document bodies, so it
+# must never reach history. Personal safety net, not source.
+.backups/
+
 # OS & IDE Files
 .DS_Store
 Thumbs.db
