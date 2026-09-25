@@ -22,6 +22,10 @@ import { runSerpAnalysis } from './seo/serp-analysis.js';
 import type { AgentSkill, SkillContext, SkillResult, SeoAgentConfigDoc } from './seo/types.js';
 
 const SKILL_LOCK_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+// A run whose process is killed (function timeout or OOM) never writes its own
+// terminal status, so the agent-runs doc stays "in-progress" forever and the
+// admin UI shows a phantom run. Longer than any function timeout (540s).
+const STALE_RUN_MS = 2 * 60 * 60 * 1000;
 
 export type RunSource = 'scheduled' | 'manual';
 
@@ -48,6 +52,11 @@ export async function runSeoAgent(opts: RunOptions): Promise<RunOutcome> {
   if (config.killSwitch || !config.enabled) {
     return { runId: 'skip', status: 'killswitch' };
   }
+
+  // Close out any run that died without recording a result before we consider
+  // the lock, so a phantom "in-progress" can neither wedge the lock nor be
+  // reported as live work in the admin UI.
+  await reapStaleRuns(db, opts.skill);
 
   // Concurrency lock — skip if same skill is already in-progress recently.
   if (!opts.force) {
@@ -115,6 +124,43 @@ export async function runSeoAgent(opts: RunOptions): Promise<RunOutcome> {
 
   await touchLastRun();
   return { runId, status: result.status, result };
+}
+
+/**
+ * Mark runs that were killed before recording a result as errors.
+ *
+ * A function that hits its timeout, or is OOM-killed, never reaches its final
+ * status write, so its agent-runs doc stays "in-progress" indefinitely. Those
+ * phantoms are why the dashboard could claim a skill was running days later.
+ */
+async function reapStaleRuns(db: FirebaseFirestore.Firestore, skill: AgentSkill): Promise<void> {
+  try {
+    const snap = await db.collection('agent-runs')
+      .where('skill', '==', skill)
+      .where('status', '==', 'in-progress')
+      .limit(20)
+      .get();
+    for (const doc0 of snap.docs) {
+      const data = doc0.data() as { startedAt?: { toMillis?: () => number } | string };
+      const startedAtMs =
+        typeof data.startedAt === 'object' && data.startedAt && typeof data.startedAt.toMillis === 'function'
+          ? data.startedAt.toMillis()
+          : new Date(String(data.startedAt ?? '')).getTime();
+      if (!Number.isFinite(startedAtMs) || Date.now() - startedAtMs < STALE_RUN_MS) continue;
+      await doc0.ref.set(
+        {
+          status: 'error',
+          error: 'abandoned — the function was killed before it could record a result (timeout or out of memory)',
+          finishedAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { merge: true }
+      );
+      console.warn(`[seo-agent] reaped stale run ${doc0.id} for ${skill}`);
+    }
+  } catch (err) {
+    console.warn('[seo-agent] reapStaleRuns failed (non-fatal):', err);
+  }
 }
 
 async function fetchLatestCursor(

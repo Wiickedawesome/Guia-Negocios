@@ -4,6 +4,8 @@ import { getApp } from "firebase-admin/app";
 import { HttpsError } from "firebase-functions/v2/https";
 // @ts-ignore
 import fetch from "node-fetch";
+import { fetchCoverImage } from "./contentEngine.js";
+import { getSetting } from "./seo/config.js";
 
 
 export const scheduledDataJournalism = onSchedule({
@@ -37,7 +39,12 @@ export const scheduledDataJournalism = onSchedule({
       title: ds.title,
       notes: ds.notes,
       organization: ds.organization?.title,
-      updateFrequency: ds.update_frequency
+      updateFrequency: ds.update_frequency,
+      // Real, verifiable fields. The article may ONLY cite what appears here.
+      datasetUrl: `https://data.sba.gov/dataset/${ds.name}`,
+      resourceCount: ds.num_resources,
+      lastUpdated: ds.metadata_modified,
+      license: ds.license_title,
     }));
 
     const { generateContentWithAi } = await import("./ai.js");
@@ -48,22 +55,32 @@ export const scheduledDataJournalism = onSchedule({
       I have pulled the latest dataset metadata from the Small Business Administration (SBA) Open Data API:
       ${JSON.stringify(dataContext, null, 2)}
       
-      Your task: Write a highly engaging, data-backed PR "Link Bait" article in Spanish based on the premise of these SBA loan programs.
-      Since we don't have the full raw CSV rows, extrapolate general business loan trends for Latino entrepreneurs (e.g., how SBA 7(a) loans are helping minority businesses grow). Use real-sounding but generalized statistics to make it authoritative, or mention the datasets explicitly.
-      
+      Your task: write a factual article announcing these SBA datasets and what an entrepreneur can research with them.
+      The dataset URL, resource count, last-updated date, licence and organisation above are REAL and may be cited.
+
+      ABSOLUTE RULE — NO FABRICATION:
+      - Invent NOTHING. No loan approval rates, no dollar totals, no percentages, no borrower counts, no "recent studies".
+      - We hold dataset METADATA only, not the loan records, so no statistic can be derived from it.
+      - A number may appear ONLY if it appears verbatim in the data above. Otherwise write no number at all and explain what the dataset CONTAINS and how to query it.
+
       Requirements:
-      1. Language: Spanish.
-      2. Format: Return a complete Markdown article. Include an H1 title, H2 sections, bullet points, and an FAQ section.
-      3. Tone: Journalistic, professional, data-driven. This is designed to attract backlinks from news organizations.
-      4. Image Search Term: Provide a 1-2 word English search term that perfectly represents this article (e.g., "statistics", "graph", "business") so we can fetch a free Unsplash image.
-      
+      1. Languages: write both Spanish and English (this site is bilingual).
+      2. Format: a complete Markdown article with an H1, H2 sections, bullet points and an FAQ section.
+      3. Tone: journalistic and practical — what the data covers and how a business owner uses it.
+      4. Link each dataset URL above as markdown so readers can verify it themselves.
+      5. Provide a 1-2 word English image search term.
+
       Format your response EXACTLY as this JSON object:
       {
-        "title": "string (The H1 Title)",
-        "slug": "string (url-friendly-slug-in-spanish)",
-        "metaDescription": "string (150-160 characters SEO description)",
-        "unsplashSearchTerm": "string (1-2 words in English for cover image)",
-        "markdownContent": "string (The full article body in Markdown, excluding the H1 title)"
+        "titleEs": "string (The H1 title in Spanish)",
+        "titleEn": "string (The H1 title in English)",
+        "slugEs": "string (url-friendly-slug-in-spanish)",
+        "slugEn": "string (url-friendly-slug-in-english)",
+        "metaDescriptionEs": "string (150-160 characters SEO description, Spanish)",
+        "metaDescriptionEn": "string (150-160 characters SEO description, English)",
+        "imageSearchTerm": "string (1-2 words in English for the cover image)",
+        "contentEs": "string (The full Spanish article body in Markdown, excluding the H1 title)",
+        "contentEn": "string (The full English article body in Markdown, excluding the H1 title)"
       }
     `;
 
@@ -78,26 +95,48 @@ export const scheduledDataJournalism = onSchedule({
       return;
     }
 
-    // 3. Resolve Unsplash Image
-    const coverImage = `https://loremflickr.com/1200/630/${encodeURIComponent(draftedPost.unsplashSearchTerm)},graph/all`;
+    // 3. Resolve a REAL stock cover image (Pexels first, then Unsplash).
+    // loremflickr previously served a random, unrelated placeholder image.
+    const pexelsKey = await getSetting(db, "pexelsKey");
+    const unsplashKey = await getSetting(db, "unsplashKey");
+    let cover = await fetchCoverImage(draftedPost.imageSearchTerm || "business data", pexelsKey, unsplashKey);
+    if (!cover) {
+      cover = {
+        url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+        alt: draftedPost.imageSearchTerm || "SBA business loans",
+        credit: "Unsplash",
+      };
+    }
 
-    // 4. Save to Firestore as Draft
+    // 4. Save to Firestore as a Draft for human review (never auto-publish).
+    // Field names MUST match the content-engine contract the editor reads
+    // (titleEs/titleEn/slugEs/slugEn/contentEs/contentEn/featuredImage).
+    // The previous title/content/coverImage keys produced unreadable drafts.
+    const publishDate = new Date().toISOString().split("T")[0];
     await db.collection("blogs").add({
-      title: draftedPost.title,
-      slug: draftedPost.slug,
-      metaDescription: draftedPost.metaDescription,
-      content: draftedPost.markdownContent,
-      coverImage: coverImage,
-      targetKeyword: "SBA loans data latino",
-      status: "Draft",
-      author: "AI Data Journalist",
+      titleEs: draftedPost.titleEs || "Datos de la SBA para emprendedores",
+      titleEn: draftedPost.titleEn || "SBA Data for Entrepreneurs",
+      slugEs: draftedPost.slugEs || "datos-sba-emprendedores",
+      slugEn: draftedPost.slugEn || "sba-data-entrepreneurs",
+      contentEs: draftedPost.contentEs || "",
+      contentEn: draftedPost.contentEn || "",
+      metaDesc: draftedPost.metaDescriptionEs || "",
+      featuredImage: cover.url,
+      imageCredit: cover.credit,
+      targetKeyword: "sba loan data for latino entrepreneurs",
+      sourceDatasets: datasets.map((ds: any) => `https://data.sba.gov/dataset/${ds.name}`),
+      author: "Guia Negocios Team",
+      authorAvatar: "/images/team-avatar.webp",
+      readTime: 6,
       language: "es",
+      status: "Draft",
+      publishDate,
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
-      type: "Data Report"
+      views: 0,
     });
 
-    console.log(`Successfully drafted SBA Data Report: "${draftedPost.title}". Saved to Firestore.`);
+    console.log(`Successfully drafted SBA Data Report: "${draftedPost.titleEs}". Saved as Draft for review.`);
 
   } catch (error: any) {
     console.error("scheduledDataJournalism error:", error);

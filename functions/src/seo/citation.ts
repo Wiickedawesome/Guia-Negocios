@@ -8,12 +8,15 @@
 
 import * as cheerio from 'cheerio';
 import { getFirestore } from 'firebase-admin/firestore';
-import { loadSitemap, urlToPathKey } from './sitemap.js';
+import { loadSitemap, urlToDocId } from './sitemap.js';
 import { gemini } from './config.js';
 import type { SkillContext, SkillResult } from './types.js';
 
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_PAGES_PER_RUN = 30;
+// See onpage.ts — stop inside the function timeout so the run records a cursor
+// instead of being killed while still "in-progress".
+const TIME_BUDGET_MS = 7 * 60 * 1000;
 
 export async function runCitationAudit(ctx: SkillContext): Promise<SkillResult> {
   const db = getFirestore();
@@ -24,10 +27,21 @@ export async function runCitationAudit(ctx: SkillContext): Promise<SkillResult> 
 
   const startIndex = ctx.cursor?.offset ?? 0;
   const slice = entries.slice(startIndex, startIndex + MAX_PAGES_PER_RUN);
-  const metLimit = startIndex + slice.length < entries.length;
 
   let audited = 0;
-  for (const entry of slice) {
+  let fetchErrors = 0;
+  let writeErrors = 0;
+  let firstWriteError: string | undefined;
+  let nextIndex = startIndex;
+  const deadline = Date.now() + TIME_BUDGET_MS;
+
+  for (let i = 0; i < slice.length; i++) {
+    if (Date.now() > deadline) {
+      console.warn('[citation] time budget reached — stopping early with a resume cursor');
+      break;
+    }
+    const entry = slice[i]!;
+    let phase: 'fetch' | 'write' = 'fetch';
     try {
       const res = await fetch(entry.url, {
         headers: { 'User-Agent': 'GuiaNegocios-SEO-Agent/1.0 (+https://guianegocios.net)' },
@@ -76,7 +90,8 @@ export async function runCitationAudit(ctx: SkillContext): Promise<SkillResult> 
         }
       }
 
-      await db.collection('citation-audits').doc(urlToPathKey(entry.url).slice(0, 400)).set({
+      phase = 'write';
+      await db.collection('citation-audits').doc(urlToDocId(entry.url)).set({
         url: entry.url,
         lang: entry.lang,
         aiScore,
@@ -92,16 +107,29 @@ export async function runCitationAudit(ctx: SkillContext): Promise<SkillResult> 
         createdAt: new Date(),
       }, { merge: true });
       audited++;
+      nextIndex = startIndex + i + 1;
     } catch (err: any) {
-      console.warn(`[citation] failed for ${entry.url}:`, err?.message || err);
+      const message = err?.message || String(err);
+      if (phase === 'write') {
+        writeErrors++;
+        firstWriteError ??= message;
+        console.error(`[citation] WRITE FAILED for ${entry.url}:`, message);
+      } else {
+        fetchErrors++;
+        console.warn(`[citation] fetch failed for ${entry.url}:`, message);
+      }
     }
   }
 
+  const remaining = nextIndex < entries.length;
+  const nothingWritten = audited === 0 && writeErrors > 0;
+
   return {
-    status: metLimit ? 'partial' : 'ok',
+    status: nothingWritten ? 'error' : remaining || writeErrors > 0 || fetchErrors > 0 ? 'partial' : 'ok',
     findings: audited,
     queriesUsed: ctx.queriesUsed(),
-    summary: { audited, cursor: metLimit ? startIndex + slice.length : undefined },
-    ...(metLimit ? { cursor: { offset: startIndex + slice.length, nextItem: entries[startIndex + slice.length]?.url || '' } } : {}),
+    summary: { audited, total: entries.length, fetchErrors, writeErrors },
+    ...(writeErrors > 0 ? { error: `${writeErrors} audit write(s) failed, first: ${firstWriteError}` } : {}),
+    ...(remaining ? { cursor: { offset: nextIndex, nextItem: entries[nextIndex]?.url || '' } } : {}),
   };
 }

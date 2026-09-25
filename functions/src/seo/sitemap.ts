@@ -36,3 +36,18 @@ export async function loadSitemap(): Promise<SitemapEntry[]> {
 export function urlToPathKey(url: string): string {
   return url.replace(SITE_URL, '');
 }
+
+/**
+ * Firestore document ids may not contain "/" — `.doc('/es/about/')` throws
+ * "documentPath must point to a document ... does not contain an even number
+ * of components". Every write in the on-page and citation skills used the raw
+ * path as the id, so both failed on all 36 pages, every run, since the agent
+ * was created, while the errors were swallowed into console.warn.
+ *
+ * This returns a single-segment id: '/es/about/' -> 'es__about', '/' -> 'home'.
+ * The human-readable path is still stored in the `pathKey` field.
+ */
+export function urlToDocId(url: string, maxLength = 400): string {
+  const path = urlToPathKey(url).replace(/^\/+|\/+$/g, '');
+  return (path || 'home').replace(/\//g, '__').slice(0, maxLength);
+}

@@ -10,7 +10,7 @@ interface CoverImage {
   credit: string;
 }
 
-async function fetchCoverImage(
+export async function fetchCoverImage(
   searchTerm: string,
   pexelsKey: string | undefined,
   unsplashKey: string | undefined,

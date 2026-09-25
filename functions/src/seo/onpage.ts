@@ -9,11 +9,15 @@
 
 import * as cheerio from 'cheerio';
 import { getFirestore } from 'firebase-admin/firestore';
-import { loadSitemap, urlToPathKey } from './sitemap.js';
+import { loadSitemap, urlToDocId, urlToPathKey } from './sitemap.js';
 import type { SkillContext, SkillResult } from './types.js';
 
 const FETCH_TIMEOUT_MS = 15000;
 const MAX_URLS_PER_RUN = 80;
+// Stop well inside the 540s function timeout. A run killed mid-loop never
+// records a result, which left the run stuck "in-progress" forever and
+// re-crawled from scratch every week. Stopping early keeps the cursor.
+const TIME_BUDGET_MS = 7 * 60 * 1000;
 
 export async function runOnPageAudit(ctx: SkillContext): Promise<SkillResult> {
   const db = getFirestore();
@@ -25,11 +29,22 @@ export async function runOnPageAudit(ctx: SkillContext): Promise<SkillResult> {
   // Resume cursor support
   const startIndex = ctx.cursor?.offset ?? 0;
   const slice = entries.slice(startIndex, startIndex + MAX_URLS_PER_RUN);
-  const metLimit = startIndex + slice.length < entries.length;
 
-  let issuesFound = 0;
+  let issuesFound = 0; // real on-page issues — never inflate this with errors
+  let fetchErrors = 0;
+  let writeErrors = 0;
+  let firstWriteError: string | undefined;
+  let scanned = 0;
+  let nextIndex = startIndex;
+  const deadline = Date.now() + TIME_BUDGET_MS;
 
-  for (const entry of slice) {
+  for (let i = 0; i < slice.length; i++) {
+    if (Date.now() > deadline) {
+      console.warn('[onpage] time budget reached — stopping early with a resume cursor');
+      break;
+    }
+    const entry = slice[i]!;
+    let phase: 'fetch' | 'write' = 'fetch';
     try {
       const started = Date.now();
       const res = await fetch(entry.url, {
@@ -75,7 +90,8 @@ export async function runOnPageAudit(ctx: SkillContext): Promise<SkillResult> {
       }
 
       const pathKey = urlToPathKey(entry.url);
-      await db.collection('onpage-audits').doc(pathKey.slice(0, 400)).set({
+      phase = 'write';
+      await db.collection('onpage-audits').doc(urlToDocId(entry.url)).set({
         url: entry.url,
         pathKey,
         lang: entry.lang,
@@ -94,17 +110,32 @@ export async function runOnPageAudit(ctx: SkillContext): Promise<SkillResult> {
         updatedAt: new Date(),
         createdAt: new Date(),
       }, { merge: true });
+      scanned++;
+      nextIndex = startIndex + i + 1;
     } catch (err: any) {
-      console.warn(`[onpage] failed for ${entry.url}:`, err?.message || err);
-      issuesFound++;
+      const message = err?.message || String(err);
+      // A failed write means the audit did not land: that is a failure, not a
+      // finding, and it must never be counted as one.
+      if (phase === 'write') {
+        writeErrors++;
+        firstWriteError ??= message;
+        console.error(`[onpage] WRITE FAILED for ${entry.url}:`, message);
+      } else {
+        fetchErrors++;
+        console.warn(`[onpage] fetch failed for ${entry.url}:`, message);
+      }
     }
   }
 
+  const remaining = nextIndex < entries.length;
+  const nothingWritten = scanned === 0 && writeErrors > 0;
+
   return {
-    status: metLimit ? 'partial' : 'ok',
+    status: nothingWritten ? 'error' : remaining || writeErrors > 0 || fetchErrors > 0 ? 'partial' : 'ok',
     findings: issuesFound,
     queriesUsed: ctx.queriesUsed(),
-    summary: { scanned: slice.length, total: entries.length, cursor: metLimit ? startIndex + slice.length : undefined },
-    ...(metLimit ? { cursor: { offset: startIndex + slice.length, nextItem: entries[startIndex + slice.length]?.url || '' } } : {}),
+    summary: { scanned, total: entries.length, issues: issuesFound, fetchErrors, writeErrors },
+    ...(writeErrors > 0 ? { error: `${writeErrors} audit write(s) failed, first: ${firstWriteError}` } : {}),
+    ...(remaining ? { cursor: { offset: nextIndex, nextItem: entries[nextIndex]?.url || '' } } : {}),
   };
 }
