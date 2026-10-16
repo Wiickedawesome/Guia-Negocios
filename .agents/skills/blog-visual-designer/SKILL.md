@@ -42,9 +42,9 @@ Every blog post MUST include a references section at the bottom with at least 3 
 <div class="my-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
 <h4 class="text-base font-bold text-[#1A2E35] mb-3">Fuentes Oficiales y Referencias / Official Sources & References</h4>
 <ul class="text-xs text-slate-700 space-y-2">
-<li><a href="https://www.irs.gov/..." target="_blank" class="text-[#2563EB] hover:underline">IRS — [Relevant Page Title]</a></li>
-<li><a href="https://www.sba.gov/..." target="_blank" class="text-[#2563EB] hover:underline">SBA — [Relevant Guide]</a></li>
-<li><a href="https://www.tn.gov/..." target="_blank" class="text-[#2563EB] hover:underline">Tennessee [Department Name]</a></li>
+<li><a href="https://www.irs.gov/..." target="_blank" class="text-[#1B4E2B] hover:underline">IRS — [Relevant Page Title]</a></li>
+<li><a href="https://www.sba.gov/..." target="_blank" class="text-[#1B4E2B] hover:underline">SBA — [Relevant Guide]</a></li>
+<li><a href="https://www.tn.gov/..." target="_blank" class="text-[#1B4E2B] hover:underline">Tennessee [Department Name]</a></li>
 </ul>
 </div>
 ```
@@ -103,22 +103,23 @@ total_visuals = ceil(word_count / 200) + 1
 <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
 <div class="flex items-center gap-2">
 <span class="w-3 h-3 rounded-full bg-[#1B4E2B]"></span>
-<h4 class="text-base font-bold text-[#1A2E35]">Comparativa de Rentabilidad y Retención de Clientes</h4>
+<h4 class="text-base font-bold text-[#1A2E35]">Comparativa: Sin Estructura vs. Con Asesoría Integral</h4>
 </div>
-<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">Reporte SBA & Census</span>
+<span class="text-xs font-semibold px-2.5 py-1 bg-[#F2F7F4] text-[#1B4E2B] rounded-full">Guía práctica</span>
 </div>
 <div class="space-y-3.5">
+<!-- Never label bars with unsourced success percentages. Bars must represent real, sourced metrics. -->
 <div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-slate-600"><span>Sin Registro Formal ni Plan Financiero</span><span>28% Éxito a 3 Años</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-400 rounded-full" style="width: 28%;"></div></div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-slate-600"><span>Sin Registro Formal ni Plan Financiero</span><span>Responsabilidad personal · banca limitada</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-400 rounded-full" style="width: 100%;"></div></div>
 </div>
 <div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#2563EB]"><span>Con LLC & Estructura Básica</span><span>62% Éxito a 3 Años</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#2563EB] rounded-full" style="width: 62%;"></div></div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>Con LLC & Estructura Básica</span><span>Base legal y bancaria lista</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 100%;"></div></div>
 </div>
 <div>
-<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>Con Asesoría Integral Guia Negocios & Plan de Negocios</span><span>89% Éxito (+217%)</span></div>
-<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 89%;"></div></div>
+<div class="flex justify-between text-xs font-semibold mb-1 text-[#1B4E2B]"><span>Con Asesoría Integral Guia Negocios & Plan de Negocios</span><span>Acompañamiento y cumplimiento continuo</span></div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-[#1B4E2B] rounded-full" style="width: 100%;"></div></div>
 </div>
 </div>
 </div>
@@ -165,7 +166,7 @@ Impacto Económico Nacional y Métricas Clave
 <p class="text-xs text-slate-600 leading-relaxed">Definición de clientes, estructura de costos y viabilidad comercial.</p>
 </div>
 <div class="bg-white p-4 rounded-xl border border-slate-200 relative shadow-xs">
-<div class="w-7 h-7 rounded-full bg-[#2563EB] text-white text-xs font-bold flex items-center justify-center mb-2.5 shadow-xs">2</div>
+<div class="w-7 h-7 rounded-full bg-[#1B4E2B] text-white text-xs font-bold flex items-center justify-center mb-2.5 shadow-xs">2</div>
 <strong class="block text-sm text-[#1A2E35] mb-1">Fase 2: Estructura & EIN</strong>
 <p class="text-xs text-slate-600 leading-relaxed">Registro de LLC en el estado y trámite de EIN ante el IRS.</p>
 </div>

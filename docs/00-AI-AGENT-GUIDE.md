@@ -9,7 +9,7 @@
 As an AI agent operating within the **Guia Negocios** workspace, you **MUST** strictly uphold the following non-negotiable invariants:
 
 ### A. Bilingual Route Isolation
-* Public routes are split strictly into `/src/pages/en/` (English) and `/src/pages/es/` (Spanish).
+* Public routes: the Spanish home is `src/pages/index.astro` (served at `/`); Spanish subpages live in `src/pages/es/` and are served under `/es/*`; English lives in `src/pages/en/` and is served under `/en/*`. `/es` and `/es/` 301-redirect to `/`, and unprefixed subpages (e.g. `/services/`) 301-redirect to their `/es/...` equivalents — all enforced in `src/middleware.ts`.
 * **NEVER** place Spanish copy into an `/en/` page or English copy into an `/es/` page.
 * Dynamic routes (`/en/blog/[slug].astro`, `/es/blog/[slug].astro`, `/en/lp/[slug].astro`, `/es/lp/[slug].astro`) fetch corresponding language content from Cloud Firestore based on the language path parameter.
 
@@ -18,7 +18,7 @@ As an AI agent operating within the **Guia Negocios** workspace, you **MUST** st
 * To add new UI text tokens, always update both `en.json` and `es.json` simultaneously.
 
 ### C. Design System & Aesthetics
-* **Brand Colors:** Use custom Tailwind utility classes (`brand-primary` `#2563EB`, `brand-dark` `#0F172A`, `brand-gray` `#64748B`) defined in [src/styles/global.css](file:///home/wicked/Projects/Guia%20Negocios/src/styles/global.css). Do not use generic browser blue or dark colors.
+* **Brand Colors:** Use custom Tailwind utility classes (`brand-primary` `#1B4E2B` forest green, `brand-accent` `#F0C850` gold, `brand-dark` `#1A2E35`, `brand-gray` `#1E2A2F`) defined in [src/styles/global.css](file:///home/wicked/Projects/Guia%20Negocios/src/styles/global.css). Do not use generic browser blues or off-palette colors.
 * **Glassmorphism:** Use `bg-white/10 backdrop-blur-md border border-white/10` for card overlays and high-end modern panels.
 * **Typography & Spacing:** Use `font-heading` for headers, `font-sans` for copy, `rounded-xl` or `rounded-2xl` for containers, and `shadow-xl` for depth.
 

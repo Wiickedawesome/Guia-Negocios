@@ -29,9 +29,9 @@ async function main() {
     if (snap.empty) { console.log('SKIP (not found): ' + slugEs); continue; }
     const doc = snap.docs[0];
     const data = doc.data();
+    // The infographic HTML is Spanish-only, so only the Spanish body is updated.
     const contentEs = injectInfographic(data.contentEs, html);
-    const contentEn = injectInfographic(data.contentEn, html);
-    await doc.ref.update({ contentEs, contentEn, updatedAt: FieldValue.serverTimestamp() });
+    await doc.ref.update({ contentEs, updatedAt: FieldValue.serverTimestamp() });
     console.log('UPDATED: ' + slugEs);
     updated++;
   }

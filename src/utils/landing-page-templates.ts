@@ -303,6 +303,8 @@ export const LANDING_PAGE_TEMPLATES = {
   `,
 
   metrics_stats: `
+<!-- WARNING (audit F-A26): the tiles below are PLACEHOLDERS. Never publish unsourced numbers
+     or "verified rating" claims — replace with real, sourced values or delete the block. -->
 <!-- 4-Stat Metric & Social Proof Bar -->
 <div class="builder-block bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm my-6 font-sans">
   <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">

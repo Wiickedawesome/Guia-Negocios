@@ -4,7 +4,7 @@
 
 The application routes are structured strictly into three domain sections:
 
-### A. Root Redirector
+### A. Root (Spanish Home)
 * `/src/pages/index.astro` — Spanish homepage. Spanish is the default locale and is served at the site root, so this is the real `/es` home content rather than a locale-detecting redirect.
 
 ### B. English Public Portal (`/src/pages/en/`)
@@ -20,7 +20,7 @@ The application routes are structured strictly into three domain sections:
 * `/en/lp/[slug].astro` — Dynamic landing page generator for targeted marketing campaigns.
 
 ### C. Spanish Public Portal (`/src/pages/es/`)
-* `/es/index.astro` — Página de inicio con propuesta de valor, servicios destacados y testimonios.
+* `/es/index.astro` — 301-redirects `/es/` to `/` (the Spanish home is the root `index.astro`; see §A).
 * `/es/about.astro` — Historia de la empresa, misión, visión y equipo en Knoxville, TN.
 * `/es/services.astro` — Catálogo completo de servicios de consultoría y paquetes de lanzamiento.
 * `/es/services/operaciones-crecimiento.astro` — Tier 06, Guía detallada de Sistemas de Operación y Crecimiento.
@@ -51,7 +51,7 @@ The application routes are structured strictly into three domain sections:
 Wraps all public pages.
 * **Props:** `title: string`, `description: string`, `ogImage?: string`, `altPath?: string`, `noindex?: boolean`, `noTracking?: boolean`
 * **Features:** Injects canonical tags, bilingual `hreflang` metadata, OpenGraph tags, JSON-LD Schema.org metadata, header slot, and footer slot.
-* `noindex` defaults to `false` and is used only by `404.astro` — it reproduces the `noindex` that Astro adds to redirect pages, which the branded 404 page would otherwise lose.
+* `noindex` defaults to `false`; it is set by `404.astro` (reproducing the `noindex` that Astro adds to redirect pages) and across the whole `/admin/*` surface via `AdminLayout` and the standalone `admin/login.astro`.
 
 ### `AdminLayout.astro`
 Wraps all administrative dashboard pages.

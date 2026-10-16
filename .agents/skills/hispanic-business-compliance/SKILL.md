@@ -61,11 +61,11 @@ This skill provides authoritative guidelines on entity formation, IRS tax compli
 
 ---
 
-## 4. Corporate Transparency Act & FinCEN BOI Compliance
-* **Mandatory Requirement:** All U.S. entities (domestic and foreign-owned) must file a Beneficial Ownership Information (BOI) Report with the Financial Crimes Enforcement Network (FinCEN).
-* **Foreign Owners:** Must upload an unexpired, high-resolution copy of their valid foreign passport and report residential address.
-* **Deadlines:** Within 90 days of formation for entities created in 2024; within 30 days for entities created in 2025 onwards.
-* **Civil Penalties:** Up to $591 per day for willful non-compliance.
+## 4. Corporate Transparency Act & FinCEN BOI — CURRENT STATUS (verify before advising)
+* **Domestic U.S. entities are EXEMPT.** FinCEN's March 2025 interim final rule removed the BOI reporting requirement for companies created or registered in the United States — including U.S. LLCs owned by foreign persons. Do **not** tell clients to file a BOI report for a U.S.-formed LLC.
+* **Only "foreign reporting companies"** (entities formed under foreign law and merely registered to do business in a U.S. state) must file BOI reports.
+* **Deadlines / penalties (that narrow category only):** report within 30 days of registration; civil penalties up to $591/day for willful violations.
+* **This area changed twice in 2024–2025 — always re-check `fincen.gov` before giving advice.**
 
 ---
 

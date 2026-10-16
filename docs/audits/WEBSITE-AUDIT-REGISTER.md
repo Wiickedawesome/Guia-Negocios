@@ -2,7 +2,7 @@
 
 **Opened:** 2026-10-16
 **Method:** WEBSITE_AUDIT framework — evidence-first, system-by-system, line-by-line.
-**Status:** IN PROGRESS — Batch 1 (config + shared frontend + public main pages) and Batch 2 (Cloud Functions, admin suite, scripts, remaining public pages) complete. **Live verification pass complete (Part 5B).** External account checks (GSC/GA4/Bing, GCP console) remain pending (see Part 5). **Fix phase underway — F-A24 (P1) fixed in code, build-verified; deploy verification pending (awaiting commit/push approval).**
+**Status:** FIX PHASE — three remediation commits pushed on top of `f931bbd` (`1baed15` functions · `accab0d` admin hardening · `931e22b` site). Hosting deploys via CI; the Cloud Functions deploy is **BLOCKED** (Firebase CLI is logged in as `contact@evrconstructions.com`, which lacks `iam.serviceAccounts.ActAs` on the project — see Part 6). Remaining: F-A35 heading-order ×6 pages, F-A43 dependencies, owner decisions (F-A12/F-A13/F-A14/F-A23/F-A26-live).
 
 > **Rules of this document**
 > - Every entry is verified from source or live evidence **at the date stated in the entry**. No speculative entries.
@@ -42,25 +42,26 @@
 
 | ID | Sev | Confidence | Category | Title | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| F-A24 | **P1** | CONFIRMED | Security | Stored XSS: anonymous form input executes inside the admin session (notification modal) | FIXED (code) — deploy verification pending |
-| F-A25 | P2 | CONFIRMED | Functions | `scheduledContentEngine` never saves a draft (field-name mismatch) — feature dead since creation | OPEN |
-| F-A26 | P3 | CONFIRMED (source; not live) | Content | LP template ships fabricated social proof — absent from live LPs; template's *comparison table* IS live with unverified claims (competitor $300+/h, "Garantizado" 24h) | USER-DECISION |
-| F-A27 | P2 | CONFIRMED | Agent config | `conversion-copywriter-lp` skill instructs agents to build *pricing* pages — contradicts standing no-price rule | OPEN |
-| F-A28 | P2 | CONFIRMED (dormant) | Scripts | `update-post1..4-visuals.mjs` would unpublish live posts (`status:'draft'`) if re-run | OPEN |
-| F-A29 | P2 | CONFIRMED | Docs | `docs/05`: wrong clone URL; bare `firebase deploy` command (would touch rules/extension/hosting); Node version claim | OPEN |
-| F-A40 | P2 | CONFIRMED | Security | Admin pages render externally-influenced strings as HTML (GSC queries, AI output, GA4 data) | OPEN |
-| F-A41 | P2 | CONFIRMED (live) | SEO / UX | ES landing pages' EN language switch + `hreflang="en"` point to a 404 (`/en/lp/…` not built) | OPEN |
-| F-A42 | P3 | CONFIRMED (live) | Security hygiene | Missing security headers (XCTO / XFO / Referrer-Policy / CSP absent; HSTS only) | OPEN |
-| F-A30 | P3 | CONFIRMED | Scripts | `verify-firestore-rules.cjs` always exits 0 — a gate that can never fail | OPEN |
-| F-A31 | P3 | CONFIRMED | Functions / Admin | Success reported after failed writes (seo skills hardcode `status:'ok'`; admin alerts say "Completed" on error) | OPEN |
-| F-A32 | P3 | CONFIRMED | Functions | Residual fabricated metrics: Trends `\|\| 50/45` fallback; report writes `"null%"`, `activeLinks \|\| totalLinks`, hardcoded "healthy" summary | OPEN |
-| F-A33 | P3 | CONFIRMED | Functions | Internal-linking embeddings never generate (`afterData.content` field does not exist) | OPEN |
-| F-A34 | P3 | CONFIRMED | UI / Functional | Blog list: hydrated posts bypass active search; oldest-first ordering after hydration | OPEN |
-| F-A35 | P3 | CONFIRMED | Content / i18n / a11y | Public copy defects: Spanish word in EN page; heading-order skips ×6 pages; research citation misuse; EN alt text on ES page | OPEN |
-| F-A36 | P3 | CONFIRMED | Security hygiene | Admin settings echoes stored API keys into the DOM; keys persisted in plaintext localStorage | OPEN |
-| F-A37 | P3 | CONFIRMED | Scripts | Broken/stale script cluster (backfill fails App Check; anon-write script impossible; ES HTML into EN; wrong SOS link; README 1 of 23) | OPEN |
-| F-A38 | P3 | CONFIRMED | Agent config | Skills carry stale claims (BOI — CONFIRMED obsolete via fincen.gov, 2026-10-16) + unverified macro stats + fabricated template stat; hard rules missing from `AGENTS.md` | OPEN |
-| F-A39 | P3 | CONFIRMED | Admin workflow | New post defaults to *Published* and Preview persists it; reports "schedule" writes settings nothing consumes | OPEN |
+| F-A24 | **P1** | CONFIRMED | Security | Stored XSS: anonymous form input executes inside the admin session (notification modal) | FIXED — verified live in production (`f931bbd`) |
+| F-A25 | P2 | CONFIRMED | Functions | `scheduledContentEngine` never saves a draft (field-name mismatch) — feature dead since creation | FIXED (`1baed15`) — functions deploy blocked, see status |
+| F-A26 | P3 | CONFIRMED (source; not live) | Content | LP template ships fabricated social proof — absent from live LPs; template's *comparison table* IS live with unverified claims (competitor $300+/h, "Garantizado" 24h) | USER-DECISION — template now warns against unsourced stats; live comparison table needs owner call |
+| F-A27 | P2 | CONFIRMED | Agent config | `conversion-copywriter-lp` skill instructs agents to build *pricing* pages — contradicts standing no-price rule | FIXED (skill rewritten, no-price rule added) |
+| F-A28 | P2 | CONFIRMED (dormant) | Scripts | `update-post1..4-visuals.mjs` would unpublish live posts (`status:'draft'`) if re-run | FIXED — all four deleted |
+| F-A29 | P2 | CONFIRMED | Docs | `docs/05`: wrong clone URL; bare `firebase deploy` command (would touch rules/extension/hosting); Node version claim | FIXED (docs) |
+| F-A40 | P2 | CONFIRMED | Security | Admin pages render externally-influenced strings as HTML (GSC queries, AI output, GA4 data) | FIXED (`accab0d`) — deploys with hosting CI |
+| F-A41 | P2 | CONFIRMED (live) | SEO / UX | ES landing pages' EN language switch + `hreflang="en"` point to a 404 (`/en/lp/…` not built) | FIXED (`931e22b`) — deploys with hosting CI |
+| F-A42 | P3 | CONFIRMED (live) | Security hygiene | Missing security headers (XCTO / XFO / Referrer-Policy / CSP absent; HSTS only) | FIXED (`firebase.json`: XCTO+Referrer-Policy `**`, XFO `DENY` `/admin/**`; no CSP by design) |
+| F-A30 | P3 | CONFIRMED | Scripts | `verify-firestore-rules.cjs` always exits 0 — a gate that can never fail | FIXED (`1baed15`) |
+| F-A31 | P3 | CONFIRMED | Functions / Admin | Success reported after failed writes (seo skills hardcode `status:'ok'`; admin alerts say "Completed" on error) | FIXED (`1baed15`, `accab0d`) |
+| F-A32 | P3 | CONFIRMED | Functions | Residual fabricated metrics: Trends `\|\| 50/45` fallback; report writes `"null%"`, `activeLinks \|\| totalLinks`, hardcoded "healthy" summary | FIXED (`1baed15`) |
+| F-A33 | P3 | CONFIRMED | Functions | Internal-linking embeddings never generate (`afterData.content` field does not exist) | FIXED (`1baed15`) |
+| F-A34 | P3 | CONFIRMED | UI / Functional | Blog list: hydrated posts bypass active search; oldest-first ordering after hydration | FIXED (`931e22b`) |
+| F-A35 | P3 | CONFIRMED | Content / i18n / a11y | Public copy defects: Spanish word in EN page; heading-order skips ×6 pages; research citation misuse; EN alt text on ES page | PARTIAL — ES alt text, citation, EN copy fixed; heading-order ×6 pages OPEN |
+| F-A36 | P3 | CONFIRMED | Security hygiene | Admin settings echoes stored API keys into the DOM; keys persisted in plaintext localStorage | FIXED (`accab0d`) |
+| F-A37 | P3 | CONFIRMED | Scripts | Broken/stale script cluster (backfill fails App Check; anon-write script impossible; ES HTML into EN; wrong SOS link; README 1 of 23) | PARTIAL — infographic EN-injection fixed, README rewritten, un-runnable scripts flagged, SOS-link script deleted |
+| F-A38 | P3 | CONFIRMED | Agent config | Skills carry stale claims (BOI — CONFIRMED obsolete via fincen.gov, 2026-10-16) + unverified macro stats + fabricated template stat; hard rules missing from `AGENTS.md` | FIXED (skills + `AGENTS.md`) |
+| F-A39 | P3 | CONFIRMED | Admin workflow | New post defaults to *Published* and Preview persists it; reports "schedule" writes settings nothing consumes | FIXED (`accab0d`) |
+| F-A43 | P3 | CONFIRMED | Supply chain | Dependency advisories: 33 on the default branch (1 critical, 16 high, 10 moderate, 6 low — GitHub/Dependabot, reported on every push); `functions/` local audit: 5 (4 high, 1 critical) | OPEN — owner decision (major bumps need review; not auto-fixed) |
 | — | P4 | CONFIRMED | Various | See "P4 observations (batch 2)" | OPEN |
 
 ## Findings — Batch 1 (2026-10-16, config + shared frontend + public main pages)
@@ -556,3 +557,11 @@
 - 2026-10-16 (batch 2): Deep pass merged — F-A24 (P1 stored XSS, lead-verified), F-A25…F-A29, F-A40, F-A30…F-A39 + P4 observations. NOT-AN-ISSUE table extended with batch-2 verified-good items. Coverage matrix updated (functions/admin/scripts/remaining pages complete). Unverified-items section added (Part 5).
 - 2026-10-16 (live pass): Read-only production verification completed (Part 5B; smoke 36/36). Live evidence folded into F-A1, F-A4, F-A7, F-A12, F-A13, F-A14, F-A26, F-A35, F-A38. F-A38 BOI item upgraded to CONFIRMED obsolete (fincen.gov). F-A4/F-A26 severities P2 → P3 (no live exposure; template-only). New findings: **F-A41** (P2, LP EN dead-end 404), **F-A42** (P3, missing security headers). New P4: dead `Geist` font token. F-A7 confirmed live (2 `<main>` on AdminLayout pages; `/admin/login/` 1). Three Part 5 items resolved, table updated. Docs drift (F-A10) extended to eight items (brand colors; README runtime/engine claims).
 - 2026-10-16 (fixes, #1): **F-A24 fixed in code.** New `src/utils/escape-html.ts`; AdminLayout notification sink escapes title/message/id/link + same-origin link guard; contact `mail.html` bodies escaped (ES + EN); `lp-lead-form.ts` switched to the shared util. Build 56 pages clean; compiled-bundle evidence recorded in the F-A24 entry. Deploy verification pending.
+- 2026-10-16 (fixes, #1 deploy): `f931bbd` pushed → CI hosting deploy success → **F-A24 verified live in production** (deployed bundle imports the escape util, `startsWith('/')` guard present).
+- 2026-10-16 (fixes, #2 — pushed `1baed15`, `accab0d`, `931e22b`):
+  - **Functions** (`1baed15`): content-engine `parseDelimited` now emits the camelCase keys the consumer reads; curated outreach URLs re-verified live + dead TNHCC target removed; seo skills / internal-linking / rank-history report partial/error instead of false `ok`; trends never substitute invented points; report metrics null-safe; embeddings read `contentEs || contentEn`; `verify-firestore-rules.cjs` exits non-zero on drift.
+  - **Admin hardening** (`accab0d`): shared `escape-html.ts` (`escapeHtml`/`safeUrl`/`sanitizeHtml`) applied across the admin renderers that interpolate Firestore/GSC/GA4/AI text; API-key inputs write-only; localStorage key persistence removed; editor defaults to Draft; reports "schedule" UI replaced by the automatic weekly report it actually has; toasts render as text.
+  - **Site** (`931e22b`): LP `hreflang`/EN-switch fallback via build-time twin detection; blog hydration newest-first + filter reapply; `/admin/*` and `/admin/login/` `noindex`+`noTracking` (login had 8 gtag occurrences in dist before the fix); `.env.example` rewritten to the real env surface; seed tax-content corrections; EN copy typos; ES alt texts.
+- 2026-10-16 (fixes, #3 — committed with this register update): docs drift F-A10 ×8 (routing model; brand palette `#1B4E2B`/`#F0C850`/`#1A2E35`/`#1E2A2F`; noindex usage; clone URL; split `firebase deploy` guidance; Node 24); `.agents/AGENTS.md` (bilingual structure, palette, stale Figma wait); root `AGENTS.md` (no-prices + no-unsourced-stats invariants); skills (pricing archetypes removed; BOI section rewritten to the March-2025 FinCEN exemption; fabricated 28/62/89 % bars + off-brand blues removed); scripts (4 unpublish-risk scripts deleted; `generate-infographics.mjs` never writes Spanish HTML into EN bodies; `scripts/README.md` rewritten); **F-A42** security headers added to `firebase.json`.
+- 2026-10-16 (**functions deploy BLOCKED**): `npx firebase deploy --only functions` fails — the Firebase CLI is logged in as `contact@evrconstructions.com`, which lacks `iam.serviceAccounts.ActAs` on `guianegocios-prod@appspot.gserviceaccount.com`. Fix: log the CLI into the project-owner account (`npx firebase login:add` / `login:use`) or grant the role in GCP IAM. Until then the functions fixes exist only in git (`1baed15`), NOT in production.
+- 2026-10-16 (new finding **F-A43**): GitHub reports 33 dependency advisories on the default branch on every push (1 critical, 16 high, 10 moderate, 6 low); `functions/` local `npm audit` reports 5 (4 high, 1 critical). Not auto-fixed — major-version bumps need review. OPEN / owner decision.

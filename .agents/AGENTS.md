@@ -40,17 +40,18 @@ Welcome to the Guia de Negocios repository. Please adhere to the following archi
 
 ## 2. Project Architecture
 - **Bilingual Structure:** The site is fully bilingual. Spanish lives at the **root** (`/`,
-  `src/pages/index.astro`); English lives under `/src/pages/en/`. `/src/pages/es/` contains the
-  redirect shim only. Do not mix English and Spanish content within a single page component.
+  `src/pages/index.astro`); English lives under `/src/pages/en/`. `/src/pages/es/` holds the real
+  Spanish subpages served under `/es/*` — only `src/pages/es/index.astro` is a redirect to `/`.
+  Do not mix English and Spanish content within a single page component.
 - **I18n:** Shared UI elements (like headers/footers) use the dictionary in `src/i18n/utils.ts` via
   the `useTranslations` utility. There is no `src/i18n/ui.ts`. Adding a UI string means updating
   **both** `src/i18n/en.json` and `src/i18n/es.json`.
 - **Admin Dashboard:** Located under `/src/pages/admin/`. Uses `src/layouts/AdminLayout.astro`.
 
 ## 3. UI & Design Workflow
-- **Brand Colors:** The design system relies heavily on `brand-primary` (blue), `brand-dark` (navy), and `brand-gray` (slate). Use these Tailwind custom classes instead of generic colors.
+- **Brand Colors:** `brand-primary` (#1B4E2B forest green), `brand-accent` (#F0C850 gold), `brand-dark` (#1A2E35), `brand-gray` (#1E2A2F) — defined in `src/styles/global.css`. Use these Tailwind custom classes instead of generic colors.
 - **Aesthetics:** Prioritize glassmorphism (e.g., `bg-white/10 backdrop-blur-md`), soft shadows (`shadow-sm`), rounded corners (`rounded-xl`, `rounded-2xl`), and clean modern layouts.
-- **Wait for Figma:** Do not build out full UI layouts or styled components until the Figma designs are provided. Use placeholders or basic structure if scaffolding is absolutely necessary.
+- **Follow the existing design system:** match the established components and utility classes (brand tokens, `rounded-2xl`, soft shadows, glassmorphism). Do not invent a parallel visual language.
 - **Strict Page Structure:** Adhere strictly to the page separation. Each section (Home, Services, About, Contact) must remain a distinct page.
 
 ## 4. Blog & Content System

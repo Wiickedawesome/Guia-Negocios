@@ -3,7 +3,7 @@
 ## 1. Local Environment Setup
 
 ### Prerequisites
-- Node.js version 22 or higher (`node -v`)
+- Node.js version 24 or higher (`node -v`) — matches the Cloud Functions Node 24 runtime
 - npm version 10 or higher (`npm -v`)
 - Firebase CLI (`npx -y firebase-tools@latest`)
 
@@ -11,7 +11,7 @@
 
 1. **Clone repository:**
    ```bash
-   git clone https://github.com/guianegocios/guia-negocios.git
+   git clone https://github.com/Wiickedawesome/Guia-Negocios.git
    cd guia-negocios
    ```
 
@@ -102,7 +102,13 @@ npx firebase login
 # Select active project
 npx firebase use --add
 
-# Deploy hosting and functions targets
+# Deploy hosting only (usually automated — CI deploys on push to main)
+npx firebase deploy --only hosting
+
+# Deploy Cloud Functions (requires the Service Account User role on the project)
+npx firebase deploy --only functions
+
+# Full deploy (hosting + functions + rules) — admin use
 npx firebase deploy
 ```
 

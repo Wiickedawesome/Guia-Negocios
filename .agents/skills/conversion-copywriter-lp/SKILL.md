@@ -21,11 +21,13 @@ To achieve 20%+ conversion rates, landing page copy must address the specific an
 
 ## 2. Multi-Goal Landing Page Archetypes
 
+**Hard rule: never publish prices, dollar amounts, or fee tables on a landing page.** Pricing is discussed only in a consultation — CTAs always drive to the lead form or phone `(865) 202-7112`.
+
 1. **Lead Generation / Consultation Request:** Hero + Stats Bar + Pain vs. Solution Rows + 3-Step Process + Lead Form.
-2. **Special Discount / Limited-Time Offer:** Urgency Pill Badge + Bold Benefit Hero + Comparison Matrix + 2-Tier Pricing + Discount Countdown CTA.
-3. **Service / Package Sales (Launch Bundle):** Hero + 6-Step Snake Map Roadmap + Deliverables Matrix + Pricing + Testimonials + FAQ.
+2. **Limited-Time Offer:** Urgency Pill Badge + Bold Benefit Hero + Comparison Matrix + Countdown CTA — benefits only, no prices and no dollar discounts.
+3. **Service / Package Sales (Launch Bundle):** Hero + 6-Step Snake Map Roadmap + Deliverables Matrix + Testimonials + FAQ.
 4. **Foreign Non-Resident Alien U.S. Formation:** Remote Setup Hero + Form 5472 Protection Warning + Banking Process + State Selection (WY, DE, FL, TX, TN) + Consultation Form.
-5. **Quote / Price Estimate:** Problem Agitation + Clear Scope Matrix + Step-by-Step Flow + Quote Request Form.
+5. **Scope & Quote Request:** Problem Agitation + Clear Scope Matrix + Step-by-Step Flow + Quote Request Form (quotes are returned personally, never published).
 
 ---
 

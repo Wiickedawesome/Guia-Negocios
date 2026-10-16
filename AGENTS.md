@@ -33,6 +33,10 @@ Full documentation: https://docs.astro.build
   the client bundle. Keys come from `settings/admin` in Firestore.
 - **Admin pages may not work on `localhost`** (App Check). Verify admin UI on the live
   domain.
+- **Never publish service prices** — no dollar amounts, fee tables, or per-tier pricing
+  anywhere (site, blog, landing pages). Pricing is discussed only in consultations.
+- **Never render unsourced outcome statistics** (success %, revenue multiples) in copy or
+  visuals unless the number is verifiable and sourced.
 
 Consult these guides before working on related tasks:
 

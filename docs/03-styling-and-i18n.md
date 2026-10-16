@@ -8,9 +8,10 @@ Guia Negocios uses a custom Tailwind CSS v4 design system configured in [src/sty
 
 | Token | Hex Value | Class Name | Recommended Usage |
 | :--- | :--- | :--- | :--- |
-| **Brand Primary** | `#2563EB` | `bg-brand-primary`, `text-brand-primary` | Primary action buttons, active links, badges |
-| **Brand Dark** | `#0F172A` | `bg-brand-dark`, `text-brand-dark` | Hero section backgrounds, dark mode surfaces |
-| **Brand Gray** | `#64748B` | `bg-brand-gray`, `text-brand-gray` | Subtitles, borders, body text muted states |
+| **Brand Primary** | `#1B4E2B` | `bg-brand-primary`, `text-brand-primary` | Primary action buttons, active links, badges |
+| **Brand Accent** | `#F0C850` | `bg-brand-accent`, `text-brand-accent` | Gold accents, badge pills, highlights |
+| **Brand Dark** | `#1A2E35` | `bg-brand-dark`, `text-brand-dark` | Hero section backgrounds, dark surfaces |
+| **Brand Gray** | `#1E2A2F` | `bg-brand-gray`, `text-brand-gray` | Subtitles, borders, body text muted states |
 | **Accent Emerald**| `#10B981` | `bg-emerald-600` | Success toasts, status tags |
 | **Accent Amber**  | `#F59E0B` | `bg-amber-500` | Warning badges, pending statuses |
 
@@ -30,7 +31,7 @@ The website uses a Lightweight Static i18n approach with dictionary files.
 
 ### Utility Functions ([src/i18n/utils.ts](file:///home/wicked/Projects/Guia%20Negocios/src/i18n/utils.ts))
 
-* `getLangFromUrl(url: URL)`: Extracts language prefix (`en` or `es`) from the current request URL path. Defaults to `en`.
+* `getLangFromUrl(url: URL)`: Extracts language prefix (`en` or `es`) from the current request URL path. Defaults to `es` (the site's default locale).
 * `useTranslations(lang: 'en' | 'es')`: Returns a helper function `t(key)` to look up translation values.
 
 ### Example Usage in `.astro` Component:
