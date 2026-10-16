@@ -39,25 +39,16 @@ export const CURATED_UNSPLASH_POOL = [
 export async function getUnsplashAccessKey(): Promise<string> {
   if (cachedUnsplashKey) return cachedUnsplashKey;
 
-  if (typeof window !== 'undefined') {
-    const localKey = localStorage.getItem('unsplash_access_key');
-    if (localKey && localKey.trim()) {
-      cachedUnsplashKey = localKey.trim();
-      return cachedUnsplashKey;
-    }
-  }
-
   // Not read from a PUBLIC_ environment variable, for the same reason as the
   // Pexels key below: Astro inlines PUBLIC_* values into the client bundle.
+  // Stored in settings/admin and kept in memory for the session — never in
+  // localStorage, so no plaintext key sits in the admin's browser storage.
   try {
     const settingsSnap = await getDoc(doc(db, 'settings', 'admin'));
     if (settingsSnap.exists()) {
       const data = settingsSnap.data();
       if (data?.unsplashKey && data.unsplashKey.trim()) {
         cachedUnsplashKey = data.unsplashKey.trim();
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('unsplash_access_key', cachedUnsplashKey);
-        }
         return cachedUnsplashKey;
       }
     }
@@ -71,28 +62,17 @@ export async function getUnsplashAccessKey(): Promise<string> {
 export async function getPexelsApiKey(): Promise<string> {
   if (cachedPexelsKey) return cachedPexelsKey;
 
-  if (typeof window !== 'undefined') {
-    const localKey = localStorage.getItem('pexels_api_key');
-    if (localKey && localKey.trim()) {
-      cachedPexelsKey = localKey.trim();
-      return cachedPexelsKey;
-    }
-  }
-
   // The key is deliberately NOT read from a PUBLIC_ environment variable.
   // Astro inlines every PUBLIC_* value straight into the client bundle, so a
   // real key placed there is shipped to every visitor in readable JS. The
   // admin settings page is the only supported entry point: it stores the key
-  // here in localStorage and in settings/admin, which is what we read below.
+  // in settings/admin, which is what we read below — kept in memory only.
   try {
     const settingsSnap = await getDoc(doc(db, 'settings', 'admin'));
     if (settingsSnap.exists()) {
       const data = settingsSnap.data();
       if (data?.pexelsKey && data.pexelsKey.trim()) {
         cachedPexelsKey = data.pexelsKey.trim();
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('pexels_api_key', cachedPexelsKey);
-        }
         return cachedPexelsKey;
       }
     }

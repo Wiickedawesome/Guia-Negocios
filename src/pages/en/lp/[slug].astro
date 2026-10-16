@@ -36,30 +36,46 @@ export async function getStaticPaths() {
     }
   }
 
+  // Slugs that also exist in Spanish, so the language switcher and the
+  // hreflang alternates only ever point at a page that is actually built.
+  // Failure keeps the set empty, which falls back safely.
+  let esSlugs = new Set<string>();
+  try {
+    const adminDb = getAdminDb();
+    const esSnap = adminDb
+      ? await adminDb.collection('landingPages').where('lang', '==', 'es').get()
+      : await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'es')));
+    esSlugs = new Set(
+      esSnap.docs.map((d: any) => d.data()?.slug).filter((s: any) => typeof s === 'string')
+    );
+  } catch (esErr: any) {
+    console.warn(`[lp] ES twin check failed; the language switch will fall back: ${esErr?.message || esErr}`);
+  }
+
   const pages = docs
     .map((doc: any) => doc.data())
     .filter((lp: any) => typeof lp?.slug === 'string' && lp.slug.trim().length > 0);
 
   if (pages.length === 0) {
-    return [{ params: { slug: 'empty' }, props: { lp: null } }];
+    return [{ params: { slug: 'empty' }, props: { lp: null, hasEsTwin: false } }];
   }
 
   return pages.map((lp: any) => ({
     params: { slug: lp.slug },
-    props: { lp },
+    props: { lp, hasEsTwin: esSlugs.has(lp.slug) },
   }));
 }
 
 const { slug } = Astro.params;
-const { lp } = Astro.props;
+const { lp, hasEsTwin } = Astro.props;
 
 if (!lp) {
   return Astro.redirect('/404');
 }
 ---
 
-<BaseLayout title={`${lp.title} | GUIA NEGOCIOS`} description={lp.metaDesc || ''} ogImage={lp.ogImage || ''}>
-  <Header slot="header" />
+<BaseLayout title={`${lp.title} | GUIA NEGOCIOS`} description={lp.metaDesc || ''} ogImage={lp.ogImage || ''} noAlternate={!hasEsTwin}>
+  <Header slot="header" altPath={hasEsTwin ? `/es/lp/${slug}/` : '/es/contact/'} />
   
   <div class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
     <div class="landing-page-content max-w-6xl mx-auto space-y-6" set:html={stripEditorAttributes(lp.content)} />

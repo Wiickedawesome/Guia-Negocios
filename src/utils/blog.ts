@@ -1120,7 +1120,7 @@ At **Guia Negocios**, we guide Latino entrepreneurs and small business owners th
 
     <div style="background: #1A2E35; color: #FFFFFF; padding: 1.5rem; border-radius: 8px;">
       <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #F0C850; margin-bottom: 0.75rem; font-weight: 600;">Child Tax Credit (CTC)</div>
-      <div style="font-size: 2rem; font-weight: bold; color: #F0C850; margin-bottom: 0.5rem;">\$2,000</div>
+      <div style="font-size: 2rem; font-weight: bold; color: #F0C850; margin-bottom: 0.5rem;">\$2,200</div>
       <div style="font-size: 0.875rem; margin-bottom: 0.75rem;">por hijo calificado (menor de 17)</div>
       <div style="font-size: 0.75rem; opacity: 0.85; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 0.5rem;">Hasta \$1,700 reembolsable</div>
     </div>
@@ -1157,9 +1157,9 @@ Key points:
 - Starts with the number **9**
 - Has the same format as an SSN (XXX-XX-XXXX)
 - **Does not give the right to work** or receive Social Security benefits
-- **Does allow** filing tax returns and claiming tax credits
+- **Does allow** filing tax returns and claiming the credits available to ITIN filers
 
-## Tax Credits Available With an ITIN
+## Key Tax Credits and Who Qualifies
 
 ### Earned Income Tax Credit (EITC)
 
@@ -1170,15 +1170,15 @@ The EITC is one of the most generous credits for low and moderate-income workers
 - **2 children:** up to **\$6,960**
 - **3 or more children:** up to **\$7,830**
 
-To claim it you need a valid ITIN, reported earned income, and must meet income requirements. You can claim the EITC even without an SSN, as long as you file your return with an ITIN.
+To claim it you need a valid Social Security number (SSN), reported earned income, and you must meet the income requirements. ITIN filers cannot claim the EITC.
 
 ### Child Tax Credit (CTC)
 
 If you have children living with you under age 17:
 
-- Up to **\$2,000 per qualifying child**
+- Up to **\$2,200 per qualifying child**
 - Up to **\$1,700 refundable** (Additional Child Tax Credit)
-- You need an ITIN for yourself and SSN or ITIN for each child
+- You need a valid SSN for yourself and for each qualifying child
 
 ### American Opportunity Tax Credit (AOTC)
 
@@ -1186,7 +1186,7 @@ If you or your dependents are in school:
 
 - Up to **\$2,500 per student** for the first 4 years of higher education
 - 40% is refundable (up to \$1,000 even if you owe no tax)
-- Can claim with ITIN
+- Requires a Social Security number valid for work, for both the taxpayer and the student — ITIN filers cannot claim the AOTC
 
 ### Child and Dependent Care Credit
 
@@ -1209,7 +1209,7 @@ If you pay for child or dependent care while working:
 - **Not filing a return** because you think you don't earn enough you may lose refundable credits
 - **Mixing personal and business expenses** lose legitimate deductions
 - **Not claiming the EITC** thinking you don't qualify income limits are higher than you think
-- **Using a preparer who doesn't know ITIN credits** not all preparers know how to claim EITC with ITIN
+- **Using a preparer who doesn't know ITIN rules** not everyone stays current on which credits are available to ITIN filers
 
 ## How Can Guia Negocios Help?
 
@@ -1271,7 +1271,7 @@ El ITIN sirve para:
 
 - **Presentar declaraciones de impuestos** aunque no tenga SSN
 - **Abrir cuentas bancarias** de negocio
-- **Reclamar créditos fiscales** como el EITC y CTC
+- **Reclamar los créditos fiscales disponibles para contribuyentes con ITIN**
 - **Cumplir con obligaciones fiscales** legales
 
 > **Importante:** El ITIN no autoriza a trabajar en EE.UU. ni proporciona estatus migratorio. Es exclusivamente para fines tributarios.
@@ -1279,7 +1279,7 @@ El ITIN sirve para:
 ---
 
 <div class="my-8 p-6 bg-white border border-slate-200 rounded-2xl shadow-sm font-sans">
-<h4 class="text-base font-bold text-[#1A2E35] mb-4">Créditos Fiscales que Puede Reclamar con ITIN</h4>
+<h4 class="text-base font-bold text-[#1A2E35] mb-4">Créditos Fiscales Clave y su Elegibilidad</h4>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div class="bg-[#F2F7F4] p-4 rounded-xl border border-[#1B4E2B]/20">
 <div class="flex items-center gap-2 text-[#1B4E2B] font-bold text-sm mb-3">
@@ -1298,9 +1298,9 @@ Earned Income Tax Credit (EITC)
 Child Tax Credit (CTC)
 </div>
 <ul class="text-xs text-slate-700 space-y-1.5 leading-relaxed">
-<li>Hasta <strong>\$2,000</strong> por hijo menor de 17</li>
+<li>Hasta <strong>\$2,200</strong> por hijo menor de 17</li>
 <li><strong>\$1,700</strong> reembolsable (ACTC)</li>
-<li>Requiere ITIN válido para dependientes</li>
+<li>El hijo debe tener SSN válido para trabajo</li>
 </ul>
 </div>
 </div>
@@ -1352,7 +1352,7 @@ El proceso es directo. Necesita completar el **formulario W-7** del IRS y enviar
 <div class="w-7 h-7 rounded-full bg-[#F0C850] text-[#1A2E35] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</div>
 <div class="flex-1">
 <strong class="text-sm text-[#1A2E35]">Recibir ITIN en 7-11 Semanas</strong>
-<p class="text-xs text-slate-600 mt-1">El IRS le envía carta con su número. CAA reduce a 2-3 semanas.</p>
+<p class="text-xs text-slate-600 mt-1">El IRS le envía una carta con su número; el tiempo de procesamiento normal es de 7 semanas (9-11 semanas si solicita en temporada de impuestos o desde el extranjero).</p>
 </div>
 </div>
 </div>
@@ -1369,7 +1369,7 @@ Si tiene un negocio, puede reclamar créditos adicionales:
 <div class="space-y-2">
 <div class="flex items-center gap-2">
 <svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-<span class="text-xs text-slate-700"><strong>Small Business Health Care Tax Credit</strong> — hasta 50% de primas de salud</span>
+<span class="text-xs text-slate-700"><strong>Small Business Health Care Tax Credit</strong> — crédito por primas de salud calificadas de sus empleados</span>
 </div>
 <div class="flex items-center gap-2">
 <svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -1377,7 +1377,7 @@ Si tiene un negocio, puede reclamar créditos adicionales:
 </div>
 <div class="flex items-center gap-2">
 <svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-<span class="text-xs text-slate-700"><strong>Research & Development Credit</strong> — hasta 20% de gastos calificables</span>
+<span class="text-xs text-slate-700"><strong>Research & Development Credit</strong> — crédito por gastos de investigación y desarrollo</span>
 </div>
 <div class="flex items-center gap-2">
 <svg class="w-5 h-5 text-[#1B4E2B] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>

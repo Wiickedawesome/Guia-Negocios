@@ -198,14 +198,14 @@ export const AUTHORITATIVE_SOURCES: CitationSource[] = [
     keywords: ['michigan state', 'msu', 'jsri', 'barreras', 'fracaso', 'banca', 'capital', 'estudio']
   },
   {
-    titleEs: 'Oficina del Censo de los Estados Unidos: Datos de Negocios y Emprendimiento',
-    titleEn: 'U.S. Census Bureau Small Business and Ownership Statistics',
-    url: 'https://www.census.gov',
+    titleEs: 'Oficina del Censo de los Estados Unidos: Encuesta Anual de Negocios (ABS)',
+    titleEn: 'U.S. Census Bureau Annual Business Survey (ABS)',
+    url: 'https://www.census.gov/programs-surveys/abs.html',
     organization: 'U.S. Census Bureau',
     category: 'academic',
-    descriptionEs: 'Estadísticas oficiales sobre 1 de cada 4 nuevos negocios fundados por minorías en EE.UU.',
-    descriptionEn: 'Official census survey showing 1 in 4 new U.S. businesses are Latino-owned.',
-    keywords: ['censo', 'census', 'demografia', 'knoxville tn', 'minority', '1 in 4']
+    descriptionEs: 'Estadísticas oficiales de la Encuesta Anual de Negocios sobre propietarios de negocios en EE.UU., con datos por raza, etnia y origen.',
+    descriptionEn: 'Official Annual Business Survey statistics on U.S. business ownership, including data by race, ethnicity, and origin.',
+    keywords: ['censo', 'census', 'demografia', 'knoxville tn', 'business ownership', 'abs']
   },
 
   // 6. Internal Guia Negocios Service & Landing Page Links

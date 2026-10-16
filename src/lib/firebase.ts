@@ -69,38 +69,28 @@ export const ai = getAI(app, {
 // generateAiContent callable as server-side fallback. A user-provided key from
 // localStorage/env/Firestore is only used for the optional direct REST path.
 
-// Cached Gemini API Key helper
+// In-memory Gemini API key cache (never persisted to browser storage).
 let cachedGeminiKey: string | null = null;
 
 export async function getGeminiApiKey(): Promise<string> {
   if (cachedGeminiKey) return cachedGeminiKey;
 
-  // 1. Check local storage (browser)
-  if (typeof window !== 'undefined') {
-    const localKey = localStorage.getItem('gemini_api_key');
-    if (localKey && localKey.trim()) {
-      cachedGeminiKey = localKey.trim();
-      return cachedGeminiKey;
-    }
-  }
-
-  // 2. Check environment variable if available
-  const envKey = (import.meta as any).env?.PUBLIC_GEMINI_API_KEY || (typeof window !== 'undefined' && (window as any).GEMINI_API_KEY);
-  if (envKey && envKey.trim()) {
-    cachedGeminiKey = envKey.trim();
+  // 1. Optional runtime override. Deliberately NOT read from
+  // import.meta.env.PUBLIC_*: Astro inlines those values into the client
+  // bundle, which would ship the key to every visitor.
+  const windowKey = typeof window !== 'undefined' ? (window as any).GEMINI_API_KEY : '';
+  if (windowKey && String(windowKey).trim()) {
+    cachedGeminiKey = String(windowKey).trim();
     return cachedGeminiKey;
   }
 
-  // 3. Fetch from Firestore settings/admin
+  // 2. Fetch from Firestore settings/admin (kept in memory for this session only)
   try {
     const settingsSnap = await getDoc(doc(db, 'settings', 'admin'));
     if (settingsSnap.exists()) {
       const data = settingsSnap.data();
       if (data?.geminiKey && data.geminiKey.trim()) {
         cachedGeminiKey = data.geminiKey.trim();
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('gemini_api_key', cachedGeminiKey);
-        }
         return cachedGeminiKey;
       }
     }
@@ -108,7 +98,7 @@ export async function getGeminiApiKey(): Promise<string> {
     console.warn("Could not fetch geminiKey from Firestore settings:", e);
   }
 
-  // 4. No key configured — direct REST path will be skipped (Vertex AI handles it)
+  // 3. No key configured — direct REST path will be skipped (Vertex AI handles it)
   return '';
 }
 

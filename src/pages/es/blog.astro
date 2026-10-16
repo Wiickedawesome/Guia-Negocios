@@ -206,7 +206,10 @@ const posts = await getBlogPosts('es');
           if (matchSlug) existingSlugs.add(matchSlug);
         });
 
-        livePosts.forEach(post => {
+        // Newest first: the list is sorted descending and prepend() puts each
+        // successive card on top, so iterate in reverse — otherwise the oldest
+        // post ends up first in the grid.
+        [...livePosts].reverse().forEach(post => {
           if (!existingSlugs.has(post.slug)) {
             const card = document.createElement('article');
             card.className = 'blog-card group flex flex-col bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden';
@@ -256,6 +259,8 @@ const posts = await getBlogPosts('es');
             grid.prepend(card);
           }
         });
+        // Cards added after hydration must respect a filter already typed.
+        applyFilter();
       } catch (err) {
         console.warn('Could not fetch dynamic live blog posts:', err);
       }

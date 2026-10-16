@@ -22,7 +22,7 @@ const navItems = [
 ];
 ---
 
-<BaseLayout title={title} description={description} noTracking>
+<BaseLayout title={title} description={description} noTracking noindex>
   <script is:inline>
     if (localStorage.getItem('adminDarkMode') === 'true' || (!('adminDarkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
@@ -118,10 +118,11 @@ const navItems = [
         </div>
       </header>
 
-      <!-- Page Content -->
-      <main class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-8">
+      <!-- Page Content. Intentionally a div, not a second main landmark:
+           BaseLayout already wraps this slot in the document's only main. -->
+      <div class="flex-1 overflow-y-auto bg-slate-50 p-4 sm:p-8">
         <slot />
-      </main>
+      </div>
     </div>
   </div>
 
