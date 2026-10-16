@@ -66,7 +66,10 @@ export async function runRankHistory(ctx: SkillContext): Promise<SkillResult> {
         try {
           await batch.commit();
         } catch (e: unknown) {
+          // A failed commit means rows were lost: surface it as a run error
+          // (the outer catch records status 'error') instead of a silent warn.
           console.warn('[rank-history] batch commit failed:', e);
+          throw e;
         }
         batch = db.batch();
       }
@@ -76,7 +79,9 @@ export async function runRankHistory(ctx: SkillContext): Promise<SkillResult> {
       await persist(row);
     }
     if (batchCount > 0) {
-      try { await batch.commit(); } catch (err) { console.warn('[rank-history] final batch failed:', err); }
+      // No catch: a failed final commit must abort with status 'error', not
+      // report 'ok' over lost rows.
+      await batch.commit();
     }
 
     return {

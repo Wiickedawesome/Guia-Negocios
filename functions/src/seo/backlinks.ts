@@ -69,6 +69,7 @@ async function runProspectSweep(
   }
 
   let written = 0;
+  let writeErrors = 0;
   for (const [id, p] of prospects) {
     try {
       await db.collection('backlink-prospects').doc(id).set(
@@ -85,12 +86,15 @@ async function runProspectSweep(
       );
       written++;
     } catch (err) {
+      writeErrors++;
       console.warn('[prospect-sweep] write failed', id, err);
     }
   }
 
   return {
-    status: 'ok',
+    // Never report plain success when writes were lost.
+    status: writeErrors > 0 ? 'partial' : 'ok',
+    ...(writeErrors > 0 ? { error: `${writeErrors} of ${prospects.size} prospect writes failed` } : {}),
     findings: written,
     queriesUsed: ctx.queriesUsed(),
     summary: { kind, prospectsFound: prospects.size, written },

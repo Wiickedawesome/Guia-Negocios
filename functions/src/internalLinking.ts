@@ -10,19 +10,27 @@ export const generateBlogEmbedding = onDocumentWritten(
     const afterData = snap.after.data();
     if (!afterData) return; // Deleted
 
-    // If embedding already exists and content hasn't changed, skip
+    // Blog documents store contentEs/contentEn (the old `content` field is
+    // never written), so read both; a document with neither has nothing to
+    // embed.
+    const content = afterData.contentEs || afterData.contentEn || '';
+    if (!content) return;
+
+    // If embedding already exists and neither language body changed, skip
     const beforeData = snap.before?.data();
-    if (afterData.embedding && beforeData?.content === afterData.content) {
+    if (
+      afterData.embedding &&
+      beforeData?.contentEs === afterData.contentEs &&
+      beforeData?.contentEn === afterData.contentEn
+    ) {
       return;
     }
-
-    if (!afterData.content) return;
 
     try {
       const { generateEmbeddingWithAi } = await import("./ai.js");
       
       // Strip markdown/html to get raw text for better embedding
-      const rawText = afterData.content.replace(/<[^>]+>/g, '').substring(0, 5000); 
+      const rawText = content.replace(/<[^>]+>/g, '').substring(0, 5000); 
       
       const embeddingValues = await generateEmbeddingWithAi(rawText);
 

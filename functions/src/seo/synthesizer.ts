@@ -32,6 +32,7 @@ export async function runSynthesizer(ctx: SkillContext): Promise<SkillResult> {
   const count = (snap: FirebaseFirestore.QuerySnapshot | null) => snap ? snap.size : 0;
   let tasksWritten = 0;
   let briefsWritten = 0;
+  let writeErrors = 0;
 
   // ── SEO Tasks: top on-page issues per page ──
   if (audits) {
@@ -55,6 +56,7 @@ export async function runSynthesizer(ctx: SkillContext): Promise<SkillResult> {
           );
           tasksWritten++;
         } catch (err) {
+          writeErrors++;
           console.warn('[synthesizer] seo-tasks write failed:', issue.code, err);
         }
       }
@@ -82,6 +84,7 @@ export async function runSynthesizer(ctx: SkillContext): Promise<SkillResult> {
         );
         briefsWritten++;
       } catch (err) {
+        writeErrors++;
         console.warn('[synthesizer] content-briefs write failed:', doc.id, err);
       }
     }
@@ -122,7 +125,9 @@ export async function runSynthesizer(ctx: SkillContext): Promise<SkillResult> {
   );
 
   return {
-    status: 'ok',
+    // Never report plain success when writes were lost.
+    status: writeErrors > 0 ? 'partial' : 'ok',
+    ...(writeErrors > 0 ? { error: `${writeErrors} synthesizer writes failed` } : {}),
     findings: tasksWritten + briefsWritten + 1,
     queriesUsed: ctx.queriesUsed(),
     summary: { ...status, weekOf: weekKey },

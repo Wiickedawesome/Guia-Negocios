@@ -204,7 +204,8 @@ const allowed = (s) => s === 200 || s === 404;
   console.log(
     `\n=== RESULT: ${failures === 0 ? `ALL ${checks.length} CHECKS PASSED` : `${failures} of ${checks.length} FAILED`} ===`
   );
-  process.exit(0);
+  // Exit non-zero on failure so this can act as a real gate in CI.
+  process.exit(failures === 0 ? 0 : 1);
 })().catch((e) => {
   console.error('SCRIPT ERROR:', e.message);
   process.exit(1);

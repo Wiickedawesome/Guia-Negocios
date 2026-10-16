@@ -151,11 +151,17 @@ export const scheduledContentEngine = onSchedule({
       const { generateEmbeddingWithAi } = await import("./ai.js");
       const queryVector = await generateEmbeddingWithAi(targetKeyword);
       const nearestSnap = await db.collection("blogs").findNearest("embedding", FieldValue.vector(queryVector), { limit: 3, distanceMeasure: "COSINE" }).get();
-      const relatedLinks = nearestSnap.docs.map((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
-        const data = doc.data();
-        const langCode = data.language || "es";
-        return `- [${data.title}](/${langCode}/blog/${data.slugEs || data.slug})`;
-      });
+      // Blogs store titleEs/titleEn and slugEs/slugEn — there is no `title` or
+      // `slug` field, so the old label rendered "- [undefined](undefined)".
+      const relatedLinks = nearestSnap.docs
+        .map((doc: FirebaseFirestore.QueryDocumentSnapshot) => {
+          const data = doc.data();
+          const langCode = data.language === "en" ? "en" : "es";
+          const label = langCode === "en" ? data.titleEn || data.titleEs : data.titleEs || data.titleEn;
+          const slug = langCode === "en" ? data.slugEn || data.slugEs : data.slugEs || data.slugEn;
+          return slug ? `- [${label || slug}](/${langCode}/blog/${slug})` : null;
+        })
+        .filter((line): line is string => Boolean(line));
       if (relatedLinks.length > 0) {
         relatedLinksText = `\n\nInternal Linking Requirements:\nOrganically weave markdown hyperlinks to these related articles into relevant paragraphs (never list them at the end):\n${relatedLinks.join("\n")}`;
       }
@@ -284,7 +290,9 @@ function parseDelimited(raw: string): Record<string, any> {
     const re = new RegExp(`===${key}===\\s*([\\s\\S]*?)(?====\\w+===|$)`, "i");
     const m = raw.match(re);
     if (m && m[1]) {
-      const field = key === "KEYWORDS" ? "keywords" : key.charAt(0).toLowerCase() + key.slice(1).toLowerCase();
+      // TITLE_ES -> titleEs, META_DESC -> metaDesc. The consumer below reads
+      // camelCase, so this conversion is the field-name contract of the engine.
+      const field = key.toLowerCase().replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase());
       out[field] = m[1].trim();
     }
   }

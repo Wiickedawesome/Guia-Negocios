@@ -249,11 +249,18 @@ export const discoverKeywords = onCall({ cors: true, invoker: 'public', enforceA
 
     const trends = topKeywords.map((kw, index) => {
       if (timelineData.length >= 2) {
-        const lastPoint = timelineData[timelineData.length - 1]?.value?.[index] || 50;
-        const prevPoint = timelineData[timelineData.length - 2]?.value?.[index] || 45;
-        let trend = '-';
-        if (lastPoint > prevPoint) trend = `↑ ${lastPoint - prevPoint}`;
-        if (lastPoint < prevPoint) trend = `↓ ${prevPoint - lastPoint}`;
+        const lastPointRaw = timelineData[timelineData.length - 1]?.value?.[index];
+        const prevPointRaw = timelineData[timelineData.length - 2]?.value?.[index];
+        const lastPoint = typeof lastPointRaw === 'number' ? lastPointRaw : null;
+        const prevPoint = typeof prevPointRaw === 'number' ? prevPointRaw : null;
+        // A missing Trends sample stays missing — it is never replaced with an
+        // invented score (the old code substituted 50 / 45).
+        let trend = '—';
+        if (lastPoint !== null && prevPoint !== null) {
+          if (lastPoint > prevPoint) trend = `↑ ${lastPoint - prevPoint}`;
+          else if (lastPoint < prevPoint) trend = `↓ ${prevPoint - lastPoint}`;
+          else trend = '-';
+        }
         return { keyword: kw, trend, relativeVolume: lastPoint };
       }
 
@@ -953,10 +960,13 @@ export const scheduledVerifyBacklinks = onSchedule("every 48 hours", async (even
 export const generateLinkOutreach = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   try {
+    // Curated outreach targets. URLs re-verified live 2026-10-16. The former
+    // Tennessee Hispanic Chamber entry was removed: every candidate domain
+    // (tnhcc.org / tnhcc.com) no longer resolves, so outreach there is moot.
     const curatedOpportunities = [
       {
         targetName: "Centro Hispano de East TN",
-        targetUrl: "https://www.centrohispano.org/recursos",
+        targetUrl: "https://www.centrohispanotn.org/",
         strategy: "Community Resource Guide & Workshop Partnership (Knoxville)",
         emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
       },
@@ -968,25 +978,25 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public', enfo
       },
       {
         targetName: "Knoxville Chamber of Commerce",
-        targetUrl: "https://www.knoxvillechamber.com/directory",
+        targetUrl: "https://www.knoxvillechamber.com/directory/",
         strategy: "Minority Business & Bilingual Consultancy Listing (Knox County)",
         emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
       },
       {
         targetName: "Nashville Area Hispanic Chamber of Commerce (NAHCC)",
-        targetUrl: "https://nashvillehispanicchamber.com/directory",
+        targetUrl: "https://www.nashvillehispanicchamber.com/",
         strategy: "Regional Hispanic Network & Launch Resource (Middle TN & Southeast)",
         emailDraft: "Subject: Collaboration on Bilingual Business Launch Systems — NAHCC & Guia Negocios\n\nEstimado equipo de NAHCC,\n\nReconocemos la gran labor que realizan impulsando negocios en la región central de Tennessee. Desde GUIA DE NEGOCIOS ayudamos a emprendedores hispanos a estructurar empresas rentables con cumplimiento tributario, sistemas digitales y asistentes virtuales bilingües.\n\nNos encantaría conectar para intercambiar recursos educativos y participar en sus redes de asesoría.\n\nUn cordial saludo,\nGUIA NEGOCIOS"
       },
       {
         targetName: "Tennessee SBDC at Pellissippi State",
-        targetUrl: "https://www.tsbdc.org/knoxville",
+        targetUrl: "https://tsbdc.org/center/knoxville/",
         strategy: "Bilingual Resource Referral Partner (Statewide Network)",
         emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Advisers,\n\nAs a consultancy serving Spanish-speaking entrepreneurs across Knox, surrounding counties, and statewide Tennessee, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local and regional founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
       },
       {
         targetName: "Chattanooga Area Chamber - Diverse Business Hub",
-        targetUrl: "https://chattanoogachamber.com/diversity-equity-inclusion",
+        targetUrl: "https://chattanoogachamber.com/diversity/",
         strategy: "Southeast Regional Latino Hub Inclusion (Southeast TN / North GA)",
         emailDraft: "Subject: Bilingual Entrepreneurship Resource Listing — Guia Negocios\n\nDear Chattanooga Chamber Inclusion Team,\n\nWe provide turnkey bilingual business setup, bookkeeping, and operational consulting for diverse entrepreneurs across East and Southeast Tennessee.\n\nWe would love to connect and share our guides as a trusted Spanish/English resource for founders in the region.\n\nWarm regards,\nGUIA NEGOCIOS Team"
       }
@@ -996,6 +1006,7 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public', enfo
     // Note: no Domain Authority value is stored. The previous `daEstimate`
     // numbers (42/54/58/48/62/56) were invented, not measured by any tool.
     const db = getFirestore();
+    let saveErrors = 0;
     for (const opp of curatedOpportunities) {
       try {
         const queryExisting = await db.collection('linkOutreach').where('targetUrl', '==', opp.targetUrl).limit(1).get();
@@ -1009,11 +1020,13 @@ export const generateLinkOutreach = onCall({ cors: true, invoker: 'public', enfo
           });
         }
       } catch (e) {
+        saveErrors++;
         console.warn("Could not save to linkOutreach collection:", e);
       }
     }
 
-    return { opportunities: curatedOpportunities };
+    // Report how many drafts were persisted instead of implying all succeeded.
+    return { opportunities: curatedOpportunities, saved: curatedOpportunities.length - saveErrors, saveErrors };
 
   } catch (error: any) {
     console.error("generateLinkOutreach error:", error);
@@ -1057,12 +1070,14 @@ async function internalGenerateReport(generatedBy: string = 'system') {
       generatedAt: FieldValue.serverTimestamp(),
       generatedBy,
       metrics: {
-        seoHealth: `${seoScore}%`,
-        activeBacklinks: activeLinks || totalLinks,
+        seoHealth: seoScore === null ? '—' : `${seoScore}%`,
+        activeBacklinks: activeLinks,
         trackedKeywords: totalKeywords,
         inquiriesReceived: totalInquiries
       },
-      summary: `Site performance is healthy. SEO audit score is at ${seoScore}%, tracking ${totalKeywords} target keywords with ${activeLinks || totalLinks} active citations.`
+      summary: seoScore === null
+        ? `No site-wide SEO audit has been recorded yet. Tracking ${totalKeywords} keywords with ${activeLinks} active backlinks and ${totalInquiries} inquiries received.`
+        : `Latest SEO audit score is ${seoScore}%, tracking ${totalKeywords} keywords with ${activeLinks} active backlinks and ${totalInquiries} inquiries received.`
     };
 
     const docRef = await db.collection('reports').add(reportData);

@@ -96,6 +96,7 @@ export async function runKeywordGaps(ctx: SkillContext): Promise<SkillResult> {
 
   // Write all findings
   let written = 0;
+  let writeErrors = 0;
   for (const f of findings) {
     try {
       await db.collection('keyword-gaps').doc(f.id).set(
@@ -108,12 +109,15 @@ export async function runKeywordGaps(ctx: SkillContext): Promise<SkillResult> {
       );
       written++;
     } catch (err) {
+      writeErrors++;
       console.warn('[keyword-gaps] write failed:', err);
     }
   }
 
   return {
-    status: 'ok',
+    // Never report plain success when writes were lost.
+    status: writeErrors > 0 ? 'partial' : 'ok',
+    ...(writeErrors > 0 ? { error: `${writeErrors} of ${findings.length} keyword-gap writes failed` } : {}),
     findings: written,
     queriesUsed: ctx.queriesUsed(),
     summary: { striking: findings.filter((f) => f.data.type === 'striking-distance').length, discovery: found, written },
