@@ -138,6 +138,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     import { app } from '../../lib/firebase';
+    import { escapeHtml } from '../../utils/escape-html';
     import { getFunctions, httpsCallable } from 'firebase/functions';
     import { getFirestore, collection, getDocs, query, orderBy, limit, getCountFromServer, where } from 'firebase/firestore';
 
@@ -304,7 +305,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                 return `
                   <div class="flex items-center gap-3">
                     <span class="w-2 h-2 rounded-full ${dotColor} shrink-0"></span>
-                    <span class="text-sm text-slate-700 truncate flex-1 font-medium">${title}</span>
+                    <span class="text-sm text-slate-700 truncate flex-1 font-medium">${escapeHtml(title)}</span>
                     <span class="text-xs px-2 py-0.5 rounded-full font-medium ${isPublished ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">${isPublished ? 'Published' : 'Draft'}</span>
                   </div>
                 `;
@@ -341,10 +342,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                   trendColor = 'text-slate-400';
                 }
                 
+                // An unmeasured keyword has no position: show "—" instead of "#0".
+                const position = typeof data.position === 'number' ? `#${Math.round(data.position)}` : '—';
                 return `
                   <div class="flex justify-between items-center">
-                    <span class="text-sm text-slate-700 font-medium">${data.keyword || 'Unknown'}</span>
-                    <span class="text-sm font-bold ${trendColor}">#${Math.round(data.position || 0)} ${trendIcon}</span>
+                    <span class="text-sm text-slate-700 font-medium">${escapeHtml(data.keyword || 'Unknown')}</span>
+                    <span class="text-sm font-bold ${trendColor}">${position} ${trendIcon}</span>
                   </div>
                 `;
               }).join('');

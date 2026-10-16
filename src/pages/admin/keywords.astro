@@ -110,6 +110,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { db, aiModel, app } from '../../lib/firebase';
+    import { escapeHtml } from '../../utils/escape-html';
     import { collection, getDocs, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
@@ -197,9 +198,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             : `<span class="text-slate-400 font-medium">0</span>`;
 
           html += `
-            <tr class="keyword-row hover:bg-slate-50/50" data-kw="${kw.keyword.toLowerCase()}">
+            <tr class="keyword-row hover:bg-slate-50/50" data-kw="${escapeHtml(kw.keyword.toLowerCase())}">
               <td class="px-6 py-4 font-medium text-brand-dark">
-                ${kw.keyword}
+                ${escapeHtml(kw.keyword)}
                 <span class="ml-2 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${kw.language || '—'}</span>
                 <span class="ml-1 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded" title="Where this row's numbers came from">${kw.source === 'search-console' ? 'GSC' : (kw.source === 'manual' ? 'Manual' : 'Not measured')}</span>
               </td>
@@ -437,9 +438,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             aiList.innerHTML = suggestions.map((kw: any) => `
               <div class="flex items-start justify-between gap-3 p-3 border border-slate-100 rounded-lg bg-slate-50">
                 <div class="flex-1 min-w-0">
-                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language || '—'}</span></div>
-                  <div class="text-xs text-slate-500 mt-0.5">${typeof kw.position === 'number' ? 'Pos: #' + kw.position : 'Position not measured'} · ${kw.priority || 'High'} Priority</div>
-                  <div class="text-xs text-slate-400 mt-1 italic">${kw.reason || 'High intent keyword'}</div>
+                  <div class="font-medium text-sm text-slate-900">${escapeHtml(kw.keyword)} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${escapeHtml(kw.language || '—')}</span></div>
+                  <div class="text-xs text-slate-500 mt-0.5">${typeof kw.position === 'number' ? 'Pos: #' + kw.position : 'Position not measured'} · ${escapeHtml(kw.priority || 'High')} Priority</div>
+                  <div class="text-xs text-slate-400 mt-1 italic">${escapeHtml(kw.reason || 'High intent keyword')}</div>
                 </div>
                 <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language || null, volume: typeof kw.volume === 'number' ? kw.volume : null, position: typeof kw.position === 'number' ? kw.position : null, priority: kw.priority || 'High'}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
               </div>
@@ -554,8 +555,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             listContainer.innerHTML = keywords.map((kw: any) => `
               <div class="flex items-center justify-between p-3 border border-slate-100 rounded bg-slate-50">
                 <div>
-                  <div class="font-medium text-sm text-slate-900">${kw.keyword} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${kw.language || '—'}</span></div>
-                  <div class="text-xs text-slate-500">Pri: ${kw.priority || '—'}</div>
+                  <div class="font-medium text-sm text-slate-900">${escapeHtml(kw.keyword)} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${escapeHtml(kw.language || '—')}</span></div>
+                  <div class="text-xs text-slate-500">Pri: ${escapeHtml(kw.priority || '—')}</div>
                 </div>
                 <button data-ai-save='${JSON.stringify(kw).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200">Save</button>
               </div>

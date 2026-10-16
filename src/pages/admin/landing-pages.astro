@@ -96,6 +96,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script>
     import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
     import { db, aiModel } from '../../lib/firebase';
+    import { escapeHtml } from '../../utils/escape-html';
     import { stripEditorAttributes } from '../../utils/sanitize-landing-html';
 
     // Filters tab logic
@@ -153,16 +154,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
           html += `
             <tr class="hover:bg-slate-50/50">
-              <td class="px-6 py-4 font-medium text-brand-dark">${title}</td>
-              <td class="px-6 py-4 text-slate-500 font-mono text-xs">/${lp.lang || 'es'}/lp/${lp.slug || 'page'}</td>
-              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${lp.status || 'Draft'}</span></td>
-              <td class="px-6 py-4 text-slate-600">${lang}</td>
+              <td class="px-6 py-4 font-medium text-brand-dark">${escapeHtml(title)}</td>
+              <td class="px-6 py-4 text-slate-500 font-mono text-xs">/${escapeHtml(lp.lang || 'es')}/lp/${escapeHtml(lp.slug || 'page')}</td>
+              <td class="px-6 py-4"><span class="px-2.5 py-1 ${statusClass} text-xs font-medium rounded-full">${escapeHtml(lp.status || 'Draft')}</span></td>
+              <td class="px-6 py-4 text-slate-600">${escapeHtml(lang)}</td>
               <td class="px-6 py-4 text-slate-600">${views}</td>
               <td class="px-6 py-4 text-slate-500">${date}</td>
               <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-3">
                   <a href="/admin/landing-pages/builder?id=${id}" class="text-xs text-slate-500 hover:text-brand-primary font-medium">Edit</a>
-                  <a href="/${lp.lang || 'es'}/lp/${lp.slug || 'page'}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
+                  <a href="/${escapeHtml(lp.lang || 'es')}/lp/${escapeHtml(lp.slug || 'page')}" target="_blank" class="text-xs text-slate-500 hover:text-brand-primary font-medium">View</a>
                 </div>
               </td>
             </tr>

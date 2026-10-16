@@ -5,7 +5,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 <AdminLayout title="Reports | Admin">
   <div class="mb-8">
     <h1 class="text-2xl font-bold text-slate-900 font-heading">Reports</h1>
-    <p class="text-sm text-slate-500 mt-1">Generate AI-powered executive SEO reports on-demand or schedule recurring generations for your team.</p>
+    <p class="text-sm text-slate-500 mt-1">Generate AI-powered executive SEO reports on demand. The SEO agent also files a weekly SEO summary here automatically every Sunday.</p>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -24,26 +24,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       </button>
     </div>
 
-    <!-- Scheduled -->
+    <!-- Automatic weekly reports (SEO agent) -->
     <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-      <h3 class="text-lg font-bold text-slate-900 mb-4">Scheduled Reports</h3>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Frequency</label>
-          <select id="sched-freq" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white">
-            <option value="weekly">Weekly (Every Monday)</option>
-            <option value="biweekly">Bi-Weekly</option>
-            <option value="monthly">Monthly (1st of the month)</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Email Recipient</label>
-          <input id="sched-email" type="email" value="info@guianegocios.net" placeholder="info@guianegocios.net" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
-        </div>
-        <button id="btn-save-schedule" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 text-sm font-semibold rounded-lg shadow-sm hover:bg-slate-100 transition-colors cursor-pointer">
-          Save Schedule Settings
-        </button>
-      </div>
+      <h3 class="text-lg font-bold text-slate-900 mb-2">Automatic Weekly Reports</h3>
+      <p class="text-sm text-slate-500 leading-relaxed">
+        The SEO agent generates a weekly summary every Sunday and files it in the report history below.
+        It follows the agent's fixed schedule, so there is nothing to configure on this page.
+      </p>
     </div>
   </div>
 
@@ -52,7 +39,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
       <div>
         <h3 class="text-lg font-bold text-slate-900">Report History</h3>
-        <p class="text-xs text-slate-500">All generated executive reports and audits sent to info@guianegocios.net</p>
+        <p class="text-xs text-slate-500">All executive reports generated for this workspace, newest first</p>
       </div>
       <span id="loading-indicator" class="text-xs text-brand-primary font-medium animate-pulse hidden">Syncing...</span>
     </div>
@@ -79,51 +66,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { db, aiModel } from '../../lib/firebase';
+    import { escapeHtml, sanitizeHtml } from '../../utils/escape-html';
     import { collection, onSnapshot, query, orderBy, doc, getDoc, setDoc, addDoc, deleteDoc, getDocs, serverTimestamp } from 'firebase/firestore';
 
     let allReports: any[] = [];
-
-    // Load Schedule Settings from Firestore
-    async function loadScheduleSettings() {
-      try {
-        const docSnap = await getDoc(doc(db, 'settings', 'admin'));
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.reportScheduleFreq) (document.getElementById('sched-freq') as HTMLSelectElement).value = data.reportScheduleFreq;
-          if (data.reportScheduleEmail) (document.getElementById('sched-email') as HTMLInputElement).value = data.reportScheduleEmail;
-        } else {
-          (document.getElementById('sched-email') as HTMLInputElement).value = 'info@guianegocios.net';
-        }
-      } catch (e) {
-        console.warn('Schedule settings notice:', e);
-        (document.getElementById('sched-email') as HTMLInputElement).value = 'info@guianegocios.net';
-      }
-    }
-    loadScheduleSettings();
-
-    // Save Schedule Settings
-    document.getElementById('btn-save-schedule')?.addEventListener('click', async () => {
-      const btn = document.getElementById('btn-save-schedule') as HTMLButtonElement;
-      const email = (document.getElementById('sched-email') as HTMLInputElement)?.value?.trim() || 'info@guianegocios.net';
-      const freq = (document.getElementById('sched-freq') as HTMLSelectElement)?.value || 'weekly';
-
-      btn.disabled = true;
-      btn.innerText = 'Saving...';
-      try {
-        await setDoc(doc(db, 'settings', 'admin'), {
-          reportScheduleFreq: freq,
-          reportScheduleEmail: email
-        }, { merge: true });
-        
-        // @ts-ignore
-        window.showToast(`Schedule saved. Reports will be addressed to ${email}`, 'success');
-      } catch (e: any) {
-        alert('Failed to save schedule: ' + e.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Save Schedule Settings';
-      }
-    });
 
     // Real-time Reports Listener
     const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
@@ -158,10 +104,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         return `
           <tr class="hover:bg-slate-50/50">
             <td class="px-6 py-4 text-slate-900 font-medium">${dateStr}</td>
-            <td class="px-6 py-4 text-slate-700">${type}</td>
-            <td class="px-6 py-4 text-slate-600 font-mono text-xs">${recipient}</td>
+            <td class="px-6 py-4 text-slate-700">${escapeHtml(type)}</td>
+            <td class="px-6 py-4 text-slate-600 font-mono text-xs">${escapeHtml(recipient)}</td>
             <td class="px-6 py-4">
-              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">${report.status || 'Generated'}</span>
+              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">${escapeHtml(report.status || 'Generated')}</span>
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-3">
@@ -181,7 +127,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       const report = allReports.find(r => r.id === reportId);
       if (!report) return;
 
-      const parsedHtml = (window as any).marked ? (window as any).marked.parse(report.content || 'No content generated.') : `<pre>${report.content}</pre>`;
+      const parsedHtml = (window as any).marked
+        ? sanitizeHtml((window as any).marked.parse(report.content || 'No content generated.'))
+        : `<pre>${escapeHtml(report.content || '')}</pre>`;
       const recipient = report.recipient || 'info@guianegocios.net';
       
       // @ts-ignore

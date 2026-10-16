@@ -148,6 +148,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     // Initial Load
     auth.onAuthStateChanged(async (user) => {
       if (user) {
+        // One-time hygiene: earlier versions cached API keys in localStorage.
+        ['gemini_api_key', 'pexels_api_key', 'unsplash_access_key'].forEach((key) => {
+          try { localStorage.removeItem(key); } catch { /* storage unavailable */ }
+        });
+
         // Load Profile
         (document.getElementById('prof-name') as HTMLInputElement).value = user.displayName || 'Admin';
         (document.getElementById('prof-email') as HTMLInputElement).value = user.email || '';
@@ -181,28 +186,25 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           currentPexelsKey = await getPexelsApiKey();
         }
 
+        // Keys are write-only in this form: inputs are never prefilled with
+        // the stored secret (a prefilled value sits in the DOM for any script
+        // to read). The badge/test below still verifies the saved key.
         const geminiInput = document.getElementById('api-gemini') as HTMLInputElement;
-        if (geminiInput) {
-          geminiInput.value = currentGeminiKey;
-          if (currentGeminiKey) {
-            runKeyTest(currentGeminiKey, false);
-          }
+        if (geminiInput && currentGeminiKey) {
+          geminiInput.placeholder = 'Key saved — leave blank to keep it';
+          runKeyTest(currentGeminiKey, false);
         }
 
         const pexelsInput = document.getElementById('api-pexels') as HTMLInputElement;
-        if (pexelsInput) {
-          pexelsInput.value = currentPexelsKey;
-          if (currentPexelsKey) {
-            runPexelsTest(currentPexelsKey, false);
-          }
+        if (pexelsInput && currentPexelsKey) {
+          pexelsInput.placeholder = 'Key saved — leave blank to keep it';
+          runPexelsTest(currentPexelsKey, false);
         }
 
         const unsplashInput = document.getElementById('api-unsplash') as HTMLInputElement;
-        if (unsplashInput) {
-          unsplashInput.value = currentUnsplashKey;
-          if (currentUnsplashKey) {
-            runUnsplashTest(currentUnsplashKey, false);
-          }
+        if (unsplashInput && currentUnsplashKey) {
+          unsplashInput.placeholder = 'Key saved — leave blank to keep it';
+          runUnsplashTest(currentUnsplashKey, false);
         }
       }
     });
@@ -373,30 +375,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       btn.innerText = 'Saving...';
       try {
         const geminiVal = (document.getElementById('api-gemini') as HTMLInputElement).value?.trim();
-        if (geminiVal) {
-          localStorage.setItem('gemini_api_key', geminiVal);
-        } else {
-          localStorage.removeItem('gemini_api_key');
-        }
-
         const pexelsVal = (document.getElementById('api-pexels') as HTMLInputElement)?.value?.trim() || '';
-        if (pexelsVal) {
-          localStorage.setItem('pexels_api_key', pexelsVal);
-        } else {
-          localStorage.removeItem('pexels_api_key');
-        }
-
         const unsplashVal = (document.getElementById('api-unsplash') as HTMLInputElement)?.value?.trim() || '';
-        if (unsplashVal) {
-          localStorage.setItem('unsplash_access_key', unsplashVal);
-        } else {
-          localStorage.removeItem('unsplash_access_key');
-        }
 
+        // Fields start blank (write-only form); a blank field means "keep the
+        // stored key", so only non-empty values are persisted. Keys live in
+        // settings/admin only — never in localStorage.
         await setDoc(doc(db, 'settings', 'admin'), {
-          geminiKey: geminiVal,
-          pexelsKey: pexelsVal,
-          unsplashKey: unsplashVal,
+          ...(geminiVal ? { geminiKey: geminiVal } : {}),
+          ...(pexelsVal ? { pexelsKey: pexelsVal } : {}),
+          ...(unsplashVal ? { unsplashKey: unsplashVal } : {}),
           ga4Id: (document.getElementById('api-ga4') as HTMLInputElement).value,
           gscUrl: (document.getElementById('api-gsc') as HTMLInputElement).value
         }, { merge: true });

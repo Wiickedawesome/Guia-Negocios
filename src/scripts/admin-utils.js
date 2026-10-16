@@ -33,7 +33,16 @@ window.showToast = function(message, type = 'success', duration = 3500) {
   };
 
   toast.className = `pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl text-white text-sm font-medium ${colors[type] || colors.info} transform translate-x-full opacity-0 transition-all duration-300 max-w-sm`;
-  toast.innerHTML = `<span class="flex-shrink-0 flex items-center justify-center">${icons[type] || icons.info}</span><span class="flex-1">${message}</span>`;
+
+  // The icon markup is static and safe; the message is caller-supplied (it can
+  // carry Firestore- or AI-derived text), so it is inserted as text, never HTML.
+  const toastIcon = document.createElement('span');
+  toastIcon.className = 'flex-shrink-0 flex items-center justify-center';
+  toastIcon.innerHTML = icons[type] || icons.info;
+  const toastText = document.createElement('span');
+  toastText.className = 'flex-1';
+  toastText.textContent = message;
+  toast.append(toastIcon, toastText);
   
   container.appendChild(toast);
   

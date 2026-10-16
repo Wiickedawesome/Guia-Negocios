@@ -121,6 +121,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <script>
     import { app } from '../../lib/firebase';
+    import { escapeHtml } from '../../utils/escape-html';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
     // Channel color and icon styling registry
@@ -288,7 +289,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (tbody) {
             tbody.innerHTML = data.topPages.map((page: any) => `
               <tr>
-                <td class="px-6 py-3 font-medium text-slate-800">${page.path}</td>
+                <td class="px-6 py-3 font-medium text-slate-800">${escapeHtml(page.path)}</td>
                 <td class="px-6 py-3 text-right font-bold text-slate-600">${page.views}</td>
               </tr>
             `).join('');
@@ -301,7 +302,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (locList) {
             locList.innerHTML = data.topCities.map((loc: any) => `
               <li class="flex justify-between items-center py-1 border-b border-slate-50 last:border-0">
-                <span class="text-slate-700 truncate font-medium" title="${loc.city}">${loc.city}</span>
+                <span class="text-slate-700 truncate font-medium" title="${escapeHtml(loc.city)}">${escapeHtml(loc.city)}</span>
                 <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-800">${loc.users} users</span>
               </li>
             `).join('');
@@ -314,7 +315,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (langList) {
             langList.innerHTML = data.languages.map((lang: any) => `
               <div class="w-full flex justify-between items-center px-4 py-2.5 bg-slate-50/80 rounded-lg border border-slate-100">
-                <span class="text-slate-700 font-semibold text-xs uppercase tracking-wider">${lang.language}</span>
+                <span class="text-slate-700 font-semibold text-xs uppercase tracking-wider">${escapeHtml(lang.language)}</span>
                 <span class="font-bold text-sm text-brand-primary">${lang.users} Users</span>
               </div>
             `).join('');
@@ -344,7 +345,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                         <svg class="w-4 h-4" style="color: ${config.color};" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           ${config.icon}
                         </svg> 
-                        <span>${src.channel}</span>
+                        <span>${escapeHtml(src.channel)}</span>
                         <span class="text-xs text-slate-400">(${src.users})</span>
                       </span>
                       <span class="text-xs font-bold text-slate-700">${percent}%</span>
