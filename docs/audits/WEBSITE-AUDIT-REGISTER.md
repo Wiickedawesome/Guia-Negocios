@@ -2,7 +2,7 @@
 
 **Opened:** 2026-10-16
 **Method:** WEBSITE_AUDIT framework — evidence-first, system-by-system, line-by-line.
-**Status:** FIX PHASE — four remediation commits pushed on top of `f931bbd` (`1baed15` functions · `accab0d` admin hardening · `931e22b` site · `6ae0522` docs/scripts/headers, plus the F-A35 heading pass). Hosting deploys via CI; the Cloud Functions deploy is **BLOCKED** (Firebase CLI is logged in as `contact@evrconstructions.com`, which lacks `iam.serviceAccounts.ActAs` on the project — see Part 6). Remaining: F-A43 dependencies, owner decisions (F-A12/F-A13/F-A14/F-A23/F-A26-live).
+**Status:** FIX PHASE — all code fixes pushed; **Cloud Functions deployed 2026-10-16** (owner login + agent redeploy after the dependency bump) — every functions-side fix is live. Dependency audits: root 10 → **0**, functions 5 → **0**. Remaining: owner decisions (F-A12 / F-A13 / F-A14 payment-crediting claim / F-A23 / F-A4 / F-A26-live) and P4 cleanups (F-A8 dead UI; admin-surface heading order).
 
 > **Rules of this document**
 > - Every entry is verified from source or live evidence **at the date stated in the entry**. No speculative entries.
@@ -20,21 +20,21 @@
 
 | ID | Sev | Confidence | Category | Title | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| F-A1 | P3 | CONFIRMED | SEO | `/admin` pages are not `noindex` | OPEN |
-| F-A2 | P2 | CONFIRMED | Content | `blog.ts` seed fallback carries pre-correction tax claims (ITIN/AOTC/EITC, CTC amount) | OPEN |
-| F-A3 | P2 | CONFIRMED | Content / Functions | `generateLinkOutreach` still hardcodes the *wrong* `centrohispano.org` target | OPEN |
+| F-A1 | P3 | CONFIRMED | SEO | `/admin` pages are not `noindex` | FIXED — verified live (`931e22b`) |
+| F-A2 | P2 | CONFIRMED | Content | `blog.ts` seed fallback carries pre-correction tax claims (ITIN/AOTC/EITC, CTC amount) | FIXED (`931e22b`; deploys with hosting CI) |
+| F-A3 | P2 | CONFIRMED | Content / Functions | `generateLinkOutreach` still hardcodes the *wrong* `centrohispano.org` target | FIXED (`1baed15`) + deployed 2026-10-16 |
 | F-A4 | P3 | CONFIRMED (source; not live) | Content / Product | Landing-page templates ship the 15%-discount promo block — absent from both live LPs | USER-DECISION |
-| F-A5 | P3 | CONFIRMED | Security hygiene | `firebase.ts` reads `PUBLIC_GEMINI_API_KEY` (violates the repo's own invariant) | OPEN |
-| F-A6 | P3 | CONFIRMED | Config | `.env.example` is misleading (contradicts its own comment; unused vars) | OPEN |
-| F-A7 | P3 | CONFIRMED (live) | Accessibility | Nested `<main>` elements on AdminLayout pages (2 main tags served) | OPEN |
+| F-A5 | P3 | CONFIRMED | Security hygiene | `firebase.ts` reads `PUBLIC_GEMINI_API_KEY` (violates the repo's own invariant) | FIXED (`931e22b`; deploys with hosting CI) |
+| F-A6 | P3 | CONFIRMED | Config | `.env.example` is misleading (contradicts its own comment; unused vars) | FIXED (`931e22b`) |
+| F-A7 | P3 | CONFIRMED (live) | Accessibility | Nested `<main>` elements on AdminLayout pages (2 main tags served) | FIXED (`accab0d`; dist-verified 1 `<main>`) |
 | F-A8 | P4 | CONFIRMED | Dead UI | "Remember me" checkbox, admin header search box, `window.simulateAction` have no behavior | OPEN |
-| F-A9 | P3 | CONFIRMED | Security hygiene | `showToast()` renders Firestore/AI-derived strings via `innerHTML` | OPEN |
-| F-A10 | P3 | CONFIRMED | Docs | Eight verified docs↔site drift items (docs/00 ×2, docs/02, docs/03, `.agents/AGENTS.md` ×2, README) | OPEN |
-| F-A11 | P4 | CONFIRMED | Cleanup | Empty leftover dir `src/pages/[lang]/services/` | OPEN |
+| F-A9 | P3 | CONFIRMED | Security hygiene | `showToast()` renders Firestore/AI-derived strings via `innerHTML` | FIXED (`accab0d`) |
+| F-A10 | P3 | CONFIRMED | Docs | Eight verified docs↔site drift items (docs/00 ×2, docs/02, docs/03, `.agents/AGENTS.md` ×2, README) | FIXED |
+| F-A11 | P4 | CONFIRMED | Cleanup | Empty leftover dir `src/pages/[lang]/services/` | FIXED — removed |
 | F-A12 | P2 | CONFIRMED | Content | Homepage trust metric "15+ Negocios Lanzados / Businesses Launched" — no source in repo | USER-DECISION |
 | F-A13 | P2 | CONFIRMED | Content | Testimonials name specific clients (previously flagged by owner as placeholder) | USER-DECISION |
-| F-A14 | P2 | CONFIRMED | Content | FAQ (both locales) publishes unverified claims (bundle payment crediting, notary/translation services) | USER-DECISION |
-| F-A23 | P3 | CONFIRMED | Content / i18n | EN/ES FAQ answers diverge in meaning, not just wording | OPEN |
+| F-A14 | P2 | CONFIRMED | Content | FAQ (both locales) publishes unverified claims (bundle payment crediting, notary/translation services) | PARTIAL — notary/translation confirmed real by owner (2026-10-16); payment-crediting claim still unconfirmed |
+| F-A23 | P3 | CONFIRMED | Content / i18n | EN/ES FAQ answers diverge in meaning, not just wording | USER-DECISION (owner unsure of true scope; both FAQ pages measured heading-clean) |
 
 *IDs are not contiguous — earlier numbers from the initial register pass are retained so prior references stay valid. New findings continue from F-A24.*
 
@@ -43,7 +43,7 @@
 | ID | Sev | Confidence | Category | Title | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | F-A24 | **P1** | CONFIRMED | Security | Stored XSS: anonymous form input executes inside the admin session (notification modal) | FIXED — verified live in production (`f931bbd`) |
-| F-A25 | P2 | CONFIRMED | Functions | `scheduledContentEngine` never saves a draft (field-name mismatch) — feature dead since creation | FIXED (`1baed15`) — functions deploy blocked, see status |
+| F-A25 | P2 | CONFIRMED | Functions | `scheduledContentEngine` never saves a draft (field-name mismatch) — feature dead since creation | FIXED + DEPLOYED 2026-10-16 (`1baed15`) |
 | F-A26 | P3 | CONFIRMED (source; not live) | Content | LP template ships fabricated social proof — absent from live LPs; template's *comparison table* IS live with unverified claims (competitor $300+/h, "Garantizado" 24h) | USER-DECISION — template now warns against unsourced stats; live comparison table needs owner call |
 | F-A27 | P2 | CONFIRMED | Agent config | `conversion-copywriter-lp` skill instructs agents to build *pricing* pages — contradicts standing no-price rule | FIXED (skill rewritten, no-price rule added) |
 | F-A28 | P2 | CONFIRMED (dormant) | Scripts | `update-post1..4-visuals.mjs` would unpublish live posts (`status:'draft'`) if re-run | FIXED — all four deleted |
@@ -56,12 +56,12 @@
 | F-A32 | P3 | CONFIRMED | Functions | Residual fabricated metrics: Trends `\|\| 50/45` fallback; report writes `"null%"`, `activeLinks \|\| totalLinks`, hardcoded "healthy" summary | FIXED (`1baed15`) |
 | F-A33 | P3 | CONFIRMED | Functions | Internal-linking embeddings never generate (`afterData.content` field does not exist) | FIXED (`1baed15`) |
 | F-A34 | P3 | CONFIRMED | UI / Functional | Blog list: hydrated posts bypass active search; oldest-first ordering after hydration | FIXED (`931e22b`) |
-| F-A35 | P3 | CONFIRMED | Content / i18n / a11y | Public copy defects: Spanish word in EN page; heading-order skips ×6 pages; research citation misuse; EN alt text on ES page | FIXED — ES alt text, citation, EN copy + heading-order ×6 service pages |
+| F-A35 | P3 | CONFIRMED | Content / i18n / a11y | Public copy defects: Spanish word in EN page; heading-order skips ×6 pages; research citation misuse; EN alt text on ES page | FIXED — ES alt text, citation, EN copy; heading order corrected (6 service pages, homepages, footer/404, blog view shells). Residual skips: admin-internal + Firestore-stored content (see Part 6) |
 | F-A36 | P3 | CONFIRMED | Security hygiene | Admin settings echoes stored API keys into the DOM; keys persisted in plaintext localStorage | FIXED (`accab0d`) |
 | F-A37 | P3 | CONFIRMED | Scripts | Broken/stale script cluster (backfill fails App Check; anon-write script impossible; ES HTML into EN; wrong SOS link; README 1 of 23) | PARTIAL — infographic EN-injection fixed, README rewritten, un-runnable scripts flagged, SOS-link script deleted |
 | F-A38 | P3 | CONFIRMED | Agent config | Skills carry stale claims (BOI — CONFIRMED obsolete via fincen.gov, 2026-10-16) + unverified macro stats + fabricated template stat; hard rules missing from `AGENTS.md` | FIXED (skills + `AGENTS.md`) |
 | F-A39 | P3 | CONFIRMED | Admin workflow | New post defaults to *Published* and Preview persists it; reports "schedule" writes settings nothing consumes | FIXED (`accab0d`) |
-| F-A43 | P3 | CONFIRMED | Supply chain | Dependency advisories: 33 on the default branch (1 critical, 16 high, 10 moderate, 6 low — GitHub/Dependabot, reported on every push); `functions/` local audit: 5 (4 high, 1 critical) | OPEN — owner decision (major bumps need review; not auto-fixed) |
+| F-A43 | P3 | CONFIRMED | Supply chain | Dependency advisories: 33 on the default branch (1 critical, 16 high, 10 moderate, 6 low — GitHub/Dependabot, reported on every push); `functions/` local audit: 5 (4 high, 1 critical) | FIXED — root `npm audit` 10 → 0 (incl. `@grpc/grpc-js` override); functions 5 → 0 (incl. critical `proxy-addr`); functions redeployed |
 | — | P4 | CONFIRMED | Various | See "P4 observations (batch 2)" | OPEN |
 
 ## Findings — Batch 1 (2026-10-16, config + shared frontend + public main pages)
@@ -232,6 +232,7 @@
 - **Verification:** source read, 2026-10-16; cross-reference to 2026-09-25 audit notes. **Live (2026-10-16):** "Acreditamos los pagos" appears 2× on `/es/faq/`.
 - **Impact:** Publicly stated service commitments the business may not honor (or legally cannot, if notary credentials/licensing are not held).
 - **Recommended fix:** Owner confirms both claims (keep, reword, or remove). If notary services are real, note that mobile notary in TN has licensing considerations.
+- **Owner verification (2026-10-16):** owner confirmed the notary service is real ("I am truly a notary") → the notary/translation claim is **resolved as genuine**. The "we credit prior standalone service payments" claim remains **unconfirmed**.
 - **Launch impact:** Non-blocker; needs owner input.
 
 ### F-A23 — EN/ES FAQ answers diverge in meaning
@@ -563,6 +564,13 @@
   - **Admin hardening** (`accab0d`): shared `escape-html.ts` (`escapeHtml`/`safeUrl`/`sanitizeHtml`) applied across the admin renderers that interpolate Firestore/GSC/GA4/AI text; API-key inputs write-only; localStorage key persistence removed; editor defaults to Draft; reports "schedule" UI replaced by the automatic weekly report it actually has; toasts render as text.
   - **Site** (`931e22b`): LP `hreflang`/EN-switch fallback via build-time twin detection; blog hydration newest-first + filter reapply; `/admin/*` and `/admin/login/` `noindex`+`noTracking` (login had 8 gtag occurrences in dist before the fix); `.env.example` rewritten to the real env surface; seed tax-content corrections; EN copy typos; ES alt texts.
 - 2026-10-16 (fixes, #3 — committed with this register update): docs drift F-A10 ×8 (routing model; brand palette `#1B4E2B`/`#F0C850`/`#1A2E35`/`#1E2A2F`; noindex usage; clone URL; split `firebase deploy` guidance; Node 24); `.agents/AGENTS.md` (bilingual structure, palette, stale Figma wait); root `AGENTS.md` (no-prices + no-unsourced-stats invariants); skills (pricing archetypes removed; BOI section rewritten to the March-2025 FinCEN exemption; fabricated 28/62/89 % bars + off-brand blues removed); scripts (4 unpublish-risk scripts deleted; `generate-infographics.mjs` never writes Spanish HTML into EN bodies; `scripts/README.md` rewritten); **F-A42** security headers added to `firebase.json`.
-- 2026-10-16 (**functions deploy BLOCKED**): `npx firebase deploy --only functions` fails — the Firebase CLI is logged in as `contact@evrconstructions.com`, which lacks `iam.serviceAccounts.ActAs` on `guianegocios-prod@appspot.gserviceaccount.com`. Fix: log the CLI into the project-owner account (`npx firebase login:add` / `login:use`) or grant the role in GCP IAM. Until then the functions fixes exist only in git (`1baed15`), NOT in production.
+- 2026-10-16 (**functions deploy BLOCKED**): `npx firebase deploy --only functions` fails — the Firebase CLI is logged in as `contact@evrconstructions.com`, which lacks `iam.serviceAccounts.ActAs` on `guianegocios-prod@appspot.gserviceaccount.com`. Fix: log the CLI into the project-owner account (`npx firebase login:add` / `login:use`) or grant the role in GCP IAM. Until then the functions fixes exist only in git (`1baed15`), NOT in production. **RESOLVED 2026-10-16 — owner logged into the correct account; functions deployed (see fixes #5).**
 - 2026-10-16 (new finding **F-A43**): GitHub reports 33 dependency advisories on the default branch on every push (1 critical, 16 high, 10 moderate, 6 low); `functions/` local `npm audit` reports 5 (4 high, 1 critical). Not auto-fixed — major-version bumps need review. OPEN / owner decision.
 - 2026-10-16 (fixes, #4): **F-A35 completed** — heading hierarchy corrected in all six service detail pages (the h1→h3 eyebrow is now h2; every h4/h5 sub-heading is now h3) and the testimonial author names on both homepages (h2→h4 skip → h3). Classes untouched, so rendering is unchanged. F-A35 → FIXED.
+- 2026-10-16 (fixes, #5 — dependencies + deploy + heading close-out):
+  - **Functions deployed.** Owner logged into the correct CLI account; agent redeployed after the dependency bump — "Deploy complete", all functions updated. All functions-side fixes (F-A25, F-A3, F-A30–F-A33) are now **live in production**. Note: `functions/lib/` is gitignored and was stale locally — rebuilt before deploying.
+  - **F-A43 FIXED.** Root `npm audit` 10 → **0** (`npm audit fix` cleared brace-expansion, http-cache-semantics, sharp, smol-toml, source-map-js; the remaining `firebase → @firebase/firestore → @grpc/grpc-js` chain was closed with a `@grpc/grpc-js ^1.14.6` override — npm's own suggestion was a downgrade to firebase@9, rejected). `functions/` audit 5 → **0** (undici, the **critical** `proxy-addr`, brace-expansion, @grpc/grpc-js, @fastify/busboy; lockfile-only). Build re-verified: 56 pages clean, functions `tsc` clean.
+  - **Heading skips (all 56 built pages rescanned):** fixed the footer heading levels (removes the 404 page's h1→h3 skip globally) and the blog `view` shells (ToC/Related → h2, injected card titles → h3). Residual skips are only the noindex admin surface (12 pages, card h3 under h1) and Firestore-stored content (16 blog posts + 1 LP) — not fixable in code. **Public code-hosted pages: zero skips.** Both FAQ pages measured clean.
+  - **F-A14 (owner input):** notary/translation service confirmed real by the owner → that claim resolved; the "credit prior standalone payments" claim still awaits confirmation.
+  - **F-A10 completed:** docs/02 route map now lists the FAQ pages, the four `view` shells, `admin/analytics.astro` and `admin/backlinks/outreach.astro`; README's AI badge/SVG/table claims aligned to Vertex AI + nodejs24.
+  - **F-A11:** empty `src/pages/[lang]/` directory tree removed.

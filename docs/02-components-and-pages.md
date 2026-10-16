@@ -16,8 +16,11 @@ The application routes are structured strictly into three domain sections:
 * `/en/services/creedava-support.astro` — Tier 07 CreedaVA Ongoing Support guide.
 * `/en/blog.astro` — Public blog feed listing published articles from Firestore.
 * `/en/blog/[slug].astro` — Dynamic article viewer rendering transformed markdown and Table of Contents.
+* `/en/blog/view.astro` — Client-hydration shell served by the `validateSlugRewrite` function for live blog slugs.
+* `/en/faq.astro` — FAQ catalogue with category filter and live search.
 * `/en/contact.astro` — Consultation intake form and direct contact channels.
 * `/en/lp/[slug].astro` — Dynamic landing page generator for targeted marketing campaigns.
+* `/en/lp/view.astro` — Landing-page hydration shell used by the LP rewrite flow.
 
 ### C. Spanish Public Portal (`/src/pages/es/`)
 * `/es/index.astro` — 301-redirects `/es/` to `/` (the Spanish home is the root `index.astro`; see §A).
@@ -28,8 +31,11 @@ The application routes are structured strictly into three domain sections:
 * `/es/services/apoyo-creedava.astro` — Tier 07, Guía de Apoyo Continuo con CreedaVA.
 * `/es/blog.astro` — Feed público del blog con artículos publicados desde Firestore.
 * `/es/blog/[slug].astro` — Visor dinámico de artículos con tabla de contenidos.
+* `/es/blog/view.astro` — Shell de hidratación servido por la función `validateSlugRewrite` para slugs de blog en vivo.
+* `/es/faq.astro` — Catálogo de preguntas frecuentes con filtro por categoría y búsqueda.
 * `/es/contact.astro` — Formulario de contacto y consulta de negocios.
 * `/es/lp/[slug].astro` — Generador dinámico de páginas de aterrizaje.
+* `/es/lp/view.astro` — Shell de hidratación de landing pages usado por el flujo de rewrite.
 
 ### D. Administrative Suite (`/src/pages/admin/`)
 * `/admin/login.astro` — Admin authentication gateway.
@@ -41,6 +47,8 @@ The application routes are structured strictly into three domain sections:
 * `/admin/backlinks.astro` — Backlink index monitor.
 * `/admin/reports.astro` — Analytics & conversion report generator.
 * `/admin/landing-pages.astro` & `/builder.astro` — Landing page campaign manager & visual builder.
+* `/admin/analytics.astro` — GA4 traffic dashboard (sources, top pages, geography).
+* `/admin/backlinks/outreach.astro` — Link-outreach campaign manager (targets + AI email drafts).
 * `/admin/settings.astro` — Site configuration & API integrations manager.
 
 ---

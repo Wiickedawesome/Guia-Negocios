@@ -3,7 +3,7 @@
 [![Framework: Astro 7](https://img.shields.io/badge/Framework-Astro_v7-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
 [![Styling: Tailwind CSS v4](https://img.shields.io/badge/Styling-Tailwind_CSS_v4-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![Database: Firebase Firestore](https://img.shields.io/badge/Database-Firebase_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
-[![AI Integration: Gemini API](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![AI Engine: Vertex AI](https://img.shields.io/badge/AI_Engine-Vertex_AI_Gemini-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)](https://cloud.google.com/vertex-ai)
 [![TypeScript: Strict](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 ---
@@ -100,13 +100,13 @@ The project leverages a hybrid Jamstack architecture combining static site gener
   <text x="750" y="173" fill="#FEF3C7" font-size="10" text-anchor="middle">Metadata & Page Metrics</text>
 
   <rect x="655" y="205" width="190" height="80" rx="8" fill="url(#purpleGrad)"/>
-  <text x="750" y="233" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">Google Gemini API</text>
-  <text x="750" y="253" fill="#EDE9FE" font-size="10" text-anchor="middle">firebase/ai Model SDK</text>
+  <text x="750" y="233" fill="#FFFFFF" font-size="13" font-weight="700" text-anchor="middle">Google Vertex AI</text>
+  <text x="750" y="253" fill="#EDE9FE" font-size="10" text-anchor="middle">Firebase AI Logic · Vertex AI</text>
   <text x="750" y="268" fill="#EDE9FE" font-size="10" text-anchor="middle">Blog Draft Copilot</text>
 
   <rect x="655" y="300" width="190" height="85" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
   <text x="750" y="325" fill="#F8FAFC" font-size="12" font-weight="700" text-anchor="middle">Firebase Functions</text>
-  <text x="750" y="345" fill="#94A3B8" font-size="10" text-anchor="middle">TypeScript Node 20 Runtime</text>
+  <text x="750" y="345" fill="#94A3B8" font-size="10" text-anchor="middle">TypeScript Node 24 Runtime</text>
   <text x="750" y="360" fill="#94A3B8" font-size="10" text-anchor="middle">SEO & Analytics Tasks</text>
 
   <!-- Connectors -->
@@ -145,8 +145,8 @@ The project leverages a hybrid Jamstack architecture combining static site gener
 | **Styling** | [Tailwind CSS](https://tailwindcss.com) | `^4.3.3` | Utility-first styling engine with Vite plugin |
 | **UI Components** | [React](https://react.dev) | `^19.2.7` | Hydrated client widgets & administrative tools |
 | **Database** | [Firebase Firestore](https://firebase.google.com/docs/firestore) | `^12.16.0` | Cloud Document Database |
-| **AI Integration** | Google Gemini (`firebase/ai`) | `^12.16.0` | In-browser & backend AI Copilot model |
-| **Backend API** | [Firebase Cloud Functions](https://firebase.google.com/docs/functions) | Node 20 | Serverless backend routines |
+| **AI Integration** | Google Vertex AI — Gemini models (`firebase/ai` in the browser, `@google/genai` in functions) | `^12.16.0` | In-browser & backend AI Copilot |
+| **Backend API** | [Firebase Cloud Functions](https://firebase.google.com/docs/functions) | Node 24 | Serverless backend routines |
 | **Language** | [TypeScript](https://www.typescriptlang.org) | Strict | Type safety across client & functions |
 
 ---
@@ -164,7 +164,7 @@ guia-negocios/
 │   ├── 04-firebase-and-cms.md  # Firestore Data Model & Blog Copilot Engine
 │   ├── 05-development-and-deployment.md # Setup, Commands & Firebase Hosting
 │   └── 06-troubleshooting-and-decision-logs.md # Gotchas & ADR Decision Records
-├── functions/                  # Firebase Cloud Functions (Node 20 TypeScript)
+├── functions/                  # Firebase Cloud Functions (Node 24 TypeScript)
 │   ├── src/                    # Cloud Function handlers (index.ts)
 │   └── tsconfig.json           # Functions TypeScript compiler configuration
 ├── public/                     # Static Web Assets
