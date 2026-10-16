@@ -25,6 +25,7 @@
 
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { escapeHtml } from '../utils/escape-html';
 
 const FIELD_LIMITS = {
   name: 200,
@@ -252,14 +253,6 @@ async function submitLead(form: HTMLFormElement, isEnglish: boolean): Promise<vo
         : 'Hubo un error al enviar su mensaje. Inténtelo de nuevo o escríbanos por WhatsApp.'
     );
   }
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 /**

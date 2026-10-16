@@ -229,6 +229,7 @@ const t = useTranslations(lang);
 <script>
   import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
   import { db } from '../../lib/firebase';
+  import { escapeHtml } from '../../utils/escape-html';
 
   const form = document.getElementById('contact-form') as HTMLFormElement;
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement;
@@ -285,13 +286,15 @@ const t = useTranslations(lang);
           createdAt: serverTimestamp()
         });
 
-        // Write to mail collection to trigger email extension
+        // Write to mail collection to trigger email extension. Visitor input
+        // is escaped for the HTML body because email clients render it as
+        // markup.
         await addDoc(collection(db, 'mail'), {
           to: 'info@guianegocios.net',
           message: {
             subject: `New Lead from Guia Negocios: ${name} - ${subject}`,
             text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${subject}\n\nMessage:\n${message}`,
-            html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Service:</strong> ${subject}</p><p><strong>Message:</strong><br/>${message}</p>`
+            html: `<p><strong>Name:</strong> ${escapeHtml(name)}</p><p><strong>Email:</strong> ${escapeHtml(email)}</p><p><strong>Phone:</strong> ${escapeHtml(phone)}</p><p><strong>Service:</strong> ${escapeHtml(subject)}</p><p><strong>Message:</strong><br/>${escapeHtml(message)}</p>`
           },
           createdAt: serverTimestamp()
         });
