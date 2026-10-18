@@ -92,6 +92,7 @@ export async function gscQuery(
     dimensions: string[];
     rowLimit?: number;
     startRow?: number;
+    dataState?: string;
   }
 ): Promise<{ rows: any[]; siteUrl: string }> {
   const siteUrl = await getGscSiteUrl(db);

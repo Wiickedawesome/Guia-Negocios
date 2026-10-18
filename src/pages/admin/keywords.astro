@@ -9,6 +9,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <p class="text-sm text-slate-500 mt-1">Track your SEO ranking for target keywords.</p>
     </div>
     <div class="flex gap-3">
+      <button id="refresh-positions-btn" class="cursor-pointer px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        Refresh Positions
+      </button>
       <button id="ai-discover-btn" class="cursor-pointer px-4 py-2 bg-gradient-to-r from-brand-primary to-blue-500 text-white text-sm font-medium rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
         Discover with AI
@@ -43,7 +47,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
 
     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
-      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Position Changes (30d)</h3>
+      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Position Changes</h3>
       <div class="grid grid-cols-3 gap-4 text-center">
         <div>
           <div class="text-2xl font-bold text-emerald-600 flex items-center justify-center gap-1">
@@ -71,6 +75,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
+  <!-- Shown only when duplicate keyword rows exist. Removal is manual so that
+       a page load never deletes data. -->
+  <div id="dedupe-notice" class="hidden mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 items-center justify-between gap-4">
+    <span id="dedupe-notice-text"></span>
+    <button id="dedupe-remove-btn" class="cursor-pointer shrink-0 px-3 py-1.5 text-xs font-bold bg-amber-200/70 text-amber-900 rounded-lg hover:bg-amber-300 transition-colors">Remove duplicates</button>
+  </div>
+
   <!-- Keywords Table -->
   <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
@@ -88,7 +99,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <tr>
             <th class="px-6 py-4 font-medium">Keyword</th>
             <th class="px-6 py-4 font-medium">Position</th>
-            <th class="px-6 py-4 font-medium">Volume</th>
+            <th class="px-6 py-4 font-medium">Impressions</th>
             <th class="px-6 py-4 font-medium">Trend</th>
             <th class="px-6 py-4 font-medium text-right">Actions</th>
           </tr>
@@ -117,6 +128,71 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     // Track existing keywords to prevent duplicate suggestions
     const trackedKeywords = new Set<string>();
 
+    // Duplicate groups from the last load. The remove handler reads the
+    // current value, so a re-render never leaves a stale closure behind.
+    let pendingDuplicateGroups: Array<Array<{ id: string; data: any }>> = [];
+
+    /** Maps a stored source value to the provenance label shown in the table. */
+    function sourceBadge(source: unknown): string {
+      if (source === 'search-console' || source === 'gsc') return 'GSC';
+      if (source === 'manual') return 'Manual';
+      if (source === 'autocomplete') return 'Discovered';
+      if (source === 'legacy') return 'Unverified';
+      return 'Not measured';
+    }
+
+    /** The copy worth keeping: measured beats unmeasured, then most recently
+     *  measured, then newest, then lowest id — deterministic either way. */
+    function pickKeeper(copies: Array<{ id: string; data: any }>) {
+      return [...copies].sort((a, b) => {
+        const aMeasured = typeof a.data.position === 'number' ? 1 : 0;
+        const bMeasured = typeof b.data.position === 'number' ? 1 : 0;
+        if (aMeasured !== bMeasured) return bMeasured - aMeasured;
+        const aTime = a.data.lastMeasuredAt?.toMillis?.() ?? 0;
+        const bTime = b.data.lastMeasuredAt?.toMillis?.() ?? 0;
+        if (aTime !== bTime) return bTime - aTime;
+        const aCreated = a.data.createdAt?.toMillis?.() ?? 0;
+        const bCreated = b.data.createdAt?.toMillis?.() ?? 0;
+        if (aCreated !== bCreated) return bCreated - aCreated;
+        return a.id < b.id ? -1 : 1;
+      })[0];
+    }
+
+    function renderDuplicateNotice() {
+      const notice = document.getElementById('dedupe-notice');
+      const text = document.getElementById('dedupe-notice-text');
+      if (!notice || !text) return;
+
+      const extraCount = pendingDuplicateGroups.reduce((n, group) => n + group.length - 1, 0);
+      if (extraCount === 0) {
+        notice.classList.add('hidden');
+        notice.classList.remove('flex');
+        return;
+      }
+      text.textContent = `${extraCount} duplicate row(s) across ${pendingDuplicateGroups.length} keyword(s). Removing keeps the copy with the newest measured data.`;
+      notice.classList.remove('hidden');
+      notice.classList.add('flex');
+    }
+
+    function toast(message: string, type: 'success' | 'error') {
+      if (window.showToast) window.showToast(message, type);
+      else alert(message);
+    }
+
+    document.getElementById('dedupe-remove-btn')?.addEventListener('click', async () => {
+      const extraCount = pendingDuplicateGroups.reduce((n, group) => n + group.length - 1, 0);
+      if (extraCount === 0) return;
+      if (!confirm(`Remove ${extraCount} duplicate keyword row(s)? The copy with the newest measured data is kept in each case.`)) return;
+      const toDelete = pendingDuplicateGroups.flatMap(group => {
+        const keeper = pickKeeper(group);
+        return group.filter(copy => copy !== keeper).map(copy => copy.id);
+      });
+      for (const id of toDelete) {
+        await deleteDoc(doc(db, 'keywords', id));
+      }
+      loadKeywords();
+    });
+
     // Load Keywords from Firestore
     async function loadKeywords() {
       const tbody = document.getElementById('keywords-table-body');
@@ -128,26 +204,24 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (snapshot.empty) {
           tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No keywords tracked. Use AI to discover some!</td></tr>`;
           trackedKeywords.clear();
+          pendingDuplicateGroups = [];
+          renderDuplicateNotice();
           return;
         }
 
-        // Auto-cleanup duplicate keywords
-        const seen = new Map<string, string>();
-        const toDelete: string[] = [];
+        // Duplicate rows are reported, never auto-deleted: a page load used to
+        // delete the extras, which is a write triggered by a read, and it kept
+        // whichever copy happened to come back first — possibly the one with
+        // no measured data. Removal waits for an explicit click and keeps the
+        // copy with the newest measured data.
+        const groups = new Map<string, Array<{ id: string; data: any }>>();
         snapshot.forEach(d => {
-          const kwLower = (d.data().keyword || '').toLowerCase();
-          if (seen.has(kwLower)) {
-            toDelete.push(d.id);
-          } else {
-            seen.set(kwLower, d.id);
-          }
+          const kwLower = (d.data().keyword || '').trim().toLowerCase();
+          if (!groups.has(kwLower)) groups.set(kwLower, []);
+          groups.get(kwLower)!.push({ id: d.id, data: d.data() });
         });
-
-        if (toDelete.length > 0) {
-          console.log(`Cleaning ${toDelete.length} duplicate keywords...`);
-          await Promise.all(toDelete.map(dupId => deleteDoc(doc(db, 'keywords', dupId))));
-          return loadKeywords(); // Reload with clean data
-        }
+        pendingDuplicateGroups = [...groups.values()].filter(g => g.length > 1);
+        renderDuplicateNotice();
 
         let html = '';
         let total = 0, top10 = 0, top20 = 0, top50 = 0;
@@ -202,7 +276,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <td class="px-6 py-4 font-medium text-brand-dark">
                 ${escapeHtml(kw.keyword)}
                 <span class="ml-2 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${kw.language || '—'}</span>
-                <span class="ml-1 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded" title="Where this row's numbers came from">${kw.source === 'search-console' ? 'GSC' : (kw.source === 'manual' ? 'Manual' : 'Not measured')}</span>
+                <span class="ml-1 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded" title="Where this row's metrics came from">${sourceBadge(kw.source)}</span>
               </td>
               <td class="px-6 py-4"><span class="px-2 py-1 ${posClass} font-bold rounded">${posText}</span></td>
               <td class="px-6 py-4 text-slate-600">${volumeText}</td>
@@ -239,7 +313,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (dPct) {
           dPct.textContent = unmeasured === 0
             ? `All ${total} keyword(s) have a measured position change.`
-            : `${unmeasured} of ${total} keyword(s) have no measured position change yet — a change needs two recorded positions to compare.`;
+            : `${unmeasured} of ${total} keyword(s) have no measured position change yet — a change needs two recorded positions to compare. "Refresh Positions" records one from Search Console.`;
         }
 
         // Attach delete handlers
@@ -273,6 +347,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         }
       });
     });
+
+    // Measure every tracked keyword against Search Console (writes position,
+    // previousPosition and impressions) so the table reflects real rankings.
+    const refreshBtn = document.getElementById('refresh-positions-btn') as HTMLButtonElement | null;
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', async () => {
+        const original = refreshBtn.innerHTML;
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Refreshing...';
+        try {
+          const functions = getFunctions(app);
+          const refresh = httpsCallable(functions, 'refreshKeywordPositions');
+          const response = await refresh({});
+          const result = response.data as any;
+          toast(`Search Console check finished: ${result.measured} of ${result.total} keywords appeared in the last ${result.range.days} days, ${result.withoutData} had no data.`, 'success');
+          await loadKeywords();
+        } catch (error: any) {
+          console.error('Position refresh failed:', error);
+          toast(`Refresh failed: ${error?.message || 'unknown error'}`, 'error');
+        } finally {
+          refreshBtn.disabled = false;
+          refreshBtn.innerHTML = original;
+        }
+      });
+    }
 
     // AI Keyword Discovery Modal
     document.getElementById('ai-discover-btn')?.addEventListener('click', () => {
@@ -364,6 +463,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           const response = await scanApi({ phrase: phrase || null, existingKeywords: Array.from(trackedKeywords) });
           const data = response.data as any;
 
+          // Whether the scan answered from Search Console ('gsc' — real
+          // metrics) or the Autocomplete fallback ('autocomplete' — discovery
+          // only). Kept on every saved row so the table never presents a
+          // discovered query as a measured ranking.
+          const scanSource = data.source === 'gsc' ? 'gsc' : 'autocomplete';
+
           if (data.keywords.length === 0) {
             alert('No Search Console queries found. Try a different phrase or wait for more data.');
             scScanBtn.disabled = false;
@@ -408,7 +513,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             const aiText = aiResult.response.text();
             const match = aiText.match(/\[[\s\S]*\]/);
             if (match) {
-              suggestions = JSON.parse(match[0]);
+              suggestions = JSON.parse(match[0]).map((s: any) => ({ ...s, source: scanSource }));
             }
           } catch (aiErr) {
             console.warn("AI enhancement fallback to direct Search Console rows:", aiErr);
@@ -418,12 +523,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             // No AI pass. Use the Search Console rows exactly as returned: an
             // absent position/impression count stays null and renders as "—"
             // rather than the previous `impressions || 150, position || 5`.
+            // Autocomplete-discovered rows carry no metrics at all — their
+            // impressions field is a placeholder zero, not a measurement.
             suggestions = data.keywords.slice(0, 12).map((k: any) => ({
               keyword: k.keyword,
               language: null,
-              volume: typeof k.impressions === 'number' ? k.impressions : null,
+              volume: scanSource === 'gsc' && typeof k.impressions === 'number' ? k.impressions : null,
               position: typeof k.position === 'number' ? k.position : null,
               priority: 'High',
+              source: scanSource,
               reason: typeof k.position === 'number'
                 ? `${k.impressions ?? 0} impressions, rank #${k.position}`
                 : `${k.impressions ?? 0} impressions (query discovered; position not measured)`
@@ -442,7 +550,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                   <div class="text-xs text-slate-500 mt-0.5">${typeof kw.position === 'number' ? 'Pos: #' + kw.position : 'Position not measured'} · ${escapeHtml(kw.priority || 'High')} Priority</div>
                   <div class="text-xs text-slate-400 mt-1 italic">${escapeHtml(kw.reason || 'High intent keyword')}</div>
                 </div>
-                <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language || null, volume: typeof kw.volume === 'number' ? kw.volume : null, position: typeof kw.position === 'number' ? kw.position : null, priority: kw.priority || 'High'}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
+                <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language || null, volume: typeof kw.volume === 'number' ? kw.volume : null, position: typeof kw.position === 'number' ? kw.position : null, priority: kw.priority || 'High', source: kw.source || scanSource}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
               </div>
             `).join('');
             
@@ -481,7 +589,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         try {
           await addDoc(collection(db, 'keywords'), {
             ...kwData,
-            source: 'search-console',
+            // Provenance comes from the scan itself: 'gsc' means Search
+            // Console returned real metrics, 'autocomplete' means the query
+            // was only discovered. Unknown → the conservative one.
+            source: kwData.source === 'gsc' ? 'gsc' : 'autocomplete',
             createdAt: serverTimestamp()
           });
           trackedKeywords.add((kwData.keyword || '').toLowerCase());
@@ -558,7 +669,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                   <div class="font-medium text-sm text-slate-900">${escapeHtml(kw.keyword)} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${escapeHtml(kw.language || '—')}</span></div>
                   <div class="text-xs text-slate-500">Pri: ${escapeHtml(kw.priority || '—')}</div>
                 </div>
-                <button data-ai-save='${JSON.stringify(kw).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200">Save</button>
+                <button data-ai-save='${JSON.stringify({ ...kw, source: 'autocomplete' }).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200">Save</button>
               </div>
             `).join('');
           }
@@ -592,7 +703,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         try {
           await addDoc(collection(db, 'keywords'), {
+            // discoverKeywords builds its list from Autocomplete/Trends, which
+            // measure no rankings — 'autocomplete' keeps that honest. The
+            // Search Console pass lives in the scan flow above.
             ...kwData,
+            source: 'autocomplete',
             createdAt: serverTimestamp()
           });
           trackedKeywords.add((kwData.keyword || '').toLowerCase());

@@ -10,6 +10,7 @@ import * as fs from 'fs';
 import * as googleTrends from 'google-trends-api';
 import * as cheerio from 'cheerio';
 import { generateContentWithAi } from './ai.js';
+import { gscQuery } from './seo/search.js';
 
 admin.initializeApp();
 
@@ -535,6 +536,87 @@ export const scanSearchConsole = onCall({ cors: true, invoker: 'public', enforce
   } catch (error: any) {
     console.error('scanSearchConsole error:', error);
     throw new HttpsError('internal', error.message || 'Failed to scan Search Console');
+  }
+});
+
+// ── Keyword position refresh ──
+// The keywords table used to be write-once: a position was stored when the
+// keyword was saved and never updated, and nothing ever wrote
+// previousPosition — so "Position Changes" could not work, and pre-fix rows
+// still carry invented numbers (cleaned 2026-10-18). This measures every
+// tracked keyword against Search Console (exact query match, trailing 28
+// days) and records the result, moving the previous position into
+// previousPosition so the trend deltas compare two real measurements.
+const KEYWORD_WINDOW_DAYS = 28;
+
+export const refreshKeywordPositions = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120, enforceAppCheck: true }, async (request) => {
+  assertAdmin(request);
+  try {
+    const db = getFirestore();
+
+    const endDate = new Date().toISOString().slice(0, 10);
+    const startDate = new Date(Date.now() - KEYWORD_WINDOW_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+    const { rows } = await gscQuery(db, {
+      startDate,
+      endDate,
+      dimensions: ['query'],
+      rowLimit: 1000,
+      dataState: 'all',
+    });
+
+    // Exact query match (case/space-normalised). A keyword Google does not
+    // report on has no measurable rank: it stays null instead of keeping a
+    // stale or invented number.
+    const measured = new Map<string, { position: number; impressions: number }>();
+    for (const row of rows) {
+      const query = (row.keys?.[0] || '').trim().toLowerCase();
+      if (query) measured.set(query, { position: row.position ?? 0, impressions: row.impressions ?? 0 });
+    }
+
+    const snapshot = await db.collection('keywords').get();
+    const batch = db.batch();
+    const now = new Date();
+    let withData = 0;
+    let withoutData = 0;
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      const query = (data.keyword || '').trim().toLowerCase();
+      const hit = measured.get(query);
+      const previous = typeof data.position === 'number' ? data.position : null;
+
+      if (hit) {
+        withData++;
+        batch.set(doc.ref, {
+          position: Math.round(hit.position * 10) / 10,
+          volume: hit.impressions,
+          ...(previous !== null ? { previousPosition: previous } : {}),
+          source: 'gsc',
+          lastMeasuredAt: now,
+        }, { merge: true });
+      } else {
+        withoutData++;
+        batch.set(doc.ref, {
+          position: null,
+          volume: 0, // measured in this window, and genuinely zero impressions
+          source: 'gsc',
+          lastMeasuredAt: now,
+        }, { merge: true });
+      }
+    }
+    await batch.commit();
+
+    return {
+      ok: true,
+      total: snapshot.size,
+      measured: withData,
+      withoutData,
+      range: { startDate, endDate, days: KEYWORD_WINDOW_DAYS },
+    };
+  } catch (error: any) {
+    console.error('refreshKeywordPositions error:', error);
+    throw new HttpsError('internal', error.message || 'Failed to refresh keyword positions');
   }
 });
 

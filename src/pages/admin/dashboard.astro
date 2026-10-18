@@ -23,7 +23,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
       <div class="flex justify-between items-start mb-4">
         <div>
-          <p class="text-sm font-medium text-slate-500">Total Visitors (30d)</p>
+          <p id="dash-metric-visitors-label" class="text-sm font-medium text-slate-500">Total Visitors (30d)</p>
           <h3 class="text-2xl font-bold text-slate-900 mt-1" id="dash-metric-visitors">...</h3>
         </div>
         <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
@@ -86,15 +86,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm lg:col-span-2">
       <div class="flex justify-between items-center mb-6">
         <h3 class="text-lg font-bold text-slate-900">Traffic Overview</h3>
-        <select class="text-sm border-slate-200 rounded-md text-slate-600">
-          <option>Last 30 Days</option>
-          <option>Last 7 Days</option>
-          <option>This Year</option>
+        <select id="dash-range" class="text-sm border-slate-200 rounded-md text-slate-600">
+          <option value="30">Last 30 Days</option>
+          <option value="90">Last 90 Days</option>
+          <option value="365">Last 365 Days</option>
         </select>
       </div>
-      <div class="h-64 w-full relative">
-        <canvas id="trafficChart"></canvas>
-      </div>
+      <div id="dash-traffic-chart" class="h-64 w-full relative"></div>
     </div>
 
     <!-- Right column -->
@@ -135,18 +133,24 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
-  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
   <script>
     import { app } from '../../lib/firebase';
     import { escapeHtml } from '../../utils/escape-html';
+    import { renderTrafficChart } from '../../utils/traffic-chart';
     import { getFunctions, httpsCallable } from 'firebase/functions';
     import { getFirestore, collection, getDocs, query, orderBy, limit, getCountFromServer, where } from 'firebase/firestore';
 
-    async function loadDashAnalytics() {
+    async function loadDashAnalytics(range: string = '30') {
+      const chartContainer = document.getElementById('dash-traffic-chart');
+      if (chartContainer) chartContainer.style.opacity = '0.4';
+      const visitorsLabel = document.getElementById('dash-metric-visitors-label');
+      if (visitorsLabel) visitorsLabel.textContent = `Total Visitors (${range}d)`;
+
       try {
         const functions = getFunctions(app);
         const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
-        const result = await getAnalyticsData();
+        const result = await getAnalyticsData({ range });
         const data = result.data as any;
 
         // getAnalyticsData reports a genuine failure instead of substituting
@@ -168,52 +172,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (el) el.innerText = data.totals.activeUsers;
         }
 
-        if (data.timeSeries && data.timeSeries.length > 0) {
-          const labels = data.timeSeries.map((item: any) => item.date);
-          const users = data.timeSeries.map((item: any) => parseInt(item.users, 10));
-          
-          const formattedLabels = labels.map((dateStr: string) => {
-            if (dateStr.length !== 8) return dateStr;
-            const year = dateStr.substring(0, 4);
-            const month = dateStr.substring(4, 6);
-            const day = dateStr.substring(6, 8);
-            const d = new Date(`${year}-${month}-${day}T12:00:00Z`);
-            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          });
-
-          const ctx = document.getElementById('trafficChart') as HTMLCanvasElement;
-          if (ctx) {
-            // @ts-ignore
-            new window.Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: formattedLabels,
-                datasets: [{
-                  label: 'Active Users',
-                  data: users,
-                  borderColor: '#0284c7',
-                  backgroundColor: 'rgba(2, 132, 199, 0.1)',
-                  borderWidth: 2,
-                  fill: true,
-                  tension: 0.4
-                }]
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { display: false }
-                },
-                scales: {
-                  y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                  x: { grid: { display: false } }
-                }
-              }
-            });
-          }
+        if (chartContainer && data.timeSeries) {
+          renderTrafficChart(chartContainer, data.timeSeries);
         }
       } catch (error) {
         console.error('Error fetching analytics:', error);
+      } finally {
+        if (chartContainer) chartContainer.style.opacity = '1';
       }
     }
 
@@ -317,37 +282,34 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         }
 
         // 5. Top Keywords (List)
+        // Only measured positions qualify: the old query ordered by
+        // `position` ascending, so rows with no measurement sorted first and
+        // dominated a "Top Keywords" list they never earned a place in.
         try {
-          const topKwQuery = query(collection(db, 'keywords'), orderBy('position', 'asc'), limit(3));
-          const topKwSnap = await getDocs(topKwQuery);
+          const kwSnapAll = await getDocs(collection(db, 'keywords'));
           const topKwContainer = document.getElementById('dash-top-keywords-list');
+          const measured = kwSnapAll.docs
+            .map(d => d.data())
+            .filter(d => typeof d.position === 'number')
+            .sort((a, b) => a.position - b.position)
+            .slice(0, 3);
           if (topKwContainer) {
-            if (topKwSnap.empty) {
-              topKwContainer.innerHTML = '<p class="text-sm text-slate-500 italic">No keywords tracked yet.</p>';
+            if (measured.length === 0) {
+              topKwContainer.innerHTML = '<p class="text-sm text-slate-500 italic">No measured rankings yet — run "Refresh Positions" in Keywords.</p>';
             } else {
-              topKwContainer.innerHTML = topKwSnap.docs.map(doc => {
-                const data = doc.data();
-                const trend = (data.trend || '').toLowerCase();
-                
-                let trendIcon = '';
-                let trendColor = 'text-slate-500';
-                if (trend.includes('up')) {
-                  trendIcon = '↑';
-                  trendColor = 'text-emerald-600';
-                } else if (trend.includes('down')) {
-                  trendIcon = '↓';
-                  trendColor = 'text-red-500';
-                } else if (trend.includes('stable') || trend.includes('flat')) {
-                  trendIcon = '−';
-                  trendColor = 'text-slate-400';
-                }
-                
-                // An unmeasured keyword has no position: show "—" instead of "#0".
-                const position = typeof data.position === 'number' ? `#${Math.round(data.position)}` : '—';
+              topKwContainer.innerHTML = measured.map(data => {
+                // Trend comes from two recorded measurements, not a stored
+                // string: the old `trend` field was prescribed by a prompt and
+                // counted as "improved" regardless of what search did.
+                const delta = typeof data.previousPosition === 'number'
+                  ? Math.round((data.previousPosition - data.position) * 10) / 10
+                  : null;
+                const trendIcon = delta === null ? '' : delta > 0 ? '↑' : delta < 0 ? '↓' : '−';
+                const trendColor = delta === null ? 'text-slate-500' : delta > 0 ? 'text-emerald-600' : delta < 0 ? 'text-red-500' : 'text-slate-400';
                 return `
                   <div class="flex justify-between items-center">
                     <span class="text-sm text-slate-700 font-medium">${escapeHtml(data.keyword || 'Unknown')}</span>
-                    <span class="text-sm font-bold ${trendColor}">${position} ${trendIcon}</span>
+                    <span class="text-sm font-bold ${trendColor}">#${data.position} ${trendIcon}</span>
                   </div>
                 `;
               }).join('');
@@ -361,6 +323,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         console.error('Error fetching Firestore metrics:', error);
       }
     }
+
+    const rangeSelect = document.getElementById('dash-range') as HTMLSelectElement | null;
+    rangeSelect?.addEventListener('change', () => loadDashAnalytics(rangeSelect.value));
 
     setTimeout(loadDashAnalytics, 1500);
     setTimeout(loadFirestoreMetrics, 500);
