@@ -95,7 +95,7 @@ Inside [src/pages/admin/blog/editor.astro](file:///home/wicked/Projects/Guia%20N
 
 App Check is **ENFORCED** on `firestore.googleapis.com`, `firebaseml.googleapis.com`, `identitytoolkit.googleapis.com` and `places.googleapis.com`.
 
-> **The Firebase console cannot enforce App Check for Cloud Functions.** The console lists only the four services above — `cloudfunctions.googleapis.com` is never among them — so toggling enforcement there has no effect on callables. For Cloud Functions, App Check is enforced **in code**, by passing `enforceAppCheck: true` in each `onCall` options object. All 12 callables currently set it.
+> **The Firebase console cannot enforce App Check for Cloud Functions.** The console lists only the four services above — `cloudfunctions.googleapis.com` is never among them — so toggling enforcement there has no effect on callables. For Cloud Functions, App Check is enforced **in code**, by passing `enforceAppCheck: true` in each `onCall` options object. All 13 callables currently set it.
 
 Consequences to be aware of:
 

@@ -620,6 +620,52 @@ export const refreshKeywordPositions = onCall({ cors: true, invoker: 'public', t
   }
 });
 
+// ── Search Console query report (read-only mirror of the GSC UI) ──
+// The keywords page shows exactly what Search Console reports — query,
+// clicks, impressions, CTR and position over the selected window. No
+// curation, no AI and no stored copies: every load reads GSC directly so the
+// numbers cannot drift from the source.
+export const getSearchConsoleQueries = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120, enforceAppCheck: true }, async (request) => {
+  assertAdmin(request);
+  try {
+    const db = getFirestore();
+    const requested = String(request.data?.range ?? '90');
+    const days = requested === '28' ? 28 : requested === '365' ? 365 : 90;
+
+    const endDate = new Date().toISOString().slice(0, 10);
+    const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+    const { rows } = await gscQuery(db, {
+      startDate,
+      endDate,
+      dimensions: ['query'],
+      rowLimit: 500,
+      dataState: 'all',
+    });
+
+    const queries = rows
+      .map((row: any) => ({
+        query: row.keys?.[0] || '',
+        clicks: row.clicks ?? 0,
+        impressions: row.impressions ?? 0,
+        ctr: typeof row.ctr === 'number' ? row.ctr : null,
+        position: typeof row.position === 'number' ? Math.round(row.position * 10) / 10 : null,
+      }))
+      .filter((q: { query: string }) => q.query);
+
+    return { ok: true, range: { startDate, endDate, days }, queries };
+  } catch (error: any) {
+    // Same contract as getAnalyticsData: report the failure instead of
+    // returning anything that could be mistaken for data.
+    console.error('getSearchConsoleQueries error:', error);
+    return {
+      ok: false,
+      message: error?.message || 'Google Search Console did not return data.',
+      queries: [],
+    };
+  }
+});
+
 // ── Autonomous Site-Wide SEO Audit ──
 export const runSiteWideAudit = onCall({ cors: true, invoker: 'public', timeoutSeconds: 540, memory: '1GiB', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);

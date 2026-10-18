@@ -2,116 +2,113 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
 
+<!--
+  This page is a live mirror of Google Search Console.
+
+  It deliberately keeps NO copy of the data: every load reads GSC through the
+  getSearchConsoleQueries callable, so what is shown here is exactly what GSC
+  reports for the selected window. The previous version of this page rendered
+  a manually-curated "tracked keywords" collection, which drifted from reality
+  (it once displayed invented rankings) and never showed the queries Google
+  actually reports. Removed 2026-10-18 per owner decision.
+-->
+
 <AdminLayout title="Keywords | Admin">
-  <div class="mb-8 flex justify-between items-end">
+  <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
     <div>
       <h1 class="text-2xl font-bold text-slate-900 font-heading">Keywords</h1>
-      <p class="text-sm text-slate-500 mt-1">Track your SEO ranking for target keywords.</p>
+      <p class="text-sm text-slate-500 mt-1">Live query performance, read directly from Google Search Console.</p>
     </div>
-    <div class="flex gap-3">
-      <button id="refresh-positions-btn" class="cursor-pointer px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2">
+    <div class="flex items-center gap-3">
+      <button id="sc-refresh-btn" class="cursor-pointer px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-        Refresh Positions
+        Refresh
       </button>
-      <button id="ai-discover-btn" class="cursor-pointer px-4 py-2 bg-gradient-to-r from-brand-primary to-blue-500 text-white text-sm font-medium rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-        Discover with AI
-      </button>
-      <button id="add-keyword-btn" class="cursor-pointer px-4 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
-        + Add Keyword
-      </button>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
-      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Keyword Stats</h3>
-      <div class="grid grid-cols-4 gap-4 text-center">
-        <div>
-          <div id="stat-total" class="text-2xl font-bold text-slate-900">0</div>
-          <div class="text-xs text-slate-500 mt-1">Total</div>
-        </div>
-        <div>
-          <div id="stat-top10" class="text-2xl font-bold text-brand-primary">0</div>
-          <div class="text-xs text-slate-500 mt-1">Top 10</div>
-        </div>
-        <div>
-          <div id="stat-top20" class="text-2xl font-bold text-blue-600">0</div>
-          <div class="text-xs text-slate-500 mt-1">Top 20</div>
-        </div>
-        <div>
-          <div id="stat-top50" class="text-2xl font-bold text-slate-700">0</div>
-          <div class="text-xs text-slate-500 mt-1">Top 50</div>
-        </div>
+      <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-1">
+        <button class="sc-range-btn px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900" data-range="28">28 Days</button>
+        <button class="sc-range-btn px-3 py-1.5 text-sm font-medium rounded-md bg-slate-100 text-slate-900" data-range="90">90 Days</button>
+        <button class="sc-range-btn px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900" data-range="365">Year</button>
       </div>
     </div>
+  </div>
 
-    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
-      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">Position Changes</h3>
-      <div class="grid grid-cols-3 gap-4 text-center">
-        <div>
-          <div class="text-2xl font-bold text-emerald-600 flex items-center justify-center gap-1">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-            <span id="stat-improved">0</span>
-          </div>
-          <div class="text-xs text-slate-500 mt-1">Improved</div>
-        </div>
-        <div>
-          <div class="text-2xl font-bold text-red-500 flex items-center justify-center gap-1">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
-            <span id="stat-declined">0</span>
-          </div>
-          <div class="text-xs text-slate-500 mt-1">Declined</div>
-        </div>
-        <div>
-          <div class="text-2xl font-bold text-slate-400 flex items-center justify-center gap-1">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            <span id="stat-stable">0</span>
-          </div>
-          <div class="text-xs text-slate-500 mt-1">Stable</div>
-        </div>
-      </div>
-      <p id="stat-measured-note" class="text-xs text-slate-400 mt-4 leading-relaxed"></p>
+  <!-- Shown when the GSC query fails; the metrics blank out rather than
+       leaving stale numbers on screen. -->
+  <div id="sc-error" class="hidden mb-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"></div>
+
+  <!-- Headline metrics, mirroring the Search Console performance summary -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Clicks</div>
+      <div class="text-3xl font-bold text-slate-900" id="sc-clicks">...</div>
+    </div>
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Impressions</div>
+      <div class="text-3xl font-bold text-slate-900" id="sc-impressions">...</div>
+    </div>
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Average CTR</div>
+      <div class="text-3xl font-bold text-slate-900" id="sc-ctr">...</div>
+    </div>
+    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+      <div class="text-sm font-medium text-slate-500 mb-1">Average Position</div>
+      <div class="text-3xl font-bold text-slate-900" id="sc-position">...</div>
     </div>
   </div>
 
-  <!-- Shown only when duplicate keyword rows exist. Removal is manual so that
-       a page load never deletes data. -->
-  <div id="dedupe-notice" class="hidden mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 items-center justify-between gap-4">
-    <span id="dedupe-notice-text"></span>
-    <button id="dedupe-remove-btn" class="cursor-pointer shrink-0 px-3 py-1.5 text-xs font-bold bg-amber-200/70 text-amber-900 rounded-lg hover:bg-amber-300 transition-colors">Remove duplicates</button>
+  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Queries by position</h3>
+      <span id="sc-range-label" class="text-xs text-slate-400"></span>
+    </div>
+    <div class="grid grid-cols-4 gap-4 text-center">
+      <div>
+        <div id="sc-band-top3" class="text-2xl font-bold text-emerald-600">—</div>
+        <div class="text-xs text-slate-500 mt-1">Top 3</div>
+      </div>
+      <div>
+        <div id="sc-band-top10" class="text-2xl font-bold text-blue-600">—</div>
+        <div class="text-xs text-slate-500 mt-1">4 – 10</div>
+      </div>
+      <div>
+        <div id="sc-band-top20" class="text-2xl font-bold text-slate-700">—</div>
+        <div class="text-xs text-slate-500 mt-1">11 – 20</div>
+      </div>
+      <div>
+        <div id="sc-band-rest" class="text-2xl font-bold text-slate-400">—</div>
+        <div class="text-xs text-slate-500 mt-1">21+</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Keywords Table -->
+  <!-- Search Console queries table -->
   <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
       <div class="relative w-64">
-        <input id="keyword-search-input" type="text" placeholder="Search keywords..." class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary" />
+        <input id="sc-search-input" type="text" placeholder="Search queries..." class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary" />
         <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
       </div>
-      <button class="text-sm text-slate-600 font-medium px-3 py-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 bg-white">
-        Filter ▼
-      </button>
+      <span id="sc-count" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">—</span>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full text-left text-sm">
         <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
           <tr>
-            <th class="px-6 py-4 font-medium">Keyword</th>
+            <th class="px-6 py-4 font-medium">Query</th>
             <th class="px-6 py-4 font-medium">Position</th>
             <th class="px-6 py-4 font-medium">Impressions</th>
-            <th class="px-6 py-4 font-medium">Trend</th>
-            <th class="px-6 py-4 font-medium text-right">Actions</th>
+            <th class="px-6 py-4 font-medium">Clicks</th>
+            <th class="px-6 py-4 font-medium">CTR</th>
           </tr>
         </thead>
-        <tbody id="keywords-table-body" class="divide-y divide-slate-100">
+        <tbody id="sc-queries-body" class="divide-y divide-slate-100">
           <tr>
             <td colspan="5" class="px-6 py-8 text-center text-slate-500">
               <svg class="animate-spin h-5 w-5 text-brand-primary mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Loading keywords...
+              Loading Search Console data...
             </td>
           </tr>
         </tbody>
@@ -120,647 +117,167 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   </div>
 
   <script>
-    import { db, aiModel, app } from '../../lib/firebase';
+    import { app } from '../../lib/firebase';
     import { escapeHtml } from '../../utils/escape-html';
-    import { collection, getDocs, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
-    // Track existing keywords to prevent duplicate suggestions
-    const trackedKeywords = new Set<string>();
-
-    // Duplicate groups from the last load. The remove handler reads the
-    // current value, so a re-render never leaves a stale closure behind.
-    let pendingDuplicateGroups: Array<Array<{ id: string; data: any }>> = [];
-
-    /** Maps a stored source value to the provenance label shown in the table. */
-    function sourceBadge(source: unknown): string {
-      if (source === 'search-console' || source === 'gsc') return 'GSC';
-      if (source === 'manual') return 'Manual';
-      if (source === 'autocomplete') return 'Discovered';
-      if (source === 'legacy') return 'Unverified';
-      return 'Not measured';
+    interface SearchConsoleQuery {
+      query: string;
+      clicks: number;
+      impressions: number;
+      ctr: number | null;
+      position: number | null;
     }
 
-    /** The copy worth keeping: measured beats unmeasured, then most recently
-     *  measured, then newest, then lowest id — deterministic either way. */
-    function pickKeeper(copies: Array<{ id: string; data: any }>) {
-      return [...copies].sort((a, b) => {
-        const aMeasured = typeof a.data.position === 'number' ? 1 : 0;
-        const bMeasured = typeof b.data.position === 'number' ? 1 : 0;
-        if (aMeasured !== bMeasured) return bMeasured - aMeasured;
-        const aTime = a.data.lastMeasuredAt?.toMillis?.() ?? 0;
-        const bTime = b.data.lastMeasuredAt?.toMillis?.() ?? 0;
-        if (aTime !== bTime) return bTime - aTime;
-        const aCreated = a.data.createdAt?.toMillis?.() ?? 0;
-        const bCreated = b.data.createdAt?.toMillis?.() ?? 0;
-        if (aCreated !== bCreated) return bCreated - aCreated;
-        return a.id < b.id ? -1 : 1;
-      })[0];
-    }
-
-    function renderDuplicateNotice() {
-      const notice = document.getElementById('dedupe-notice');
-      const text = document.getElementById('dedupe-notice-text');
-      if (!notice || !text) return;
-
-      const extraCount = pendingDuplicateGroups.reduce((n, group) => n + group.length - 1, 0);
-      if (extraCount === 0) {
-        notice.classList.add('hidden');
-        notice.classList.remove('flex');
-        return;
-      }
-      text.textContent = `${extraCount} duplicate row(s) across ${pendingDuplicateGroups.length} keyword(s). Removing keeps the copy with the newest measured data.`;
-      notice.classList.remove('hidden');
-      notice.classList.add('flex');
-    }
-
-    function toast(message: string, type: 'success' | 'error') {
-      if (window.showToast) window.showToast(message, type);
-      else alert(message);
-    }
-
-    document.getElementById('dedupe-remove-btn')?.addEventListener('click', async () => {
-      const extraCount = pendingDuplicateGroups.reduce((n, group) => n + group.length - 1, 0);
-      if (extraCount === 0) return;
-      if (!confirm(`Remove ${extraCount} duplicate keyword row(s)? The copy with the newest measured data is kept in each case.`)) return;
-      const toDelete = pendingDuplicateGroups.flatMap(group => {
-        const keeper = pickKeeper(group);
-        return group.filter(copy => copy !== keeper).map(copy => copy.id);
+    function setRangeButtons(activeRange: string) {
+      document.querySelectorAll('.sc-range-btn').forEach(btn => {
+        const isActive = (btn as HTMLElement).dataset.range === activeRange;
+        btn.classList.toggle('bg-slate-100', isActive);
+        btn.classList.toggle('text-slate-900', isActive);
+        btn.classList.toggle('text-slate-600', !isActive);
+        btn.classList.toggle('hover:text-slate-900', !isActive);
       });
-      for (const id of toDelete) {
-        await deleteDoc(doc(db, 'keywords', id));
-      }
-      loadKeywords();
-    });
+    }
 
-    // Load Keywords from Firestore
-    async function loadKeywords() {
-      const tbody = document.getElementById('keywords-table-body');
+    function setText(id: string, value: string) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = value;
+    }
+
+    function clearSummary() {
+      [
+        'sc-clicks', 'sc-impressions', 'sc-ctr', 'sc-position',
+        'sc-band-top3', 'sc-band-top10', 'sc-band-top20', 'sc-band-rest',
+        'sc-count',
+      ].forEach(id => setText(id, '—'));
+      setText('sc-range-label', '');
+    }
+
+    function positionBand(query: SearchConsoleQuery): 'top3' | 'top10' | 'top20' | 'rest' {
+      if (query.position === null) return 'rest';
+      if (query.position <= 3) return 'top3';
+      if (query.position <= 10) return 'top10';
+      if (query.position <= 20) return 'top20';
+      return 'rest';
+    }
+
+    function renderSummary(queries: SearchConsoleQuery[], rangeLabel: string) {
+      const clicks = queries.reduce((sum, q) => sum + q.clicks, 0);
+      const impressions = queries.reduce((sum, q) => sum + q.impressions, 0);
+      const ctr = impressions > 0 ? (clicks / impressions) * 100 : null;
+
+      // Impression-weighted average, the same way Search Console computes it.
+      const positioned = queries.filter(q => q.position !== null);
+      const weighted = positioned.reduce((sum, q) => sum + (q.position as number) * Math.max(q.impressions, 1), 0);
+      const totalWeight = positioned.reduce((sum, q) => sum + Math.max(q.impressions, 1), 0);
+      const avgPosition = totalWeight > 0 ? weighted / totalWeight : null;
+
+      const bands = { top3: 0, top10: 0, top20: 0, rest: 0 };
+      queries.forEach(q => { bands[positionBand(q)]++; });
+
+      setText('sc-clicks', String(clicks));
+      setText('sc-impressions', String(impressions));
+      setText('sc-ctr', ctr === null ? '—' : `${ctr.toFixed(1)}%`);
+      setText('sc-position', avgPosition === null ? '—' : `#${avgPosition.toFixed(1)}`);
+      setText('sc-band-top3', String(bands.top3));
+      setText('sc-band-top10', String(bands.top10));
+      setText('sc-band-top20', String(bands.top20));
+      setText('sc-band-rest', String(bands.rest));
+      setText('sc-range-label', rangeLabel);
+    }
+
+    function renderQueries(queries: SearchConsoleQuery[]) {
+      const tbody = document.getElementById('sc-queries-body');
+      const count = document.getElementById('sc-count');
       if (!tbody) return;
 
+      if (queries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No queries recorded in this period. Google reports nothing for a window with no impressions.</td></tr>`;
+        if (count) count.innerText = '0 queries';
+        return;
+      }
+
+      tbody.innerHTML = queries.map(q => {
+        const posClass = q.position !== null && q.position <= 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700';
+        const posText = q.position === null ? '—' : `#${q.position.toFixed(1)}`;
+        const ctrText = q.impressions > 0 && q.ctr !== null ? `${(q.ctr * 100).toFixed(1)}%` : '—';
+        return `
+          <tr class="sc-query-row hover:bg-slate-50/50" data-q="${escapeHtml(q.query.toLowerCase())}">
+            <td class="px-6 py-4 font-medium text-brand-dark">${escapeHtml(q.query)}</td>
+            <td class="px-6 py-4"><span class="px-2 py-1 ${posClass} font-bold rounded">${posText}</span></td>
+            <td class="px-6 py-4 text-slate-600">${q.impressions}</td>
+            <td class="px-6 py-4 text-slate-600">${q.clicks}</td>
+            <td class="px-6 py-4 text-slate-600">${ctrText}</td>
+          </tr>
+        `;
+      }).join('');
+      if (count) count.innerText = `${queries.length} queries`;
+    }
+
+    function showError(message: string) {
+      const banner = document.getElementById('sc-error');
+      if (banner) {
+        banner.textContent = message;
+        banner.classList.remove('hidden');
+      }
+      clearSummary();
+      const tbody = document.getElementById('sc-queries-body');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Search Console data unavailable.</td></tr>`;
+      }
+    }
+
+    async function loadQueries(range: string) {
+      setRangeButtons(range);
+
+      const tbody = document.getElementById('sc-queries-body');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Loading Search Console data...</td></tr>`;
+      }
+      clearSummary();
+
       try {
-        const snapshot = await getDocs(collection(db, 'keywords'));
-        
-        if (snapshot.empty) {
-          tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">No keywords tracked. Use AI to discover some!</td></tr>`;
-          trackedKeywords.clear();
-          pendingDuplicateGroups = [];
-          renderDuplicateNotice();
+        const functions = getFunctions(app);
+        const fetchQueries = httpsCallable(functions, 'getSearchConsoleQueries');
+        const response = await fetchQueries({ range });
+        const data = response.data as any;
+
+        if (data.ok === false) {
+          showError(`Google Search Console did not return data: ${data.message || 'the query failed'}. Nothing is shown because nothing was returned.`);
           return;
         }
 
-        // Duplicate rows are reported, never auto-deleted: a page load used to
-        // delete the extras, which is a write triggered by a read, and it kept
-        // whichever copy happened to come back first — possibly the one with
-        // no measured data. Removal waits for an explicit click and keeps the
-        // copy with the newest measured data.
-        const groups = new Map<string, Array<{ id: string; data: any }>>();
-        snapshot.forEach(d => {
-          const kwLower = (d.data().keyword || '').trim().toLowerCase();
-          if (!groups.has(kwLower)) groups.set(kwLower, []);
-          groups.get(kwLower)!.push({ id: d.id, data: d.data() });
-        });
-        pendingDuplicateGroups = [...groups.values()].filter(g => g.length > 1);
-        renderDuplicateNotice();
+        const banner = document.getElementById('sc-error');
+        if (banner) banner.classList.add('hidden');
 
-        let html = '';
-        let total = 0, top10 = 0, top20 = 0, top50 = 0;
-        let improved = 0, declined = 0, stable = 0;
-        let unmeasured = 0;
-
-        trackedKeywords.clear();
-        snapshot.forEach(document => {
-          const kw = document.data();
-          const id = document.id;
-          trackedKeywords.add((kw.keyword || '').toLowerCase());
-          
-          // Stats computation. A ranking is only counted when it was actually
-          // measured: `kw.position <= 10` was previously true for a missing
-          // position (null coerces to 0), so untracked keywords were counted
-          // as Top-10 rankings.
-          total++;
-          const position = typeof kw.position === 'number' ? kw.position : null;
-          if (position !== null) {
-            if (position <= 10) top10++;
-            if (position <= 20) top20++;
-            if (position <= 50) top50++;
-          }
-
-          // A position change is only real when two measured positions exist.
-          // The stored `trend` string is deliberately not used: the AI prompt
-          // used to *prescribe* "↑ High Opportunity", and the Search Console
-          // fallback hardcoded it, so every saved row counted as "improved"
-          // regardless of what actually happened in search.
-          const previousPosition = typeof kw.previousPosition === 'number' ? kw.previousPosition : null;
-          let positionDelta: number | null = null;
-          if (position !== null && previousPosition !== null) {
-            positionDelta = previousPosition - position; // lower position is better
-            if (positionDelta > 0) improved++;
-            else if (positionDelta < 0) declined++;
-            else stable++;
-          } else {
-            unmeasured++;
-          }
-          
-          const posClass = position !== null && position <= 10 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700';
-          const posText = position === null ? '—' : `#${position}`;
-          const volumeText = typeof kw.volume === 'number' ? kw.volume : '—';
-          const trendHtml = positionDelta === null
-            ? `<span class="text-slate-400 font-medium" title="No measured position change">—</span>`
-            : positionDelta > 0 ? `<span class="text-emerald-600 font-medium">↑ ${positionDelta}</span>`
-            : positionDelta < 0 ? `<span class="text-red-500 font-medium">↓ ${Math.abs(positionDelta)}</span>`
-            : `<span class="text-slate-400 font-medium">0</span>`;
-
-          html += `
-            <tr class="keyword-row hover:bg-slate-50/50" data-kw="${escapeHtml(kw.keyword.toLowerCase())}">
-              <td class="px-6 py-4 font-medium text-brand-dark">
-                ${escapeHtml(kw.keyword)}
-                <span class="ml-2 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${kw.language || '—'}</span>
-                <span class="ml-1 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded" title="Where this row's metrics came from">${sourceBadge(kw.source)}</span>
-              </td>
-              <td class="px-6 py-4"><span class="px-2 py-1 ${posClass} font-bold rounded">${posText}</span></td>
-              <td class="px-6 py-4 text-slate-600">${volumeText}</td>
-              <td class="px-6 py-4">${trendHtml}</td>
-              <td class="px-6 py-4 text-right">
-                <button data-id="${id}" class="delete-kw-btn text-xs text-red-500 hover:text-red-700 font-medium">Remove</button>
-              </td>
-            </tr>
-          `;
-        });
-
-        tbody.innerHTML = html;
-
-        // Update DOM stats
-        const dTotal = document.getElementById('stat-total');
-        const dTop10 = document.getElementById('stat-top10');
-        const dTop20 = document.getElementById('stat-top20');
-        const dTop50 = document.getElementById('stat-top50');
-        const dImproved = document.getElementById('stat-improved');
-        const dDeclined = document.getElementById('stat-declined');
-        const dStable = document.getElementById('stat-stable');
-
-        if (dTotal) dTotal.innerText = total.toString();
-        if (dTop10) dTop10.innerText = top10.toString();
-        if (dTop20) dTop20.innerText = top20.toString();
-        if (dTop50) dTop50.innerText = top50.toString();
-        if (dImproved) dImproved.innerText = improved.toString();
-        if (dDeclined) dDeclined.innerText = declined.toString();
-        if (dStable) dStable.innerText = stable.toString();
-
-        // Without this line the panel shows 0/0/0 next to 50 tracked keywords
-        // with no explanation of why nothing moved.
-        const dPct = document.getElementById('stat-measured-note');
-        if (dPct) {
-          dPct.textContent = unmeasured === 0
-            ? `All ${total} keyword(s) have a measured position change.`
-            : `${unmeasured} of ${total} keyword(s) have no measured position change yet — a change needs two recorded positions to compare. "Refresh Positions" records one from Search Console.`;
-        }
-
-        // Attach delete handlers
-        document.querySelectorAll('.delete-kw-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const id = (e.target as HTMLButtonElement).getAttribute('data-id');
-            if (id && confirm('Remove this keyword?')) {
-              await deleteDoc(doc(db, 'keywords', id));
-              loadKeywords();
-            }
-          });
-        });
-
-      } catch (error) {
-        console.error("Error fetching keywords:", error);
-        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading keywords.</td></tr>`;
+        renderSummary(data.queries, `Last ${data.range.days} days · ${data.range.startDate} → ${data.range.endDate}`);
+        renderQueries(data.queries);
+      } catch (error: any) {
+        console.error('Search Console fetch failed:', error);
+        showError(`Could not reach Search Console: ${error?.message || error}. Nothing is shown because nothing was returned.`);
       }
     }
 
-    loadKeywords();
+    document.querySelectorAll('.sc-range-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const range = (btn as HTMLElement).dataset.range || '90';
+        loadQueries(range);
+      });
+    });
 
-    // Live Search Filtering
-    document.getElementById('keyword-search-input')?.addEventListener('input', (e) => {
+    document.getElementById('sc-refresh-btn')?.addEventListener('click', () => {
+      const active = document.querySelector('.sc-range-btn.bg-slate-100') as HTMLElement | null;
+      loadQueries(active?.dataset.range || '90');
+    });
+
+    document.getElementById('sc-search-input')?.addEventListener('input', (e) => {
       const term = (e.target as HTMLInputElement).value.toLowerCase();
-      document.querySelectorAll('.keyword-row').forEach(row => {
-        const kw = row.getAttribute('data-kw') || '';
-        if (kw.includes(term)) {
-          (row as HTMLElement).style.display = '';
-        } else {
-          (row as HTMLElement).style.display = 'none';
-        }
+      document.querySelectorAll('.sc-query-row').forEach(row => {
+        const query = row.getAttribute('data-q') || '';
+        (row as HTMLElement).style.display = query.includes(term) ? '' : 'none';
       });
     });
 
-    // Measure every tracked keyword against Search Console (writes position,
-    // previousPosition and impressions) so the table reflects real rankings.
-    const refreshBtn = document.getElementById('refresh-positions-btn') as HTMLButtonElement | null;
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', async () => {
-        const original = refreshBtn.innerHTML;
-        refreshBtn.disabled = true;
-        refreshBtn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Refreshing...';
-        try {
-          const functions = getFunctions(app);
-          const refresh = httpsCallable(functions, 'refreshKeywordPositions');
-          const response = await refresh({});
-          const result = response.data as any;
-          toast(`Search Console check finished: ${result.measured} of ${result.total} keywords appeared in the last ${result.range.days} days, ${result.withoutData} had no data.`, 'success');
-          await loadKeywords();
-        } catch (error: any) {
-          console.error('Position refresh failed:', error);
-          toast(`Refresh failed: ${error?.message || 'unknown error'}`, 'error');
-        } finally {
-          refreshBtn.disabled = false;
-          refreshBtn.innerHTML = original;
-        }
-      });
-    }
-
-    // AI Keyword Discovery Modal
-    document.getElementById('ai-discover-btn')?.addEventListener('click', () => {
-      (window as any).showModal('Discover Keywords', `
-        <div class="space-y-4">
-          <p class="text-sm text-slate-600">Enter a topic to discover keywords via Google Trends + Gemini AI, or hit <strong>Auto Scan</strong> to pull real queries from Search Console.</p>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Topic / Service</label>
-            <input id="ai-topic-input" type="text" placeholder="e.g., Company Formation for Latinos in Tennessee" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white" />
-          </div>
-          <div id="ai-results" class="hidden mt-4">
-            <h4 class="text-sm font-bold text-slate-900 mb-2">Suggested Keywords</h4>
-            <div id="ai-suggestions-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
-          </div>
-        </div>
-      `, {
-        wide: true,
-        footer: `
-          <button id="ai-cancel-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50">Cancel</button>
-          <button id="sc-scan-action-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            Auto Scan
-          </button>
-          <button id="ai-generate-action-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-lg hover:bg-opacity-90 flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            Generate Keywords
-          </button>
-        `
-      });
-    });
-
-    // Manual Add Keyword Modal
-    document.getElementById('add-keyword-btn')?.addEventListener('click', () => {
-      (window as any).showModal('Add Keyword', `
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Keyword</label>
-            <input id="new-keyword" type="text" placeholder="e.g., business consulting knoxville" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white" />
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Language</label>
-              <select id="new-lang" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white">
-                <option value="en">English</option>
-                <option value="es">Español</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
-              <select id="new-priority" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white">
-                <option value="High">High</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      `, {
-        footer: `
-          <button id="manual-cancel-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50">Cancel</button>
-          <button id="manual-submit-btn" class="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-lg hover:bg-opacity-90">Add Keyword</button>
-        `
-      });
-    });
-
-    // --- EVENT DELEGATION FOR ALL MODAL ACTIONS ---
-    document.body.addEventListener('click', async (e) => {
-      const target = e.target as HTMLElement;
-
-      // 1. Close Modal Buttons (Cancel)
-      if (target.closest('#ai-cancel-btn') || target.closest('#manual-cancel-btn')) {
-        const overlay = document.getElementById('admin-modal-overlay');
-        const closeBtn = overlay?.querySelector('#modal-close-btn') as HTMLButtonElement;
-        if (closeBtn) closeBtn.click();
-        return;
-      }
-
-      // ── Search Console Scan Action ──
-      const scScanBtn = target.closest('#sc-scan-action-btn') as HTMLButtonElement;
-      if (scScanBtn) {
-        const phrase = (document.getElementById('ai-topic-input') as HTMLInputElement)?.value?.trim();
-
-        scScanBtn.disabled = true;
-        scScanBtn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Scanning...';
-
-        try {
-          const functions = getFunctions(app);
-          const scanApi = httpsCallable(functions, 'scanSearchConsole');
-          const response = await scanApi({ phrase: phrase || null, existingKeywords: Array.from(trackedKeywords) });
-          const data = response.data as any;
-
-          // Whether the scan answered from Search Console ('gsc' — real
-          // metrics) or the Autocomplete fallback ('autocomplete' — discovery
-          // only). Kept on every saved row so the table never presents a
-          // discovered query as a measured ranking.
-          const scanSource = data.source === 'gsc' ? 'gsc' : 'autocomplete';
-
-          if (data.keywords.length === 0) {
-            alert('No Search Console queries found. Try a different phrase or wait for more data.');
-            scScanBtn.disabled = false;
-            scScanBtn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg> Auto Scan';
-            return;
-          }
-
-          let suggestions: any[] = [];
-          try {
-            // Use tracked keywords to avoid duplicate suggestions
-            const existingList = Array.from(trackedKeywords).join(', ');
-
-            const aiPrompt = `
-              You are a senior bilingual SEO & Search Strategist for GUIA DE NEGOCIOS, a premier bilingual business consultancy in Tennessee serving Hispanic and multicultural entrepreneurs across:
-              1. Local East Tennessee & Knoxville
-              2. Statewide Tennessee (Nashville, Memphis, Chattanooga, Clarksville, Murfreesboro)
-              3. Southeastern United States & National/NRA Foreign Founders (LLC formation, IRS EIN setup, ITIN, bilingual bookkeeping, operations).
-              
-              Below is REAL Google Search Console data from the last 90 days showing queries that triggered our site in search results.
-              
-              Search Console Data:
-              ${JSON.stringify(data.keywords.slice(0, 15), null, 2)}
-              
-              IMPORTANT: We are ALREADY tracking these keywords — do NOT suggest any of them or close variations:
-              [${existingList}]
-              
-              Analyze this data and select the top 5 most valuable NEW high-intent keywords across local, statewide TN, and regional search opportunities.
-              Format your response as a JSON array:
-              [
-                {
-                  "keyword": "string",
-                  "language": "en or es",
-                  "priority": "High",
-                  "reason": "High intent search query for business setup in TN/Southeast"
-                }
-              ]
-              Do not include volume, position, trend or rankings - you have no way to measure them, and inventing them makes the ranking table meaningless. Only suggest keywords that are NOT already tracked.
-              Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
-            `;
-
-            const aiResult = await aiModel.generateContent(aiPrompt);
-            const aiText = aiResult.response.text();
-            const match = aiText.match(/\[[\s\S]*\]/);
-            if (match) {
-              suggestions = JSON.parse(match[0]).map((s: any) => ({ ...s, source: scanSource }));
-            }
-          } catch (aiErr) {
-            console.warn("AI enhancement fallback to direct Search Console rows:", aiErr);
-          }
-
-          if (suggestions.length === 0) {
-            // No AI pass. Use the Search Console rows exactly as returned: an
-            // absent position/impression count stays null and renders as "—"
-            // rather than the previous `impressions || 150, position || 5`.
-            // Autocomplete-discovered rows carry no metrics at all — their
-            // impressions field is a placeholder zero, not a measurement.
-            suggestions = data.keywords.slice(0, 12).map((k: any) => ({
-              keyword: k.keyword,
-              language: null,
-              volume: scanSource === 'gsc' && typeof k.impressions === 'number' ? k.impressions : null,
-              position: typeof k.position === 'number' ? k.position : null,
-              priority: 'High',
-              source: scanSource,
-              reason: typeof k.position === 'number'
-                ? `${k.impressions ?? 0} impressions, rank #${k.position}`
-                : `${k.impressions ?? 0} impressions (query discovered; position not measured)`
-            }));
-          }
-
-          // Filter out keywords already being tracked
-          suggestions = suggestions.filter((s: any) => !trackedKeywords.has((s.keyword || '').toLowerCase()));
-
-          const aiList = document.getElementById('ai-suggestions-list');
-          if (aiList) {
-            aiList.innerHTML = suggestions.map((kw: any) => `
-              <div class="flex items-start justify-between gap-3 p-3 border border-slate-100 rounded-lg bg-slate-50">
-                <div class="flex-1 min-w-0">
-                  <div class="font-medium text-sm text-slate-900">${escapeHtml(kw.keyword)} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${escapeHtml(kw.language || '—')}</span></div>
-                  <div class="text-xs text-slate-500 mt-0.5">${typeof kw.position === 'number' ? 'Pos: #' + kw.position : 'Position not measured'} · ${escapeHtml(kw.priority || 'High')} Priority</div>
-                  <div class="text-xs text-slate-400 mt-1 italic">${escapeHtml(kw.reason || 'High intent keyword')}</div>
-                </div>
-                <button data-sc-save='${JSON.stringify({keyword: kw.keyword, language: kw.language || null, volume: typeof kw.volume === 'number' ? kw.volume : null, position: typeof kw.position === 'number' ? kw.position : null, priority: kw.priority || 'High', source: kw.source || scanSource}).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200 flex-shrink-0">Save</button>
-              </div>
-            `).join('');
-            
-            document.getElementById('ai-results')?.classList.remove('hidden');
-          }
-
-          // Change button to "Scan Again"
-          scScanBtn.disabled = false;
-          scScanBtn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> Scan Again';
-
-        } catch (error: any) {
-          console.error('SC scan failed:', error);
-          const msg = error?.message || 'Scan failed';
-          alert(`Search Console scan failed: ${msg}`);
-          scScanBtn.disabled = false;
-          scScanBtn.innerHTML = 'Run Scan';
-        }
-        return;
-      }
-
-      // ── Save from Search Console suggestion ──
-      const scSaveBtn = target.closest('[data-sc-save]') as HTMLButtonElement;
-      if (scSaveBtn) {
-        const kwData = JSON.parse(scSaveBtn.getAttribute('data-sc-save') || '{}');
-        scSaveBtn.disabled = true;
-        scSaveBtn.innerText = 'Saving...';
-
-        // Prevent saving duplicates
-        if (trackedKeywords.has((kwData.keyword || '').toLowerCase())) {
-          scSaveBtn.innerText = 'Already tracked!';
-          scSaveBtn.classList.replace('bg-emerald-100', 'bg-amber-100');
-          scSaveBtn.classList.replace('text-emerald-700', 'text-amber-600');
-          return;
-        }
-
-        try {
-          await addDoc(collection(db, 'keywords'), {
-            ...kwData,
-            // Provenance comes from the scan itself: 'gsc' means Search
-            // Console returned real metrics, 'autocomplete' means the query
-            // was only discovered. Unknown → the conservative one.
-            source: kwData.source === 'gsc' ? 'gsc' : 'autocomplete',
-            createdAt: serverTimestamp()
-          });
-          trackedKeywords.add((kwData.keyword || '').toLowerCase());
-          scSaveBtn.innerText = 'Saved!';
-          scSaveBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
-          scSaveBtn.classList.replace('text-emerald-700', 'text-slate-400');
-          loadKeywords();
-        } catch (e) {
-          console.error('Save failed', e);
-          scSaveBtn.innerText = 'Error';
-        }
-        return;
-      }
-
-      // 2. Generate Keywords (AI)
-      const generateBtn = target.closest('#ai-generate-action-btn') as HTMLButtonElement;
-      if (generateBtn) {
-        const topic = (document.getElementById('ai-topic-input') as HTMLInputElement)?.value;
-        if (!topic) return alert('Please enter a topic.');
-
-        generateBtn.disabled = true;
-        generateBtn.innerHTML = 'Generating...';
-
-        try {
-          const functions = getFunctions(app);
-          const discoverKeywordsApi = httpsCallable(functions, 'discoverKeywords');
-          
-          const existingList = Array.from(trackedKeywords).join(', ');
-          const rawDataResponse = await discoverKeywordsApi({ topic, existingKeywords: Array.from(trackedKeywords) });
-          const rawTrends = (rawDataResponse.data as any).trends;
-
-          const prompt = `
-            You are a senior bilingual SEO & Growth Consultant for GUIA DE NEGOCIOS, assisting Latino and multicultural founders with business formation, bookkeeping, web design, and growth.
-            Our target geographic focus includes:
-            - Local: Knoxville & East Tennessee
-            - Statewide: Tennessee (Nashville, Memphis, Chattanooga, Tri-Cities, statewide compliance)
-            - Regional / National: Southeastern US (Georgia, North Carolina, Alabama, Florida) and Foreign/NRA business owners forming US entities.
-
-            I just pulled the latest Google Autocomplete and Google Trends data for the topic: "${topic}".
-            
-            Here is the raw data from Google:
-            ${JSON.stringify(rawTrends, null, 2)}
-            
-            IMPORTANT: We are ALREADY tracking these keywords — do NOT suggest any of them or close variations:
-            [${existingList}]
-            
-            Based on this real data, generate the top 5 high-converting NEW keywords we are NOT already tracking (include a balanced mix of English and Spanish terms, covering local, statewide, or regional high-search volume variations).
-            Format them exactly into this JSON array schema:
-            [
-              {
-                "keyword": "string",
-                "language": "string ('en' or 'es')",
-                "priority": "string",
-                "reason": "string (why this keyword is relevant)"
-              }
-            ]
-            Do not include volume, position or trend - they cannot be measured this way and would be invented. They are filled only from Search Console.
-            
-            Respond ONLY with the JSON array. Do NOT include any keywords from the already-tracked list.
-          `;
-
-          const result = await aiModel.generateContent(prompt);
-          const responseText = result.response.text();
-          const match = responseText.match(/\[[\s\S]*\]/);
-          if (!match) throw new Error("Invalid response format");
-          
-          const keywords = JSON.parse(match[0]);
-          
-          const listContainer = document.getElementById('ai-suggestions-list');
-          if (listContainer) {
-            listContainer.innerHTML = keywords.map((kw: any) => `
-              <div class="flex items-center justify-between p-3 border border-slate-100 rounded bg-slate-50">
-                <div>
-                  <div class="font-medium text-sm text-slate-900">${escapeHtml(kw.keyword)} <span class="text-[10px] bg-slate-200 px-1 rounded uppercase">${escapeHtml(kw.language || '—')}</span></div>
-                  <div class="text-xs text-slate-500">Pri: ${escapeHtml(kw.priority || '—')}</div>
-                </div>
-                <button data-ai-save='${JSON.stringify({ ...kw, source: 'autocomplete' }).replace(/'/g, "&apos;")}' class="cursor-pointer px-2 py-1 text-xs bg-emerald-100 text-emerald-700 font-bold rounded hover:bg-emerald-200">Save</button>
-              </div>
-            `).join('');
-          }
-
-          document.getElementById('ai-results')?.classList.remove('hidden');
-          generateBtn.style.display = 'none';
-
-        } catch (error) {
-          console.error("AI Generation failed:", error);
-          alert("Failed to generate keywords.");
-          generateBtn.disabled = false;
-          generateBtn.innerHTML = 'Generate Keywords';
-        }
-        return;
-      }
-
-      // 3. Save AI Keyword
-      const saveBtn = target.closest('[data-ai-save]') as HTMLButtonElement;
-      if (saveBtn) {
-        const kwData = JSON.parse(saveBtn.getAttribute('data-ai-save') || '{}');
-        saveBtn.disabled = true;
-        saveBtn.innerText = 'Saving...';
-
-        // Prevent saving duplicates
-        if (trackedKeywords.has((kwData.keyword || '').toLowerCase())) {
-          saveBtn.innerText = 'Already tracked!';
-          saveBtn.classList.replace('bg-emerald-100', 'bg-amber-100');
-          saveBtn.classList.replace('text-emerald-700', 'text-amber-600');
-          return;
-        }
-
-        try {
-          await addDoc(collection(db, 'keywords'), {
-            // discoverKeywords builds its list from Autocomplete/Trends, which
-            // measure no rankings — 'autocomplete' keeps that honest. The
-            // Search Console pass lives in the scan flow above.
-            ...kwData,
-            source: 'autocomplete',
-            createdAt: serverTimestamp()
-          });
-          trackedKeywords.add((kwData.keyword || '').toLowerCase());
-
-          saveBtn.innerText = 'Saved!';
-          saveBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
-          saveBtn.classList.replace('text-emerald-700', 'text-slate-400');
-          loadKeywords();
-        } catch (e) {
-          console.error("Save failed", e);
-          saveBtn.innerText = 'Error';
-        }
-        return;
-      }
-
-      // 4. Submit Manual Keyword
-      const manualSubmitBtn = target.closest('#manual-submit-btn') as HTMLButtonElement;
-      if (manualSubmitBtn) {
-        const input = document.getElementById('new-keyword') as HTMLInputElement;
-        const langInput = document.getElementById('new-lang') as HTMLSelectElement;
-        const kw = input?.value?.trim();
-        
-        if (!kw) return alert('Please enter a keyword');
-
-        manualSubmitBtn.disabled = true;
-        manualSubmitBtn.innerText = 'Adding...';
-
-        try {
-          await addDoc(collection(db, 'keywords'), {
-            keyword: kw,
-            language: langInput.value || 'en',
-            // Deliberately empty: adding a keyword by hand records no ranking,
-            // so position/volume stay null until something measures them.
-            volume: null,
-            position: null,
-            priority: 'Medium',
-            source: 'manual',
-            createdAt: serverTimestamp()
-          });
-          
-          const overlay = document.getElementById('admin-modal-overlay');
-          const closeBtn = overlay?.querySelector('#modal-close-btn') as HTMLButtonElement;
-          if (closeBtn) closeBtn.click();
-          
-          loadKeywords();
-        } catch (e) {
-          console.error(e);
-          alert('Failed to add keyword manually.');
-          manualSubmitBtn.disabled = false;
-          manualSubmitBtn.innerText = 'Add Keyword';
-        }
-        return;
-      }
-    });
+    loadQueries('90');
   </script>
 </AdminLayout>
