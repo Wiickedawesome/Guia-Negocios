@@ -801,25 +801,19 @@ export const scheduledVerifyBacklinks = onSchedule("every 48 hours", async (even
   await internalVerifyBacklinks();
 });
 
-// ── AI Link Building Outreach ──
+// ── Link Building Outreach ──
 export const generateLinkOutreach = onCall({ cors: true, invoker: 'public', enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   try {
-    // Curated outreach targets. URLs re-verified live 2026-10-16. The former
-    // Tennessee Hispanic Chamber entry was removed: every candidate domain
-    // (tnhcc.org / tnhcc.com) no longer resolves, so outreach there is moot.
+    // Curated outreach targets. URLs re-verified live 2026-10-18 (all HTTP 200).
+    // The Tennessee Hispanic Chamber entry is gone for good: both tnhcc.org
+    // and tnhcc.com fail DNS, so there is no page to reach.
     const curatedOpportunities = [
       {
         targetName: "Centro Hispano de East TN",
         targetUrl: "https://www.centrohispanotn.org/",
         strategy: "Community Resource Guide & Workshop Partnership (Knoxville)",
         emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
-      },
-      {
-        targetName: "Tennessee Hispanic Chamber of Commerce",
-        targetUrl: "https://tnhcc.org/business-resources",
-        strategy: "Statewide Advisory & Minority Business Referral (Tennessee)",
-        emailDraft: "Subject: Strategic Referral Partnership & Listing — Guia de Negocios Tennessee\n\nEstimada Junta Directiva de TNHCC,\n\nFelicitaciones por su liderazgo en el fortalecimiento del ecosistema empresarial latino en Tennessee. En GUIA DE NEGOCIOS proporcionamos asesoría bilingüe para registro de empresas (LLC, EIN, licencias locales) y contabilidad operativa en todo el estado.\n\nNos complacería colaborar con la Cámara como recurso técnico y figurar en su directorio estatal de proveedores de servicios profesionales.\n\nAtentamente,\nEquipo GUIA DE NEGOCIOS\nhttps://guianegocios.net"
       },
       {
         targetName: "Knoxville Chamber of Commerce",

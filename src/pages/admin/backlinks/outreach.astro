@@ -2,16 +2,16 @@
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 ---
 
-<AdminLayout title="AI Link Outreach | Admin">
+<AdminLayout title="Link Outreach | Admin">
   <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900 font-heading">AI Link Building Outreach</h1>
-      <p class="text-sm text-slate-500 mt-1">High-authority local organizations, partnership opportunities, and ready-to-send pitch drafts.</p>
+      <h1 class="text-2xl font-bold text-slate-900 font-heading">Link Building Outreach</h1>
+      <p class="text-sm text-slate-500 mt-1">Curated local organizations, partnership opportunities, and bilingual pitch drafts.</p>
     </div>
     <div class="flex items-center gap-3 w-full md:w-auto">
       <button id="find-opps-btn" class="cursor-pointer px-4 py-2 bg-gradient-to-r from-blue-600 to-brand-primary text-white text-sm font-bold rounded-lg shadow-sm hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
-        Find New Opportunities
+        Refresh Curated Targets
       </button>
     </div>
   </div>
@@ -24,12 +24,12 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     </a>
     <a href="/admin/backlinks/outreach" class="px-4 py-2 text-sm font-bold bg-brand-primary text-white rounded-lg shadow-sm flex items-center gap-2">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-      AI Outreach & Pitch Drafts
-      <span id="tab-opps-badge" class="px-1.5 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">5</span>
+      Outreach & Pitch Drafts
+      <span id="tab-opps-badge" class="px-1.5 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">0</span>
     </a>
   </div>
 
-  <!-- Full-Width AI Outreach Cards Container -->
+  <!-- Outreach cards -->
   <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
     <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
       <div>
@@ -37,132 +37,137 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           <svg class="w-5 h-5 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
           Knoxville Local Outreach Targets & Email Drafts
         </h3>
-        <p class="text-xs text-slate-500 mt-0.5">Personalized bilingual pitch emails generated with Gemini for Knoxville chambers, hubs, and Hispanic associations.</p>
+        <p class="text-xs text-slate-500 mt-0.5">Bilingual pitch drafts for Knoxville chambers, hubs, and Hispanic associations. Sending uses the site's email service.</p>
       </div>
-      <span id="opps-count-badge" class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">5 Targets</span>
+      <span id="opps-count-badge" class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">0 Targets</span>
     </div>
     <div id="outreach-list" class="p-6 space-y-6">
-      <!-- Rendered via JS -->
+      <p class="text-sm text-slate-400">Loading outreach targets...</p>
     </div>
   </div>
 
   <script>
     import { app } from '../../../lib/firebase';
     import { escapeHtml, safeUrl } from '../../../utils/escape-html';
-    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, orderBy, query } from 'firebase/firestore';
+    import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, serverTimestamp, orderBy, query } from 'firebase/firestore';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
     const db = getFirestore(app);
     const functions = getFunctions(app);
 
-    // --- Default Local, Statewide TN & Southeast Opportunities Data ---
-    const defaultOpportunities = [
-      {
-        targetName: "Centro Hispano de East TN",
-        targetUrl: "https://www.centrohispano.org/recursos",
-        strategy: "Community Resource Guide & Workshop Partnership (Knoxville)",
-        emailDraft: "Subject: Partnership & Business Resource Listing for Hispanic Entrepreneurs\n\nEstimado equipo de Centro Hispano,\n\nAdmiramos mucho el continuo apoyo que brindan a la comunidad hispana en East Tennessee. En GUIA DE NEGOCIOS, asistimos a emprendedores locales con la formación de LLCs, licencias comerciales y contabilidad bilingüe.\n\nNos encantaría colaborar en un taller comunitario sobre creación de empresas o ser incluidos como recurso informativo en su guía de emprendimiento.\n\nQuedamos a su disposición para coordinar una breve llamada.\n\nSaludos cordiales,\nEquipo GUIA NEGOCIOS"
-      },
-      {
-        targetName: "Tennessee Hispanic Chamber of Commerce",
-        targetUrl: "https://tnhcc.org/business-resources",
-        strategy: "Statewide Advisory & Minority Business Referral (Tennessee)",
-        emailDraft: "Subject: Strategic Referral Partnership & Listing — Guia de Negocios Tennessee\n\nEstimada Junta Directiva de TNHCC,\n\nFelicitaciones por su liderazgo en el fortalecimiento del ecosistema empresarial latino en Tennessee. En GUIA DE NEGOCIOS proporcionamos asesoría bilingüe para registro de empresas (LLC, EIN, licencias locales) y contabilidad operativa en todo el estado.\n\nNos complacería colaborar con la Cámara como recurso técnico y figurar en su directorio estatal de proveedores de servicios profesionales.\n\nAtentamente,\nEquipo GUIA DE NEGOCIOS\nhttps://guianegocios.net"
-      },
-      {
-        targetName: "Knoxville Chamber of Commerce",
-        targetUrl: "https://www.knoxvillechamber.com/directory",
-        strategy: "Minority Business & Bilingual Consultancy Listing (Knox County)",
-        emailDraft: "Subject: Minority Business Directory Listing & Partnership - Guia Negocios\n\nDear Knoxville Chamber Team,\n\nWe are a Knoxville-based business consultancy specializing in helping Hispanic and multicultural founders launch and grow registered businesses in Tennessee.\n\nWe would love to ensure our services are accurately indexed in the Chamber's directory and explore ways to collaborate on immigrant entrepreneurship resources.\n\nBest regards,\nGUIA NEGOCIOS Team"
-      },
-      {
-        targetName: "Nashville Area Hispanic Chamber of Commerce (NAHCC)",
-        targetUrl: "https://nashvillehispanicchamber.com/directory",
-        strategy: "Regional Hispanic Network & Launch Resource (Middle TN & Southeast)",
-        emailDraft: "Subject: Collaboration on Bilingual Business Launch Systems — NAHCC & Guia Negocios\n\nEstimado equipo de NAHCC,\n\nReconocemos la gran labor que realizan impulsando negocios en la región central de Tennessee. Desde GUIA DE NEGOCIOS ayudamos a emprendedores hispanos a estructurar empresas rentables con cumplimiento tributario, sistemas digitales y asistentes virtuales bilingües.\n\nNos encantaría conectar para intercambiar recursos educativos y participar en sus redes de asesoría.\n\nUn cordial saludo,\nGUIA NEGOCIOS"
-      },
-      {
-        targetName: "Tennessee SBDC at Pellissippi State",
-        targetUrl: "https://www.tsbdc.org/knoxville",
-        strategy: "Bilingual Resource Referral Partner (Statewide Network)",
-        emailDraft: "Subject: Bilingual Business Advisory Resource Collaboration\n\nDear TSBDC Advisers,\n\nAs a consultancy serving Spanish-speaking entrepreneurs across Knox, surrounding counties, and statewide Tennessee, we frequently assist clients in establishing proper business entities and compliance.\n\nWe would welcome the opportunity to connect and collaborate as a bilingual referral resource for local and regional founders.\n\nWarm regards,\nGUIA NEGOCIOS Team"
-      },
-      {
-        targetName: "Chattanooga Area Chamber - Diverse Business Hub",
-        targetUrl: "https://chattanoogachamber.com/diversity-equity-inclusion",
-        strategy: "Southeast Regional Latino Hub Inclusion (Southeast TN / North GA)",
-        emailDraft: "Subject: Bilingual Entrepreneurship Resource Listing — Guia Negocios\n\nDear Chattanooga Chamber Inclusion Team,\n\nWe provide turnkey bilingual business setup, bookkeeping, and operational consulting for diverse entrepreneurs across East and Southeast Tennessee.\n\nWe would love to connect and share our guides as a trusted Spanish/English resource for founders in the region.\n\nWarm regards,\nGUIA NEGOCIOS Team"
-      }
-    ];
+    interface OutreachTarget {
+      id: string;
+      targetName: string;
+      targetUrl: string;
+      strategy: string;
+      status: string;
+      draftText: string;
+    }
 
-    function renderOutreachCards(opps: any[]) {
+    // Button attributes carry only an id; the draft text is looked up here so
+    // nothing long has to be round-tripped through the DOM.
+    const targetsById = new Map<string, OutreachTarget>();
+
+    function statusChip(status: string): string {
+      const sent = status === 'Sent';
+      const cls = sent ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600';
+      return `<span class="px-2 py-0.5 ${cls} text-xs font-bold rounded-full">${escapeHtml(status || 'Draft')}</span>`;
+    }
+
+    function renderOutreachCards(targets: OutreachTarget[]): void {
       const container = document.getElementById('outreach-list');
       const badge = document.getElementById('opps-count-badge');
       const tabBadge = document.getElementById('tab-opps-badge');
       if (!container) return;
-      if (badge) badge.innerText = `${opps.length} Targets`;
-      if (tabBadge) tabBadge.innerText = opps.length.toString();
+      if (badge) badge.innerText = `${targets.length} Targets`;
+      if (tabBadge) tabBadge.innerText = targets.length.toString();
 
-      const cardsHtml = opps.map(opp => {
-        return `
-          <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl hover:border-brand-primary/40 transition-colors shadow-sm">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="font-bold text-slate-900 text-lg">${escapeHtml(opp.targetName)}</h4>
-                </div>
-                <a href="${escapeHtml(safeUrl(opp.targetUrl))}" target="_blank" class="text-sm text-brand-primary hover:underline flex items-center gap-1 mt-1 font-medium">
-                  ${escapeHtml(opp.targetUrl)}
-                  <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                </a>
-              </div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-md">${escapeHtml(opp.strategy)}</span>
-                <button data-track-opp='${JSON.stringify({url: opp.targetUrl, pageTitle: opp.targetName}).replace(/'/g, "&apos;")}' class="cursor-pointer px-3.5 py-1.5 text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold rounded-lg transition-colors flex items-center gap-1">
-                  + Add to Tracked Backlinks
-                </button>
-              </div>
+      targetsById.clear();
+      targets.forEach((t) => targetsById.set(t.id, t));
+
+      if (targets.length === 0) {
+        container.innerHTML = '<p class="text-sm text-slate-400">No outreach targets saved yet. Click "Refresh Curated Targets" to load the curated local organizations.</p>';
+        return;
+      }
+
+      container.innerHTML = targets.map((t) => `
+        <div class="p-6 bg-slate-50 border border-slate-200 rounded-xl hover:border-brand-primary/40 transition-colors shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div>
+              <h4 class="font-bold text-slate-900 text-lg">${escapeHtml(t.targetName)}</h4>
+              <a href="${escapeHtml(safeUrl(t.targetUrl))}" target="_blank" class="text-sm text-brand-primary hover:underline flex items-center gap-1 mt-1 font-medium">
+                ${escapeHtml(t.targetUrl)}
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+              </a>
             </div>
-
-            <!-- Email Draft Box -->
-            <div class="relative bg-white rounded-lg border border-slate-200 p-4 font-mono text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">
-              <button data-copy-email="${encodeURIComponent(opp.emailDraft || '')}" class="cursor-pointer absolute top-3 right-3 px-3 py-1.5 bg-slate-100 hover:bg-brand-primary hover:text-white text-slate-700 text-xs font-sans font-medium rounded transition-colors flex items-center gap-1.5 shadow-sm">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                Copy Email Draft
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-md">${escapeHtml(t.strategy)}</span>
+              ${statusChip(t.status)}
+              <button data-track-id="${t.id}" class="cursor-pointer px-3.5 py-1.5 text-xs bg-emerald-100 text-emerald-700 hover:bg-emerald-200 font-bold rounded-lg transition-colors flex items-center gap-1">
+                + Add to Tracked Backlinks
               </button>
-              ${escapeHtml(opp.emailDraft || '')}
             </div>
           </div>
-        `;
-      }).join('');
 
-      container.innerHTML = cardsHtml;
+          <!-- Email draft -->
+          <div class="relative bg-white rounded-lg border border-slate-200 p-4 font-mono text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">
+            <button data-copy-id="${t.id}" class="cursor-pointer absolute top-3 right-3 px-3 py-1.5 bg-slate-100 hover:bg-brand-primary hover:text-white text-slate-700 text-xs font-sans font-medium rounded transition-colors flex items-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+              Copy Draft
+            </button>
+            ${escapeHtml(t.draftText)}
+          </div>
+
+          <!-- Send via the site's mail extension -->
+          <div class="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <input type="email" data-recipient-for="${t.id}" placeholder="recipient@organization.org" class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-brand-primary" />
+            <button data-send-id="${t.id}" class="cursor-pointer px-4 py-2 text-xs bg-brand-primary text-white hover:bg-opacity-90 font-bold rounded-lg transition-colors flex items-center justify-center gap-1 whitespace-nowrap">
+              Send Draft
+            </button>
+          </div>
+        </div>
+      `).join('');
     }
 
-    // Render default opportunities immediately on page load
-    renderOutreachCards(defaultOpportunities);
+    /** Split "Subject: X" + body drafts into their two parts. */
+    function splitDraft(draftText: string, fallbackName: string): { subject: string; body: string } {
+      const match = draftText.match(/^Subject:\s*([^\n]+)\r?\n([\s\S]*)$/);
+      if (match && match[1] && match[2] !== undefined) {
+        return { subject: match[1].trim(), body: match[2].trim() };
+      }
+      return { subject: `Partnership with ${fallbackName}`, body: draftText.trim() };
+    }
 
-    // --- Load Outreach Opportunities from Firestore if updated ---
+    // --- Load outreach targets from Firestore ---
     const outreachQuery = query(collection(db, 'linkOutreach'), orderBy('createdAt', 'desc'));
     onSnapshot(outreachQuery, (snap) => {
-      if (!snap.empty) {
-        const firestoreOpps = snap.docs.map(d => d.data());
-        renderOutreachCards(firestoreOpps);
-      }
+      const targets: OutreachTarget[] = snap.docs.map((d) => {
+        const x = d.data();
+        return {
+          id: d.id,
+          targetName: x.targetName || 'Outreach target',
+          targetUrl: x.targetUrl || '',
+          strategy: x.strategy || '',
+          status: x.status || 'Draft',
+          draftText: x.emailDraft || (x.subject ? `Subject: ${x.subject}\n\n${x.body || ''}` : ''),
+        };
+      });
+      renderOutreachCards(targets);
     }, (error) => {
       console.warn("Outreach listener note:", error);
     });
 
-    // Copy email handler
+    // Click handling: copy, track, and send.
     document.body.addEventListener('click', async (e) => {
       const target = e.target as HTMLElement;
-      const copyBtn = target.closest('[data-copy-email]') as HTMLButtonElement;
+
+      const copyBtn = target.closest('[data-copy-id]') as HTMLButtonElement;
       if (copyBtn) {
-        const text = decodeURIComponent(copyBtn.getAttribute('data-copy-email') || '');
+        const stored = targetsById.get(copyBtn.getAttribute('data-copy-id') || '');
         try {
-          await navigator.clipboard.writeText(text);
+          await navigator.clipboard.writeText(stored?.draftText || '');
           const orig = copyBtn.innerHTML;
-          copyBtn.innerHTML = '✓ Copied to Clipboard!';
+          copyBtn.innerHTML = '✓ Copied!';
           copyBtn.classList.add('bg-emerald-600', 'text-white');
           setTimeout(() => {
             copyBtn.innerHTML = orig;
@@ -174,22 +179,23 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
         return;
       }
 
-      // Track link from opportunity
-      const trackBtn = target.closest('[data-track-opp]') as HTMLButtonElement;
+      const trackBtn = target.closest('[data-track-id]') as HTMLButtonElement;
       if (trackBtn) {
-        const data = JSON.parse(trackBtn.getAttribute('data-track-opp') || '{}');
+        const stored = targetsById.get(trackBtn.getAttribute('data-track-id') || '');
+        if (!stored) return;
         trackBtn.disabled = true;
         trackBtn.innerText = 'Tracking...';
         try {
           await addDoc(collection(db, 'backlinks'), {
-            url: data.url,
-            pageTitle: data.pageTitle,
-            status: 'Active',
+            url: stored.targetUrl,
+            pageTitle: stored.targetName,
+            // Pending until verifyBacklinks confirms the link is live; the
+            // 48-hour scheduled run (or "Verify All Now") sets the real status.
+            status: 'Pending',
             isNofollow: false,
             createdAt: serverTimestamp(),
-            lastVerifiedAt: serverTimestamp()
           });
-          trackBtn.innerText = '✓ Added to CRM';
+          trackBtn.innerText = '✓ Tracked';
           trackBtn.classList.replace('bg-emerald-100', 'bg-slate-100');
           trackBtn.classList.replace('text-emerald-700', 'text-slate-400');
         } catch (err: any) {
@@ -197,26 +203,75 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
           trackBtn.disabled = false;
           trackBtn.innerText = '+ Add to Tracked Backlinks';
         }
+        return;
+      }
+
+      const sendBtn = target.closest('[data-send-id]') as HTMLButtonElement;
+      if (sendBtn) {
+        const id = sendBtn.getAttribute('data-send-id') || '';
+        const stored = targetsById.get(id);
+        if (!stored) return;
+        const recipientInput = document.querySelector(`[data-recipient-for="${id}"]`) as HTMLInputElement | null;
+        const recipient = recipientInput?.value.trim() || '';
+        if (!recipient || !recipient.includes('@')) {
+          alert('Enter the recipient email address first.');
+          recipientInput?.focus();
+          return;
+        }
+        if (!confirm(`Send this draft to ${recipient}?`)) return;
+
+        const { subject, body } = splitDraft(stored.draftText, stored.targetName);
+        sendBtn.disabled = true;
+        sendBtn.innerText = 'Sending...';
+        try {
+          await addDoc(collection(db, 'mail'), {
+            to: recipient,
+            message: { subject, text: body },
+            createdAt: serverTimestamp(),
+          });
+        } catch (err: any) {
+          alert('Failed to send: ' + err.message);
+          sendBtn.disabled = false;
+          sendBtn.innerText = 'Send Draft';
+          return;
+        }
+
+        // The email is queued; record the outcome on the target doc. A failed
+        // status write must not look like a failed send.
+        try {
+          await updateDoc(doc(db, 'linkOutreach', id), {
+            status: 'Sent',
+            sentTo: recipient,
+            sentAt: serverTimestamp(),
+          });
+        } catch (err) {
+          console.warn('Sent, but could not update the outreach status:', err);
+        }
+        alert(`Draft queued for delivery to ${recipient}.`);
+        // The Firestore listener re-renders the card with its new status.
+        return;
       }
     });
 
-    // --- Find Opportunities Trigger ---
+    // --- Refresh curated targets ---
     document.getElementById('find-opps-btn')?.addEventListener('click', async () => {
       const btn = document.getElementById('find-opps-btn') as HTMLButtonElement;
       btn.disabled = true;
-      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> AI Researching Knoxville TN...';
-      
+      btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving curated targets...';
+
       try {
         const generateLinkOutreach = httpsCallable(functions, 'generateLinkOutreach');
         const response = await generateLinkOutreach();
-        const opps = (response.data as any)?.opportunities || [];
-        alert('AI research complete! Discovered targets updated.');
+        const data = response.data as any;
+        const saved = typeof data?.saved === 'number' ? data.saved : 0;
+        const failed = typeof data?.saveErrors === 'number' ? data.saveErrors : 0;
+        alert(`Curated targets refreshed: ${saved} saved${failed ? `, ${failed} failed` : ''}.`);
       } catch (e: any) {
-        console.error("AI Outreach error:", e);
-        alert('AI Outreach failed: ' + (e.message || 'unknown error'));
+        console.error("Outreach refresh error:", e);
+        alert('Outreach refresh failed: ' + (e.message || 'unknown error'));
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg> Find New Opportunities';
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg> Refresh Curated Targets';
       }
     });
   </script>

@@ -29,8 +29,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </a>
     <a href="/admin/backlinks/outreach" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-      AI Outreach & Pitch Drafts
-      <span class="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">5</span>
+      Outreach & Pitch Drafts
+      <span id="tab-outreach-badge" class="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">0</span>
     </a>
   </div>
 
@@ -81,10 +81,24 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
+  <!-- Prospecting Queue (filled by the Friday/Saturday SEO sweeps) -->
+  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900">Prospecting Queue</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Resource pages and unlinked brand mentions found by the Friday/Saturday SEO sweeps.</p>
+      </div>
+      <span id="prospects-count-badge" class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">0</span>
+    </div>
+    <ul id="prospects-list" class="divide-y divide-slate-100">
+      <li class="px-6 py-6 text-center text-slate-400 text-sm">Loading prospects...</li>
+    </ul>
+  </div>
+
   <script>
     import { app } from '../../lib/firebase';
     import { escapeHtml, safeUrl } from '../../utils/escape-html';
-    import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, serverTimestamp, orderBy, query } from 'firebase/firestore';
+    import { getFirestore, collection, addDoc, deleteDoc, doc, getDocs, onSnapshot, serverTimestamp, orderBy, query, limit } from 'firebase/firestore';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
     const db = getFirestore(app);
@@ -140,6 +154,49 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       if (tabBadge) tabBadge.innerText = total.toString();
     });
 
+    // --- Prospecting Queue (backlink-prospects, written by the SEO agent) ---
+    const prospectsQuery = query(collection(db, 'backlink-prospects'), orderBy('updatedAt', 'desc'), limit(50));
+    onSnapshot(prospectsQuery, (snap) => {
+      const badge = document.getElementById('prospects-count-badge');
+      const list = document.getElementById('prospects-list');
+      if (badge) badge.innerText = snap.size.toString();
+      if (!list) return;
+      if (snap.empty) {
+        list.innerHTML = '<li class="px-6 py-6 text-center text-slate-400 text-sm">No prospects yet. The Friday/Saturday sweep fills this queue once a Brave Search API key is saved in Settings.</li>';
+        return;
+      }
+      list.innerHTML = snap.docs.map((d) => {
+        const p = d.data();
+        const updated = p.updatedAt?.toDate ? p.updatedAt.toDate() : null;
+        const dateStr = updated ? updated.toLocaleDateString() : '';
+        const brand = p.kind === 'brand';
+        const kindLabel = brand ? 'Brand mention' : 'Resource page';
+        const kindCls = brand ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700';
+        return `
+          <li class="px-6 py-4 flex items-start justify-between gap-4">
+            <div class="min-w-0">
+              <a href="${escapeHtml(safeUrl(p.url))}" target="_blank" rel="noopener" class="font-semibold text-brand-primary hover:underline block truncate">${escapeHtml(p.title || p.url)}</a>
+              <div class="text-xs text-slate-400 truncate mt-0.5">${escapeHtml(p.url)}</div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <span class="px-2.5 py-1 ${kindCls} text-xs font-bold rounded-full">${kindLabel}</span>
+              <span class="text-xs text-slate-400">${dateStr}</span>
+            </div>
+          </li>
+        `;
+      }).join('');
+    }, (error) => {
+      console.warn('Prospects listener note:', error);
+    });
+
+    // Keep the outreach tab badge honest.
+    onSnapshot(collection(db, 'linkOutreach'), (snap) => {
+      const el = document.getElementById('tab-outreach-badge');
+      if (el) el.innerText = snap.size.toString();
+    }, (error) => {
+      console.warn('Outreach badge listener note:', error);
+    });
+
     // --- Delete Backlink ---
     document.body.addEventListener('click', async (e) => {
       const target = e.target as HTMLElement;
@@ -156,10 +213,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     document.getElementById('add-link-btn')?.addEventListener('click', () => {
       (window as any).showModal('Add Tracked Backlink', `
         <div class="space-y-4">
-          <p class="text-sm text-slate-600">Enter the URL of the external page where your link was placed. Our autonomous system will verify it and check its health.</p>
+          <p class="text-sm text-slate-600">Enter the URL of each external page where your link was placed — one per line. The verifier checks them on demand and every 48 hours.</p>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Target URL</label>
-            <input id="new-bl-url" type="url" placeholder="https://example.com/blog/business-tips" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white" />
+            <label class="block text-sm font-medium text-slate-700 mb-1">Target URLs</label>
+            <textarea id="new-bl-url" rows="4" placeholder="https://example.com/blog/business-tips&#10;https://directory.example.org/guia-negocios" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono"></textarea>
           </div>
         </div>
       `, {
@@ -178,23 +235,37 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       });
 
       saveBtn?.addEventListener('click', async () => {
-        const input = document.getElementById('new-bl-url') as HTMLInputElement;
-        const url = input.value.trim();
-        if (!url || !url.startsWith('http')) return alert('Please enter a valid URL including http:// or https://');
-        
+        const input = document.getElementById('new-bl-url') as HTMLTextAreaElement;
+        const entries = input.value.split(/\s+/).filter(Boolean);
+        const valid = entries.filter(u => u.startsWith('http://') || u.startsWith('https://'));
+        if (valid.length === 0) return alert('Please enter at least one URL starting with http:// or https://');
+
         saveBtn.disabled = true;
         saveBtn.innerText = 'Saving...';
 
         try {
-          await addDoc(collection(db, 'backlinks'), {
-            url,
-            status: 'Pending',
-            isNofollow: false,
-            pageTitle: '',
-            createdAt: serverTimestamp(),
-          });
+          // Skip URLs already tracked so pasting the same list twice is safe.
+          const existing = await getDocs(collection(db, 'backlinks'));
+          const known = new Set(existing.docs.map(d => (d.data() as any).url));
+          let added = 0;
+          for (const url of valid) {
+            if (known.has(url)) continue;
+            await addDoc(collection(db, 'backlinks'), {
+              url,
+              status: 'Pending',
+              isNofollow: false,
+              pageTitle: '',
+              createdAt: serverTimestamp(),
+            });
+            added++;
+          }
           // Close modal
           (document.getElementById('admin-modal-overlay')?.querySelector('#modal-close-btn') as HTMLButtonElement)?.click();
+          const skipped = valid.length - added;
+          const invalid = entries.length - valid.length;
+          alert(`Tracking ${added} URL${added === 1 ? '' : 's'}.`
+            + (skipped ? ` Skipped ${skipped} already tracked.` : '')
+            + (invalid ? ` Ignored ${invalid} without http(s).` : ''));
         } catch (e: any) {
           alert('Failed to save: ' + e.message);
           saveBtn.disabled = false;

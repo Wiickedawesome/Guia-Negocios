@@ -94,6 +94,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <div id="unsplash-key-status" class="mt-2 text-xs hidden"></div>
         </div>
         <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Brave Search API Key <span class="text-xs text-slate-400 font-normal">(SEO Agent)</span></label>
+          <div class="flex gap-2">
+            <input id="api-brave" type="password" placeholder="Enter Brave Search API key..." class="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
+            <button id="btn-show-brave" type="button" class="px-3 py-2 text-sm border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex-shrink-0">Show</button>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Powers the SEO agent's web searches (Friday/Saturday link prospecting). The free plan includes $5 of monthly credits (~1,000 queries); create a key at api-dashboard.search.brave.com/register.</p>
+        </div>
+        <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">GA4 Measurement ID</label>
           <input id="api-ga4" type="text" placeholder="G-XXXXXXXXXX" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-primary bg-white font-mono" />
         </div>
@@ -171,6 +179,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             currentPexelsKey = data.pexelsKey || '';
             (document.getElementById('api-ga4') as HTMLInputElement).value = data.ga4Id || '';
             (document.getElementById('api-gsc') as HTMLInputElement).value = data.gscUrl || '';
+            if (data.braveKey) {
+              (document.getElementById('api-brave') as HTMLInputElement).placeholder = 'Key saved — leave blank to keep it';
+            }
           }
         } catch (e) {
           console.warn('Settings load notice:', e);
@@ -377,6 +388,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const geminiVal = (document.getElementById('api-gemini') as HTMLInputElement).value?.trim();
         const pexelsVal = (document.getElementById('api-pexels') as HTMLInputElement)?.value?.trim() || '';
         const unsplashVal = (document.getElementById('api-unsplash') as HTMLInputElement)?.value?.trim() || '';
+        const braveVal = (document.getElementById('api-brave') as HTMLInputElement)?.value?.trim() || '';
 
         // Fields start blank (write-only form); a blank field means "keep the
         // stored key", so only non-empty values are persisted. Keys live in
@@ -385,6 +397,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           ...(geminiVal ? { geminiKey: geminiVal } : {}),
           ...(pexelsVal ? { pexelsKey: pexelsVal } : {}),
           ...(unsplashVal ? { unsplashKey: unsplashVal } : {}),
+          ...(braveVal ? { braveKey: braveVal } : {}),
           ga4Id: (document.getElementById('api-ga4') as HTMLInputElement).value,
           gscUrl: (document.getElementById('api-gsc') as HTMLInputElement).value
         }, { merge: true });
@@ -436,6 +449,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     document.getElementById('btn-show-unsplash')?.addEventListener('click', function() {
       const input = document.getElementById('api-unsplash') as HTMLInputElement;
+      if (input?.type === 'password') {
+        input.type = 'text';
+        this.textContent = 'Hide';
+      } else if (input) {
+        input.type = 'password';
+        this.textContent = 'Show';
+      }
+    });
+
+    document.getElementById('btn-show-brave')?.addEventListener('click', function() {
+      const input = document.getElementById('api-brave') as HTMLInputElement;
       if (input?.type === 'password') {
         input.type = 'text';
         this.textContent = 'Hide';
