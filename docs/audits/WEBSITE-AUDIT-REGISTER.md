@@ -64,6 +64,16 @@
 | F-A43 | P3 | CONFIRMED | Supply chain | Dependency advisories: 33 on the default branch (1 critical, 16 high, 10 moderate, 6 low — GitHub/Dependabot, reported on every push); `functions/` local audit: 5 (4 high, 1 critical) | FIXED — root `npm audit` 10 → 0 (incl. `@grpc/grpc-js` override); functions 5 → 0 (incl. critical `proxy-addr`); functions redeployed |
 | — | P4 | CONFIRMED | Various | See "P4 observations (batch 2)" | OPEN |
 
+### Index — Batch 3 (2026-10-18, SEO-agent page audit)
+
+| ID | Sev | Confidence | Category | Title | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| F-A44 | P2 | CONFIRMED | Admin / Functions | Kill switch wiped the agent config (full-map replace) and the flip was inverted — "Pause" re-wrote the active state | FIXED (`1a9b3f8`) — dotted paths + correct flip |
+| F-A45 | P2 | CONFIRMED | Functions | Dismissed/resolved `seo-tasks` resurrected as `open` by the Sunday re-upsert (status forced, `createdAt` reset) | FIXED (`1a9b3f8`) — status + original `createdAt` preserved |
+| F-A46 | P2 | CONFIRMED | Admin / Functions | Two scoring rubrics wrote to the same `seoAudits` collection: the button ran a 10-page browser crawl, the schedule a 36-page server crawl | FIXED (`1a9b3f8`) — button now calls the server audit; client crawl deleted |
+| F-A47 | P2 | CONFIRMED | Functions | hreflang penalty counted pages with no EN/ES twin (the 2 correctly-tagless Spanish LPs) → false −4; same false positive queued in the Monday on-page skill | FIXED (`1a9b3f8`) — twin-aware in both scorers; validated live |
+| F-A48 | P3 | CONFIRMED | Admin | Task "Fix Now" opened the public page URL instead of the admin tool | FIXED (`1a9b3f8`) — routes via `getFixToolPage()` |
+
 ## Findings — Batch 1 (2026-10-16, config + shared frontend + public main pages)
 
 ### F-A1 — `/admin` pages are not `noindex`
@@ -462,7 +472,7 @@
 ---
 
 ### P4 observations (batch 2, compact)
-- **Deployed-but-unreferenced callables:** `generateOnDemandReport`, `runSiteWideAudit`, `runSeoAudit` have no call sites in `src/` (reports regenerate client-side; the seo-agent "Run Site-Wide Audit" is a client fetch crawl). Dead endpoints; remove or wire.
+- **Deployed-but-unreferenced callables:** `generateOnDemandReport`, `runSeoAudit` have no call sites in `src/` (reports regenerate client-side). Dead endpoints; remove or wire. (`runSiteWideAudit`, listed here in batch 2, was wired to the admin button on 2026-10-18 — see F-A46.)
 - `settings.astro:420-422` — "Reset All Data" always reports "Data reset cancelled — this is a demo environment." (stub on production).
 - Dead controls: dashboard "Traffic Overview" range select; settings "Upload Photo" button; duplicate `slugify`/`generateSlug` in the editor; unused imports (`where`, `deleteDoc`); dashboard renders `#0` position for unmeasured keywords.
 - 25+ `alert()` calls across 9 admin files (functional, inconsistent with the toast system).
@@ -472,6 +482,49 @@
 - `dataJournalism.ts` drafts omit `keywords` and tag bilingual content `language: "es"`; `readTime` hardcoded (9 / 6).
 - `index.ts:224` interpolates `lang` unencoded into the autocomplete URL (admin-only); `runSeoAudit` still fetches `request.data.targetUrl` — residual post-auth SSRF (admin-only).
 - `es/services.astro` renders `Tier NN` / `Más Popular` in English (7 occurrences) where ES elsewhere uses "Nivel".
+
+## Findings — Batch 3 (2026-10-18, SEO-agent page audit)
+
+Context: the owner asked whether the seo-agent page's score, executive summary and action items are real and meaningful. Measured first (live DB + code + live pages), then fixed:
+
+- The score is real and current: `100 − deductions` from a server crawl of all 36 sitemap URLs, written every Sunday 02:00 UTC. History: 90 (Sep 27) → 90 → 90 → **86 (Oct 18)**.
+- The executive summary is the newest audit's, AI-written but constrained to the measured deductions (verified claim-by-claim against the stored `deductions` array).
+- The 17 open tasks were all real `title-length` defects (live titles measured at 72–97 chars, including the 17-char ` | GUIA NEGOCIOS` suffix appended by the layout). Fix/dismiss decisions deferred to the owner as content work.
+
+### F-A44 — P2 · CONFIRMED — Kill switch wiped the agent config and could never pause
+**Category:** Admin / Functions
+
+**Evidence (code read + live doc, 2026-10-18):** `seo-agent.astro` `toggleKillSwitch()` wrote `{ config: { enabled: currentlyActive, killSwitch: !currentlyActive } }` — a plain map that *replaces* `config`, deleting `autonomy`, `maxQueriesPerSkill`, `summaryRecipients`, `lastRunAt` (all present in the live doc). The values written were the current state, not the flipped state: with the engine active, clicking "Pause Autonomous" re-wrote `enabled:true, killSwitch:false` (still active) while toasting "paused" — the engine could not be paused from the UI.
+
+**Fix:** dotted-path `setDoc(doc, { 'config.enabled': nextActive, 'config.killSwitch': !nextActive }, { merge: true })`; removed a no-op `getDoc` read. Deployed.
+
+### F-A45 — P2 · CONFIRMED — Dismissed/resolved SEO tasks resurrected every Sunday
+**Category:** Functions
+
+**Evidence:** the synthesizer's task upsert forced `status: 'open'` and `createdAt: new Date()` on every run (`merge: true` only protects fields it does not write). All 17 `seo-tasks` measured `open`; the admin page filters out only `dismissed`/`resolved`, so any dismiss action silently reverted the next Sunday.
+
+**Fix:** the upsert reads the existing doc first; `dismissed`/`resolved` status and the original `createdAt` are preserved across re-runs. Deployed.
+
+### F-A46 — P2 · CONFIRMED — Two scoring rubrics wrote to one collection
+**Category:** Admin / Functions
+
+**Evidence:** 24 `seoAudits` docs — the newest 4 server-written (36 pages, `deductions` array), the older 20 client/legacy-written (10–25-page browser crawl, no `deductions`, scores 83/92/94). The "Run Site-Wide Audit" button ran the client crawl with a different rubric; the server callable (`runSiteWideAudit`, 36 pages, same rubric as the weekly schedule) had zero UI callers. Pressing the button silently changed what the displayed score meant.
+
+**Fix:** the button now calls the server callable (300 s client timeout); ~190 lines of client crawl + browser AI scoring deleted, along with the now-unused `aiModel`/`addDoc`/`serverTimestamp` imports. Deployed + verified in the live bundle.
+
+### F-A47 — P2 · CONFIRMED — hreflang penalty counted pages that correctly have no twin
+**Category:** Functions
+
+**Evidence:** both Spanish landing pages have no `/en/` twin (both 404, verified live) and correctly carry zero hreflang after the F-A41 fix (`931e22b`). The weekly server audit still deducted 4 points for "pages with no hreflang alternates" → score 86 instead of 90. The Monday on-page skill carried the same unconditional check (it had not yet flagged the LPs because the pre-`931e22b` pages still shipped dead hreflang tags — it would have flagged them from its next run).
+
+**Fix:** twin-aware check in both scorers (`functions/src/index.ts` + `functions/src/seo/onpage.ts`): a missing-hreflang flag requires the other-language twin to exist in the sitemap URL list (same path, lang prefix swapped; `/` ↔ `/en/` special-cased). Validated against the live sitemap: exactly 2 pages have zero hreflang (the LPs), both evaluate twin = false → zero pages falsely flagged; expected score on the next server run = **90**. Deployed.
+
+### F-A48 — P3 · CONFIRMED — Task "Fix Now" opened the public page
+**Category:** Admin
+
+**Evidence:** `loadAgentTasks()` linked `data.url` (the live page) when present, bypassing the `getFixToolPage()` router that maps blog/LP targets to the admin surfaces.
+
+**Fix:** always routes via `getFixToolPage(message, url)`; blog tasks → `/admin/blog`, LP tasks → `/admin/landing-pages`. Deployed.
 
 ## Part 2 — Investigated: NOT an issue (false-positive protections)
 
@@ -577,3 +630,4 @@
   - **F-A10 completed:** docs/02 route map now lists the FAQ pages, the four `view` shells, `admin/analytics.astro` and `admin/backlinks/outreach.astro`; README's AI badge/SVG/table claims aligned to Vertex AI + nodejs24.
   - **F-A11:** empty `src/pages/[lang]/` directory tree removed.
 - 2026-10-18 (fixes, #6 — session close): **F-A8 fixed** — dead UI removed: login "Remember me" checkbox, admin header search box, and `window.simulateAction()` (grep re-checked for callers first; `docs/00` helper table updated). Build 56 pages clean. **Audit session closed** — every code-fixable finding is fixed and, where applicable, deployed and live-verified; remaining items are owner decisions (F-A4 / F-A12 / F-A13 / F-A14 payment-crediting claim / F-A23 / F-A26-live) plus the P4 admin-surface heading order (internal, noindex).
+- 2026-10-18 (fixes, #7 — SEO-agent page audit, `1a9b3f8`): new findings **F-A44–F-A48** fixed, functions deployed, hosting CI green, live bundle verified (callable wired, client crawl gone). Owner can confirm F-A47 by pressing "Run Site-Wide Audit" (now the 36-page server run) — expected score 90. The 17 `title-length` tasks remain open by design: they are real defects awaiting the owner's content decision (F-title work), after which Mark Done/dismissals now stick.
