@@ -126,13 +126,3 @@ window.showConfirm = function(title, message) {
     modal.overlay.querySelector('#confirm-ok').addEventListener('click', () => { modal.close(); resolve(true); });
   });
 };
-
-/* ── Loading Simulation ── */
-window.simulateAction = function(message, successMessage, duration = 2000) {
-  const loadingToast = showToast(message, 'loading');
-  setTimeout(() => {
-    loadingToast.classList.add('translate-x-full', 'opacity-0');
-    setTimeout(() => loadingToast.remove(), 300);
-    showToast(successMessage, 'success');
-  }, duration);
-};

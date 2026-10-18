@@ -27,7 +27,7 @@
 | F-A5 | P3 | CONFIRMED | Security hygiene | `firebase.ts` reads `PUBLIC_GEMINI_API_KEY` (violates the repo's own invariant) | FIXED (`931e22b`; deploys with hosting CI) |
 | F-A6 | P3 | CONFIRMED | Config | `.env.example` is misleading (contradicts its own comment; unused vars) | FIXED (`931e22b`) |
 | F-A7 | P3 | CONFIRMED (live) | Accessibility | Nested `<main>` elements on AdminLayout pages (2 main tags served) | FIXED (`accab0d`; dist-verified 1 `<main>`) |
-| F-A8 | P4 | CONFIRMED | Dead UI | "Remember me" checkbox, admin header search box, `window.simulateAction` have no behavior | OPEN |
+| F-A8 | P4 | CONFIRMED | Dead UI | "Remember me" checkbox, admin header search box, `window.simulateAction` have no behavior | FIXED — all three removed (2026-10-18) |
 | F-A9 | P3 | CONFIRMED | Security hygiene | `showToast()` renders Firestore/AI-derived strings via `innerHTML` | FIXED (`accab0d`) |
 | F-A10 | P3 | CONFIRMED | Docs | Eight verified docs↔site drift items (docs/00 ×2, docs/02, docs/03, `.agents/AGENTS.md` ×2, README) | FIXED |
 | F-A11 | P4 | CONFIRMED | Cleanup | Empty leftover dir `src/pages/[lang]/services/` | FIXED — removed |
@@ -170,6 +170,7 @@
   3. `src/scripts/admin-utils.js:122` — `window.simulateAction()` is defined but has **zero** callers repo-wide (grep).
 - **Impact:** Operator confusion only ("I typed a search and nothing happened").
 - **Recommended fix:** Remove all three, or wire the search box to something real. Verify via grep that nothing references them before deleting.
+- **Resolution (2026-10-18):** All three removed — grep re-confirmed zero code callers beforehand. The login "Remember me" checkbox and the admin header search input were deleted from the markup (the "Forgot password?" link stays, right-aligned); `window.simulateAction()` was deleted from `admin-utils.js`; the `docs/00` helper table updated to match. Build 56 pages clean.
 - **Launch impact:** None.
 
 ### F-A9 — `showToast()` renders remote strings via `innerHTML`
@@ -574,3 +575,4 @@
   - **F-A14 (owner input):** notary/translation service confirmed real by the owner → that claim resolved; the "credit prior standalone payments" claim still awaits confirmation.
   - **F-A10 completed:** docs/02 route map now lists the FAQ pages, the four `view` shells, `admin/analytics.astro` and `admin/backlinks/outreach.astro`; README's AI badge/SVG/table claims aligned to Vertex AI + nodejs24.
   - **F-A11:** empty `src/pages/[lang]/` directory tree removed.
+- 2026-10-18 (fixes, #6 — session close): **F-A8 fixed** — dead UI removed: login "Remember me" checkbox, admin header search box, and `window.simulateAction()` (grep re-checked for callers first; `docs/00` helper table updated). Build 56 pages clean. **Audit session closed** — every code-fixable finding is fixed and, where applicable, deployed and live-verified; remaining items are owner decisions (F-A4 / F-A12 / F-A13 / F-A14 payment-crediting claim / F-A23 / F-A26-live) plus the P4 admin-surface heading order (internal, noindex).
