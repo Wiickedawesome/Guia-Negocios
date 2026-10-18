@@ -30,6 +30,23 @@ export async function runOnPageAudit(ctx: SkillContext): Promise<SkillResult> {
   const startIndex = ctx.cursor?.offset ?? 0;
   const slice = entries.slice(startIndex, startIndex + MAX_URLS_PER_RUN);
 
+  // hreflang alternates are only expected when the other-language twin exists
+  // in the sitemap (same path, lang prefix swapped). The two Spanish landing
+  // pages have no /en/ twin, so flagging them for missing hreflang was a false
+  // positive.
+  const entryUrls = new Set(entries.map((e) => e.url));
+  const hasLanguageTwin = (pageUrl: string): boolean => {
+    const path = pageUrl.replace('https://guianegocios.net', '');
+    // Homepages are the one pair that is not a straight prefix swap: the
+    // Spanish home is '/', the English home is '/en/'.
+    if (path === '/') return entryUrls.has('https://guianegocios.net/en/');
+    if (path === '/en/') return entryUrls.has('https://guianegocios.net/');
+    const twinPath = path.startsWith('/es/')
+      ? path.replace(/^\/es\//, '/en/')
+      : path.replace(/^\/en\//, '/es/');
+    return entryUrls.has(`https://guianegocios.net${twinPath}`);
+  };
+
   let issuesFound = 0; // real on-page issues — never inflate this with errors
   let fetchErrors = 0;
   let writeErrors = 0;
@@ -81,7 +98,7 @@ export async function runOnPageAudit(ctx: SkillContext): Promise<SkillResult> {
       else if (h1Count > 1) push('multiple-h1', 'low', `${h1Count} <h1> en la página`);
       if (!canonical) push('missing-canonical', 'medium', 'Página sin canonical tag');
       else if (!canonical.includes('guianegocios.net')) push('wrong-canonical-domain', 'high', `Canonical apunta a otro dominio: ${canonical}`);
-      if (hreflangTags.length === 0) push('missing-hreflang', 'medium', 'Sin hreflang tags en una página bilingüe');
+      if (hreflangTags.length === 0 && hasLanguageTwin(entry.url)) push('missing-hreflang', 'medium', 'Sin hreflang tags en una página bilingüe');
       if (imagesMissingAlt > 0) push('images-missing-alt', 'low', `${imagesMissingAlt} imágenes sin alt`);
       if (wordCount < 300) push('thin-content', 'medium', `Contenido delgado (${wordCount} palabras)`, 'Ampliar contenido a 400+ palabras.');
       if (entry.lang === 'es' && bodyText && /\b(the|and|for|with)\b/i.test(bodyText) && bodyText.length > 100) {

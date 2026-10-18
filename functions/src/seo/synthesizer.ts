@@ -41,16 +41,23 @@ export async function runSynthesizer(ctx: SkillContext): Promise<SkillResult> {
       if (!data.issues?.length) continue;
       for (const issue of data.issues.filter((i) => i.severity === 'high' || i.severity === 'medium')) {
         try {
-          await db.collection('seo-tasks').doc(`${doc.id}__${issue.code}`.slice(0, 400)).set(
+          const taskRef = db.collection('seo-tasks').doc(`${doc.id}__${issue.code}`.slice(0, 400));
+          const existing = await taskRef.get();
+          const priorStatus = existing.data()?.status as string | undefined;
+          // A task the owner dismissed or marked done must stay that way: the
+          // weekly re-upsert used to force status back to 'open' and reset
+          // createdAt, which resurrected every dismissed task each Sunday.
+          const keepClosed = priorStatus === 'dismissed' || priorStatus === 'resolved';
+          await taskRef.set(
             {
               url: data.url ?? null,
               type: issue.code,
               severity: issue.severity,
               message: issue.message,
               fix: issue.fix ?? null,
-              status: 'open',
+              status: keepClosed ? priorStatus : 'open',
               updatedAt: new Date(),
-              createdAt: new Date(),
+              ...(existing.exists ? {} : { createdAt: new Date() }),
             },
             { merge: true }
           );

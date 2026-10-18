@@ -538,6 +538,23 @@ async function internalSiteWideAudit() {
     // Ceiling only, to bound the crawl. The sitemap is the real scope.
     urls = urls.slice(0, 50);
 
+    // A page only needs hreflang alternates when its other-language twin
+    // actually exists. The two Spanish landing pages have no /en/ twin (both
+    // return 404), so penalizing them for missing hreflang was a false
+    // positive that cost 4 points on every audit.
+    const urlSet = new Set(urls);
+    const hasLanguageTwin = (pageUrl: string): boolean => {
+      const path = pageUrl.replace('https://guianegocios.net', '');
+      // Homepages are the one pair that is not a straight prefix swap: the
+      // Spanish home is '/', the English home is '/en/'.
+      if (path === '/') return urlSet.has('https://guianegocios.net/en/');
+      if (path === '/en/') return urlSet.has('https://guianegocios.net/');
+      const twinPath = path.startsWith('/es/')
+        ? path.replace(/^\/es\//, '/en/')
+        : path.replace(/^\/en\//, '/es/');
+      return urlSet.has(`https://guianegocios.net${twinPath}`);
+    };
+
     // 2. Crawl and analyze each URL
     const pageReports: any[] = [];
     const allIssues: string[] = [];
@@ -589,7 +606,9 @@ async function internalSiteWideAudit() {
         if (imgsWithoutAlt > 0) issues.push(`${imgsWithoutAlt} images missing alt text`);
         if (wordCount < 200) { issues.push(`Thin content (${wordCount} words)`); thinContentCount++; }
         if (!canonical) { issues.push(`Missing canonical link tag`); missingCanonicalCount++; }
-        if (hreflangCount === 0) { issues.push(`Missing alternate hreflang tags`); missingHreflangCount++; }
+        // Missing hreflang is only a defect when the other-language twin exists;
+        // a page with no translation has nothing to reference.
+        if (hreflangCount === 0 && hasLanguageTwin(url)) { issues.push(`Missing alternate hreflang tags`); missingHreflangCount++; }
 
         pageReports.push({ url, title, canonical, hreflangCount, schemaCount, issues });
         issues.forEach(i => allIssues.push(`[${url}] ${i}`));
@@ -616,7 +635,7 @@ async function internalSiteWideAudit() {
       { label: 'images with no alt text', count: missingAltCount, perItem: 1, max: 12 },
       { label: 'pages under 200 words', count: thinContentCount, perItem: 3, max: 12 },
       { label: 'pages with no canonical tag', count: missingCanonicalCount, perItem: 4, max: 16 },
-      { label: 'pages with no hreflang alternates', count: missingHreflangCount, perItem: 2, max: 8 },
+      { label: 'bilingual pages with no hreflang alternates', count: missingHreflangCount, perItem: 2, max: 8 },
     ];
 
     const deductions = checks
