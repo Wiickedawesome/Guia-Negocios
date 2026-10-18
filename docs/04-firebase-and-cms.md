@@ -46,6 +46,13 @@ Each document in the `blogs` collection represents a bilingual blog article.
 | `readTime` | `string` | Displayed reading-time estimate |
 | `updatedAt` | `string` | ISO 8601 last-modified timestamp |
 
+> **Title-length budget (enforced by the SEO agent's crawler):** the rendered `<title>` is
+> `titleEn`/`titleEs` (or `landingPages.title`) **plus `" | GUIA NEGOCIOS"` (16 chars, appended
+> by `BaseLayout` via `t('site.title')`)**. The crawler flags rendered titles outside **25-70
+> chars**, so stored titles should stay **≤ 54 chars** (≈ 40-52 is the sweet spot for SERP
+> display). To check: run a build and grep `<title>` in `dist/`, or read the length in the
+> admin blog editor before saving.
+
 ---
 
 ## 2b. Other Firestore Collections
