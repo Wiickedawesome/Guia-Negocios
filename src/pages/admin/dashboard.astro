@@ -38,7 +38,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
       <div class="flex justify-between items-start mb-4">
         <div>
-          <p class="text-sm font-medium text-slate-500">Tracked Keywords</p>
+          <p class="text-sm font-medium text-slate-500">Search Queries (90d)</p>
           <h3 class="text-2xl font-bold text-slate-900 mt-1" id="dash-metric-keywords">...</h3>
         </div>
         <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
@@ -46,7 +46,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         </div>
       </div>
       <div class="flex items-center text-xs text-slate-500 font-medium" id="dash-metric-keywords-sub">
-        <span>Active Search Rankings</span>
+        <span>Reported by Google</span>
       </div>
     </div>
 
@@ -98,7 +98,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <!-- Right column -->
     <div class="space-y-6">
       <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-        <h3 class="text-lg font-bold text-slate-900 mb-4">Top Keywords</h3>
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Top Search Queries</h3>
         <div class="space-y-4" id="dash-top-keywords-list">
           <div class="animate-pulse flex justify-between items-center">
             <div class="h-4 bg-slate-200 rounded w-1/2"></div>
@@ -113,7 +113,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             <div class="h-4 bg-slate-200 rounded w-8"></div>
           </div>
         </div>
-        <a href="/admin/keywords" class="block text-center text-sm text-brand-primary font-medium mt-4 hover:underline">View all keywords</a>
+        <a href="/admin/keywords" class="block text-center text-sm text-brand-primary font-medium mt-4 hover:underline">View all queries</a>
       </div>
 
       <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
@@ -139,7 +139,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     import { escapeHtml } from '../../utils/escape-html';
     import { renderTrafficChart } from '../../utils/traffic-chart';
     import { getFunctions, httpsCallable } from 'firebase/functions';
-    import { getFirestore, collection, getDocs, query, orderBy, limit, getCountFromServer, where } from 'firebase/firestore';
+    import { getFirestore, collection, getDocs, query, orderBy, limit, getCountFromServer } from 'firebase/firestore';
 
     async function loadDashAnalytics(range: string = '30') {
       const chartContainer = document.getElementById('dash-traffic-chart');
@@ -186,10 +186,25 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       const db = getFirestore(app);
 
       try {
-        // 1. Total Keywords (approx count)
-        const keywordsSnap = await getCountFromServer(collection(db, 'keywords'));
+        // 1. Search Console query count (last 90 days). This used to read the
+        // `keywords` collection, which was removed 2026-10-18 — the keywords
+        // page is a live GSC mirror and keeps no stored list.
+        let gscQueries: Array<{ query: string; clicks: number; impressions: number; position: number | null }> = [];
+        let gscOk = true;
+        try {
+          const gscFetch = httpsCallable(getFunctions(app), 'getSearchConsoleQueries');
+          const gscRes = await gscFetch({ range: '90' });
+          const gscData = gscRes.data as any;
+          if (gscData?.ok === false) gscOk = false;
+          else gscQueries = gscData?.queries || [];
+        } catch (gscErr) {
+          gscOk = false;
+          console.warn('Search Console fetch failed:', gscErr);
+        }
         const kwEl = document.getElementById('dash-metric-keywords');
-        if (kwEl) kwEl.innerText = keywordsSnap.data().count.toString();
+        if (kwEl) kwEl.innerText = gscOk ? String(gscQueries.length) : '—';
+        const kwSubEl = document.getElementById('dash-metric-keywords-sub');
+        if (kwSubEl) kwSubEl.innerText = gscOk ? 'Reported by Google (90d)' : 'Search Console unavailable';
         
         // 2. SEO Score (latest audit from seoAudits collection)
         let seoScoreVal: number | null = null;
@@ -281,42 +296,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           console.error('Error fetching recent drafts:', e);
         }
 
-        // 5. Top Keywords (List)
-        // Only measured positions qualify: the old query ordered by
-        // `position` ascending, so rows with no measurement sorted first and
-        // dominated a "Top Keywords" list they never earned a place in.
-        try {
-          const kwSnapAll = await getDocs(collection(db, 'keywords'));
-          const topKwContainer = document.getElementById('dash-top-keywords-list');
-          const measured = kwSnapAll.docs
-            .map(d => d.data())
-            .filter(d => typeof d.position === 'number')
-            .sort((a, b) => a.position - b.position)
-            .slice(0, 3);
-          if (topKwContainer) {
-            if (measured.length === 0) {
-              topKwContainer.innerHTML = '<p class="text-sm text-slate-500 italic">No measured rankings yet — run "Refresh Positions" in Keywords.</p>';
+        // 5. Top Search Queries (from the GSC data fetched in section 1)
+        const topKwContainer = document.getElementById('dash-top-keywords-list');
+        if (topKwContainer) {
+          if (!gscOk) {
+            topKwContainer.innerHTML = '<p class="text-sm text-slate-500 italic">Search Console unavailable — queries not shown.</p>';
+          } else {
+            const topQueries = [...gscQueries]
+              .sort((a, b) => b.impressions - a.impressions)
+              .slice(0, 5);
+            if (topQueries.length === 0) {
+              topKwContainer.innerHTML = '<p class="text-sm text-slate-500 italic">No queries recorded in the last 90 days.</p>';
             } else {
-              topKwContainer.innerHTML = measured.map(data => {
-                // Trend comes from two recorded measurements, not a stored
-                // string: the old `trend` field was prescribed by a prompt and
-                // counted as "improved" regardless of what search did.
-                const delta = typeof data.previousPosition === 'number'
-                  ? Math.round((data.previousPosition - data.position) * 10) / 10
-                  : null;
-                const trendIcon = delta === null ? '' : delta > 0 ? '↑' : delta < 0 ? '↓' : '−';
-                const trendColor = delta === null ? 'text-slate-500' : delta > 0 ? 'text-emerald-600' : delta < 0 ? 'text-red-500' : 'text-slate-400';
+              topKwContainer.innerHTML = topQueries.map(q => {
+                const posText = q.position === null ? '—' : `#${q.position}`;
+                const posColor = q.position !== null && q.position <= 10 ? 'text-emerald-600' : 'text-slate-600';
                 return `
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-slate-700 font-medium">${escapeHtml(data.keyword || 'Unknown')}</span>
-                    <span class="text-sm font-bold ${trendColor}">#${data.position} ${trendIcon}</span>
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="text-sm text-slate-700 font-medium truncate">${escapeHtml(q.query)}</span>
+                    <span class="text-xs text-slate-400 shrink-0">${q.impressions} impr</span>
+                    <span class="text-sm font-bold ${posColor} shrink-0">${posText}</span>
                   </div>
                 `;
               }).join('');
             }
           }
-        } catch (e) {
-          console.error('Error fetching top keywords:', e);
         }
 
       } catch (error) {

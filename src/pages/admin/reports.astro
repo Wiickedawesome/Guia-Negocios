@@ -65,8 +65,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <script>
-    import { db, aiModel } from '../../lib/firebase';
+    import { db, aiModel, functions } from '../../lib/firebase';
     import { escapeHtml, sanitizeHtml } from '../../utils/escape-html';
+    import { httpsCallable } from 'firebase/functions';
     import { collection, onSnapshot, query, orderBy, doc, getDoc, setDoc, addDoc, deleteDoc, getDocs, serverTimestamp } from 'firebase/firestore';
 
     let allReports: any[] = [];
@@ -199,8 +200,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         let pagesScanned = 0;
         let criticalIssues = 0;
         let warnings = 0;
-        let keywordsCount = 0;
-        let topKeywordsText = '';
+        let gscQueriesCount = 0;
+        let gscTopQueriesText = '';
         let backlinksCount = 0;
         let blogsCount = 0;
         let lpCount = 0;
@@ -218,18 +219,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             warnings = latest.warningCount ?? 0;
           }
 
-          // Keywords
-          const kwSnap = await getDocs(collection(db, 'keywords'));
-          if (!kwSnap.empty) {
-            keywordsCount = kwSnap.size;
-            const topList = kwSnap.docs.slice(0, 4).map((d, i) => {
-              const kd = d.data();
-              const pos = typeof kd.position === 'number' ? kd.position
-                : (typeof kd.rank === 'number' ? kd.rank : null);
-              const label = kd.keyword ? `"${kd.keyword}"` : '(unnamed)';
-              return `${i + 1}. ${label} (${pos === null ? 'position not measured' : 'Rank #' + pos})`;
-            });
-            if (topList.length > 0) topKeywordsText = topList.join(', ');
+          // Google-reported queries (Search Console, last 90 days). The
+          // `keywords` collection no longer exists (removed 2026-10-18), so
+          // the report cites Search Console directly instead of a stored list.
+          try {
+            const fetchQueries = httpsCallable(functions, 'getSearchConsoleQueries');
+            const gscRes = await fetchQueries({ range: '90' });
+            const gscData = gscRes.data as any;
+            if (gscData?.ok !== false) {
+              const queries = gscData?.queries || [];
+              gscQueriesCount = queries.length;
+              const topList = [...queries]
+                .sort((a: any, b: any) => b.impressions - a.impressions)
+                .slice(0, 4)
+                .map((q: any, i: number) => {
+                  const posText = q.position === null ? 'position not measured' : 'Rank #' + q.position;
+                  return `${i + 1}. "${q.query}" (${q.impressions} impressions, ${posText})`;
+                });
+              if (topList.length > 0) gscTopQueriesText = topList.join(', ');
+            }
+          } catch (gscErr) {
+            console.warn('Search Console metrics unavailable for report:', gscErr);
           }
 
           // Backlinks
@@ -259,8 +269,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           - Pages Scanned: ${pagesScanned} URLs
           - Critical Technical Errors: ${criticalIssues}
           - Warnings & Optimization Items: ${warnings}
-          - Active Tracked Keywords: ${keywordsCount} keywords
-          - Top Tracked Keywords: ${topKeywordsText || 'no keywords tracked yet'}
+          - Queries Google Reported (Search Console, last 90 days): ${gscQueriesCount}
+          - Top Queries by Impressions (Search Console, last 90 days): ${gscTopQueriesText || 'no queries recorded yet'}
           - Referring Backlinks On Record: ${backlinksCount} entries
           - Active Content Footprint: ${blogsCount} blog articles, ${lpCount} landing pages
           - Target Audience: Hispanic entrepreneurs & contractors in Knoxville, East Tennessee, and international Non-Resident Aliens (NRA)
