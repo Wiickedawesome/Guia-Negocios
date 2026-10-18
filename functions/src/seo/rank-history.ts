@@ -40,13 +40,18 @@ export async function runRankHistory(ctx: SkillContext): Promise<SkillResult> {
     let batchCount = 0;
 
     const persist = async (row: any) => {
-      if (!row.keyword || !row.page) return;
-      const id = `${dayKey}__${slug(row.keyword)}__${slug(row.page)}`.slice(0, 380);
+      // The GSC API carries dimensions positionally in `keys`, not as named
+      // fields. Reading row.keyword / row.page here skipped every row, so the
+      // skill reported "completed" while writing 0 documents since creation.
+      const keyword = row.keys?.[0];
+      const page = row.keys?.[1];
+      if (!keyword || !page) return;
+      const id = `${dayKey}__${slug(keyword)}__${slug(page)}`.slice(0, 380);
       batch.set(
         db.collection('rank-history').doc(id),
         {
-          keyword: row.keyword,
-          page: row.page,
+          keyword,
+          page,
           position: row.position ?? 0,
           clicks: row.clicks ?? 0,
           impressions: row.impressions ?? 0,
