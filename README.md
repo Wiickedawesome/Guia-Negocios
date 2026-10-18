@@ -13,14 +13,14 @@
 **Guia Negocios** is an enterprise-grade, bilingual business consulting and digital infrastructure platform tailored for Hispanic and multicultural business owners across East Tennessee and beyond. 
 
 The application serves dual operational functions:
-1. **Public Multilingual Web Portal (`/en`, `/es`):** Delivers localized marketing, service breakdowns, interactive consultation scheduling, and dynamic educational blog resources regarding business formation (LLC, EIN, licensing), compliance, and operational growth.
+1. **Public Multilingual Web Portal (`/en`, `/es`):** Delivers localized marketing, service breakdowns, consultation request forms, and dynamic educational blog resources regarding business formation (LLC, EIN, licensing), compliance, and operational growth.
 2. **Integrated Admin Operations Suite (`/admin`):** Provides business managers with an easy-to-use CMS, blog editor powered by EasyMDE, Gemini-assisted AI content copilot, real-time SEO audit tools, keyword tracking, backlink management, and conversion landing page builders.
 
 ---
 
 ## System Architecture
 
-The project leverages a hybrid Jamstack architecture combining static site generation (SSG) via Astro 7 for ultra-fast performance, localized client hydration, and serverless real-time data persistence via Cloud Firestore and Firebase Cloud Functions.
+The project leverages a hybrid Jamstack architecture combining static site generation (SSG) via Astro 7 for ultra-fast performance, minimal client-side JavaScript, and serverless real-time data persistence via Cloud Firestore and Firebase Cloud Functions.
 
 ### High-Level Architecture Diagram
 
@@ -67,7 +67,7 @@ The project leverages a hybrid Jamstack architecture combining static site gener
   <rect x="55" y="270" width="190" height="115" rx="8" fill="#0F172A" stroke="#334155" stroke-width="1"/>
   <text x="150" y="293" fill="#38BDF8" font-size="11" font-weight="700" text-anchor="middle">Frontend UI Stack</text>
   <text x="150" y="315" fill="#94A3B8" font-size="10" text-anchor="middle">• Astro Components (.astro)</text>
-  <text x="150" y="333" fill="#94A3B8" font-size="10" text-anchor="middle">• React Hydrated Islands</text>
+  <text x="150" y="333" fill="#94A3B8" font-size="10" text-anchor="middle">• Client-Side TypeScript</text>
   <text x="150" y="351" fill="#94A3B8" font-size="10" text-anchor="middle">• Tailwind CSS v4 Engine</text>
   <text x="150" y="369" fill="#94A3B8" font-size="10" text-anchor="middle">• EasyMDE Markdown Editor</text>
 
@@ -132,7 +132,7 @@ The project leverages a hybrid Jamstack architecture combining static site gener
 ### 3. Integrated Admin Workspace (`/admin`)
 * **Blog Editor (`/admin/blog/editor`):** Built-in **EasyMDE** Markdown editor instance.
 * **AI Copilot (`Gemini`):** Direct injection of generated bilingual blog drafts with formatted markdown headings (`##`) and curated Unsplash imagery.
-* **SEO Audit & Keywords (`/admin/seo-audit`, `/admin/keywords`):** Automated site metrics and search rank audit view.
+* **SEO Agent & Keywords (`/admin/seo-agent`, `/admin/keywords`):** Automated site-wide audit with AI summary, plus search rank tracking.
 * **Landing Page Builder (`/admin/landing-pages/builder`):** Dynamic landing page creation tool.
 
 ---
@@ -143,7 +143,6 @@ The project leverages a hybrid Jamstack architecture combining static site gener
 | :--- | :--- | :--- | :--- |
 | **Framework** | [Astro](https://astro.build) | `^7.1.3` | Static Site Generation & Island Architecture |
 | **Styling** | [Tailwind CSS](https://tailwindcss.com) | `^4.3.3` | Utility-first styling engine with Vite plugin |
-| **UI Components** | [React](https://react.dev) | `^19.2.7` | Hydrated client widgets & administrative tools |
 | **Database** | [Firebase Firestore](https://firebase.google.com/docs/firestore) | `^12.16.0` | Cloud Document Database |
 | **AI Integration** | Google Vertex AI — Gemini models (`firebase/ai` in the browser, `@google/genai` in functions) | `^12.16.0` | In-browser & backend AI Copilot |
 | **Backend API** | [Firebase Cloud Functions](https://firebase.google.com/docs/functions) | Node 24 | Serverless backend routines |
@@ -182,7 +181,7 @@ guia-negocios/
 │   │   ├── admin/              # Management Dashboard & EasyMDE Blog Editor
 │   │   ├── en/                 # English Public Pages (Home, Services, Blog, Contact)
 │   │   ├── es/                 # Spanish Public Pages (Inicio, Servicios, Blog, Contacto)
-│   │   └── index.astro         # Root Route Redirector
+│   │   └── index.astro         # Spanish Homepage (default locale root)
 │   ├── scripts/                # Client-side UI Toast & Modal Utilities
 │   ├── styles/                 # Tailwind CSS Global Stylesheets
 │   └── utils/                  # Blog Markdown Parsers & ToC Generators
@@ -206,8 +205,8 @@ guia-negocios/
 
 ### Step 1 — Clone & Install Dependencies
 ```bash
-git clone https://github.com/guianegocios/guia-negocios.git
-cd guia-negocios
+git clone https://github.com/Wiickedawesome/Guia-Negocios.git
+cd Guia-Negocios
 
 # Install root dependencies
 npm install
@@ -285,18 +284,9 @@ npx firebase deploy
 ## Coding Standards & Architectural Guidelines
 
 1. **Strict Language Separation:** `/src/pages/en/` and `/src/pages/es/` must remain completely isolated. Do not mix English and Spanish text in the same page file.
-2. **Brand Color Tokens:** Always use custom design system colors defined in Tailwind CSS (`brand-primary` `#2563EB`, `brand-dark` `#0F172A`, `brand-gray` `#64748B`) rather than unstyled browser defaults.
+2. **Brand Color Tokens:** Always use custom design system colors defined in Tailwind CSS (`brand-primary` `#1B4E2B`, `brand-dark` `#1A2E35`, `brand-gray` `#1E2A2F`) rather than unstyled browser defaults.
 3. **Firebase Singleton Instances:** All Firebase client services must import the pre-initialized singletons `db` and `aiModel` from `src/lib/firebase.ts`. Never re-initialize `initializeApp()` inside individual UI components.
 4. **Security Enforcement:** Never commit GCP service account `.json` key files or `.env` files to git. Use standard `.gitignore` rules.
-
----
-
-## Future Roadmap
-
-- [ ] **Multi-tenant Client Portal:** Secure client login for document upload & tracking LLC registration progress.
-- [ ] **Automated Appointment Scheduler:** Native Google Calendar / Cal.com integration for direct strategy session booking.
-- [ ] **Expanded AI Capabilities:** Automated translation synchronization between English and Spanish blog drafts in EasyMDE.
-- [ ] **PWA Offline Support:** Service worker implementation for cached offline blog reading.
 
 ---
 

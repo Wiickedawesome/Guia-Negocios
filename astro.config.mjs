@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
@@ -13,7 +12,6 @@ export default defineConfig({
   },
 
   integrations: [
-    react(),
     sitemap({
       filter: (page) => {
         // Exclude /es/ redirect URL since it 301s to root / (sitemap should only contain 200 OK indexable pages)
