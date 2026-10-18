@@ -51,13 +51,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           Live Data
         </div>
       </div>
-      <div id="traffic-chart-container" class="h-64 flex items-center justify-center bg-slate-50/50 border border-slate-100 rounded-lg relative overflow-hidden">
-        <div class="text-center text-slate-400">
-          <svg class="w-8 h-8 mx-auto mb-2 animate-spin text-brand-primary" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span class="text-xs">Loading GA4 chart...</span>
+      <div id="traffic-chart-container" class="h-64 bg-slate-50/50 border border-slate-100 rounded-lg relative overflow-hidden">
+        <div class="h-full flex items-center justify-center">
+          <div class="text-center text-slate-400">
+            <svg class="w-8 h-8 mx-auto mb-2 animate-spin text-brand-primary" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs">Loading GA4 chart...</span>
+          </div>
         </div>
       </div>
     </div>
@@ -119,9 +121,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
+  <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
   <script>
     import { app } from '../../lib/firebase';
     import { escapeHtml } from '../../utils/escape-html';
+    import { clearTrafficChart, renderTrafficChart } from '../../utils/traffic-chart';
     import { getFunctions, httpsCallable } from 'firebase/functions';
 
     // Channel color and icon styling registry
@@ -156,84 +160,25 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       }
     };
 
-    function renderTimeSeriesChart(timeSeries: Array<{ date: string; users: string }>) {
-      const container = document.getElementById('traffic-chart-container');
-      if (!container) return;
-
-      if (!timeSeries || timeSeries.length === 0) {
-        container.innerHTML = `
-          <div class="text-center text-slate-400 text-sm">
-            <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-            </svg>
-            No daily traffic data recorded in this period.
-          </div>
-        `;
-        return;
-      }
-
-      const values = timeSeries.map(item => parseInt(item.users || '0', 10));
-      const maxVal = Math.max(...values, 5);
-      const width = 600;
-      const height = 200;
-      const padding = 30;
-
-      const points = values.map((val, idx) => {
-        const x = padding + (idx / Math.max(values.length - 1, 1)) * (width - padding * 2);
-        const y = height - padding - (val / maxVal) * (height - padding * 2);
-        return { x, y, val, date: timeSeries[idx].date };
+    // Single failure surface for both "GA4 returned nothing" and "the call
+    // never arrived": blank every card so none is left pulsing, show the
+    // reason, and hide the badge so it cannot contradict the empty chart.
+    function showAnalyticsUnavailable(message: string) {
+      ['metric-visitors', 'metric-new', 'metric-bounce', 'metric-session'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = '—';
       });
-
-      const polylinePoints = points.map(p => `${p.x},${p.y}`).join(' ');
-      const areaPoints = `${points[0].x},${height - padding} ${polylinePoints} ${points[points.length - 1].x},${height - padding}`;
-
-      // Date labels
-      const firstDate = timeSeries[0]?.date ? formatDateLabel(timeSeries[0].date) : '';
-      const lastDate = timeSeries[timeSeries.length - 1]?.date ? formatDateLabel(timeSeries[timeSeries.length - 1].date) : '';
-      const midIdx = Math.floor(timeSeries.length / 2);
-      const midDate = timeSeries[midIdx]?.date ? formatDateLabel(timeSeries[midIdx].date) : '';
-
-      container.innerHTML = `
-        <svg viewBox="0 0 ${width} ${height}" class="w-full h-full p-2" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35" />
-              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0" />
-            </linearGradient>
-          </defs>
-          
-          <!-- Grid Lines -->
-          <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#e2e8f0" stroke-width="1" />
-          <line x1="${padding}" y1="${height / 2}" x2="${width - padding}" y2="${height / 2}" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4 4" />
-          
-          <!-- Area Fill -->
-          <polygon points="${areaPoints}" fill="url(#chartGradient)" />
-          
-          <!-- Line -->
-          <polyline points="${polylinePoints}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-          
-          <!-- Points -->
-          ${points.map(p => `
-            <circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#ffffff" stroke="#2563eb" stroke-width="2">
-              <title>${p.val} users (${p.date})</title>
-            </circle>
-          `).join('')}
-
-          <!-- Axis Labels -->
-          <text x="${padding}" y="${height - 8}" font-size="10" fill="#94a3b8">${firstDate}</text>
-          <text x="${width / 2}" y="${height - 8}" font-size="10" fill="#94a3b8" text-anchor="middle">${midDate}</text>
-          <text x="${width - padding}" y="${height - 8}" font-size="10" fill="#94a3b8" text-anchor="end">${lastDate}</text>
-          <text x="${padding - 5}" y="${padding + 5}" font-size="10" fill="#94a3b8" text-anchor="end">${maxVal}</text>
-          <text x="${padding - 5}" y="${height - padding}" font-size="10" fill="#94a3b8" text-anchor="end">0</text>
-        </svg>
-      `;
-    }
-
-    function formatDateLabel(dateStr: string) {
-      if (!dateStr || dateStr.length !== 8) return dateStr;
-      const month = dateStr.substring(4, 6);
-      const day = dateStr.substring(6, 8);
-      return `${month}/${day}`;
+      const banner = document.getElementById('analytics-error');
+      if (banner) {
+        banner.textContent = message;
+        banner.classList.remove('hidden');
+      }
+      const badge = document.getElementById('chart-total-tag');
+      if (badge) badge.classList.add('hidden');
+      const chart = document.getElementById('traffic-chart-container');
+      if (chart) clearTrafficChart(chart, 'No chart data available.');
+      const sources = document.getElementById('traffic-sources-container');
+      if (sources) sources.innerHTML = '<p class="text-slate-500 text-sm">No traffic data available.</p>';
     }
 
     async function loadAnalytics(range: string = '30') {
@@ -249,27 +194,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         const result = await getAnalyticsData({ range });
         const data = result.data as any;
 
-        const errorBanner = document.getElementById('analytics-error');
-
         if (data.ok === false) {
           // The function reports a genuine failure rather than substituting
           // sample numbers, so surface it instead of showing a plausible chart.
-          ['metric-visitors', 'metric-new', 'metric-bounce', 'metric-session'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.innerText = '—';
-          });
-          if (errorBanner) {
-            errorBanner.textContent = `Live Google Analytics data is unavailable: ${data.message || 'the query failed'}. No figures are shown because none were returned.`;
-            errorBanner.classList.remove('hidden');
-          }
-          const chart = document.getElementById('traffic-chart-container');
-          if (chart) chart.innerHTML = '<p class="text-slate-400 text-sm">No chart data available.</p>';
-          const sources = document.getElementById('traffic-sources-container');
-          if (sources) sources.innerHTML = '<p class="text-slate-500 text-sm">No traffic data available.</p>';
+          showAnalyticsUnavailable(
+            `Live Google Analytics data is unavailable: ${data.message || 'the query failed'}. No figures are shown because none were returned.`
+          );
           return;
         }
 
+        const errorBanner = document.getElementById('analytics-error');
         if (errorBanner) errorBanner.classList.add('hidden');
+
+        // Real data is on screen: restore the badge in case an earlier
+        // failed load hid it.
+        const chartTag = document.getElementById('chart-total-tag');
+        if (chartTag) chartTag.classList.remove('hidden');
 
         if (data.totals) {
           document.getElementById('metric-visitors')!.innerText = data.totals.activeUsers;
@@ -280,7 +220,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
         // Render Chart
         if (data.timeSeries) {
-          renderTimeSeriesChart(data.timeSeries);
+          const chartContainer = document.getElementById('traffic-chart-container');
+          if (chartContainer) renderTrafficChart(chartContainer, data.timeSeries);
         }
 
         // Render Top Pages
@@ -360,8 +301,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }
         }
       } catch (error) {
+        // The callable itself failed (offline, App Check rejection, ...), so
+        // blank every card and surface the reason instead of leaving three
+        // of them pulsing forever.
         console.error('Error fetching analytics:', error);
-        document.getElementById('metric-visitors')!.innerText = 'Error';
+        showAnalyticsUnavailable(
+          `Could not reach the analytics service: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     }
 
