@@ -692,7 +692,7 @@ OPTIMAL, last scan 10/25), outreach (7 curated targets, 0 tracked backlinks).
 | F-A61 | P3 | Two remaining interpolating `innerHTML` sinks (settings Gemini result, builder slug preview) — API-derived and input-derived strings. | FIXED — `textContent` / `createTextNode` + `replaceChildren`. Verified live: preview renders `Preview: /es/lp/starter` with the styled span. |
 | F-A62 | P3 | `#btn-delete` on the LP builder carried both `flex` and `hidden` (both set `display`), the same pattern that once pinned the seo-agent toast visible. Latent — it happened to compute `display:none`. | FIXED — dropped `flex`, reveal adds `inline-flex`. Verified live: `display: none` on a new page. |
 | F-A63 | P3 | `/admin/` answers **HTTP 200** with a `<meta http-equiv="refresh">` to `/admin/login` instead of a real 3xx. Carries `noindex`, so no indexing risk. | OPEN (cosmetic) — a `redirects` entry in `firebase.json` would make it a true 301. |
-| F-A64 | P2 | `settings/admin.geminiKey` holds a 53-char `AQ.A…` token that returns **HTTP 401**. Effect: Settings shows a red "Issue Detected … Invalid API key format or credentials", and every admin AI call makes one doomed direct-REST attempt before falling back to Vertex. | OPEN — owner decision. Vertex is the primary path and works; the key is a stored credential, so it is not deleted without approval. |
+| F-A64 | P2 | `settings/admin.geminiKey` holds a 53-char `AQ.A…` token that returns **HTTP 401**. Effect: Settings shows a red "Issue Detected … Invalid API key format or credentials", and every admin AI call makes one doomed direct-REST attempt before falling back to Vertex. | **FIXED** — field deleted from `settings/admin` (`FieldValue.delete()`, other 7 fields untouched). Settings now reads "Untested" with no red badge, no 401. `ai.ts` treats it as an optional fallback (`geminiKey \|\| process.env.GEMINI_API_KEY`), and `GEMINI_API_KEY` is unset, so Vertex is the only path. No other copy of the token exists in source or `.env` (untracked, mode 600). |
 
 **Clean on this pass (verified, not assumed):**
 
@@ -708,3 +708,32 @@ OPTIMAL, last scan 10/25), outreach (7 curated targets, 0 tracked backlinks).
 `firebase deploy --only functions` (CLI now authenticated as `info@guianegocios.net`) reported
 **"Skipping the deploy of unchanged functions" for all 25** — the deployed code already matches
 `functions/src`. 25 source exports + 1 extension = 26 deployed, no orphans.
+
+---
+
+## Batch 9 — 2026-10-27 production verification (post project switch)
+
+`gcloud config set project guianegocios-prod` (account was already correct) unlocked Cloud
+Logging, Error Reporting, Monitoring and Cloud Run for verification. Everything below is
+measured from those APIs, not inferred.
+
+| ID | Sev | Finding | Resolution |
+|----|-----|---------|------------|
+| F-A65 | **P1** | **Embeddings were never stored — programmatic internal linking never worked.** `gemini-embedding-001` defaults to **3072** dimensions; Firestore rejects vector fields above **2048**. Every write failed with `INVALID_ARGUMENT`, and both call sites swallow it (`console.warn` in `contentEngine`, `console.error` in `generateBlogEmbedding`), so nothing ever surfaced in the UI. | **FIXED + DEPLOYED** (`5e9da54`) — `config: { outputDimensionality: 2048 }` in `ai.ts`. Measured: **0 of 9** blog docs had an embedding before, **9 of 9** have a 2048-dim vector after. Backfilled by real writes; temp marker field removed (verified: 0 markers, 9/9 vectors intact). |
+| F-A66 | P2 | **No vector index existed on `blogs.embedding`** (`composite list` → 0 indexes). Firestore does not auto-index vector fields, so `findNearest` would fail even with correct 2048-dim vectors. | Created `COLLECTION`-scope vector index, `flat`, dimension 2048. State was `CREATING` at the end of this pass — **internal linking stays non-functional until it reports `READY`**. |
+| F-A67 | P3 | 45 of 63 monthly Error Reporting events are **bot noise**: `GET` to the public `submitContactForm` Cloud Run URL logs `Invalid request, unable to process.` at ERROR severity. | NOT a defect — `isValidRequest` correctly rejects it. Real path verified healthy: 3 `contacts`, 3 `mail` docs, 2 `SUCCESS`. Optional: drop `invoker: 'public'` when a caller actually exists. |
+
+**Verified healthy this pass (measured):**
+
+- **Uptime 100%** — 6 monitoring regions × 30 days, **0 failed checks**. Check `guianegocios.net home` → `/` every 300s, alert policy enabled.
+- **Backups running** — daily schedule (created 2026-09-24), **7 READY backups**, 7-day retention. *(An earlier "no backups" reading was my own filter error: the database lives in `nam5`, not `us-central1`.)*
+- **GA4 dashboard figures are real** — `3` visitors/30d labelled "Verified GA4 Traffic". `getAnalyticsData` has **no** hardcoded fallback (failure returns `ok:false, totals:null`), so a number cannot be invented.
+- **Cloud Run** — 26 services, matching 25 exports + 1 extension.
+
+**Still open (owner decisions, not defects):**
+
+- **PITR `DISABLED`, delete protection `DISABLED`.** Daily backups cover restore, but PITR would bound data loss to minutes rather than a day. Both are one-flag changes — not applied, since they alter recovery guarantees.
+- **GA4 Admin API is disabled** in the project, so property-level reporting cannot be audited from the CLI. The dashboard path uses the GA4 **Data** API under the functions SA and demonstrably returns data.
+- Carried over from Batch 8: Pexels rotation, DMARC, privacy/terms wording, Brave key, testimonials, 15% promo, FAQ scope drift, LP comparison claims, heading-order skips.
+
+**Lesson worth keeping:** a `console.warn` inside a `catch` made a 100%-failure feature look like an intermittently empty one for two months. Absence of data is not evidence of a quiet period — check whether the write ever succeeded.
