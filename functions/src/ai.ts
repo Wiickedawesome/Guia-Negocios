@@ -102,13 +102,24 @@ export async function generateContentWithAi(
 }
 
 /**
- * Generate vector embeddings using Vertex AI (gemini-embedding-001)
+ * Firestore caps vector fields at 2048 dimensions; `gemini-embedding-001`
+ * defaults to 3072. Every write without this cap was rejected with
+ * "Vectors must be at most 2048 dimensions", which is why no blog document
+ * ever stored an `embedding` and the vector-based internal linking silently
+ * fell through to its empty branch.
+ */
+const EMBEDDING_DIMENSIONS = 2048;
+
+/**
+ * Generate vector embeddings using Vertex AI (gemini-embedding-001), truncated
+ * to the dimensionality Firestore accepts.
  */
 export async function generateEmbeddingWithAi(text: string): Promise<number[]> {
   try {
     const response = await vertexGenAI.models.embedContent({
       model: 'gemini-embedding-001',
-      contents: text
+      contents: text,
+      config: { outputDimensionality: EMBEDDING_DIMENSIONS }
     });
 
     const values = response.embeddings?.[0]?.values || (response as any).embedding?.values;
@@ -130,8 +141,17 @@ export async function generateEmbeddingWithAi(text: string): Promise<number[]> {
       const genAI = new GoogleGenerativeAI(apiKey);
       const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
       const embedResult = await embedModel.embedContent(text);
-      if (embedResult?.embedding?.values) {
-        return embedResult.embedding.values;
+      const values = embedResult?.embedding?.values;
+      // This client cannot request a smaller output, so it returns the model
+      // default and Firestore would reject the write. Return nothing rather
+      // than a vector the caller can only fail on.
+      if (values?.length === EMBEDDING_DIMENSIONS) {
+        return values;
+      }
+      if (values) {
+        console.warn(
+          `Fallback embedding returned ${values.length} dimensions; Firestore accepts at most ${EMBEDDING_DIMENSIONS}.`
+        );
       }
     }
   } catch (e) {
