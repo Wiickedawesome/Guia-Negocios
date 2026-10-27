@@ -100,6 +100,16 @@
     ],
     "redirects": [
       {
+        "source": "/admin",
+        "destination": "/admin/login/",
+        "type": 301
+      },
+      {
+        "source": "/admin/",
+        "destination": "/admin/login/",
+        "type": 301
+      },
+      {
         "source": "/es",
         "destination": "/",
         "type": 301
