@@ -72,6 +72,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     let allReports: any[] = [];
 
+    // Two writers share this collection: the on-demand flow stores `status` as a
+    // string, while the Sunday synthesizer stores a per-skill counts object in
+    // the same field. Rendering that object directly printed "[object Object]"
+    // on every weekly row, so summarise it instead.
+    function statusLabel(report: any): string {
+      const status = report?.status;
+      if (typeof status === 'string' && status.trim()) return status;
+      if (status && typeof status === 'object') {
+        const tasks = Number(status.tasksWritten) || 0;
+        return tasks > 0 ? `Weekly · ${tasks} tasks` : 'Weekly';
+      }
+      return 'Generated';
+    }
+
     // Real-time Reports Listener
     const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
     onSnapshot(q, (snapshot) => {
@@ -108,7 +122,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             <td class="px-6 py-4 text-slate-700">${escapeHtml(type)}</td>
             <td class="px-6 py-4 text-slate-600 font-mono text-xs">${escapeHtml(recipient)}</td>
             <td class="px-6 py-4">
-              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">${escapeHtml(report.status || 'Generated')}</span>
+              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">${escapeHtml(statusLabel(report))}</span>
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-3">

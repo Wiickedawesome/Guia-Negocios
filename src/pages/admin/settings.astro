@@ -246,7 +246,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (badgeEl) { badgeEl.textContent = `✓ Active (${result.model})`; badgeEl.className = 'text-xs text-emerald-600 font-semibold'; }
         if (statusEl) {
           statusEl.className = 'mt-2 text-xs text-emerald-600 font-medium flex items-center gap-1';
-          statusEl.innerHTML = `✓ Connected successfully to Google Gemini (${result.model}). Ready for blog generation!`;
+          // textContent, not innerHTML: the model name comes from an API response.
+          statusEl.textContent = `✓ Connected successfully to Google Gemini (${result.model}). Ready for blog generation!`;
           statusEl.classList.remove('hidden');
         }
         if (showAlert) window.showToast?.('Gemini API key is verified and operational!', 'success');
