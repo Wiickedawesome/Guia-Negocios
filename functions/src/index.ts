@@ -1031,7 +1031,10 @@ export const generateAiContent = onCall({ cors: true, invoker: 'public', timeout
     return { text };
   } catch (err: any) {
     console.error("generateAiContent error:", err);
-    throw new HttpsError('internal', err?.message || 'Failed to generate AI content with Vertex AI.');
+    // `failed-precondition`, not `internal`: the callable protocol replaces the
+    // message of INTERNAL/UNKNOWN errors with a generic string, which is how a
+    // dead AI backend stayed invisible behind "try again in a moment".
+    throw new HttpsError('failed-precondition', err?.message || 'Failed to generate AI content with Vertex AI.');
   }
 });
 

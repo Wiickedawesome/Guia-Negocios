@@ -2,7 +2,6 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { getAI, getGenerativeModel, VertexAIBackend } from 'firebase/ai';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
@@ -59,15 +58,10 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Initialize Firebase AI Logic with Vertex AI backend (utilizes Firebase/Google Cloud $300 credits)
-// Gemini 3.x models are served from the `global` endpoint, not regional ones.
-export const ai = getAI(app, {
-  backend: new VertexAIBackend({ location: 'global' })
-});
-
-// No hardcoded Gemini key: AI runs on Vertex AI (Firebase/GCP billing) with the
-// generateAiContent callable as server-side fallback. A user-provided key from
-// localStorage/env/Firestore is only used for the optional direct REST path.
+// No Firebase AI Logic client here. The browser never calls Google's AI
+// endpoints: every generation goes through the `generateAiContent` callable,
+// which runs on Cloud Functions ADC. A user-provided key is only ever used by
+// the Settings page key test.
 
 // In-memory Gemini API key cache (never persisted to browser storage).
 let cachedGeminiKey: string | null = null;
@@ -102,7 +96,8 @@ export async function getGeminiApiKey(): Promise<string> {
   return '';
 }
 
-// Active Vertex AI models (Gemini 3.x — 1.x/2.x retired)
+// Models probed by the Settings page key test. Generation does not use this
+// list — the server owns model selection.
 export const ACTIVE_GEMINI_MODELS = [
   'gemini-3.7-flash',
   'gemini-3.7-flash-lite',
@@ -165,83 +160,49 @@ export async function testGeminiApiKey(apiKey: string): Promise<{ valid: boolean
 }
 
 /**
- * Universal AI Model wrapper that provides:
- * 1. Firebase AI Logic with Vertex AI Backend (uses Firebase $300 Credits)
- * 2. Server-side Callable Cloud Function fallback (Vertex AI on Cloud Functions ADC)
- * 3. Direct Gemini Developer REST API fallback (if custom key configured)
+ * Normalizes the loose prompt shapes admin pages pass in.
+ */
+function toPromptText(prompt: any): string {
+  if (typeof prompt === 'string') {
+    return prompt;
+  }
+  const fromParts = prompt?.contents?.[0]?.parts?.[0]?.text;
+  return fromParts || JSON.stringify(prompt);
+}
+
+/**
+ * Sends a prompt to the `generateAiContent` callable and returns its text.
+ *
+ * The callable owns model selection, Vertex AI credentials and App Check
+ * enforcement, so there is no client-side model list to drift out of date.
+ */
+async function requestGeneratedText(promptText: string): Promise<string> {
+  const generateAi = httpsCallable(functions, 'generateAiContent');
+  const { data } = await generateAi({ prompt: promptText });
+  const text = (data as { text?: string })?.text;
+  if (!text) {
+    throw new Error('The AI service returned an empty response.');
+  }
+  return text;
+}
+
+/**
+ * Single entry point for admin-side AI generation.
+ *
+ * Errors are surfaced verbatim: the previous multi-tier version rewrote every
+ * 403 as "authenticating, try again", which hid permanent failures.
  */
 export const aiModel = {
   async generateContent(prompt: any) {
-    const promptStr = typeof prompt === 'string' ? prompt : (prompt?.contents?.[0]?.parts?.[0]?.text || JSON.stringify(prompt));
-    let lastError: any = null;
-
-    // --- Tier 1: Try Firebase AI Logic (Vertex AI in Firebase) ---
-    for (const modelName of ACTIVE_GEMINI_MODELS) {
-      try {
-        const model = getGenerativeModel(ai, { 
-          model: modelName,
-          generationConfig: {
-            temperature: 0.7,
-          }
-        });
-        const result = await model.generateContent(prompt);
-        if (result?.response) {
-          return result;
-        }
-      } catch (err: any) {
-        console.warn(`Vertex AI in Firebase (${modelName}) note:`, err?.message || err);
-        lastError = err;
-      }
-    }
-
-    // --- Tier 2: Try Callable Cloud Function (Server-Side Vertex AI with ADC) ---
     try {
-      const generateAiFn = httpsCallable(functions, 'generateAiContent');
-      const fnResult = await generateAiFn({ prompt: promptStr });
-      const text = (fnResult.data as any)?.text;
-      if (text) {
-        return {
-          response: {
-            text: () => text
-          }
-        };
-      }
-    } catch (fnErr: any) {
-      console.warn("Callable Cloud Function generateAiContent note:", fnErr?.message || fnErr);
-      if (!lastError) lastError = fnErr;
+      const text = await requestGeneratedText(toPromptText(prompt));
+      return { response: { text: () => text } };
+    } catch (err: any) {
+      console.error('AI generation failed:', err);
+      const codeSuffix = err?.code ? ` (${err.code})` : '';
+      const message = err?.message || 'Unknown AI error';
+      throw new Error(`AI generation failed${codeSuffix}: ${message}`);
     }
-
-    // --- Tier 3: Try Direct Gemini REST API with Custom API Key ---
-    try {
-      const apiKey = await getGeminiApiKey();
-      if (apiKey) {
-        for (const modelName of ACTIVE_GEMINI_MODELS) {
-          try {
-            const text = await callGeminiRestApi(promptStr, apiKey, modelName);
-            return {
-              response: {
-                text: () => text
-              }
-            };
-          } catch (restErr: any) {
-            console.warn(`Gemini REST (${modelName}) note:`, restErr?.message || restErr);
-            lastError = restErr;
-          }
-        }
-      }
-    } catch (apiKeyErr) {
-      console.warn("Direct Gemini REST attempt error:", apiKeyErr);
-    }
-
-    // If all failed, provide a friendly actionable error message
-    const msg = lastError?.message || 'Unknown AI error';
-    if (msg.includes('credits are depleted') || msg.includes('billing')) {
-      throw new Error("Your Gemini credits are depleted. Vertex AI in Firebase is configured to use your Firebase credit.");
-    }
-    if (msg.includes('403') || msg.includes('deactivated') || msg.includes('App Check')) {
-      throw new Error("Firebase AI Logic is authenticating. Please try again in a moment.");
-    }
-    throw lastError || new Error("Failed to generate content with Vertex AI.");
   }
 };
 
