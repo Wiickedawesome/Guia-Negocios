@@ -9,7 +9,11 @@ permissions:
   pull-requests: write
 jobs:
   build_and_preview:
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    # Dependabot PRs get no repository secrets, so the build-time Firestore
+    # reads fail and the preview job can never go green. Skip them instead of
+    # reporting a permanent failure; their lockfile diff is covered by
+    # `npm audit` locally and by the merge build.
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

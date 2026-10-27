@@ -8,6 +8,12 @@ import { db } from '../../../lib/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export async function getStaticPaths() {
+  // The builder writes "Active" for a live page and "Draft" otherwise. Drafts
+  // must never be built: they would otherwise ship to the sitemap and answer 200.
+  // Declared here, not at module scope: the prerender chunk keeps only this
+  // function, so a module-level helper is not in scope at build time.
+  const isLiveLandingPage = (lp: any): boolean =>
+    !!lp && (lp.status === 'Active' || lp.status === 'Published');
   // Build runs in Node, where the client SDK cannot obtain an App Check token,
   // so the Admin SDK is preferred. The client SDK is the fallback for
   // environments that only supply an App Check debug token.
@@ -46,7 +52,10 @@ export async function getStaticPaths() {
       ? await adminDb.collection('landingPages').where('lang', '==', 'en').get()
       : await getDocs(query(collection(db, 'landingPages'), where('lang', '==', 'en')));
     enSlugs = new Set(
-      enSnap.docs.map((d: any) => d.data()?.slug).filter((s: any) => typeof s === 'string')
+      enSnap.docs
+        .map((d: any) => d.data())
+        .filter(isLiveLandingPage)
+        .map((lp: any) => lp.slug)
     );
   } catch (enErr: any) {
     console.warn(`[lp] EN twin check failed; the language switch will fall back: ${enErr?.message || enErr}`);
@@ -54,7 +63,7 @@ export async function getStaticPaths() {
 
   const pages = docs
     .map((doc: any) => doc.data())
-    .filter((lp: any) => typeof lp?.slug === 'string' && lp.slug.trim().length > 0);
+    .filter((lp: any) => isLiveLandingPage(lp) && typeof lp.slug === 'string' && lp.slug.trim().length > 0);
 
   if (pages.length === 0) {
     return [{ params: { slug: 'empty' }, props: { lp: null, hasEnTwin: false } }];

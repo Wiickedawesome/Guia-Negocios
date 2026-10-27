@@ -37,6 +37,16 @@ const PUBLISHED_SLUG_ALIASES: Record<string, string> = {
 };
 
 /**
+ * Resolve a stored slug to the URL the build actually emits. Stored slugs can
+ * lag behind a rename (see PUBLISHED_SLUG_ALIASES), so every link that points
+ * at the other language - including hreflang alternates - must go through here.
+ */
+function resolvePublicSlug(storedSlug: string | undefined): string {
+  if (!storedSlug) return '';
+  return PUBLISHED_SLUG_ALIASES[storedSlug] || storedSlug;
+}
+
+/**
  * Optimizes Unsplash and external image URLs to specific dimensions and format
  * e.g., converts w=2070&q=80 to w=600&q=75&auto=format&fit=crop
  */
@@ -1465,11 +1475,10 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
       const data = doc.data();
       if (data.status !== 'Published') return;
       const hasLang = lang === 'en' ? !!data.titleEn : !!data.titleEs;
-      const rawSlug = lang === 'en' ? data.slugEn : data.slugEs;
       // Canonical public slug may differ from the stored slug: this post was
       // republished at a long-form URL (see firebase.json 301 from the old slug
       // and the Astro sitemap exclusion). Map it so the redirect target exists.
-      const langSlug = PUBLISHED_SLUG_ALIASES[rawSlug] || rawSlug;
+      const langSlug = resolvePublicSlug(lang === 'en' ? data.slugEn : data.slugEs);
       // Only include posts that have a language-specific slug
       if (hasLang && langSlug) {
         const postDate = data.publishDate || (data.createdAt ? data.createdAt.split('T')[0] : '2026-08-10');
@@ -1485,7 +1494,7 @@ export async function getBlogPosts(lang: 'en' | 'es', forceRefresh = false): Pro
           author: data.author || 'Guia Negocios Team',
           excerpt: data.metaDesc || '',
           lang: lang,
-          altSlug: lang === 'en' ? (data.slugEs || '') : (data.slugEn || ''),
+          altSlug: resolvePublicSlug(lang === 'en' ? data.slugEs : data.slugEn),
           tags: data.keywords || [],
           content: lang === 'en' ? (data.contentEn || data.content) : (data.contentEs || data.content),
           featuredImage: data.featuredImage || fallbackImg,
@@ -1745,8 +1754,13 @@ export function formatDate(dateStr: string, lang: 'en' | 'es'): string {
  */
 export function processHtmlForBlog(html: string) {
   const toc: { id: string; text: string; level: number }[] = [];
-  
-  const processedHtml = html.replace(/<h([23])([^>]*)>(.*?)<\/h\1>/g, (match, levelStr, attrs, text) => {
+
+  // The article hero already renders the page's single <h1>. Articles start
+  // with their own markdown "# Title", which produced two H1s on every post,
+  // so demote those before the heading/ToC pass below.
+  const bodyHtml = html.replace(/<h1([^>]*)>(.*?)<\/h1>/g, '<h2$1>$2</h2>');
+
+  const processedHtml = bodyHtml.replace(/<h([23])([^>]*)>(.*?)<\/h\1>/g, (match, levelStr, attrs, text) => {
     const plainText = text.replace(/<[^>]*>/g, '');
     const id = plainText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const level = parseInt(levelStr, 10);

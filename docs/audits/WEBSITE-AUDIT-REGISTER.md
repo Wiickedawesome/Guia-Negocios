@@ -632,3 +632,45 @@ Context: the owner asked whether the seo-agent page's score, executive summary a
 - 2026-10-18 (fixes, #6 — session close): **F-A8 fixed** — dead UI removed: login "Remember me" checkbox, admin header search box, and `window.simulateAction()` (grep re-checked for callers first; `docs/00` helper table updated). Build 56 pages clean. **Audit session closed** — every code-fixable finding is fixed and, where applicable, deployed and live-verified; remaining items are owner decisions (F-A4 / F-A12 / F-A13 / F-A14 payment-crediting claim / F-A23 / F-A26-live) plus the P4 admin-surface heading order (internal, noindex).
 - 2026-10-18 (fixes, #7 — SEO-agent page audit, `1a9b3f8`): new findings **F-A44–F-A48** fixed, functions deployed, hosting CI green, live bundle verified (callable wired, client crawl gone). Owner can confirm F-A47 by pressing "Run Site-Wide Audit" (now the 36-page server run) — expected score 90. The 17 `title-length` tasks remain open by design: they are real defects awaiting the owner's content decision (F-title work), after which Mark Done/dismissals now stick.
 - 2026-10-18 (fixes, #8 — title-length batch, `703b012`): **all 17 `title-length` tasks fixed** (owner-approved "proceed to those"). 13 blog titles (7 Firestore docs × `titleEn`/`titleEs`) + 2 landing-page titles (`landingPages.title`) shortened in Firestore (backup `~/guianegocios-backups/titles-pre-shorten-2026-10-18.json`; validated ≤54 stored before writing), and the 2 services-page titles shortened in `src/i18n/en.json`/`es.json`. Every one of the 17 pages now renders **57-68 chars** (was 71-97), inside the crawler's 25-70 limit; primary keywords kept (knoxville business license, llc sin ssn, itin, credito, contabilidad, licencia comercial...). dist-verified locally before push; the 17 `seo-tasks` docs were marked `resolved` in Firestore after live verification. Convention documented in `docs/04` (rendered title = stored + 16-char suffix → keep stored ≤ 54).
+
+## Batch 7 — 2026-10-27 full re-audit + remediation
+
+Method: 36-URL live crawl, Search Console Search Analytics + URL Inspection API, Firestore Admin SDK,
+Firestore Rules API diff, App Check Admin API, Hosting API, GitHub REST (Dependabot / code-scanning /
+secret-scanning / runs / PRs), `npm audit` both trees, DNS + TLS, `npm run build`, functions `tsc`,
+and Playwright runtime checks. Read-only until the owner approved this batch.
+
+**Verified clean this pass:** smoke harness 36/36; all 36 sitemap URLs 200; GSC sitemap 0 errors;
+34/36 URLs indexed; deployed rules byte-match local; App Check enforced on all four services; all 10
+callables answer 401 anonymously; Hosting release matches HEAD; 7 Firestore backups present; no key
+material in `dist/`; no service prices in HTML or JSON-LD; unique titles/covers; no broken internal
+links; all JSON-LD parses.
+
+| ID | Sev | Finding | Status |
+| :--- | :--- | :--- | :--- |
+| F-A49 | **P2** | Published LLC-without-SSN posts (EN+ES) still ordered a FinCEN BOI filing ("90 days", "$591/day"). FinCEN's final rule (Aug 2026) exempts U.S.-formed companies. The compliance skill was corrected; the live content never was. | FIXED — 6 passages rewritten in Firestore (data backup `~/guianegocios-backups/fix-batch-2026-10-27.json`) |
+| F-A50 | **P2** | `landingPages.status` was ignored: both live LPs were stored `Draft` yet built, sitemapped and served 200. Any future draft would have shipped. | FIXED — status filter in both `[slug].astro` builders + twin detection, `validateSlugRewrite` guard, both live docs set `Active` |
+| F-A51 | **P2** | Advisories reopened after the July batch: root **7** (astro, undici ×3, vite/launch-editor ×4, zod/puppeteer), functions **2** (body-parser high, qs moderate). GitHub Dependabot showed 6 open. | FIXED — `npm audit fix` → root **0**, functions **0** (lockfiles only, no major bumps) |
+| F-A52 | **P2** | Dependabot PR previews can never pass: Dependabot gets no repository secrets, so both build-time Firestore paths fail (`NO_ADC_FOUND`, run 39896081537). | FIXED — PR workflow skips `dependabot[bot]` instead of reporting a permanent failure |
+| F-A53 | P3 | Every published blog post rendered **two `<h1>`s** (hero + markdown `# Title`). Flagged by the Monday on-page skill on 10 URLs; the weekly rubric does not count it. | FIXED — `processHtmlForBlog` demotes body `<h1>` to `<h2>`; dist-verified 1 H1 per post |
+| F-A54 | P3 | Credit-post hreflang was non-reciprocal: ES pointed `hreflang="en"` at the pre-rename slug, which 301s. `altSlug` bypassed `PUBLISHED_SLUG_ALIASES`. | FIXED — `resolvePublicSlug()` applied to both `slug` and `altSlug`; dist shows the `-united-states` URL |
+| F-A55 | P3 | ES Knoxville-license post embedded an Unsplash photo that now returns **404**. | FIXED — replaced with a verified Pexels image; alt no longer claims a different city |
+| F-A56 | P3 | `/admin/**` HTML was served `max-age=3600`, so deploy changes could appear stale for an hour. | FIXED — `Cache-Control: no-store, max-age=0` on `/admin/**` |
+| F-A57 | P3 | No functions build gate: `firebase deploy --only functions` could ship a stale `functions/lib`. | FIXED — `predeploy` runs `npm --prefix "$RESOURCE_DIR" run build` |
+| F-A58 | P3 | Content engine produced titles far past the documented budget (draft `NOVCrIgg…` was 95/101 stored → 111/117 rendered). | FIXED — explicit 40-54 char rule in the prompt; existing draft titles rewritten to 44/44 |
+| F-A59 | P3 | Twitter card tags used `property=` instead of the documented `name=`. | FIXED |
+
+**Still open — owner action (cannot be fixed from the repo):**
+
+- **Pexels key rotation.** The key in `.env` still authenticates (HTTP 200) and is in public history (`fc7c23c`, `e22f729`). Pexels exposes no rotation API; reissue via onboarding / `api@pexels.com`, then update `.env` + Admin → Settings.
+- **DMARC.** `_dmarc.guianegocios.net` has no TXT (SPF + Google DKIM are present, mail sends via `smtp.gmail.com`). Start with `p=none` + a reporting address.
+- **Privacy / terms pages.** `/privacy/`, `/es/privacidad/`, `/en/privacy/`, `/terms/` all 404; the consent banner has no policy link. Policy wording is a legal/business decision — do not invent it.
+- **Brave Search API key** (`settings/admin.braveKey`) — without it Friday/Saturday prospecting reports `findings: 0` forever.
+- **F-A4 / F-A12 / F-A13 / F-A14 / F-A23 / F-A26-live** — unchanged: 15% promo in LP templates, "15+" metric, named testimonials, "we credit prior standalone services" claim, EN/ES FAQ scope drift, live LP comparison table ("$300+/hora", "Garantizado", "Tarifas fijas").
+- **Heading-order skips** on Firestore-stored content (15 posts + 1 LP) — content-level, would require rewriting stored HTML.
+- **OPTIONAL_GOOGLE_ANALYTICS / infra:** GA4 reporting unverified (local SA lacks property permission); PITR and delete-protection remain off; PageSpeed API returned 429 during this pass; one `mail` doc from 2026-08-13 has no delivery state.
+
+**⚠️ Functions are NOT deployed for this batch.** `firebase projects:list` returns "credentials are no longer
+valid" — the CLI needs `firebase login --reauth` (owner-only, interactive). Hosting deploys ride CI on push.
+Until then `validateSlugRewrite`, `contentEngine` and `index.ts` changes exist in git only; no live page is
+affected (no draft LPs exist and the BOI/image/title fixes are Firestore data).

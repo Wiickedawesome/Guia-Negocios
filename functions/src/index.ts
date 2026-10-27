@@ -446,7 +446,11 @@ export const validateSlugRewrite = onRequest({ timeoutSeconds: 10, memory: '256M
     // reach this function, so an unknown slug here is a genuine 404 rather
     // than the thin 200 shell that used to be served for any path.
     const lpDoc = await db.collection('landingPages').doc(`${lang}_${slugValue}`).get();
-    if (!lpDoc.exists) {
+    // Same rule as the static builders: a Draft landing page is not published,
+    // so it must not be served as a 200 shell for a wildcard URL.
+    const lp = lpDoc.exists ? lpDoc.data() : null;
+    const lpIsLive = !!lp && (lp.status === 'Active' || lp.status === 'Published');
+    if (!lpIsLive) {
       res.status(404).type('text/plain').send('Not Found');
       return;
     }
