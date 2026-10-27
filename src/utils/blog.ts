@@ -1751,28 +1751,34 @@ export function formatDate(dateStr: string, lang: 'en' | 'es'): string {
 
 /**
  * Process HTML content to inject IDs into headings and extract a Table of Contents.
+ *
+ * The article hero already renders the page's single <h1>, so a leading markdown
+ * "# Title" is demoted to <h2>. It is flagged `data-no-toc` because the hero
+ * shows the same text immediately above the contents list, and the flag is
+ * stripped before the HTML is emitted.
  */
 export function processHtmlForBlog(html: string) {
   const toc: { id: string; text: string; level: number }[] = [];
 
-  // The article hero already renders the page's single <h1>. Articles start
-  // with their own markdown "# Title", which produced two H1s on every post,
-  // so demote those before the heading/ToC pass below.
-  const bodyHtml = html.replace(/<h1([^>]*)>(.*?)<\/h1>/g, '<h2$1>$2</h2>');
+  const bodyHtml = html.replace(/<h1([^>]*)>(.*?)<\/h1>/g, '<h2$1 data-no-toc>$2</h2>');
 
-  const processedHtml = bodyHtml.replace(/<h([23])([^>]*)>(.*?)<\/h\1>/g, (match, levelStr, attrs, text) => {
+  const processedHtml = bodyHtml.replace(/<h([23])([^>]*)>(.*?)<\/h\1>/g, (_match, levelStr, attrs, text) => {
     const plainText = text.replace(/<[^>]*>/g, '');
     const id = plainText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const level = parseInt(levelStr, 10);
-    
+
+    const isTitleEcho = attrs.includes('data-no-toc');
+    const cleanAttrs = attrs.replace(/\s*data-no-toc/, '');
+
     // Only add if not already has an ID (prevent dupes if Quill adds one)
-    if (!attrs.includes('id=')) {
-      attrs = ` id="${id}"` + attrs;
+    const headingAttrs = cleanAttrs.includes('id=') ? cleanAttrs : ` id="${id}"` + cleanAttrs;
+
+    if (!isTitleEcho) {
+      toc.push({ id, text: plainText, level });
     }
-    
-    toc.push({ id, text: plainText, level });
-    return `<h${level}${attrs}>${text}</h${level}>`;
+
+    return `<h${level}${headingAttrs}>${text}</h${level}>`;
   });
-  
+
   return { html: processedHtml, toc };
 }
