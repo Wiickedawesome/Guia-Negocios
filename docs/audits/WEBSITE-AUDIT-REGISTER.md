@@ -674,3 +674,37 @@ links; all JSON-LD parses.
 valid" — the CLI needs `firebase login --reauth` (owner-only, interactive). Hosting deploys ride CI on push.
 Until then `validateSlugRewrite`, `contentEngine` and `index.ts` changes exist in git only; no live page is
 affected (no draft LPs exist and the BOI/image/title fixes are Firestore data).
+
+---
+
+## Batch 8 — 2026-10-27 admin-surface audit (authenticated)
+
+First pass over `/admin/**` with a real session (`info@guianegocios.net`). All 12 non-login
+pages loaded with **zero page errors**; the centralized guard in `AdminLayout.astro` was
+confirmed to be the only auth gate (per-page greps under-report it). Live data rendered on
+every page: dashboard (3 visitors / 30d, 69 GSC queries / 90d, SEO 100%), analytics, blog
+manager (8 published + 1 draft), landing pages (2 Active), seo-agent (Engine Active, 100%
+OPTIMAL, last scan 10/25), outreach (7 curated targets, 0 tracked backlinks).
+
+| ID | Sev | Finding | Resolution |
+|----|-----|---------|------------|
+| F-A60 | P2 | `reports.astro` printed `[object Object]` in the Status column on every row. The weekly synthesizer stores `status` as a counts object (`{taskWritten,briefsWritten,onpageAudits,…}`) while the on-demand flow stores a string. | FIXED — `statusLabel()` derives `Weekly · N tasks`, falling back to the stored string. Verified live: 10/18 + 10/11 + 10/4 render `Weekly · 17 tasks`; 10/25 renders `Weekly` because that run truly wrote `tasksWritten: 0`. |
+| F-A61 | P3 | Two remaining interpolating `innerHTML` sinks (settings Gemini result, builder slug preview) — API-derived and input-derived strings. | FIXED — `textContent` / `createTextNode` + `replaceChildren`. Verified live: preview renders `Preview: /es/lp/starter` with the styled span. |
+| F-A62 | P3 | `#btn-delete` on the LP builder carried both `flex` and `hidden` (both set `display`), the same pattern that once pinned the seo-agent toast visible. Latent — it happened to compute `display:none`. | FIXED — dropped `flex`, reveal adds `inline-flex`. Verified live: `display: none` on a new page. |
+| F-A63 | P3 | `/admin/` answers **HTTP 200** with a `<meta http-equiv="refresh">` to `/admin/login` instead of a real 3xx. Carries `noindex`, so no indexing risk. | OPEN (cosmetic) — a `redirects` entry in `firebase.json` would make it a true 301. |
+| F-A64 | P2 | `settings/admin.geminiKey` holds a 53-char `AQ.A…` token that returns **HTTP 401**. Effect: Settings shows a red "Issue Detected … Invalid API key format or credentials", and every admin AI call makes one doomed direct-REST attempt before falling back to Vertex. | OPEN — owner decision. Vertex is the primary path and works; the key is a stored credential, so it is not deleted without approval. |
+
+**Clean on this pass (verified, not assumed):**
+
+- Unauthenticated `GET /admin/{dashboard,settings,blog}/` HTML contains **no** user name, **no**
+  API key, and no token; the only email it contains is the hardcoded `info@` default recipient.
+- `escapeHtml` coverage is complete on the remaining `innerHTML` sinks that carry Firestore or
+  URL data (reports, backlinks, outreach, blog list); the large ones left as `innerHTML`
+  (`blog/editor.astro`, `blog/new.astro`) render author-authored Markdown by design.
+- No secret is persisted in `localStorage`; `settings/admin` keys are write-only in the UI.
+- Every callable rejects anonymous requests with **401** (`enforceAppCheck: true`).
+
+**Correction to Batch 7:** the "Functions are NOT deployed" warning above no longer applies.
+`firebase deploy --only functions` (CLI now authenticated as `info@guianegocios.net`) reported
+**"Skipping the deploy of unchanged functions" for all 25** — the deployed code already matches
+`functions/src`. 25 source exports + 1 extension = 26 deployed, no orphans.
