@@ -171,13 +171,23 @@ function toPromptText(prompt: any): string {
 }
 
 /**
+ * Must stay above `generateAiContent`'s `timeoutSeconds`, otherwise the client
+ * aborts first and reports a bare `deadline-exceeded` that says nothing about
+ * the cause. The SDK default is only 70s, which a full bilingual ES+EN draft
+ * does not reliably finish in.
+ */
+const AI_GENERATE_TIMEOUT_MS = 330_000;
+
+/**
  * Sends a prompt to the `generateAiContent` callable and returns its text.
  *
  * The callable owns model selection, Vertex AI credentials and App Check
  * enforcement, so there is no client-side model list to drift out of date.
  */
 async function requestGeneratedText(promptText: string): Promise<string> {
-  const generateAi = httpsCallable(functions, 'generateAiContent');
+  const generateAi = httpsCallable(functions, 'generateAiContent', {
+    timeout: AI_GENERATE_TIMEOUT_MS
+  });
   const { data } = await generateAi({ prompt: promptText });
   const text = (data as { text?: string })?.text;
   if (!text) {

@@ -1016,7 +1016,10 @@ export const submitContactForm = onCall(
 );
 
 // ── AI Content Generator (Server-Side Vertex AI / Fallback) ──
-export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 120, enforceAppCheck: true }, async (request) => {
+// 300s: a full bilingual ES+EN draft takes well over the previous 120s cap.
+// Keep this below the client's AI_GENERATE_TIMEOUT_MS in src/lib/firebase.ts
+// so the server, not the browser, decides when to give up.
+export const generateAiContent = onCall({ cors: true, invoker: 'public', timeoutSeconds: 300, enforceAppCheck: true }, async (request) => {
   assertAdmin(request);
   const { prompt, temperature, model: requestedModel } = request.data || {};
   if (!prompt) {
