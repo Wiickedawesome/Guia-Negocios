@@ -737,3 +737,28 @@ measured from those APIs, not inferred.
 - Carried over from Batch 8: Pexels rotation, DMARC, privacy/terms wording, Brave key, testimonials, 15% promo, FAQ scope drift, LP comparison claims, heading-order skips.
 
 **Lesson worth keeping:** a `console.warn` inside a `catch` made a 100%-failure feature look like an intermittently empty one for two months. Absence of data is not evidence of a quiet period — check whether the write ever succeeded.
+
+---
+
+## Batch 10 — 2026-10-27 admin AI draft generator (owner-reported failure)
+
+Owner reported the "AI Blog Draft Generator" on `/admin/blog/` failing with CORS violations and 404s. Traced through source, the deployed bundle and the Firebase client SDK. The AI path was **never exercised successfully** after F-A64 — F-A64 verified that the Settings *badge* cleared, not that generation worked.
+
+| ID | Sev | Finding | Resolution |
+|----|-----|---------|------------|
+| F-A68 | **P1** | **`aiModel.generateContent` called Google's AI endpoints directly from the browser.** Tier 1 used `firebase/ai` (`firebasevertexai.googleapis.com`) client-side and Tier 3 called `generativelanguage.googleapis.com` with a Firestore-stored key — both cross-origin, both subject to key referrer restrictions and App Check. A single click issued up to **7 requests** (3 models × 2 paths + callable), and Tier 2's `catch` did `if (!lastError) lastError = fnErr`, so the only informative error was discarded whenever Tier 1 had already failed. Any 403 was then rewritten as *"Firebase AI Logic is authenticating. Please try again in a moment."* | **FIXED + DEPLOYED** (`709ee17`) — `firebase/ai` import and `ai` export removed (verified: no client importer remained); `generateContent` now calls only the `generateAiContent` callable. Error translator deleted; failures surface verbatim. `generateAiContent` throws `failed-precondition` instead of `internal`, because the callable protocol replaces `INTERNAL`/`UNKNOWN` messages with a generic string — that substitution is why a permanently dead backend read as a transient one. Verified live in `_astro/firebase.Yxd6Z36a.js`: callable present, `firebasevertexai` 0 occurrences, masking string 0. |
+| F-A69 | **P1** | **Client timeout (70s) was shorter than the function timeout (120s).** `@firebase/functions` defaults to `options.timeout \|\| 70000` and its `failAfter` helper rejects with `new FunctionsError('deadline-exceeded', 'deadline-exceeded')` — a bare literal. The browser therefore abandoned every full bilingual ES+EN draft mid-generation and the owner saw only `deadline-exceeded`, which names no cause. Detected only because F-A68 stopped masking errors. | **FIXED + DEPLOYED** (`7f0b8cd`) — `generateAiContent` raised to `timeoutSeconds: 300`; the client passes `AI_GENERATE_TIMEOUT_MS = 330_000`, deliberately above the server's so the **server** decides the outcome. Verified live: chunk contains `33e4` (= 330000); owner confirmed a draft generated and published. |
+
+**Verified working (owner-confirmed end to end):** a draft was generated and published through `/admin/blog/` after `7f0b8cd`.
+
+**Ruled out during this investigation (evidence, not assumption):**
+
+- `location: 'global'` is correct — confirmed in `node_modules/@firebase/ai` as the documented default. An earlier hypothesis that `global` was wrong was **incorrect**.
+- Region mismatch — the deploy log places `generateAiContent` in `us-central1`, matching the client's `getFunctions(app)` default.
+- Firebase AI API not enabled — the SDK throws `403 SERVICE_DISABLED` for that case, not the `404` that was observed.
+
+**Console noise observed alongside, all third-party — no action:** four CSP warnings originating inside Google's reCAPTCHA iframe about its own policy; a `polkadot{.js}` wallet extension disconnect; `installHook.js.map` 404 (React DevTools); a `may not load or link to file:///` warning from a browser extension.
+
+**Not a defect — `@firebase/ai` stays installed.** `firebase@12.16.0` lists `"@firebase/ai": "2.16.0"` as a hard dependency, so the package cannot be uninstalled without dropping `firebase` itself. It is now simply unused by application code (verified: no `firebase/ai` importer remains).
+
+**Lesson worth keeping:** two `catch` blocks in series — one swallowing the real error, one rewriting it — can make a permanently broken feature indistinguishable from a transient one. Surface `err.message` and `err.code` unmassaged; a bare SDK literal like `deadline-exceeded` is itself the clue, since it is constructed in `failAfter` and can therefore only be client-side.
