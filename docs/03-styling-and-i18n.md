@@ -46,7 +46,19 @@ grep -rn 'rounded-\(sm\|md\|lg\|xl\|2xl\|3xl\)\|shadow-\(sm\|md\|lg\|xl\)' \
   src/pages src/components | grep -v admin
 ```
 
-Expected output is exactly 24 hits, all inside `services.astro` (4 tier cards × `rounded-[2.5rem]`, `hover:shadow-xl`, the featured pill) or the `drop-shadow-*` logo/`<h1>` exceptions above. **Any hit on a tile, band, blog card, panel or plain CTA is a regression** — flatten it.
+The output must be **only** these, and nothing else:
+
+| Where | What | Why it is allowed |
+| :--- | :--- | :--- |
+| `services.astro` ×4 cards, both locales | `rounded-[2.5rem]`, `shadow-sm`, `hover:shadow-xl` | Exception 1 — tier cards |
+| `services.astro` featured card | `rounded-full … shadow-md` pill | Exception 1 — the flagship flag |
+| `services.astro` checklist bullets | `w-5 h-5 rounded-full` | Circles, not cards |
+| `about.astro`, `index.astro`, `services.astro` | `drop-shadow-xl` on the decorative logo | Exception 2 |
+| `blog/[slug].astro`, `blog/view.astro` | `drop-shadow-md` on the post `<h1>` | Exception 3 |
+| `contact.astro` | `rounded-2xl` on the status toast | Documented radius for form panels and toasts |
+| `Header.astro` | `rounded-2xl` mobile-menu rows, `shadow-lg` on the floating mobile panel | Overlay chrome, not page content |
+
+**Any hit on a tile, band, blog card, panel, plain CTA or button is a regression** — flatten it. Last audited 2026-11-05: 52 hits, every one accounted for above; `rounded-lg`/`rounded-md` count is **0** (the landing-page button, the burger button and the contact toasts were corrected).
 
 ### 1.1 Radius Rules
 
@@ -127,7 +139,7 @@ When a tile is generated twice — once in Astro markup and once in a client scr
 
 * Sections alternate `bg-white` / `bg-slate-50`, separated by `border-t border-slate-200`.
 * Multi-column blocks use **hairline dividers** (`md:divide-x md:divide-slate-200`, plus `gap-y-12 md:gap-y-0` when they stack) instead of cards.
-* Shadows are effectively banned. `shadow-none` is the default; the only surviving shadows are the two `drop-shadow-*` exceptions and the tier cards listed at the top of §1.
+* Shadows are effectively banned. `shadow-none` is the default; the only surviving shadows are the two `drop-shadow-*` exceptions, the tier cards, and the `shadow-lg` on the mobile-menu overlay (a floating panel needs to detach from the page).
 * Every section puts its content on the same gutter: `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` → a 32px left edge at ≥1280px. A band using `max-w-5xl`/`max-w-4xl` breaks that alignment and must not be used for body sections.
   * **One sanctioned exception:** the `LegalDisclaimer` band is a centred `max-w-4xl` fine-print notice, so its text sits at ~199px rather than 32px. That is deliberate — legal small print reads as a footnote, not as body copy.
 

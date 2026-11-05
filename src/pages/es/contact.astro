@@ -121,7 +121,7 @@ const t = useTranslations(lang);
               
               <!-- Inline Toast Notification. role="status" so screen readers
                    announce the result without moving focus. -->
-              <div id="contact-toast" role="status" aria-live="polite" class="hidden rounded-lg p-4 text-sm font-medium border"></div>
+              <div id="contact-toast" role="status" aria-live="polite" class="hidden rounded-2xl p-4 text-sm font-medium border"></div>
             </form>
         </div>
 
@@ -223,7 +223,7 @@ const t = useTranslations(lang);
         const toast = document.getElementById('contact-toast');
         if (toast) {
           toast.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
-          toast.className = 'rounded-lg p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+          toast.className = 'rounded-2xl p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
           toast.classList.remove('hidden');
           setTimeout(() => toast.classList.add('hidden'), 5000);
         }
@@ -271,7 +271,7 @@ const t = useTranslations(lang);
         const toast = document.getElementById('contact-toast');
         if (toast) {
           toast.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
-          toast.className = 'rounded-lg p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+          toast.className = 'rounded-2xl p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
           toast.classList.remove('hidden');
           setTimeout(() => toast.classList.add('hidden'), 5000);
         }
@@ -281,7 +281,7 @@ const t = useTranslations(lang);
         const toast = document.getElementById('contact-toast');
         if (toast) {
           toast.textContent = 'Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo o use WhatsApp.';
-          toast.className = 'rounded-lg p-4 text-sm font-medium border bg-red-50 text-red-800 border-red-200';
+          toast.className = 'rounded-2xl p-4 text-sm font-medium border bg-red-50 text-red-800 border-red-200';
           toast.classList.remove('hidden');
           setTimeout(() => toast.classList.add('hidden'), 5000);
         }
