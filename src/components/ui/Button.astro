@@ -1,0 +1,42 @@
+---
+/**
+ * Link or button with the site's two CTA treatments. Renders an <a> when
+ * `href` is given, otherwise a <button>, so callers never pick the wrong tag.
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'outline';
+  size?: 'sm' | 'lg';
+  /** Full-width stacked CTA used inside the mobile menu. */
+  block?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'sm',
+  block = false,
+  type = 'button',
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const VARIANTS: Record<NonNullable<Props['variant']>, string> = {
+  primary: 'bg-brand-primary text-white hover:bg-opacity-90',
+  outline: 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white',
+};
+
+const SIZES: Record<NonNullable<Props['size']>, string> = {
+  sm: 'px-4 py-2 rounded-full text-sm',
+  lg: 'px-4 py-3 rounded-xl text-base',
+};
+
+const layout = block ? 'block w-full text-center' : 'inline-flex items-center justify-center';
+const classes = `font-bold transition-colors ${layout} ${VARIANTS[variant]} ${SIZES[size]} ${className}`.trim();
+---
+{href
+  ? <a href={href} class={classes} {...rest}><slot /></a>
+  : <button type={type} class={classes} {...rest}><slot /></button>}

@@ -1,7 +1,11 @@
 @import "tailwindcss";
 @source "src";
 @theme {
-  --font-heading: "Geist", "Inter", "DM Sans", sans-serif;
+  /* Geist is intentionally absent: it is never loaded (BaseLayout requests only
+     DM Sans + Inter), so listing it first just made every heading fall through
+     to Inter — identical to body text. Drop it, or load it, but do not leave a
+     dead first choice in the stack. */
+  --font-heading: "Inter", "DM Sans", sans-serif;
   --font-body: "Inter", "DM Sans", sans-serif;
 
   /* Brand Colors — Aligned to Logo (Shield + Leaf + Compass) */
@@ -15,8 +19,6 @@
   /* Cool Charcoal — body text dark */
   --color-brand-light: #F2F7F4;
   /* Off-White Green Tint — bg */
-  --color-brand-check: #1B4E2B;
-  /* Dark Forest Green — checkmarks */
 }
 
 /* Global Accessibility Focus States */

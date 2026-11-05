@@ -1,0 +1,22 @@
+---
+/**
+ * Horizontal page container. Centralises the gutters and max-width that were
+ * previously pasted into every layout and page.
+ */
+interface Props {
+  width?: 'narrow' | 'default' | 'wide';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { width = 'wide', class: className = '', ...rest } = Astro.props;
+
+const WIDTH_CLASSES: Record<NonNullable<Props['width']>, string> = {
+  narrow: 'max-w-3xl',
+  default: 'max-w-5xl',
+  wide: 'max-w-7xl',
+};
+
+const classes = `mx-auto px-4 sm:px-6 lg:px-8 ${WIDTH_CLASSES[width]} ${className}`.trim();
+---
+<div class={classes} {...rest}><slot /></div>
