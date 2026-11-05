@@ -165,20 +165,28 @@ Do **not** extend the no-cap rule to band 1 or 3 — a full-width `<h1>` or full
 
 **No letter monograms in the CTA band.** Placeholder boxes like `GN` / `CVA` were removed on 2026-11-05: they added ~90px of vertical height to the band (a 64px square plus its gap) for no information, which is what made the banner look thick. Do not reintroduce them.
 
-The only logo permitted in a CTA band is **CreedaVA's**, and only on the two CreedaVA guides (`apoyo-creedava`, `creedava-support`) — those pages sell a partner service and must name the partner visually. Asset: `public/images/creedava-logo.svg` (vector, mark + wordmark, 724×602).
+The only logo permitted in a CTA band is **CreedaVA's**, and only on the two CreedaVA guides (`apoyo-creedava`, `creedava-support`) — those pages sell a partner service and must name the partner visually.
+
+Two assets exist, and **picking the wrong one is the whole failure mode**:
+
+| File | Use on | Notes |
+| :--- | :--- | :--- |
+| `public/images/creedava-logo.svg` | **Light** surfaces only | Brand teal gradient (`#014e73`–`#499644`). Source of the white variant. Never put it on `bg-brand-dark` — it measures ~2.3:1 and reads as a smudge. |
+| `public/images/creedava-logo-white.svg` | **Dark** surfaces (`bg-brand-dark`) | Monochrome `#FFFFFF`, same paths, `#FFFFFF` swapped in for the two gradients. This is what the CTA bands use. |
 
 ```html
-<img src="/images/creedava-logo.svg" alt="CreedaVA" width="242" height="201" decoding="async"
-     class="h-20 w-auto shrink-0 self-start lg:self-center bg-white p-2" />
+<img src="/images/creedava-logo-white.svg" alt="CreedaVA" width="724" height="602"
+     decoding="async" class="h-20 lg:h-24 w-auto shrink-0 self-start lg:self-center" />
 ```
 
-Three details are load-bearing:
+Notes that are load-bearing:
 
-* **The white plate is mandatory.** Every colour in that logo is a dark teal (`#014e73`–`#499644`); against `bg-brand-dark` it measures ~2.3:1 and turns to mud. Never place it directly on the dark band.
+* **Do not add a `bg-white` plate.** It was tried and rejected: a white box on the dark band looks like a sticker, and it is unnecessary now that the logo itself is white. The wordmark is a stacked lockup, so it needs the height (`h-20`/`h-24`), not a plate.
 * **`self-start lg:self-center`** — without it the column flex stretches the image to the full viewport width on mobile.
 * **No `loading="lazy"`.** It sat below the fold and never resolved. Use `decoding="async"`.
+* The white variant is generated from the colour one by deleting `<defs>` and replacing both `fill="url(#…)"` with `fill="#FFFFFF"`. Regenerate rather than hand-editing if the brand artwork changes.
 
-Because the logo sits in the same row as the heading, it costs no height on desktop: the band measures 307px with the logo and 291–307px on the guides without one.
+Because the logo sits in the same row as the heading, it costs no height on desktop: the band measures 307px with the logo and 291–307px on the guides without one. Measured rendering: 115×96 at 1265px, 96×80 at 768/390px.
 
 **The numbered rail is the body unit.** Repeat it per chapter:
 
