@@ -155,13 +155,30 @@ A service guide is **four stacked full-bleed bands**, never one narrow column of
              → eyebrow + pull statement, max-w-none, text-2xl … 2xl:text-6xl
 3. Body      bg-white, py-16 lg:py-20, 7xl — 12-col numbered rails (below)
 4. CTA       bg-brand-dark text-white py-16 lg:py-20,
-             **NO width cap** — 12-col split: monogram + heading in col-span-8,
-             buttons in col-span-4 pushed `lg:justify-end`
+             **NO width cap** — `flex flex-col lg:flex-row lg:items-center gap-8`:
+             optional partner logo, then heading + body (`flex-1`), then buttons (`shrink-0`, `lg:justify-end`)
 ```
 
 **Bands 2 and 4 are deliberately uncapped.** Their backgrounds already bleed, so capping the inner wrapper was what made them read as "a box on a page" rather than a banner. Dropping the cap runs the statement from the 32px gutter to the opposite screen edge, and pins the closing CTA's buttons to that same edge. Measured on `/es/services/paquete-lanzamiento-completo`: statement 32px → 1393px at a 1425px viewport, 0 horizontal overflow at 390 / 768 / 1024 / 1440.
 
 Do **not** extend the no-cap rule to band 1 or 3 — a full-width `<h1>` or full-width body measure is unreadable. The type scale is what makes the banner work, not the raw width.
+
+**No letter monograms in the CTA band.** Placeholder boxes like `GN` / `CVA` were removed on 2026-11-05: they added ~90px of vertical height to the band (a 64px square plus its gap) for no information, which is what made the banner look thick. Do not reintroduce them.
+
+The only logo permitted in a CTA band is **CreedaVA's**, and only on the two CreedaVA guides (`apoyo-creedava`, `creedava-support`) — those pages sell a partner service and must name the partner visually. Asset: `public/images/creedava-logo.svg` (vector, mark + wordmark, 724×602).
+
+```html
+<img src="/images/creedava-logo.svg" alt="CreedaVA" width="242" height="201" decoding="async"
+     class="h-20 w-auto shrink-0 self-start lg:self-center bg-white p-2" />
+```
+
+Three details are load-bearing:
+
+* **The white plate is mandatory.** Every colour in that logo is a dark teal (`#014e73`–`#499644`); against `bg-brand-dark` it measures ~2.3:1 and turns to mud. Never place it directly on the dark band.
+* **`self-start lg:self-center`** — without it the column flex stretches the image to the full viewport width on mobile.
+* **No `loading="lazy"`.** It sat below the fold and never resolved. Use `decoding="async"`.
+
+Because the logo sits in the same row as the heading, it costs no height on desktop: the band measures 307px with the logo and 291–307px on the guides without one.
 
 **The numbered rail is the body unit.** Repeat it per chapter:
 
