@@ -3,56 +3,36 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
-import { Image } from 'astro:assets';
-import contactHeroImg from '../../assets/images/ContactHero.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title="Contacto | GUIA NEGOCIOS — Knoxville TN" description="Póngase en contacto con GUIA NEGOCIOS para consultoría de negocios bilingüe, registro de LLC, diseño web y asesoría operativa en Knoxville, TN." ogImage="/images/og/og-contact.png">
+<BaseLayout title="Contacto | Guia Negocios — Knoxville TN" description="Póngase en contacto con Guia Negocios para consultoría de negocios bilingüe, registro de LLC, diseño web y asesoría operativa en Knoxville, TN." ogImage="/images/og/og-contact.png">
   <Header slot="header" />
   
-  <!-- SECTION 1: Hero Banner with Illustration on Left + Form Card on Right -->
-  <section class="py-16 lg:py-24 bg-white">
+  <!-- SECTION 1: Contact Form & Direct Channels -->
+  <section class="py-16 lg:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        
-        <!-- Left Column: Title, Intro & Graphic Illustration -->
-        <div class="lg:col-span-6 space-y-8">
-          <div class="space-y-4">
-            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide">Póngase en Contacto</span>
-            <h1 class="text-4xl sm:text-5xl font-heading text-brand-dark font-semibold leading-tight">
-              Construyamos y Escalemos Su Negocio Juntos
-            </h1>
-            <p class="text-slate-600 text-lg leading-relaxed">
-              ¿Tiene preguntas sobre cómo lanzar su LLC en Tennessee, construir un sitio web, configurar la contabilidad o programar una consulta en Knoxville? Estamos aquí para guiarle en cada paso del camino.
-            </p>
-          </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10">
 
-          <!-- Featured Vector Illustration -->
-          <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
-            <Image 
-              src={contactHeroImg} 
-              alt="GUIA NEGOCIOS Business Advisory Support" 
-              widths={[400, 800, 1200]}
-              sizes="(max-width: 1024px) 100vw, 600px"
-              class="w-full h-[280px] sm:h-[340px] object-cover"
-              loading="eager"
-              fetchpriority="high"
-            />
-          </div>
+        <!-- Statement -->
+        <div class="order-1 lg:order-none lg:col-span-5 lg:col-start-1 lg:row-start-1">
+          <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Póngase en Contacto</span>
+          <h1 class="mt-6 text-3xl sm:text-4xl lg:text-5xl font-heading text-brand-dark font-semibold leading-[1.08] tracking-tight">
+            Construyamos y Escalemos Su Negocio Juntos
+          </h1>
+          <p class="mt-6 text-slate-600 text-base leading-relaxed">
+            ¿Tiene preguntas sobre cómo lanzar su LLC en Tennessee, construir un sitio web, configurar la contabilidad o programar una consulta en Knoxville? Estamos aquí para guiarle en cada paso del camino.
+          </p>
         </div>
 
-        <!-- Right Column: Floating Form Card -->
-        <div class="lg:col-span-6">
-          <div class="bg-white border border-slate-200 rounded-3xl p-8 lg:p-10 shadow-xl space-y-6">
-            <div>
-              <h2 class="text-2xl sm:text-3xl font-heading text-brand-dark font-semibold mb-2">Envíenos un Mensaje</h2>
-              <p class="text-slate-600 text-sm">Complete el formulario a continuación y un consultor responderá dentro de 1 día hábil.</p>
-            </div>
+        <!-- Form -->
+        <div class="order-2 lg:order-none lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:row-span-2 lg:border-l lg:border-slate-200 lg:pl-10 lg:flex lg:flex-col">
+          <h2 class="text-2xl sm:text-3xl font-heading text-brand-dark font-semibold">Envíenos un Mensaje</h2>
+          <p class="mt-3 text-slate-600 text-sm">Complete el formulario a continuación y un consultor responderá dentro de 1 día hábil.</p>
 
-            <form id="contact-form" class="space-y-5">
+          <form id="contact-form" class="mt-8 space-y-5 lg:flex lg:flex-1 lg:flex-col">
               <!-- Honeypot: hidden from users and assistive tech. Bots fill every
                    field they find, so a value here means the submission is not
                    from a person and it is discarded without a write. -->
@@ -69,7 +49,7 @@ const t = useTranslations(lang);
                   maxlength="200" 
                   required 
                   placeholder="Ingrese su nombre completo" 
-                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
                 />
               </div>
 
@@ -82,7 +62,7 @@ const t = useTranslations(lang);
                   maxlength="320" 
                   required 
                   placeholder="Ingrese su dirección de correo electrónico" 
-                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
                 />
               </div>
 
@@ -94,7 +74,7 @@ const t = useTranslations(lang);
                   name="phone" 
                   maxlength="40" 
                   placeholder="(865) 000-0000" 
-                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
                 />
               </div>
 
@@ -103,7 +83,7 @@ const t = useTranslations(lang);
                 <select 
                   id="subject" 
                   name="subject" 
-                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm"
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm"
                 >
                   <option value="general">Consulta Comercial General</option>
                   <option value="tier1-4">Servicios Básicos de Lanzamiento (Niveles 1–4)</option>
@@ -117,7 +97,7 @@ const t = useTranslations(lang);
                 </select>
               </div>
 
-              <div>
+              <div class="lg:flex lg:flex-1 lg:flex-col">
                 <label for="message" class="block text-xs font-bold uppercase tracking-wider text-brand-dark mb-1.5">Mensaje *</label>
                 <textarea 
                   id="message" 
@@ -126,14 +106,14 @@ const t = useTranslations(lang);
                   maxlength="5000" 
                   required 
                   placeholder="Cuéntenos sobre su concepto de negocio o preguntas..." 
-                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400"
+                  class="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:bg-white text-sm placeholder-slate-400 lg:flex-1"
                 ></textarea>
               </div>
 
               <div>
                 <button 
                   type="submit" 
-                  class="w-full bg-brand-dark hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-full transition-colors text-base shadow-lg"
+                  class="w-full bg-brand-dark hover:bg-slate-800 text-white font-bold py-4 px-8 rounded-full transition-colors text-base"
                 >
                   Enviar Mensaje
                 </button>
@@ -141,73 +121,60 @@ const t = useTranslations(lang);
               
               <!-- Inline Toast Notification. role="status" so screen readers
                    announce the result without moving focus. -->
-              <div id="contact-toast" role="status" aria-live="polite" class="hidden rounded-xl p-4 text-sm font-medium border"></div>
+              <div id="contact-toast" role="status" aria-live="polite" class="hidden rounded-lg p-4 text-sm font-medium border"></div>
             </form>
-          </div>
         </div>
 
-      </div>
-    </div>
-  </section>
+        <!-- Direct Channels -->
+        <div class="order-3 lg:order-none lg:col-span-5 lg:col-start-1 lg:row-start-2">
+          <div class="divide-y divide-slate-200 border-t border-slate-200">
 
-  <!-- SECTION 2: 3 Direct Contact Cards Below Hero -->
-  <section class="py-16 bg-slate-50 border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <!-- Card 1: Phone -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.47-5.187-3.833-6.657-6.657l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-xl font-heading font-semibold text-brand-dark mb-2">Soporte Telefónico</h3>
-            <p class="text-slate-500 text-sm leading-relaxed mb-4">Llámenos directamente durante el horario de atención para obtener orientación inmediata.</p>
-            <a href="tel:8652027112" class="text-lg font-bold text-brand-primary hover:opacity-80 transition-opacity block">
-              (865) 202-7112
-            </a>
-          </div>
-        </div>
+            <div class="py-6">
+              <div class="flex items-center gap-3 text-brand-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.47-5.187-3.833-6.657-6.657l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+                <span class="text-[0.68rem] font-bold uppercase tracking-[0.22em]">Soporte Telefónico</span>
+              </div>
+              <p class="mt-3 text-slate-500 text-sm leading-relaxed">Llámenos directamente durante el horario de atención para obtener orientación inmediata.</p>
+              <a href="tel:8652027112" class="mt-2 inline-block text-lg font-bold text-brand-primary hover:underline">
+                (865) 202-7112
+              </a>
+            </div>
 
-        <!-- Card 2: WhatsApp -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641l-.433 1.685a.75.75 0 00.916.916l1.685-.433c.601-.154 1.194.154 1.641.586A8.966 8.966 0 0012 20.25z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-xl font-heading font-semibold text-brand-dark mb-2">Chat de WhatsApp</h3>
-            <p class="text-slate-500 text-sm leading-relaxed mb-4">Envíenos un mensaje para obtener respuestas rápidas y bilingües en inglés y español.</p>
-            <a href="https://wa.me/message/K7ATGJJHJLHXL1" target="_blank" rel="noopener noreferrer" class="text-lg font-bold text-brand-primary hover:opacity-80 transition-opacity block">
-              Chatear en WhatsApp ↗
-            </a>
-          </div>
-        </div>
+            <div class="py-6">
+              <div class="flex items-center gap-3 text-brand-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641l-.433 1.685a.75.75 0 00.916.916l1.685-.433c.601-.154 1.194.154 1.641.586A8.966 8.966 0 0012 20.25z" />
+                </svg>
+                <span class="text-[0.68rem] font-bold uppercase tracking-[0.22em]">Chat de WhatsApp</span>
+              </div>
+              <p class="mt-3 text-slate-500 text-sm leading-relaxed">Envíenos un mensaje para obtener respuestas rápidas y bilingües en inglés y español.</p>
+              <a href="https://wa.me/message/K7ATGJJHJLHXL1" target="_blank" rel="noopener noreferrer" class="mt-2 inline-block text-lg font-bold text-brand-primary hover:underline">
+                Chatear en WhatsApp ↗
+              </a>
+            </div>
 
-        <!-- Card 3: Email -->
-        <div class="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-xl font-heading font-semibold text-brand-dark mb-2">Asesoramiento por Correo</h3>
-            <p class="text-slate-500 text-sm leading-relaxed mb-4">Envíenos propuestas de negocios, preguntas o solicitudes de documentos.</p>
-            <a href="mailto:info@guianegocios.net" class="text-lg font-bold text-brand-primary hover:opacity-80 transition-opacity block">
-              info@guianegocios.net
-            </a>
+            <div class="py-6">
+              <div class="flex items-center gap-3 text-brand-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 shrink-0">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                <span class="text-[0.68rem] font-bold uppercase tracking-[0.22em]">Asesoramiento por Correo</span>
+              </div>
+              <p class="mt-3 text-slate-500 text-sm leading-relaxed">Envíenos propuestas de negocios, preguntas o solicitudes de documentos.</p>
+              <a href="mailto:info@guianegocios.net" class="mt-2 inline-block text-lg font-bold text-brand-primary hover:underline">
+                info@guianegocios.net
+              </a>
+            </div>
+
           </div>
         </div>
 
       </div>
 
-      <!-- FAQ Text Link Below the 3 Cards -->
-      <div class="mt-12 text-center">
-        <a href={`/${lang}/faq`} class="inline-flex items-center text-brand-primary font-medium hover:underline text-lg gap-2">
+      <div class="mt-12 lg:mt-16 text-center">
+        <a href={`/${lang}/faq`} class="inline-flex items-center gap-2 text-brand-primary font-medium hover:underline">
           Preguntas Frecuentes (FAQ) <span>→</span>
         </a>
       </div>
@@ -218,7 +185,7 @@ const t = useTranslations(lang);
   <section class="py-12 bg-slate-100 border-t border-slate-200 text-center">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-xs text-slate-500 italic leading-relaxed">
-        "GUIA NEGOCIOS proporciona educación comercial general y apoyo de consultoría. No somos abogados, contadores ni asesores financieros con licencia. Para obtener asesoramiento legal, fiscal o financiero, consulte a un profesional con licencia."
+        "Guia Negocios proporciona educación comercial general y apoyo de consultoría. No somos abogados, contadores ni asesores financieros con licencia. Para obtener asesoramiento legal, fiscal o financiero, consulte a un profesional con licencia."
       </p>
     </div>
   </section>
@@ -256,7 +223,7 @@ const t = useTranslations(lang);
         const toast = document.getElementById('contact-toast');
         if (toast) {
           toast.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
-          toast.className = 'rounded-xl p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+          toast.className = 'rounded-lg p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
           toast.classList.remove('hidden');
           setTimeout(() => toast.classList.add('hidden'), 5000);
         }
@@ -304,7 +271,7 @@ const t = useTranslations(lang);
         const toast = document.getElementById('contact-toast');
         if (toast) {
           toast.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
-          toast.className = 'rounded-xl p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
+          toast.className = 'rounded-lg p-4 text-sm font-medium border bg-green-50 text-green-800 border-green-200';
           toast.classList.remove('hidden');
           setTimeout(() => toast.classList.add('hidden'), 5000);
         }
@@ -314,7 +281,7 @@ const t = useTranslations(lang);
         const toast = document.getElementById('contact-toast');
         if (toast) {
           toast.textContent = 'Hubo un error al enviar su mensaje. Por favor, inténtelo de nuevo o use WhatsApp.';
-          toast.className = 'rounded-xl p-4 text-sm font-medium border bg-red-50 text-red-800 border-red-200';
+          toast.className = 'rounded-lg p-4 text-sm font-medium border bg-red-50 text-red-800 border-red-200';
           toast.classList.remove('hidden');
           setTimeout(() => toast.classList.add('hidden'), 5000);
         }

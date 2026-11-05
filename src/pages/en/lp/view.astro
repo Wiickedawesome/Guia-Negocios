@@ -79,7 +79,7 @@ import Footer from '../../../components/Footer.astro';
           return;
         }
 
-        document.title = `${lpData.title || 'Guia Negocios'} | GUIA NEGOCIOS`;
+        document.title = `${lpData.title || 'Guia Negocios'} | Guia Negocios`;
         
         const contentBody = document.getElementById('lp-content-body')!;
         contentBody.innerHTML = stripEditorAttributes(lpData.content || '');

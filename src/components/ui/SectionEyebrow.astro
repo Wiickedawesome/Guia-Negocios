@@ -1,0 +1,36 @@
+---
+/**
+ * Section eyebrow: a gold hairline rule plus uppercase letter-spaced label.
+ * Mirrors the hero's eyebrow so every section reads as the same system.
+ *
+ * Gold text is unreadable on light backgrounds (1.5:1 against white), so on
+ * light sections the rule carries the gold and the label stays forest green.
+ */
+interface Props {
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { align = 'left', tone = 'light', class: className = '' } = Astro.props;
+
+const LABEL_TONE = {
+  light: 'text-brand-primary',
+  dark: 'text-brand-accent',
+};
+
+const classes = [
+  'flex items-center gap-3 text-[0.68rem] font-bold uppercase tracking-[0.22em]',
+  LABEL_TONE[tone],
+  align === 'center' ? 'justify-center' : '',
+  className,
+].filter(Boolean).join(' ');
+
+const rule = 'h-px w-8 shrink-0 bg-brand-accent';
+---
+
+<p class={classes}>
+  <span aria-hidden="true" class={rule}></span>
+  <slot />
+  {align === 'center' && <span aria-hidden="true" class={rule}></span>}
+</p>

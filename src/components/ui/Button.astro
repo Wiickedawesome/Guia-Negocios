@@ -5,8 +5,8 @@
  */
 interface Props {
   href?: string;
-  variant?: 'primary' | 'outline';
-  size?: 'sm' | 'lg';
+  variant?: 'primary' | 'outline' | 'gold' | 'ghost';
+  size?: 'sm' | 'lg' | 'xl';
   /** Full-width stacked CTA used inside the mobile menu. */
   block?: boolean;
   type?: 'button' | 'submit' | 'reset';
@@ -27,11 +27,16 @@ const {
 const VARIANTS: Record<NonNullable<Props['variant']>, string> = {
   primary: 'bg-brand-primary text-white hover:bg-opacity-90',
   outline: 'border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white',
+  // On the dark forest-green hero, brand-primary is invisible: gold carries the
+  // primary action and white-on-green the secondary one.
+  gold: 'bg-brand-accent text-brand-dark hover:bg-brand-accent/90',
+  ghost: 'border border-white/35 text-white hover:bg-white hover:text-brand-primary',
 };
 
 const SIZES: Record<NonNullable<Props['size']>, string> = {
   sm: 'px-4 py-2 rounded-full text-sm',
-  lg: 'px-4 py-3 rounded-xl text-base',
+  lg: 'px-4 py-3 rounded-full text-base',
+  xl: 'px-8 py-4 rounded-full text-base',
 };
 
 const layout = block ? 'block w-full text-center' : 'inline-flex items-center justify-center';

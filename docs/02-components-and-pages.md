@@ -70,10 +70,21 @@ Wraps all administrative dashboard pages.
 
 ## 3. Reusable UI Components
 
-* `Header.astro`: Public header with desktop/mobile responsive navigation, language toggle (`EN` / `ES`), and quick contact CTA.
+### Primitives (`src/components/ui/`)
+
+* `Container.astro`: the single page gutter — `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`. Every section should sit in one so all bands share a 32px left edge.
+* `Button.astro`: the only button. Variants `primary` (green), `outline` (green border), `gold` (on dark hero), `ghost` (white outline on dark); sizes `sm` / `lg` / `xl`; `block` for the stacked mobile-menu CTA. **All sizes are `rounded-full`** — do not hand-roll a CTA.
+* `SectionEyebrow.astro`: gold hairline rule + uppercase letter-spaced label. Props `align?: 'left' | 'center'`, `tone?: 'light' | 'dark'`. On light surfaces the rule carries the gold and the text stays forest green, because gold text on white is 1.61:1.
+
+### Layout & content
+
+* `Header.astro`: public header with desktop/mobile responsive navigation, language toggle (`EN` / `ES`), and quick contact CTA. The desktop nav, phone/actions block and mobile menu **all switch at `lg` (1024px)**, not `md` — at 768px the logo, five nav links, phone button and language toggle overflow by 35px. Do not move any of the four `lg` breakpoints back to `md`.
+* `HomeHero.astro`: the photographic hero used by `/` and `/en/` — consultation photo, solid forest-green copy panel, numbered pillars rail.
 * `Footer.astro`: Enterprise footer with localized links, service directory, address, and legal disclaimers.
 * `FaqAccordion.astro`: Accessible accordion component for frequently asked questions. Rendered by **both** `/services` pages — if it is imported but not rendered the page still emits FAQPage schema with no visible FAQ, which is a structured-data violation.
 * `LegalDisclaimer.astro`: Legal-advice disclaimer. Takes no props and derives its language from the URL. Shown on the blog index, blog posts, both `/services` pages and the six service guides — deliberately **not** on the homepage.
+  * ⚠️ `about.astro` and `contact.astro` (both locales) still carry **inline copies** of the same text instead of rendering this component. A wording change needs five edits today; migrate them to the component when either page is next touched.
+* `AnimatedLogoHero.astro`: **dead** — zero references. Safe to delete.
 * `AeoInjector.astro`: Emits FAQPage JSON-LD from the `seoSchemas` collection. Rendered once by `BaseLayout`, so it runs on every public page, but a schema is only emitted when the page path matches the schema's keyword.
   * **The homepage emits none, by design.** The generator writes questions by simulating "People Also Ask"; verified 2026-09-24 that **0** of its 32 unique questions appeared anywhere in the rendered homepage (the page has zero `<details>` elements). FAQPage markup must describe visible content, so the homepage case was removed. The filter also guards the empty-token case — `slug.includes('')` is always true, so an unguarded root path would match *every* schema.
   * **Do not dedupe these schemas by keyword.** The generator stores each keyword under two documents (a space-form id and a hyphen-form id) which looks like duplication, but the live pairs hold **different** questions — 32 unique across the 10 documents. Collapsing them kept only 18 and dropped 14. Attempted and reverted twice.

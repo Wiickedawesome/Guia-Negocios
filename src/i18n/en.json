@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "GUIA NEGOCIOS",
-    "metaTitle": "GUIA NEGOCIOS — Bilingual Small Business Consulting in Knoxville, TN",
+    "title": "Guia Negocios",
+    "metaTitle": "Guia Negocios — Bilingual Small Business Consulting in Knoxville, TN",
     "description": "Bilingual business consulting for entrepreneurs and small businesses in Knoxville, TN. LLC setup, branding, websites, and bookkeeping — all in English and Spanish."
   },
   "nav": {
@@ -14,9 +14,26 @@
   },
   "home": {
     "hero": {
-      "title": "Launch Your Business with Confidence",
-      "subtitle": "Bilingual business consulting for entrepreneurs and small business owners in Knoxville, TN. Our approach is to work side-by-side with you to launch, organize, and grow your business.",
-      "cta": "Get Started Today"
+      "eyebrow": "Bilingual consulting · Knoxville, TN",
+      "titleLead": "Open, organize,",
+      "titleHighlight": "and grow your business",
+      "subtitle": "We open businesses from scratch and straighten out the ones that have been running for years: filings, bookkeeping, processes, and growth. One bilingual team, in Spanish and English.",
+      "cta": "Book a consultation",
+      "ctaSecondary": "See services",
+      "proof": [
+        "Spanish and English",
+        "Knoxville, Tennessee",
+        "Guidance start to finish"
+      ],
+      "photoAlt": "Business consulting session in front of a group of entrepreneurs",
+      "railLabel": "What we cover",
+      "pillars": [
+        "LLC & EIN",
+        "Plans & strategy",
+        "Bookkeeping",
+        "Brand & website",
+        "Virtual assistance"
+      ]
     }
   },
   "services": {
@@ -63,7 +80,7 @@
     "readMore": "Read More"
   },
   "footer": {
-    "copyright": "© 2026 GUIA NEGOCIOS. All rights reserved.",
+    "copyright": "© 2026 Guia Negocios. All rights reserved.",
     "serving": "Serving Knoxville, TN and East Tennessee"
   }
 }

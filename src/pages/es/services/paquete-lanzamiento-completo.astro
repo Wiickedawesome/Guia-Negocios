@@ -8,8 +8,8 @@ import { getLangFromUrl } from '../../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 ---
 
-<BaseLayout title="Guía del Paquete Completo de Lanzamiento | GUIA NEGOCIOS" description="La guía definitiva paso a paso para lanzar un negocio en Tennessee: consultoría, registros legales, marca, página web, contabilidad y entrega operativa." altPath="/en/services/complete-launch-bundle">
-  <Header slot="header" />
+<BaseLayout title="Guía del Paquete Completo de Lanzamiento | Guia Negocios" description="La guía definitiva paso a paso para lanzar un negocio en Tennessee: consultoría, registros legales, marca, página web, contabilidad y entrega operativa." altPath="/en/services/complete-launch-bundle">
+  <Header slot="header" altPath="/en/services/complete-launch-bundle" />
   
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -17,7 +17,7 @@ const lang = getLangFromUrl(Astro.url);
     "name": "Paquete Completo de Lanzamiento de Negocios",
     "provider": {
       "@type": "LocalBusiness",
-      "name": "GUIA NEGOCIOS",
+      "name": "Guia Negocios",
       "url": "https://guianegocios.net",
       "telephone": "+1-865-202-7112",
       "address": {
@@ -34,14 +34,14 @@ const lang = getLangFromUrl(Astro.url);
   
   <!-- Service Package Hero Header -->
   <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
-        <a href={`/${lang}/services`} class="text-brand-primary hover:underline">← Volver a Todos los Servicios</a>
+        <a href={`/${lang}/services`} class="text-slate-300 hover:text-white transition-colors">← Volver a Todos los Servicios</a>
       </div>
-      <div class="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/50 text-brand-accent text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+      <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-accent">
         Paquete de Implementación Premium Nivel 05
-      </div>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-tight text-white">
+      </span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-semibold leading-[1.05] tracking-tight text-white">
         Paquete Completo de Lanzamiento
       </h1>
       <p class="text-xl text-slate-300 leading-relaxed font-sans">
@@ -54,7 +54,7 @@ const lang = getLangFromUrl(Astro.url);
           <span class="text-base font-bold text-white">Personalizado por Empresa</span>
         </div>
         <div class="ml-auto">
-          <a href={`/${lang}/contact`} class="inline-block bg-brand-accent text-brand-dark font-bold py-3.5 px-8 rounded-full hover:bg-yellow-300 transition-colors shadow-md text-base">
+          <a href={`/${lang}/contact`} class="inline-block bg-brand-accent text-brand-dark font-bold py-3.5 px-8 rounded-full hover:bg-yellow-300 transition-colors text-base">
             Reservar Consulta
           </a>
         </div>
@@ -63,29 +63,34 @@ const lang = getLangFromUrl(Astro.url);
   </section>
 
   <!-- Blog Article Content Body -->
-  <article class="py-16 bg-white text-slate-800 leading-relaxed font-sans">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      
-      <!-- Key Takeaways Callout Box -->
-      <div class="bg-brand-light border-l-4 border-brand-primary rounded-r-2xl p-6 lg:p-8 space-y-4">
-        <h2 class="text-lg font-heading font-bold text-brand-dark uppercase tracking-wider">
-          Por Qué Este Es Nuestro Paquete Integral Todo Incluido
-        </h2>
-        <p class="text-slate-700 text-sm sm:text-base leading-relaxed">
+  <article class="bg-white text-slate-800">
+
+    <!-- Pull statement: full-bleed band -->
+    <section class="bg-slate-50 border-b border-slate-200 py-16 lg:py-20">
+      <div class="px-4 sm:px-6 lg:px-8 space-y-8">
+        <p class="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Por Qué Este Es Nuestro Paquete Integral Todo Incluido</p>
+        <p class="max-w-none text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-heading font-semibold leading-[1.1] tracking-tight text-brand-dark">
           Iniciar un negocio requiere coordinar múltiples piezas al mismo tiempo: registros estatales, trámites con el IRS, diseño de logo, dominio web, programación del sitio, cuenta bancaria, estrategia de precios, contratos y atención a clientes. El <strong>Paquete Completo de Lanzamiento</strong> es nuestra oferta de mayor valor porque no solo damos consejos: nos involucramos en su negocio y ejecutamos cada pilar a su lado.
         </p>
       </div>
+    </section>
+
+    <!-- Numbered chapters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
 
       <!-- Section 1: Initial Consultation & Concept Alignment -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 01</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          1. Consultoría de Claridad y Alineación Estratégica
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 01</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            1. Consultoría de Claridad y Alineación Estratégica
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Todo lanzamiento exitoso inicia con una sesión de descubrimiento 1-a-1. Antes de registrar documentos o bocetar logos, nos sentamos con usted para analizar a fondo su visión comercial, clientes ideales, competidores en Knoxville y su calendario de inicio.
         </p>
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-3">
+        <div class="border-t border-slate-200 pt-6 space-y-3">
           <h3 class="font-bold text-brand-dark text-sm uppercase tracking-wider">Lo Que Sucede en el Descubrimiento:</h3>
           <ul class="space-y-2 text-sm text-slate-700">
             <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">✓</span> Definición de servicios principales y perfil del cliente objetivo</li>
@@ -94,80 +99,92 @@ const lang = getLangFromUrl(Astro.url);
             <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">✓</span> Evaluación de requerimientos bilingües (distribución de atención en inglés/español)</li>
           </ul>
         </div>
+        </div>
       </section>
 
       <!-- Section 2: Administrative & Legal Entity Formation -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 02</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          2. Base Administrativa y Registro de LLC
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 02</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            2. Base Administrativa y Registro de LLC
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Operar legalmente protege sus bienes personales y genera confianza inmediata con clientes comerciales. Manejamos la orientación en trámites de registro ante el estado de Tennessee para evitar errores costosos.
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 border-t border-slate-200 pt-6">
+          <div class="space-y-2">
             <h3 class="font-bold text-brand-dark">Registro Estatal y EIN</h3>
             <p class="text-xs text-slate-600">Guía de registro de LLC ante la Secretaría de Estado de TN y apoyo en solicitud de EIN con el IRS.</p>
           </div>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="space-y-2">
             <h3 class="font-bold text-brand-dark">Acuerdo Operativo</h3>
             <p class="text-xs text-slate-600">Plantilla personalizada de Acuerdo Operativo para estructurar la propiedad de 1 o más socios.</p>
           </div>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="space-y-2">
             <h3 class="font-bold text-brand-dark">Lista para Cuenta Bancaria</h3>
             <p class="text-xs text-slate-600">Lista de verificación de documentos requeridos por bancos locales para abrir cuentas de negocio.</p>
           </div>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="space-y-2">
             <h3 class="font-bold text-brand-dark">Calendario de Cumplimiento</h3>
             <p class="text-xs text-slate-600">Calendario claro con fechas límite de reportes anuales, impuestos estatales y renovaciones.</p>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Section 3: Brand Identity & Visual Assets -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 03</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          3. Identidad de Marca, Logo y Perfiles Digitales
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 03</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            3. Identidad de Marca, Logo y Perfiles Digitales
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Una marca profesional le permite cobrar precios justos y rentables desde el primer día. Desarrollamos su imagen visual y establecemos su presencia digital oficial.
         </p>
         <ul class="space-y-3 text-sm text-slate-700">
           <li class="flex items-start gap-3">
-            <span class="w-5 h-5 rounded-full bg-brand-primary text-white flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+            <span class="w-5 shrink-0 text-brand-primary text-[0.8rem] font-bold leading-5">✓</span>
             <span><strong>Kit de Marca:</strong> Orientación de logo, paleta de colores primarios y secundarios, tipografías y reglas de uso.</span>
           </li>
           <li class="flex items-start gap-3">
-            <span class="w-5 h-5 rounded-full bg-brand-primary text-white flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+            <span class="w-5 shrink-0 text-brand-primary text-[0.8rem] font-bold leading-5">✓</span>
             <span><strong>Google Business Profile:</strong> Optimización completa de categorías, zona de servicio, fotos, horarios y enlace directo para pedir reseñas.</span>
           </li>
           <li class="flex items-start gap-3">
-            <span class="w-5 h-5 rounded-full bg-brand-primary text-white flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+            <span class="w-5 shrink-0 text-brand-primary text-[0.8rem] font-bold leading-5">✓</span>
             <span><strong>Configuración Social:</strong> Creación de página oficial de Facebook e Instagram con portadas y biografías profesionales.</span>
           </li>
           <li class="flex items-start gap-3">
-            <span class="w-5 h-5 rounded-full bg-brand-primary text-white flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+            <span class="w-5 shrink-0 text-brand-primary text-[0.8rem] font-bold leading-5">✓</span>
             <span><strong>WhatsApp Business:</strong> Configuración del perfil, catálogo de servicios, mensaje automático de bienvenida y respuestas rápidas.</span>
           </li>
           <li class="flex items-start gap-3">
-            <span class="w-5 h-5 rounded-full bg-brand-primary text-white flex-shrink-0 flex items-center justify-center text-xs font-bold mt-0.5">✓</span>
+            <span class="w-5 shrink-0 text-brand-primary text-[0.8rem] font-bold leading-5">✓</span>
             <span><strong>Kit en Canva:</strong> Plantillas editables para publicaciones en redes sociales, volantes y gráficos promocionales.</span>
           </li>
         </ul>
+        </div>
       </section>
 
       <!-- Section 4: Professional Website & SEO Build -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 04</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          4. Sitio Web Profesional y Posicionamiento Local
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 04</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            4. Sitio Web Profesional y Posicionamiento Local
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Su página web es su oficina abierta las 24 horas. En lugar de plantillas genéricas y lentas, construimos un sitio web multi-página rápido, moderno y enfocado en convertir visitantes en clientes.
         </p>
-        <div class="bg-slate-900 text-white rounded-2xl p-6 lg:p-8 space-y-4">
+        <div class="bg-brand-dark text-white p-8 lg:p-10 space-y-5">
           <h3 class="text-xl font-heading font-bold text-brand-accent">Entregables de la Página Web:</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
             <div>• Estructura multi-página (Inicio, Nosotros, Servicios, Contacto, Galería)</div>
@@ -178,43 +195,51 @@ const lang = getLangFromUrl(Astro.url);
             <div>• Conexión con Google Search Console y Google Analytics</div>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Section 5: Financial Foundations & Bookkeeping -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 05</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          5. Estructura Financiera, Contabilidad y Precios
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 05</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            5. Estructura Financiera, Contabilidad y Precios
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Un negocio que no mide sus números no puede crecer. Configuramos esquemas contables digitales sencillos para que siempre conozca su margen de ganancia real y sus obligaciones fiscales.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div class="border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="border border-slate-200 p-5 space-y-2">
             <h3 class="font-bold text-brand-dark">Categorías de Ingresos/Gastos</h3>
             <p class="text-xs text-slate-600">Catálogo de cuentas organizado específicamente para la preparación de impuestos.</p>
           </div>
-          <div class="border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="border border-slate-200 p-5 space-y-2">
             <h3 class="font-bold text-brand-dark">Estrategia de Precios</h3>
             <p class="text-xs text-slate-600">Sesión 1-a-1 calculando costos fijos, mano de obra y margen de ganancia deseado.</p>
           </div>
-          <div class="border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="border border-slate-200 p-5 space-y-2">
             <h3 class="font-bold text-brand-dark">Facturación Digital</h3>
             <p class="text-xs text-slate-600">Configuración de cobro con tarjeta (Square/QuickBooks) y recordatorios de pago.</p>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Section 6: Operational Workflows & Client Onboarding -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 06</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          6. Sistemas de Operación, Plantillas y Atención a Clientes
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 06</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            6. Sistemas de Operación, Plantillas y Atención a Clientes
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Le equipamos con una bóveda estandarizada de documentos bilingües, contratos y guiones para que cada interacción con un cliente sea profesional.
         </p>
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-3">
+        <div class="border-t border-slate-200 pt-6 space-y-3">
           <h3 class="font-bold text-brand-dark text-sm uppercase tracking-wider">Bóveda de Plantillas Incluida:</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
             <div>• Plantilla de Contrato de Servicios Bilingüe</div>
@@ -225,41 +250,48 @@ const lang = getLangFromUrl(Astro.url);
             <div>• Plantillas de Texto para Solicitar Reseñas</div>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Section 7: CreedaVA Ongoing Partnership Transition -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Fase 07</span>
-        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 space-y-4">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Fase 07</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">        <div class="border-t border-slate-200 pt-6 space-y-4">
           <div class="flex flex-wrap items-center gap-3">
-            <span class="bg-brand-primary text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Alianza Oficial</span>
+            <span class="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-brand-primary">Alianza Oficial</span>
             <h3 class="text-xl font-heading font-bold text-brand-primary">Transición Fluida a CreedaVA</h3>
           </div>
           <p class="text-slate-600 text-sm leading-relaxed">
-            Cuando esté listo para delegar el teléfono diario, correo electrónico, mantenimiento de CRM y cobros, puede realizar una transición fluida a un Asistente Virtual dedicado bilingüe a través de nuestro socio <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="text-brand-primary font-bold hover:underline">CreedaVA (creedava.com)</a>. GUIA NEGOCIOS le ayuda a lanzar el negocio, y CreedaVA le apoya a gestionar y escalar su operación diaria.
+            Cuando esté listo para delegar el teléfono diario, correo electrónico, mantenimiento de CRM y cobros, puede realizar una transición fluida a un Asistente Virtual dedicado bilingüe a través de nuestro socio <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="text-brand-primary font-bold hover:underline">CreedaVA (creedava.com)</a>. Guia Negocios le ayuda a lanzar el negocio, y CreedaVA le apoya a gestionar y escalar su operación diaria.
           </p>
+        </div>
         </div>
       </section>
+    </div>
 
-      <!-- Author Bio Box -->
-      <div class="bg-brand-dark text-white rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
-        <div class="w-20 h-20 rounded-full bg-brand-primary text-white text-2xl font-extrabold flex items-center justify-center flex-shrink-0">
-          GN
-        </div>
-        <div class="space-y-3 text-center md:text-left">
-          <h3 class="text-2xl font-heading font-bold">¿Listo para Iniciar su Lanzamiento Guiado?</h3>
-          <p class="text-slate-300 text-sm leading-relaxed">
-            El alcance de cada proyecto se adapta de forma personalizada a su tipo de negocio, metas y preparación. Agende una sesión de estrategia 1-a-1 con nuestro equipo de consultoría bilingüe.
-          </p>
-          <div class="pt-2">
-            <a href={`/${lang}/contact`} class="inline-block bg-brand-primary text-white font-bold py-3.5 px-8 rounded-full hover:bg-opacity-90 transition-colors shadow-md text-base">
-              Reservar Consulta de Lanzamiento
-            </a>
+    <!-- Full-bleed CTA band -->
+    <section class="bg-brand-dark text-white py-16 lg:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-x-12 items-center px-4 sm:px-6 lg:px-8">
+        <div class="lg:col-span-8 space-y-6">
+          <div class="w-16 h-16 border border-white/25 text-brand-accent text-lg font-bold tracking-widest flex items-center justify-center">
+            GN
+          </div>
+          <div class="space-y-3">
+            <h3 class="text-2xl lg:text-4xl font-heading font-semibold leading-[1.15] tracking-tight text-white">¿Listo para Iniciar su Lanzamiento Guiado?</h3>
+            <p class="max-w-2xl text-base text-slate-300 leading-relaxed">El alcance de cada proyecto se adapta de forma personalizada a su tipo de negocio, metas y preparación. Agende una sesión de estrategia 1-a-1 con nuestro equipo de consultoría bilingüe.</p>
           </div>
         </div>
-      </div>
+        <div class="lg:col-span-4 flex flex-wrap gap-4 lg:justify-end">
 
-    </div>
+            <a href={`/${lang}/contact`} class="inline-block bg-brand-primary text-white font-bold py-3.5 px-8 rounded-full hover:bg-opacity-90 transition-colors text-base">
+              Reservar Consulta de Lanzamiento
+            </a>
+        </div>
+      </div>
+    </section>
+
   </article>
 
   <LegalDisclaimer />

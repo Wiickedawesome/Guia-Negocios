@@ -18,6 +18,13 @@ Full documentation: https://docs.astro.build
 
 ## Project invariants
 
+- **The design system is `docs/03-styling-and-i18n.md` §1 — read it before building or restyling any page.**
+  It is editorial: flat surfaces, hairline dividers, no glassmorphism, no card shadows, no hover lift,
+  no pill badges, no gradient hero washes. Buttons are **always** `rounded-full`; `rounded-[2.5rem]` is
+  only for the four service tier cards; everything else is square. Any new page, blog post, landing page
+  or service guide must follow it, and a change that contradicts it must update it in the same commit.
+- **New pages:** copy the left-aligned 7xl hero from that doc, render `<Header slot="header" />` and
+  `<Footer slot="footer" />`, keep the 32px gutter, and ship both locales together.
 - **Locales:** Spanish home is served at `/`; Spanish **subpages** live under `/es/*` (e.g.
   `/es/services/`, `/es/faq/`), English under `/en/*`. Only `/es` and `/es/` themselves 301 to `/`,
   and the unprefixed `/services/`, `/about/`, `/blog/`, `/faq/` 301 to their `/es/...` equivalents.

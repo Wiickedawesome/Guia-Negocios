@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "GUIA NEGOCIOS",
-    "metaTitle": "GUIA NEGOCIOS — Consultoría de Negocios Bilingüe en Knoxville, TN",
+    "title": "Guia Negocios",
+    "metaTitle": "Guia Negocios — Consultoría de Negocios Bilingüe en Knoxville, TN",
     "description": "Consultoría de negocios bilingüe para emprendedores y pequeñas empresas en Knoxville, TN. Registro LLC, marca, sitios web y contabilidad — todo en español e inglés."
   },
   "nav": {
@@ -14,9 +14,26 @@
   },
   "home": {
     "hero": {
-      "title": "Lanza Tu Negocio con Confianza",
-      "subtitle": "Consultoría de negocios bilingüe para emprendedores y dueños de empresas en Knoxville, TN. Nuestro enfoque es trabajar codo a codo con usted para lanzar, organizar y hacer crecer su negocio.",
-      "cta": "Comienza Hoy"
+      "eyebrow": "Consultoría bilingüe · Knoxville, TN",
+      "titleLead": "Abrir, ordenar",
+      "titleHighlight": "y crecer su negocio",
+      "subtitle": "Abrimos negocios desde cero y ponemos en orden los que ya llevan años operando: trámites, contabilidad, procesos y crecimiento. Un solo equipo bilingüe, en español e inglés.",
+      "cta": "Agende su asesoría",
+      "ctaSecondary": "Ver servicios",
+      "proof": [
+        "Español e inglés",
+        "Knoxville, Tennessee",
+        "Acompañamiento de principio a fin"
+      ],
+      "photoAlt": "Sesión de consultoría de negocios frente a un grupo de emprendedores",
+      "railLabel": "Lo que cubrimos",
+      "pillars": [
+        "LLC y EIN",
+        "Planes y estrategia",
+        "Contabilidad",
+        "Marca y sitio web",
+        "Asistencia virtual"
+      ]
     }
   },
   "services": {
@@ -63,7 +80,7 @@
     "readMore": "Leer Más"
   },
   "footer": {
-    "copyright": "© 2026 GUIA NEGOCIOS. Todos los derechos reservados.",
+    "copyright": "© 2026 Guia Negocios. Todos los derechos reservados.",
     "serving": "Atendiendo Knoxville, TN y East Tennessee"
   }
 }

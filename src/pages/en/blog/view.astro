@@ -23,7 +23,7 @@ const t = useTranslations('en');
       <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4 text-2xl font-bold">404</div>
       <h2 class="text-2xl font-bold text-slate-900 font-heading mb-2">Article Not Found</h2>
       <p class="text-slate-600 mb-6">The article you are looking for does not exist or has not been published yet.</p>
-      <a href="/en/blog" class="px-6 py-2.5 bg-brand-primary text-white font-medium rounded-lg hover:bg-opacity-95 transition-colors">
+      <a href="/en/blog" class="px-6 py-2.5 bg-brand-primary text-white font-medium rounded-full hover:bg-opacity-95 transition-colors">
         ← Back to Blog
       </a>
     </div>
@@ -32,12 +32,11 @@ const t = useTranslations('en');
     <div id="blog-live-content" class="hidden opacity-0 transition-opacity duration-300">
       
       <!-- 1. Hero Image Section -->
-      <div class="relative w-full h-[400px] md:h-[500px] bg-slate-900 overflow-hidden">
+      <div class="relative w-full min-h-[400px] md:min-h-[500px] flex items-center bg-slate-900 overflow-hidden">
         <img id="post-hero-img" src="" alt="" class="absolute inset-0 w-full h-full object-cover" />
         <div class="absolute inset-0 bg-slate-900/60 mix-blend-multiply"></div>
         
-        <div class="absolute inset-0 flex items-center justify-center pt-20">
-          <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 text-center">
             <div id="post-tags-container" class="flex flex-wrap items-center justify-center gap-2 mb-6"></div>
             <h1 id="post-title" class="text-3xl md:text-5xl lg:text-6xl font-heading text-white mb-6 leading-tight drop-shadow-md"></h1>
             
@@ -51,12 +50,11 @@ const t = useTranslations('en');
                 <time id="post-date"></time>
               </div>
               <div class="flex items-center gap-2">
-                <span id="post-readtime" class="px-2 py-1 bg-white/20 rounded-md text-white font-medium backdrop-blur-sm border border-white/10 uppercase text-xs">
+                <span id="post-readtime" class="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-white/80">
                   7 MIN READ
                 </span>
               </div>
             </div>
-          </div>
         </div>
       </div>
 
@@ -66,7 +64,7 @@ const t = useTranslations('en');
           
           <!-- Left Sidebar: TOC -->
           <aside id="post-toc-sidebar" class="hidden lg:block lg:w-[220px] xl:w-[260px] shrink-0">
-            <div class="sticky top-28 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="sticky top-28 bg-white p-6 border border-slate-200">
               <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100">Table of Contents</h2>
               <ul id="post-toc-list" class="space-y-3"></ul>
             </div>
@@ -74,15 +72,15 @@ const t = useTranslations('en');
 
           <!-- Center: Article Body -->
           <div class="w-full lg:flex-1 min-w-0">
-            <div class="bg-white p-6 md:p-10 lg:p-12 rounded-2xl border border-slate-200 shadow-sm">
-              <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
+            <div class="bg-white p-6 md:p-10 lg:p-12 border border-slate-200">
+              <div class="prose prose-slate prose-lg max-w-none prose-headings:font-heading prose-a:text-brand-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-none">
                 <div id="post-html-body" class="blog-content"></div>
               </div>
 
               <!-- Footer: Share & Toggle -->
               <footer class="mt-12 pt-8 border-t border-slate-200">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <a id="post-alt-link" href="#" class="inline-flex items-center gap-2 text-brand-primary font-medium hover:bg-brand-light px-4 py-2 rounded-lg transition-colors border border-brand-primary/20">
+                  <a id="post-alt-link" href="#" class="inline-flex items-center gap-2 text-brand-primary font-medium hover:bg-brand-light px-4 py-2 rounded-full transition-colors border border-brand-primary/20">
                     <svg class="w-4 h-4 shrink-0" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path fill="#C60A1D" d="M32 5H4a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"/><path fill="#FFC400" d="M0 12h36v12H0z"/></svg>
                     <span>Leer en Español</span>
                   </a>
@@ -95,7 +93,7 @@ const t = useTranslations('en');
 
             <!-- Related Articles (Bottom) -->
             <div id="related-articles-section" class="mt-20 pt-12 border-t border-slate-200">
-              <h2 class="text-2xl font-bold text-slate-900 mb-8 font-heading text-center">Related Articles</h2>
+              <h2 class="text-2xl font-bold text-brand-dark mb-8 font-heading">Related Articles</h2>
               <div id="related-articles-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Dynamically rendered -->
               </div>
@@ -295,7 +293,7 @@ const t = useTranslations('en');
 
       const displayPosts = relatedList.slice(0, 3);
       grid.innerHTML = displayPosts.map(rp => `
-        <a href="/en/blog/view?id=${rp.id || ''}&slug=${rp.slug}" class="block group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <a href="/en/blog/view?id=${rp.id || ''}&slug=${rp.slug}" class="block group bg-brand-light transition-colors duration-300 hover:bg-brand-primary overflow-hidden">
           <div class="aspect-video w-full overflow-hidden bg-slate-100">
             <img src="${optimizeImageUrl(rp.featuredImage, { width: 600, quality: 75 })}" alt="${rp.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" width="384" height="216" loading="lazy" decoding="async" />
           </div>

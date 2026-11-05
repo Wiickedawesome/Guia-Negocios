@@ -169,7 +169,7 @@ Ruta Paso a Paso para Tramitar el EIN sin Seguro Social
 Para comprender cómo el trámite adecuado del EIN acelera el éxito empresarial, analicemos dos ejemplos prácticos de nuestra cartera de asesoría:
 
 ### Caso 1: Mateo (Fundador de Agencia Digital desde Colombia)
-Mateo reside en Bogotá y fundó una LLC en Tennessee a través de GUIA NEGOCIOS. Al no residir en EE.UU. ni poseer SSN, enfrentaba el bloqueo de pasarelas de pago para cobrar a clientes corporativos en Nueva York y Miami.
+Mateo reside en Bogotá y fundó una LLC en Tennessee a través de Guia Negocios. Al no residir en EE.UU. ni poseer SSN, enfrentaba el bloqueo de pasarelas de pago para cobrar a clientes corporativos en Nueva York y Miami.
 * **Solución Estratégica:** Tramitamos su EIN mediante el protocolo internacional SS-4 ante el IRS. Con su carta **Form CP 575** oficial, Mateo abrió su cuenta bancaria comercial en dólares en Relay Financial y activó Stripe en menos de dos semanas.
 
 ### Caso 2: Elena y Carlos (Empresa de Construcción y Contratistas en Knoxville, TN)
@@ -205,7 +205,7 @@ Al gestionar un negocio en EE.UU. siendo extranjero o residente sin SSN, cometer
 
 ## ¿Necesita Ayuda para Obtener su EIN o Formar su Empresa en EE.UU.?
 
-En **GUIA NEGOCIOS**, somos especialistas en guiar a emprendedores hispanos — tanto residentes en Estados Unidos como no residentes en el extranjero — a registrar su empresa (LLC / C-Corp), tramitar su número EIN de forma segura ante el IRS y configurar sus cuentas bancarias comerciales.
+En **Guia Negocios**, somos especialistas en guiar a emprendedores hispanos — tanto residentes en Estados Unidos como no residentes en el extranjero — a registrar su empresa (LLC / C-Corp), tramitar su número EIN de forma segura ante el IRS y configurar sus cuentas bancarias comerciales.
 
 **¿Listo para formalizar su negocio en EE.UU.?** [Póngase en contacto con nuestro equipo de consultores bilingües](/es/contact) hoy mismo para una asesoría personalizada.
 
@@ -306,12 +306,12 @@ Step-by-Step Non-Resident EIN Filing Roadmap
 To illustrate how obtaining an EIN transforms operations for Hispanic business owners, let's review two real scenarios:
 
 ### Case 1: Mateo (Non-Resident Entrepreneur in Latin America)
-Mateo lives in Bogotá, Colombia, running a digital agency and e-commerce business serving U.S. clients. He formed a **Tennessee LLC** through GUIA NEGOCIOS but does not possess a U.S. Social Security Number or U.S. address.
+Mateo lives in Bogotá, Colombia, running a digital agency and e-commerce business serving U.S. clients. He formed a **Tennessee LLC** through Guia Negocios but does not possess a U.S. Social Security Number or U.S. address.
 * **EIN Solution:** We filed his EIN application directly with the IRS using the specialized international non-resident fax protocol (Form SS-4). Armed with his official **IRS Form CP 575 / 147C**, Mateo successfully opened a U.S. dollar business account via Relay Financial and linked his Stripe account to collect payments globally in USD.
 
 ### Case 2: Maria & Jose (Hispanic Business Owners in Tennessee with ITIN)
 Maria and Jose launched a commercial and residential cleaning service in Knoxville, TN. Both operate using an **ITIN (Individual Taxpayer Identification Number)**. When bidding for a major commercial office building contract, the client required proof of corporate tax registration and business insurance.
-* **EIN Solution:** With GUIA NEGOCIOS' guidance, they obtained a corporate EIN for their LLC. This allowed them to set up a dedicated local business bank account in Knoxville, issue formal tax-compliant invoices with their EIN, and secure institutional commercial contracts.
+* **EIN Solution:** With Guia Negocios' guidance, they obtained a corporate EIN for their LLC. This allowed them to set up a dedicated local business bank account in Knoxville, issue formal tax-compliant invoices with their EIN, and secure institutional commercial contracts.
 
 ---
 
@@ -339,7 +339,7 @@ It is common to confuse these three U.S. tax identifiers. Here is a clear breakd
 
 ## Need Assistance Getting Your EIN or Registering a U.S. Business?
 
-At **GUIA NEGOCIOS**, we specialize in assisting Hispanic entrepreneurs — both U.S. residents and non-resident international founders — with entity formation (LLC / C-Corp), IRS EIN processing, and setting up business bank accounts.
+At **Guia Negocios**, we specialize in assisting Hispanic entrepreneurs — both U.S. residents and non-resident international founders — with entity formation (LLC / C-Corp), IRS EIN processing, and setting up business bank accounts.
 
 **Ready to launch your U.S. business with confidence?** [Contact our bilingual business advisory team](/en/contact) today for a personalized consultation.
 
@@ -443,7 +443,7 @@ A diferencia de otros estados con regulaciones complejas, Tennessee no impone re
 El nombre debe incluir el distintivo "LLC" o "Limited Liability Company" y no puede duplicar un negocio registrado en la base de datos de la [Secretaría de Estado de Tennessee (TN SOS)](https://sos.tn.gov/business-services).
 
 ### 2. Designación del Agente Registrado (Registered Agent)
-Es el receptor oficial de notificaciones judiciales y gubernamentales. En GUIA NEGOCIOS proveemos este servicio para asegurar total privacidad y cumplimiento continuo.
+Es el receptor oficial de notificaciones judiciales y gubernamentales. En Guia Negocios proveemos este servicio para asegurar total privacidad y cumplimiento continuo.
 
 ### 3. Presentación de los Artículos de Organización
 Documento constitutivo registrado ante la División de Negocios de TN SOS.
@@ -1720,7 +1720,7 @@ function inlineMarkdown(text: string): string {
   text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, altText, url) => {
     const cleanAlt = (altText && altText.trim()) 
       ? altText.trim().replace(/"/g, '&quot;')
-      : 'GUIA NEGOCIOS - Hispanic Business Consulting and LLC Setup Graphic';
+      : 'Guia Negocios - Hispanic Business Consulting and LLC Setup Graphic';
     const optimizedUrl = optimizeImageUrl(url, { width: 1000, quality: 75 });
     return `<img src="${optimizedUrl}" alt="${cleanAlt}" loading="lazy" decoding="async" class="rounded-xl shadow-sm my-6 w-full object-cover max-h-[500px]" />`;
   });

@@ -4,129 +4,104 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { Image } from 'astro:assets';
-import portraitImg from '../../assets/images/Portrait.webp';
 import knoxvilleImg from '../../assets/images/Knoxvillehorizontal.webp';
-import presentingImg from '../../assets/images/Presenting-with-laptop.webp';
-import communityImg from '../../assets/images/CommunityHERO.webp';
 import favImg from '../../assets/images/GuiaNegociosFAV.webp';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title={`Quiénes Somos | GUIA NEGOCIOS — Knoxville TN`} description="Conozca la misión, visión, valores y el proceso de consultoría empresarial de GUIA NEGOCIOS en Knoxville, TN." ogImage="/images/og/og-about.png">
+<BaseLayout title={`Quiénes Somos | Guia Negocios — Knoxville TN`} description="Conozca la misión, visión, valores y el proceso de consultoría empresarial de Guia Negocios en Knoxville, TN." ogImage="/images/og/og-about.png">
   <Header slot="header" />
   
-  <!-- SECTION 1: About Us Hero -->
-  <section class="py-16 lg:py-24 bg-white">
+  <!-- SECTION 1: Hero -->
+  <section class="pt-16 pb-14 lg:pt-20 lg:pb-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-7 space-y-6">
-          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide">Sobre Nosotros</span>
-          <h1 class="text-4xl sm:text-5xl font-heading text-brand-dark font-semibold leading-tight">
-            Ayudamos a Emprendedores y Pequeñas Empresas a Lanzar, Organizarse y Escalar
-          </h1>
-          <p class="text-slate-600 text-base lg:text-lg leading-relaxed">
-            GUÍA NEGOCIOS brinda consultoría de negocios bilingüe práctica en Knoxville y el Este de Tennessee, guiándolo paso a paso desde la idea inicial hasta el éxito comercial.
+      <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Sobre Nosotros</span>
+      <h1 class="mt-6 max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-heading text-brand-dark font-semibold leading-[1.05] tracking-tight">
+        Ayudamos a Emprendedores y Pequeñas Empresas a Lanzar, Organizarse y Escalar
+      </h1>
+      <p class="mt-8 max-w-2xl text-slate-600 text-base lg:text-lg leading-relaxed">
+        Guia Negocios brinda consultoría de negocios bilingüe práctica en Knoxville y el Este de Tennessee, guiándolo paso a paso desde la idea inicial hasta el éxito comercial.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 2: Knoxville Banner -->
+  <section class="bg-slate-200">
+    <Image src={knoxvilleImg} alt="Knoxville, Tennessee" widths={[800, 1600, 2000]} sizes="100vw" class="w-full h-[240px] sm:h-[380px] lg:h-[460px] object-cover object-center" loading="eager" fetchpriority="high" decoding="async" />
+  </section>
+
+  <!-- SECTION 3: Quiénes Somos -->
+  <section class="py-16 lg:py-20 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary mb-10">Quiénes Somos</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-slate-200 gap-y-10 md:gap-y-0">
+        <div class="space-y-4 md:pr-10 lg:pr-14">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark">
+            Enfocados en los Objetivos
+          </h2>
+          <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Nuestra misión es ayudar a los pequeños empresarios y dueños de negocios en el este de Tennessee a lanzar, organizar y crecer con un apoyo bilingüe que se sienta claro, práctico y personal. Guiamos a los clientes desde la idea hasta el lanzamiento, desde el lanzamiento hasta la visibilidad, y desde la visibilidad hasta operaciones diarias más sólidas.
           </p>
         </div>
-        <div class="lg:col-span-5 flex justify-center lg:justify-end">
-          <div class="w-full max-w-[460px] overflow-hidden rounded-3xl border border-slate-200 shadow-lg bg-slate-200">
-            <Image src={portraitImg} alt="GUIA NEGOCIOS" widths={[400, 800, 1200]} sizes="(max-width: 1024px) 100vw, 500px" class="w-full h-[320px] sm:h-[340px] lg:h-[350px] object-cover object-center scale-110 transition-transform duration-300" loading="eager" fetchpriority="high" />
-          </div>
+        <div class="space-y-4 md:pl-10 lg:pl-14">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark">
+            Orientación Práctica
+          </h2>
+          <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+            No solo explicamos los pasos, caminamos con usted. Le ayudamos a organizar documentos, crear sitios web profesionales, configurar la contabilidad, dar formato a plantillas de facturas y establecer sistemas operativos que realmente pueda ejecutar con confianza.
+          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 2: Quiénes Somos -->
-  <section class="py-16 bg-slate-50 border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-      <div class="bg-white border border-slate-200 rounded-3xl p-8 lg:p-14 shadow-sm">
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide mb-6">Quiénes Somos</span>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div class="space-y-4">
-            <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark">
-              Enfocados en los Objetivos
-            </h2>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Nuestra misión es ayudar a los pequeños empresarios y dueños de negocios en el este de Tennessee a lanzar, organizar y crecer con un apoyo bilingüe que se sienta claro, práctico y personal. Guiamos a los clientes desde la idea hasta el lanzamiento, desde el lanzamiento hasta la visibilidad, y desde la visibilidad hasta operaciones diarias más sólidas.
-            </p>
-          </div>
-          <div class="space-y-4">
-            <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark">
-              Orientación Práctica
-            </h2>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-              No solo explicamos los pasos, caminamos con usted. Le ayudamos a organizar documentos, crear sitios web profesionales, configurar la contabilidad, dar formato a plantillas de facturas y establecer sistemas operativos que realmente pueda ejecutar con confianza.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
-        <Image src={knoxvilleImg} alt="Equipo GUIA NEGOCIOS" widths={[400, 800, 1200]} sizes="100vw" class="w-full h-[320px] object-cover" loading="lazy" decoding="async" />
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 3: Nuestra Misión & Nuestra Visión -->
-  <section class="py-20 bg-white border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-      
-      <!-- Block 1: Nuestra Misión -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-7 space-y-4">
-          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide">Nuestra Misión</span>
-          <h2 class="text-3xl sm:text-4xl font-heading text-brand-dark font-semibold">
+  <!-- SECTION 4: Nuestra Misión & Nuestra Visión -->
+  <section class="py-16 lg:py-20 bg-brand-dark">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-white/20 gap-y-12 md:gap-y-0">
+        <div class="space-y-4 md:pr-10 lg:pr-14">
+          <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-accent">Nuestra Misión</span>
+          <h2 class="text-2xl sm:text-3xl font-heading text-white font-semibold">
             Inspirar, Innovar y Empoderar
           </h2>
-          <p class="text-slate-700 text-base leading-relaxed">
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
             Cada emprendedor cuenta con el talento, la disciplina y la ambición para construir empresas prósperas. Eliminamos las barreras del idioma y la complejidad burocrática para que pueda lanzarse con absoluta claridad y confianza.
           </p>
         </div>
-        <div class="lg:col-span-5 overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
-          <Image src={presentingImg} alt="Nuestra Misión" widths={[400, 800]} sizes="(max-width: 1024px) 100vw, 500px" class="w-full h-[280px] object-cover" loading="lazy" decoding="async" />
-        </div>
-      </div>
-
-      <!-- Block 2: Nuestra Visión -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-5 order-2 lg:order-1 overflow-hidden rounded-3xl border border-slate-200 shadow-md bg-slate-200">
-          <Image src={communityImg} alt="Nuestra Visión" widths={[400, 800]} sizes="(max-width: 1024px) 100vw, 500px" class="w-full h-[280px] object-cover" loading="lazy" decoding="async" />
-        </div>
-        <div class="lg:col-span-7 order-1 lg:order-2 space-y-4">
-          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-sm font-medium tracking-wide">Nuestra Visión</span>
-          <h2 class="text-3xl sm:text-4xl font-heading text-brand-dark font-semibold">
+        <div class="space-y-4 md:pl-10 lg:pl-14">
+          <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-accent">Nuestra Visión</span>
+          <h2 class="text-2xl sm:text-3xl font-heading text-white font-semibold">
             Enfocados en el Éxito de la Comunidad
           </h2>
-          <p class="text-slate-700 text-base leading-relaxed">
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
             Visualizamos una comunidad empresarial sólida e interconectada en Knoxville donde cada emprendedor tenga acceso inmediato a la formalización profesional de negocios, marketing confiable y herramientas operativas prácticas.
           </p>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- SECTION 4: Benefits of Working With Us -->
+  <!-- SECTION 5: Benefits of Working With Us -->
   <section class="py-20 bg-slate-50 border-t border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200/60 border border-slate-300 text-slate-700 text-sm font-medium tracking-wide mb-2">Por qué Elegirnos</span>
+        <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">Por qué Elegirnos</span>
         <h2 class="text-3xl sm:text-4xl font-heading text-brand-dark font-semibold">
           Los Beneficios de Trabajar Con Nosotros
         </h2>
         <p class="text-slate-600 text-base">
-          Por qué los dueños de negocios de habla hispana confían en GUIA NEGOCIOS para manejar el lanzamiento de sus negocios.
+          Por qué los dueños de negocios de habla hispana confían en Guia Negocios para manejar el lanzamiento de sus negocios.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 space-y-6">
-          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m0 2.25c0 3.864-1.92 7.27-4.876 9.35" /></svg>
+      <div class="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-slate-200 gap-y-12 md:gap-y-0">
+
+        <div class="space-y-6 md:px-8 md:first:pl-0 md:last:pr-0">
+          <div class="flex items-center gap-3 text-brand-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m0 2.25c0 3.864-1.92 7.27-4.876 9.35" /></svg>
+            <span aria-hidden="true" class="h-px flex-1 bg-slate-200"></span>
           </div>
           <div>
             <h3 class="text-xl font-heading text-brand-dark font-semibold mb-2">Apoyo 100% Bilingüe</h3>
@@ -136,9 +111,10 @@ const t = useTranslations(lang);
           </div>
         </div>
 
-        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 space-y-6">
-          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766l5.214-1.564a.89.89 0 00.603-1.096l-.888-2.665a.89.89 0 00-1.096-.603l-5.214 1.564a2.653 2.653 0 00-1.564 1.208l-1.564 5.214a.89.89 0 00.603 1.096l2.665.888a.89.89 0 001.096-.603z" /></svg>
+        <div class="space-y-6 md:px-8 md:first:pl-0 md:last:pr-0">
+          <div class="flex items-center gap-3 text-brand-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766l5.214-1.564a.89.89 0 00.603-1.096l-.888-2.665a.89.89 0 00-1.096-.603l-5.214 1.564a2.653 2.653 0 00-1.564 1.208l-1.564 5.214a.89.89 0 00.603 1.096l2.665.888a.89.89 0 001.096-.603z" /></svg>
+            <span aria-hidden="true" class="h-px flex-1 bg-slate-200"></span>
           </div>
           <div>
             <h3 class="text-xl font-heading text-brand-dark font-semibold mb-2">Implementación Práctica</h3>
@@ -148,9 +124,10 @@ const t = useTranslations(lang);
           </div>
         </div>
 
-        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 space-y-6">
-          <div class="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-dark shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+        <div class="space-y-6 md:px-8 md:first:pl-0 md:last:pr-0">
+          <div class="flex items-center gap-3 text-brand-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+            <span aria-hidden="true" class="h-px flex-1 bg-slate-200"></span>
           </div>
           <div>
             <h3 class="text-xl font-heading text-brand-dark font-semibold mb-2">Raíces Locales en Knoxville</h3>
@@ -168,12 +145,12 @@ const t = useTranslations(lang);
   <section class="py-12 bg-slate-100 border-t border-slate-200 text-center">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-xs text-slate-500 italic leading-relaxed">
-        "GUIA NEGOCIOS proporciona educación comercial general y apoyo de consultoría. No somos abogados, contadores ni asesores financieros con licencia. Para obtener asesoramiento legal, fiscal o financiero, consulte a un profesional con licencia."
+        "Guia Negocios proporciona educación comercial general y apoyo de consultoría. No somos abogados, contadores ni asesores financieros con licencia. Para obtener asesoramiento legal, fiscal o financiero, consulte a un profesional con licencia."
       </p>
     </div>
   </section>
 
-  <!-- SECTION 5: Let's Talk CTA -->
+  <!-- SECTION 6: Let's Talk CTA -->
   <section class="py-24 lg:py-32 bg-slate-100 border-t border-slate-200 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
       <div class="max-w-2xl space-y-8">
@@ -184,7 +161,7 @@ const t = useTranslations(lang);
           Siempre estamos abiertos a discutir su proyecto de negocio, mejorar su presencia en línea y organizar sus operaciones.
         </p>
         <div class="flex flex-wrap gap-4 pt-4">
-          <a href={`/${lang}/contact`} class="inline-flex items-center justify-center bg-brand-primary text-white font-semibold py-4 px-8 rounded-full shadow-md hover:bg-brand-primary/90 transition-all text-lg gap-2">
+          <a href={`/${lang}/contact`} class="inline-flex items-center justify-center bg-brand-primary text-white font-semibold py-4 px-8 rounded-full hover:bg-brand-primary/90 transition-all text-lg gap-2">
             Programe una Llamada
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -193,7 +170,7 @@ const t = useTranslations(lang);
         </div>
       </div>
       <div class="w-full lg:w-auto flex-shrink-0 flex justify-center">
-        <Image src={favImg} alt="GUIA NEGOCIOS Logo" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" loading="lazy" />
+        <Image src={favImg} alt="Guia Negocios Logo" class="w-full max-w-xs md:max-w-sm mx-auto drop-shadow-xl" loading="lazy" />
       </div>
     </div>
   </section>

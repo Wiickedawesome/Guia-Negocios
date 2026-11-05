@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import Container from './ui/Container.astro';
+import Button from './ui/Button.astro';
+import heroPhoto from '../assets/images/Presenting-with-laptop.webp';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const hero = t('home.hero') as {
+  eyebrow: string;
+  titleLead: string;
+  titleHighlight: string;
+  subtitle: string;
+  cta: string;
+  ctaSecondary: string;
+  proof: string[];
+  photoAlt: string;
+  railLabel: string;
+  pillars: string[];
+};
+
+// Two digits so the rail reads as an ordered path, not a tag list.
+const railNumber = (index: number) => String(index + 1).padStart(2, '0');
+---
+
+<!--
+  Photographic institutional hero: a real consultation scene carries the
+  warmth, solid forest green carries the authority. Copy sits on the opaque
+  left half of the scrim; the photograph still reads on the right.
+-->
+<section class="relative isolate overflow-hidden bg-brand-primary">
+  <Image
+    src={heroPhoto}
+    alt={hero.photoAlt}
+    widths={[640, 960, 1280, 1920]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 -z-10 h-full w-full object-cover object-[60%_center]"
+  />
+
+  <!-- Left-weighted scrim: opaque where the copy sits, opening up on the right. -->
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 -z-10 bg-gradient-to-r from-brand-primary from-0% via-brand-primary/95 via-45% to-brand-primary/25 to-100%"
+  ></div>
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 -z-10 bg-gradient-to-t from-brand-dark/60 via-transparent to-brand-dark/20"
+  ></div>
+
+  <Container class="relative flex min-h-[600px] flex-col justify-center py-16 lg:min-h-[680px] lg:py-24">
+    <div class="max-w-2xl">
+      <p class="flex items-center gap-3 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brand-accent">
+        <span aria-hidden="true" class="h-px w-10 bg-brand-accent"></span>
+        {hero.eyebrow}
+      </p>
+
+      <h1 class="mt-7 font-heading text-[clamp(2.5rem,6vw,4.6rem)] font-extrabold leading-[0.95] tracking-[-0.04em] text-white">
+        {hero.titleLead}
+        <span class="block text-brand-accent">{hero.titleHighlight}</span>
+      </h1>
+
+      <p class="mt-7 max-w-xl text-base leading-[1.75] text-white/80 sm:text-lg">
+        {hero.subtitle}
+      </p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Button href={`/${lang}/contact`} variant="gold" size="xl">{hero.cta}</Button>
+        <Button href={`/${lang}/services`} variant="ghost" size="xl">{hero.ctaSecondary}</Button>
+      </div>
+
+      <ul class="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
+        {hero.proof.map((item, index) => (
+          <li class="flex items-center gap-5 text-[0.8rem] font-medium text-white/60">
+            {index > 0 && <span aria-hidden="true" class="h-1 w-1 rounded-full bg-brand-accent"></span>}
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Container>
+
+  <!-- Deliverable rail: the same five pillars the page expands on below. -->
+  <div class="relative border-t border-brand-accent/25 bg-brand-dark/85 backdrop-blur-sm">
+    <Container class="py-5">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <p class="text-[0.66rem] font-bold uppercase tracking-[0.2em] text-brand-accent/80">{hero.railLabel}</p>
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 lg:flex lg:flex-wrap lg:items-center lg:gap-x-8">
+          {hero.pillars.map((pillar, index) => (
+            <li class="flex items-baseline gap-2 text-[0.82rem] font-medium text-white/85">
+              <span aria-hidden="true" class="font-heading text-[0.7rem] font-bold tabular-nums text-brand-accent">{railNumber(index)}</span>
+              {pillar}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  </div>
+</section>

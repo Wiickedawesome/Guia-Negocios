@@ -8,8 +8,8 @@ import { getLangFromUrl } from '../../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 ---
 
-<BaseLayout title="Guía de Sistemas de Operación y Crecimiento | GUIA NEGOCIOS" description="Una guía detallada sobre cómo GUIA NEGOCIOS interviene en negocios activos, identifica cuellos de botella administrativos, optimiza márgenes de ganancia y construye sistemas escalables." altPath="/en/services/operations-growth">
-  <Header slot="header" />
+<BaseLayout title="Guía de Sistemas de Operación y Crecimiento | Guia Negocios" description="Una guía detallada sobre cómo Guia Negocios interviene en negocios activos, identifica cuellos de botella administrativos, optimiza márgenes de ganancia y construye sistemas escalables." altPath="/en/services/operations-growth">
+  <Header slot="header" altPath="/en/services/operations-growth" />
   
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -17,7 +17,7 @@ const lang = getLangFromUrl(Astro.url);
     "name": "Consultoría de Sistemas de Operación y Crecimiento",
     "provider": {
       "@type": "LocalBusiness",
-      "name": "GUIA NEGOCIOS",
+      "name": "Guia Negocios",
       "url": "https://guianegocios.net",
       "telephone": "+1-865-202-7112",
       "address": {
@@ -34,14 +34,14 @@ const lang = getLangFromUrl(Astro.url);
   
   <!-- Service Package Hero Header -->
   <section class="py-16 lg:py-24 bg-brand-dark text-white border-b border-slate-800">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <div class="flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-wider text-slate-400">
-        <a href={`/${lang}/services`} class="text-brand-primary hover:underline">← Volver a Todos los Servicios</a>
+        <a href={`/${lang}/services`} class="text-slate-300 hover:text-white transition-colors">← Volver a Todos los Servicios</a>
       </div>
-      <div class="inline-flex items-center gap-2 bg-brand-accent/20 border border-brand-accent/50 text-brand-accent text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+      <span class="block text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-accent">
         Paquete Avanzado Nivel 06
-      </div>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold leading-tight text-white">
+      </span>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-semibold leading-[1.05] tracking-tight text-white">
         Sistemas de Operación y Crecimiento
       </h1>
       <p class="text-xl text-slate-300 leading-relaxed font-sans">
@@ -54,7 +54,7 @@ const lang = getLangFromUrl(Astro.url);
           <span class="text-base font-bold text-white">Personalizado por Empresa</span>
         </div>
         <div class="ml-auto">
-          <a href={`/${lang}/contact`} class="inline-block bg-brand-accent text-brand-dark font-bold py-3.5 px-8 rounded-full hover:bg-yellow-300 transition-colors shadow-md text-base">
+          <a href={`/${lang}/contact`} class="inline-block bg-brand-accent text-brand-dark font-bold py-3.5 px-8 rounded-full hover:bg-yellow-300 transition-colors text-base">
             Reservar Auditoría de Operaciones
           </a>
         </div>
@@ -63,29 +63,34 @@ const lang = getLangFromUrl(Astro.url);
   </section>
 
   <!-- Blog Article Content Body -->
-  <article class="py-16 bg-white text-slate-800 leading-relaxed font-sans">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      
-      <!-- Key Takeaways Callout Box -->
-      <div class="bg-brand-light border-l-4 border-brand-primary rounded-r-2xl p-6 lg:p-8 space-y-4">
-        <h2 class="text-lg font-heading font-bold text-brand-dark uppercase tracking-wider">
-          El Costo Oculto de una Operación Desorganizada
-        </h2>
-        <p class="text-slate-700 text-sm sm:text-base leading-relaxed">
+  <article class="bg-white text-slate-800">
+
+    <!-- Pull statement: full-bleed band -->
+    <section class="bg-slate-50 border-b border-slate-200 py-16 lg:py-20">
+      <div class="px-4 sm:px-6 lg:px-8 space-y-8">
+        <p class="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">El Costo Oculto de una Operación Desorganizada</p>
+        <p class="max-w-none text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-heading font-semibold leading-[1.1] tracking-tight text-brand-dark">
           Muchos dueños de negocio en Knoxville trabajan más de 60 horas a la semana no porque les falten clientes, sino porque sus operaciones internas son caóticas. Presupuestos perdidos, recibos en papel, facturas sin cobrar e interrupciones constantes agotan su energía y sus ganancias. <strong>Sistemas de Operación y Crecimiento</strong> es nuestro programa para intervenir en su empresa, identificar cada fricción y construir una operación profesional.
         </p>
       </div>
+    </section>
+
+    <!-- Numbered chapters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
 
       <!-- Chapter 1: The Operational Audit -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Paso 01</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          1. Auditoría Operativa e Identificación de Fallas
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">PASO 01</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            1. Auditoría Operativa e Identificación de Fallas
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Comenzamos reuniéndonos con el dueño del negocio para auditar a fondo su flujo de trabajo actual. Examinamos cómo llega un nuevo cliente, cómo se envían presupuestos, cómo se programa el trabajo, cómo se facturan los cobros y cómo entra el dinero al banco.
         </p>
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-3">
+        <div class="border-t border-slate-200 pt-6 space-y-3">
           <h3 class="font-bold text-brand-dark text-sm uppercase tracking-wider">Fallas Operativas Frecuentes que Detectamos:</h3>
           <ul class="space-y-2 text-sm text-slate-700">
             <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">✕</span> Presupuestos enviados por mensajes de texto sin contrato formal ni contrato de alcance</li>
@@ -94,39 +99,47 @@ const lang = getLangFromUrl(Astro.url);
             <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">✕</span> Precios bajos por no calcular costos de materiales ni costos fijos de mano de obra</li>
           </ul>
         </div>
+        </div>
       </section>
 
       <!-- Chapter 2: Margin & Pricing Strategy -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Paso 02</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          2. Optimización de Márgenes y Ajuste de Precios
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">PASO 02</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            2. Optimización de Márgenes y Ajuste de Precios
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Un negocio ocupado no necesariamente es un negocio rentable. Realizamos un análisis de margen detallado para recalcular su estructura de precios, asegurando que cada trabajo cubra costos directos, salarios, gastos fijos y una ganancia saludable.
         </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 border-t border-slate-200 pt-6">
+          <div class="space-y-2">
             <h3 class="font-bold text-brand-dark">Cálculo de Costo Real</h3>
             <p class="text-xs text-slate-600">Determinación del costo por hora incluyendo gasolina, seguros, software y desgaste de equipo.</p>
           </div>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-2">
+          <div class="space-y-2">
             <h3 class="font-bold text-brand-dark">Estrategia de Incremento de Precios</h3>
             <p class="text-xs text-slate-600">Orientación para comunicar aumentos de precio educados y profesionales a clientes actuales.</p>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Chapter 3: Digital Software & Invoicing Setup -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Paso 03</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          3. Herramientas de Agenda, Facturación y Seguimiento Digital
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">PASO 03</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            3. Herramientas de Agenda, Facturación y Seguimiento Digital
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Eliminamos el desorden en papel implementando software digital moderno y sencillo (Jobber, QuickBooks, Square o Calendly) adaptado al nivel tecnológico de su equipo.
         </p>
-        <div class="bg-slate-900 text-white rounded-2xl p-6 lg:p-8 space-y-4">
+        <div class="bg-brand-dark text-white p-8 lg:p-10 space-y-5">
           <h3 class="text-xl font-heading font-bold text-brand-accent">Mejoras en Software y Flujo de Trabajo:</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-300">
             <div>• Reserva de citas automatizada y recordatorios por SMS</div>
@@ -137,18 +150,22 @@ const lang = getLangFromUrl(Astro.url);
             <div>• Historial de clientes y notas accesibles desde el celular</div>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Chapter 4: Templates & Scripts -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Paso 04</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          4. Plantillas de Contrato y Guiones Bilingües
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">PASO 04</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            4. Plantillas de Contrato y Guiones Bilingües
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           La comunicación profesional distingue a los negocios comerciales. Le equipamos con un juego completo de plantillas de contratos bilingües, órdenes de trabajo, formularios de cambio y guiones de atención al cliente.
         </p>
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-3">
+        <div class="border-t border-slate-200 pt-6 space-y-3">
           <h3 class="font-bold text-brand-dark text-sm uppercase tracking-wider">Bóveda de Plantillas Operativas:</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
             <div>• Contrato de Servicios y Alcance de Trabajo</div>
@@ -159,47 +176,55 @@ const lang = getLangFromUrl(Astro.url);
             <div>• Guía para Contratación de Empleados / Subcontratistas</div>
           </div>
         </div>
+        </div>
       </section>
 
       <!-- Chapter 5: Staff Training & CreedaVA Delegation -->
-      <section class="space-y-4 pt-4 border-t border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary block">Paso 05</span>
-        <h2 class="text-3xl font-heading font-bold text-brand-dark">
-          5. Capacitación del Equipo y Delegación a CreedaVA
-        </h2>
-        <p class="text-slate-700 text-base leading-relaxed">
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 lg:gap-x-12 border-t border-slate-200 pt-12 first:border-t-0 first:pt-0">
+        <div class="lg:col-span-3">
+          <p class="lg:sticky lg:top-28 text-[0.68rem] font-bold uppercase tracking-[0.22em] text-brand-primary">PASO 05</p>
+        </div>
+        <div class="lg:col-span-9 max-w-3xl space-y-5">
+          <h2 class="text-2xl sm:text-3xl font-heading font-semibold text-brand-dark leading-tight">
+            5. Capacitación del Equipo y Delegación a CreedaVA
+          </h2>
+<p class="text-slate-700 text-base leading-relaxed">
           Los sistemas no funcionan si el equipo no los usa. Realizamos sesiones de capacitación 1-a-1 con el dueño y su personal para garantizar que todos usen las herramientas cómodamente.
         </p>
-        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 space-y-4">
+        <div class="border-t border-slate-200 pt-6 space-y-4">
           <div class="flex flex-wrap items-center gap-3">
-            <span class="bg-brand-primary text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Listo para Delegar</span>
+            <span class="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-brand-primary">Listo para Delegar</span>
             <h3 class="text-xl font-heading font-bold text-brand-primary">Preparando su Negocio para Asistencia Virtual</h3>
           </div>
           <p class="text-slate-600 text-sm leading-relaxed">
             Una vez que sus procesos de recepción de clientes, agenda y facturación se documentan en Procedimientos Operativos Estándar (SOPs), puede delegar tareas administrativas a un Asistente Virtual bilingüe dedicado a través de <a href="https://creedava.com" target="_blank" rel="noopener noreferrer" class="text-brand-primary font-bold hover:underline">CreedaVA (creedava.com)</a>.
           </p>
         </div>
-      </section>
-
-      <!-- Author Bio Box -->
-      <div class="bg-brand-dark text-white rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
-        <div class="w-20 h-20 rounded-full bg-brand-primary text-white text-2xl font-extrabold flex items-center justify-center flex-shrink-0">
-          GN
         </div>
-        <div class="space-y-3 text-center md:text-left">
-          <h3 class="text-2xl font-heading font-bold">¿Listo para Traer Orden y Rentabilidad a su Empresa?</h3>
-          <p class="text-slate-300 text-sm leading-relaxed">
-            Revisemos sus retos administrativos actuales y construyamos un plan operativo a su medida. Agende una llamada de auditoría 1-a-1 con nuestro equipo.
-          </p>
-          <div class="pt-2">
-            <a href={`/${lang}/contact`} class="inline-block bg-brand-primary text-white font-bold py-3.5 px-8 rounded-full hover:bg-opacity-90 transition-colors shadow-md text-base">
-              Agendar Auditoría Operativa
-            </a>
+      </section>
+    </div>
+
+    <!-- Full-bleed CTA band -->
+    <section class="bg-brand-dark text-white py-16 lg:py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-x-12 items-center px-4 sm:px-6 lg:px-8">
+        <div class="lg:col-span-8 space-y-6">
+          <div class="w-16 h-16 border border-white/25 text-brand-accent text-lg font-bold tracking-widest flex items-center justify-center">
+            GN
+          </div>
+          <div class="space-y-3">
+            <h3 class="text-2xl lg:text-4xl font-heading font-semibold leading-[1.15] tracking-tight text-white">¿Listo para Traer Orden y Rentabilidad a su Empresa?</h3>
+            <p class="max-w-2xl text-base text-slate-300 leading-relaxed">Revisemos sus retos administrativos actuales y construyamos un plan operativo a su medida. Agende una llamada de auditoría 1-a-1 con nuestro equipo.</p>
           </div>
         </div>
-      </div>
+        <div class="lg:col-span-4 flex flex-wrap gap-4 lg:justify-end">
 
-    </div>
+            <a href={`/${lang}/contact`} class="inline-block bg-brand-primary text-white font-bold py-3.5 px-8 rounded-full hover:bg-opacity-90 transition-colors text-base">
+              Agendar Auditoría Operativa
+            </a>
+        </div>
+      </div>
+    </section>
+
   </article>
 
   <LegalDisclaimer />

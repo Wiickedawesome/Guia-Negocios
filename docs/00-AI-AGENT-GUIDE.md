@@ -18,9 +18,27 @@ As an AI agent operating within the **Guia Negocios** workspace, you **MUST** st
 * To add new UI text tokens, always update both `en.json` and `es.json` simultaneously.
 
 ### C. Design System & Aesthetics
-* **Brand Colors:** Use custom Tailwind utility classes (`brand-primary` `#1B4E2B` forest green, `brand-accent` `#F0C850` gold, `brand-dark` `#1A2E35`, `brand-gray` `#1E2A2F`) defined in [src/styles/global.css](file:///home/wicked/Projects/Guia%20Negocios/src/styles/global.css). Do not use generic browser blues or off-palette colors.
-* **Glassmorphism:** Use `bg-white/10 backdrop-blur-md border border-white/10` for card overlays and high-end modern panels.
-* **Typography & Spacing:** Use `font-heading` for headers, `font-sans` for copy, `rounded-xl` or `rounded-2xl` for containers, and `shadow-xl` for depth.
+
+**`docs/03-styling-and-i18n.md` §1 is the authority. Read it before building or restyling any page.** Summary of the non-negotiables:
+
+* **Brand Colors:** Use custom Tailwind utility classes (`brand-primary` `#1B4E2B` forest green, `brand-accent` `#F0C850` gold, `brand-dark` `#1A2E35`, `brand-light` `#F2F7F4`, `brand-gray` `#1E2A2F`) defined in [src/styles/global.css](file:///home/wicked/Projects/Guia%20Negocios/src/styles/global.css). Do not use generic browser blues or off-palette colours.
+* **Editorial, not decorative.** Flat surfaces, hairline dividers, generous whitespace. No glassmorphism, no card shadows, no hover lift, no `rounded-3xl` content cards, no gradient hero washes, no pill badges. These were all removed in the 2026-11 redesign; reintroducing one is a regression.
+* **Radius:** `rounded-full` for every button/CTA/nav link; `rounded-[2.5rem]` only for the four service tier cards; `rounded-2xl` for form panels and toasts; **zero radius everywhere else**.
+* **Typography:** `font-heading` for headings, `font-body` for copy (both resolve to Inter — DM Sans is a fallback that is never loaded). Heroes are `font-semibold` at `text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight`.
+* **Hover contract:** interactive tiles are `bg-brand-light` and fill to `hover:bg-brand-primary`; every child must switch to `text-white` / `text-white/75` / `text-brand-accent` on `group-hover` or it becomes invisible.
+* **Alignment:** every section sits in `ui/Container.astro` (`max-w-7xl`, 32px left edge at ≥1280px). Do not use `max-w-5xl`/`max-w-4xl` for body sections — it breaks the shared gutter.
+
+### C2. Adding a New Page
+
+Copy the hero from §1.2 of the styling doc, then check, in order:
+
+1. `<Header slot="header" />` and `<Footer slot="footer" />` are both present — `/es/faq` and `/en/faq` are missing the header today because this was skipped.
+2. Hero uses the left-aligned 7xl pattern with a small-caps eyebrow; no centred text, no gradient.
+3. Section bands alternate `bg-white` / `bg-slate-50` with `border-t border-slate-200`; spacing `py-16 lg:py-20`.
+4. Every internal `href` is prefixed with the page's own locale (`/en/...` on English pages, `/es/...` on Spanish ones; home is `/`).
+5. Add the page to both locales, then confirm the sitemap count rises by 2 after `npm run build`.
+6. `LegalDisclaimer` on any page giving business/tax/LLC/EIN guidance.
+7. No published prices, no unsourced outcome statistics.
 
 ### D. Firebase Singleton SDK Rule
 * Always import pre-initialized Firebase singletons (`db` for Firestore, `aiModel` for Gemini) from [src/lib/firebase.ts](file:///home/wicked/Projects/Guia%20Negocios/src/lib/firebase.ts).
@@ -89,5 +107,13 @@ As an AI agent operating within the **Guia Negocios** workspace, you **MUST** st
 
 ## 5. Known Limitations & Technical Debt
 
+* **`AnimatedLogoHero.astro` is dead** (zero references). Safe to delete.
+* **Legal disclaimer text lives in five places** — `LegalDisclaimer.astro` plus inline copies in `about.astro` and `contact.astro` (both locales). A wording change needs five edits.
 * **Firebase Auth Guard:** Admin pages rely on client-side authentication checks; SSR middleware route protection can be added in future iterations if SSR mode is enabled.
+* **App Check blocks `localhost`** for admin pages and for the blog's live-post hydration (`FirebaseError: Missing or insufficient permissions`), because the debug token is not registered. Admin and hydrated blog cards must be verified on the live domain, never locally.
 * **EasyMDE Client Hydration:** EasyMDE requires `is:inline` or client script mounting inside Astro templates due to direct DOM manipulation.
+* **Guide slugs differ per locale.** `/es/services/paquete-lanzamiento-completo` ↔ `/en/services/complete-launch-bundle`, `operaciones-crecimiento` ↔ `operations-growth`, `apoyo-creedava` ↔ `creedava-support`. `services.astro` resolves them through the `GUIDE_SLUGS` map — never build a guide href from `/${lang}/services/<english-slug>`. `firebase.json` still carries 301s for the old cross-locale paths; those are compatibility only.
+* **Translated-slug pages must pass `altPath` to `<Header>`, not just `<BaseLayout>`.** The header's default language toggle only swaps `/es` ↔ `/en` and keeps the slug, so a guide page that passes `altPath` to the layout alone ships a toggle that 404s. All six guides now pass it to both. `blog/[slug].astro` does the same with `altUrl`.
+* **Link crawls will always report two unavoidable misses.** (1) Astro emits `dist/404.html`, not `dist/404/index.html`, so a crawler resolving `/404` as a directory reports it missing — Firebase Hosting serves it correctly. (2) Sitemap/canonical `hreflang` alternates for a *non-existent* locale twin are avoided via `noAlternate`; genuine twins resolve through the `firebase.json` 301s. As of 2026-11-05 the crawl is **1292 links, 0 real misses** with only the `/404` false positive remaining. Do not "fix" either by creating duplicate pages.
+
+**Resolved 2026-11-05, keep them resolved:** both FAQ pages now render `<Header>` (they previously had no nav, logo or language toggle); the six service guide pages and both FAQ pages were migrated off `rounded-*`/`shadow-*` to the flat editorial surface; the header breakpoint moved from `md` to `lg` (the nav overflowed 768px by 35px); the six guide pages were restructured into the full-bleed band + numbered-rail pattern (§1.7 of the styling doc).
