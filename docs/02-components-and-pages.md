@@ -6,6 +6,7 @@ The application routes are structured strictly into three domain sections:
 
 ### A. Root (Spanish Home)
 * `/src/pages/index.astro` — Spanish homepage. Spanish is the default locale and is served at the site root, so this is the real `/es` home content rather than a locale-detecting redirect.
+* `/src/pages/404.astro` — Branded not-found page. Astro emits it as **`dist/404.html`** (not `dist/404/index.html`), and Firebase Hosting serves it for unmatched paths with a real 404 status. Because of that filename it is **absent from the sitemap by design** and always shows up as one false positive in local link crawls — do not "fix" it by adding `dist/404/index.html`.
 
 ### B. English Public Portal (`/src/pages/en/`)
 * `/en/index.astro` — Homepage featuring business value propositions, service highlights, and testimonials.

@@ -46,19 +46,29 @@ grep -rn 'rounded-\(sm\|md\|lg\|xl\|2xl\|3xl\)\|shadow-\(sm\|md\|lg\|xl\)' \
   src/pages src/components | grep -v admin
 ```
 
-The output must be **only** these, and nothing else:
+Every hit it returns should fall into one of these rows:
 
 | Where | What | Why it is allowed |
 | :--- | :--- | :--- |
-| `services.astro` ×4 cards, both locales | `rounded-[2.5rem]`, `shadow-sm`, `hover:shadow-xl` | Exception 1 — tier cards |
+| `services.astro` tier cards, both locales | `shadow-sm` + `hover:shadow-xl` (the card's `rounded-[2.5rem]` is a *separate* token — that grep does not match it) | Exception 1 — tier cards |
 | `services.astro` featured card | `rounded-full … shadow-md` pill | Exception 1 — the flagship flag |
-| `services.astro` checklist bullets | `w-5 h-5 rounded-full` | Circles, not cards |
 | `about.astro`, `index.astro`, `services.astro` | `drop-shadow-xl` on the decorative logo | Exception 2 |
 | `blog/[slug].astro`, `blog/view.astro` | `drop-shadow-md` on the post `<h1>` | Exception 3 |
-| `contact.astro` | `rounded-2xl` on the status toast | Documented radius for form panels and toasts |
-| `Header.astro` | `rounded-2xl` mobile-menu rows, `shadow-lg` on the floating mobile panel | Overlay chrome, not page content |
+| `contact.astro` ×4, both locales | `rounded-2xl` on the status toast | Documented radius for form panels and toasts |
+| `Header.astro` ×2 | `rounded-2xl` mobile-menu rows | Overlay chrome, not page content |
+| `Header.astro` ×1 | `shadow-lg` on the floating mobile panel | Overlay chrome — a floating panel must detach from the page |
 
-**Any hit on a tile, band, blog card, panel, plain CTA or button is a regression** — flatten it. Last audited 2026-11-05: 52 hits, every one accounted for above; `rounded-lg`/`rounded-md` count is **0** (the landing-page button, the burger button and the contact toasts were corrected).
+**Known drift — NOT sanctioned (20 lines).** The sweep missed these; they are documented rather than quietly legitimised:
+
+| Where | What | Verdict |
+| :--- | :--- | :--- |
+| `services.astro` ×4 CTAs per locale | `shadow-sm` on plain pill buttons | Should be flat — remove on next touch |
+| `services.astro` ×5 checklist bullets per locale | `shadow-sm` on the `w-5 h-5` tick circles | Should be flat — remove on next touch |
+| `blog.astro` ×1 per locale | `shadow-sm` on the closing CTA pill | Should be flat — remove on next touch |
+
+These were left in place deliberately in the 2026-11-05 audit: the audit's remit was documentation, and removing them is a visual edit that was not requested. They carry no layout or contrast risk, so flattening them is safe whenever those files are next edited.
+
+**Measured state, 2026-11-05:** the grep above returns **49 lines** — `es/services.astro` 14, `en/services.astro` 14, `contact.astro` 4 each, `Header.astro` 3, one per locale in `blog.astro` / `blog/[slug].astro` / `blog/view.astro` / `about.astro` / `index.astro`. Of those, 29 are sanctioned and 20 are the drift below. `rounded-lg` and `rounded-md` return **0**.
 
 ### 1.1 Radius Rules
 
@@ -133,7 +143,9 @@ When a tile is generated twice — once in Astro markup and once in a client scr
 
 ### 1.5 Dark Bands
 
-`bg-brand-dark` with gold eyebrows (`text-brand-accent`), white headings, `text-slate-300` body, and `md:divide-white/20` hairlines. Used by About mission/vision, the blog advisory callout, and (legacy) the FAQ hero.
+`bg-brand-dark` with gold eyebrows (`text-brand-accent`), white headings, `text-slate-300` body, and `md:divide-white/20` hairlines. Used by the About mission/vision block, the blog advisory callout, the six service-guide heroes and their closing CTA bands, and the mid-page blocks on `/services`.
+
+The FAQ hero is **not** a dark band — it moved to `bg-slate-50 border-b border-slate-200` when the FAQ pages gained a `<Header>` on 2026-11-05. Do not revert it to dark.
 
 ### 1.6 Section Rhythm, Dividers, Shadows
 

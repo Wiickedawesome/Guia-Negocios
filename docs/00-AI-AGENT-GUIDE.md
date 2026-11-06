@@ -22,7 +22,7 @@ As an AI agent operating within the **Guia Negocios** workspace, you **MUST** st
 **`docs/03-styling-and-i18n.md` §1 is the authority. Read it before building or restyling any page.** Summary of the non-negotiables:
 
 * **Brand Colors:** Use custom Tailwind utility classes (`brand-primary` `#1B4E2B` forest green, `brand-accent` `#F0C850` gold, `brand-dark` `#1A2E35`, `brand-light` `#F2F7F4`, `brand-gray` `#1E2A2F`) defined in [src/styles/global.css](file:///home/wicked/Projects/Guia%20Negocios/src/styles/global.css). Do not use generic browser blues or off-palette colours.
-* **Editorial, not decorative.** Flat surfaces, hairline dividers, generous whitespace. No glassmorphism, no card shadows, no hover lift, no `rounded-3xl` content cards, no gradient hero washes, no pill badges. These were all removed in the 2026-11 redesign; reintroducing one is a regression.
+* **Editorial, not decorative.** Flat surfaces, hairline dividers, generous whitespace. No glassmorphism, no card shadows, no hover lift, no `rounded-3xl` content cards, no gradient hero washes, no pill badges. These were all removed in the 2026-11 redesign; reintroducing one is a regression. The only sanctioned shadows are the tier cards, the `drop-shadow-*` logo/`<h1>` image shadows, and the mobile-menu overlay — see §1.
 * **Radius:** `rounded-full` for every button/CTA/nav link; `rounded-[2.5rem]` only for the four service tier cards; `rounded-2xl` for form panels and toasts; **zero radius everywhere else**.
 * **Typography:** `font-heading` for headings, `font-body` for copy (both resolve to Inter — DM Sans is a fallback that is never loaded). Heroes are `font-semibold` at `text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight`.
 * **Hover contract:** interactive tiles are `bg-brand-light` and fill to `hover:bg-brand-primary`; every child must switch to `text-white` / `text-white/75` / `text-brand-accent` on `group-hover` or it becomes invisible.
@@ -32,13 +32,14 @@ As an AI agent operating within the **Guia Negocios** workspace, you **MUST** st
 
 Copy the hero from §1.2 of the styling doc, then check, in order:
 
-1. `<Header slot="header" />` and `<Footer slot="footer" />` are both present — `/es/faq` and `/en/faq` are missing the header today because this was skipped.
+1. `<Header slot="header" />` and `<Footer slot="footer" />` are both present. This was skipped once and shipped two FAQ pages with no nav, logo or language toggle — it is the single most-missed step.
 2. Hero uses the left-aligned 7xl pattern with a small-caps eyebrow; no centred text, no gradient.
 3. Section bands alternate `bg-white` / `bg-slate-50` with `border-t border-slate-200`; spacing `py-16 lg:py-20`.
 4. Every internal `href` is prefixed with the page's own locale (`/en/...` on English pages, `/es/...` on Spanish ones; home is `/`).
 5. Add the page to both locales, then confirm the sitemap count rises by 2 after `npm run build`.
 6. `LegalDisclaimer` on any page giving business/tax/LLC/EIN guidance.
-7. No published prices, no unsourced outcome statistics.
+7. **If the slug is translated between locales**, pass `altPath` to `<Header>` as well as `<BaseLayout>` — the header does not inherit it. See `docs/06` Issue 3.
+8. No published prices, no unsourced outcome statistics.
 
 ### D. Firebase Singleton SDK Rule
 * Always import pre-initialized Firebase singletons (`db` for Firestore, `aiModel` for Gemini) from [src/lib/firebase.ts](file:///home/wicked/Projects/Guia%20Negocios/src/lib/firebase.ts).
@@ -114,6 +115,8 @@ Copy the hero from §1.2 of the styling doc, then check, in order:
 * **EasyMDE Client Hydration:** EasyMDE requires `is:inline` or client script mounting inside Astro templates due to direct DOM manipulation.
 * **Guide slugs differ per locale.** `/es/services/paquete-lanzamiento-completo` ↔ `/en/services/complete-launch-bundle`, `operaciones-crecimiento` ↔ `operations-growth`, `apoyo-creedava` ↔ `creedava-support`. `services.astro` resolves them through the `GUIDE_SLUGS` map — never build a guide href from `/${lang}/services/<english-slug>`. `firebase.json` still carries 301s for the old cross-locale paths; those are compatibility only.
 * **Translated-slug pages must pass `altPath` to `<Header>`, not just `<BaseLayout>`.** The header's default language toggle only swaps `/es` ↔ `/en` and keeps the slug, so a guide page that passes `altPath` to the layout alone ships a toggle that 404s. All six guides now pass it to both. `blog/[slug].astro` does the same with `altUrl`.
-* **Link crawls will always report two unavoidable misses.** (1) Astro emits `dist/404.html`, not `dist/404/index.html`, so a crawler resolving `/404` as a directory reports it missing — Firebase Hosting serves it correctly. (2) Sitemap/canonical `hreflang` alternates for a *non-existent* locale twin are avoided via `noAlternate`; genuine twins resolve through the `firebase.json` 301s. As of 2026-11-05 the crawl is **1292 links, 0 real misses** with only the `/404` false positive remaining. Do not "fix" either by creating duplicate pages.
+* **Link crawls will always report two unavoidable misses.** (1) Astro emits `dist/404.html`, not `dist/404/index.html`, so a crawler resolving `/404` as a directory reports it missing — Firebase Hosting serves it correctly. (2) Sitemap/canonical `hreflang` alternates for a *non-existent* locale twin are avoided via `noAlternate`; genuine twins resolve through the `firebase.json` 301s. Measured 2026-11-05: **1292 links, 0 real misses**, `/404` the only false positive. The link total is **not** stable — it grows with published content (1354 on 2026-11-06 after two more posts), so gate on "missing === 1", not on the total. Do not "fix" the `/404` hit by creating a duplicate page.
 
-**Resolved 2026-11-05, keep them resolved:** both FAQ pages now render `<Header>` (they previously had no nav, logo or language toggle); the six service guide pages and both FAQ pages were migrated off `rounded-*`/`shadow-*` to the flat editorial surface; the header breakpoint moved from `md` to `lg` (the nav overflowed 768px by 35px); the six guide pages were restructured into the full-bleed band + numbered-rail pattern (§1.7 of the styling doc).
+**Resolved 2026-11-05, keep them resolved:** both FAQ pages now render `<Header>` (they previously had no nav, logo or language toggle); the six service guide pages and both FAQ pages were migrated off `rounded-*`/`shadow-*` to the flat editorial surface; the header breakpoint moved from `md` to `lg` (the nav overflowed 768px by 35px); the six guide pages were restructured into the full-bleed band + numbered-rail pattern (§1.7 of the styling doc); the CTA bands' letter monograms were replaced by the white CreedaVA vector logo on the two CreedaVA guides and removed entirely from the four Guia Negocios guides.
+
+**Open, not resolved:** production was deployed from `redesign/site-refresh-2026-11` on 2026-11-05, but `main` still points at the pre-redesign commit. The next CI deploy from `main` will revert the site — merge the branch first. See `docs/05` § Branch vs `main`.

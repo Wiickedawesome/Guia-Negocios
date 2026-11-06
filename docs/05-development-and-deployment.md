@@ -112,6 +112,48 @@ npx firebase deploy --only functions
 npx firebase deploy
 ```
 
+### Verified deploy sequence (verified 2026-11-05)
+
+```bash
+npx firebase login:list          # confirms an account is cached — NOT that the token works
+npx firebase use                 # must print guianegocios-prod
+npm run build                    # gate: no errors, and "N page(s) built"
+npx firebase deploy --only hosting
+node scripts/smoke-test-production.mjs   # gate: expect "0 failed"
+```
+
+**Do not hardcode the page count as the gate.** Blog posts and landing pages are read from Firestore at build time, so `page(s) built` and the sitemap URL count change whenever content is published, with no source edit. Measured on 2026-11-05 the build reported 58 pages / 38 sitemap URLs; on 2026-11-06 the same source reported 60 / 40 purely because two blog URLs were published in between. The gate is `0 failed` from the smoke test, not a fixed number.
+
+A healthy deploy prints `found N files in dist`, `version finalized`, `release complete`. The CLI deploys whatever is in `dist/`, so **always build immediately before deploying** — it does not rebuild for you.
+
+If it aborts with `Your credentials are no longer valid`, see `docs/06` Issue 4 — a human must run `login --reauth`.
+
+### ⚠ Branch vs `main`
+
+CI deploys hosting on push to **`main`**, but a manual `firebase deploy --only hosting` deploys **whatever branch is checked out**. Those can diverge, and on 2026-11-05 they did: production shipped `redesign/site-refresh-2026-11` while `main` still pointed at the pre-redesign commit.
+
+**Consequence:** the next push to `main` triggers CI and reverts production to whatever `main` contains. After any manual branch deploy, merge that branch into `main` before the next `main` push, or production silently rolls back.
+
+### Post-deploy verification
+
+`scripts/smoke-test-production.mjs` is the gate. It exits non-zero on failure and covers the failures that were actually found live: branded 404 returning a real 404 status, wildcard blog/LP slugs 404ing instead of thin 200s, redirect loops on multi-segment paths, editor attributes or build-time `lastmod` leaking into output, analytics on admin pages, and the consent gate on public pages. Run it against production, or pre-flight a local build:
+
+```bash
+SMOKE_BASE_URL=http://localhost:4322 node scripts/smoke-test-production.mjs
+```
+
+### ⚠ A new post is readable but NOT in the sitemap until you redeploy
+
+The blog rewrite (`/es|en/blog/**` → `validateSlugRewrite`) validates the slug against Firestore and serves the `blog/view` shell, which then fetches the post client-side. So a post published *after* the last build:
+
+* **is** reachable — it returns `200` and renders for users;
+* is **not** in `sitemap-0.xml`, because that file is generated at build time;
+* serves a shell whose `<title>` is `Blog | Guia Negocios`, not the post title — no per-post SEO metadata.
+
+Confirmed 2026-11-06: `/en/blog/knox-county-business-license-guide-tennessee/` returned `200` with the shell title while the deployed sitemap contained **0** references to it, and the local build listed it.
+
+**Consequence:** publishing content and deploying are two separate steps. After any publish, rebuild and redeploy, or the new URL stays out of the sitemap and Google indexes a shell.
+
 ### Deploying Security Rules Only
 
 To deploy updated `firestore.rules` without redeploying site code:
