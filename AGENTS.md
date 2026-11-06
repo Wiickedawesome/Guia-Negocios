@@ -28,8 +28,7 @@ Full documentation: https://docs.astro.build
 - **New pages:** copy the left-aligned 7xl hero from that doc, render `<Header slot="header" />` and
   `<Footer slot="footer" />`, keep the 32px gutter, and ship both locales together. If the slug differs
   between locales, pass `altPath` to `<Header>` as well as `<BaseLayout>` — the header does not inherit it.
-- **Production was deployed from `redesign/site-refresh-2026-11` while `main` is still pre-redesign.**
-  Merge that branch into `main` before the next push to `main`, or CI will revert the live site.
+- **`main` is the deploy source.** CI (`.github/workflows/firebase-hosting-merge.yml`) deploys hosting on push to `main`. A manual `npx firebase deploy --only hosting` deploys whatever branch is checked out, which is how production once ran a redesign branch that `main` did not contain — merged and resolved 2026-11-06. Keep `main` the source of truth; do not hand-deploy a side branch to production.
 - **Locales:** Spanish home is served at `/`; Spanish **subpages** live under `/es/*` (e.g.
   `/es/services/`, `/es/faq/`), English under `/en/*`. Only `/es` and `/es/` themselves 301 to `/`,
   and the unprefixed `/services/`, `/about/`, `/blog/`, `/faq/` 301 to their `/es/...` equivalents.

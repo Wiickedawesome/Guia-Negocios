@@ -134,6 +134,8 @@ CI deploys hosting on push to **`main`**, but a manual `firebase deploy --only h
 
 **Consequence:** the next push to `main` triggers CI and reverts production to whatever `main` contains. After any manual branch deploy, merge that branch into `main` before the next `main` push, or production silently rolls back.
 
+Resolved 2026-11-06: the branch was a clean ancestor of `main`, so it was fast-forwarded (`725b8ad` → `c482972`, 6 commits, 50 files, no conflicts) and production redeployed from `main`. Check ancestry before merging — `git merge-base --is-ancestor main <branch>` exits 0 when a fast-forward is safe.
+
 ### Post-deploy verification
 
 `scripts/smoke-test-production.mjs` is the gate. It exits non-zero on failure and covers the failures that were actually found live: branded 404 returning a real 404 status, wildcard blog/LP slugs 404ing instead of thin 200s, redirect loops on multi-segment paths, editor attributes or build-time `lastmod` leaking into output, analytics on admin pages, and the consent gate on public pages. Run it against production, or pre-flight a local build:
@@ -153,6 +155,8 @@ The blog rewrite (`/es|en/blog/**` → `validateSlugRewrite`) validates the slug
 Confirmed 2026-11-06: `/en/blog/knox-county-business-license-guide-tennessee/` returned `200` with the shell title while the deployed sitemap contained **0** references to it, and the local build listed it.
 
 **Consequence:** publishing content and deploying are two separate steps. After any publish, rebuild and redeploy, or the new URL stays out of the sitemap and Google indexes a shell.
+
+**Fixed for that pair 2026-11-06** by redeploying from `main`: the live sitemap went 38 → **40 URLs** and both posts now serve their own `<title>` instead of the shell. The underlying rule still applies to every future publish — this was the fix, not a change in behaviour.
 
 ### Deploying Security Rules Only
 
